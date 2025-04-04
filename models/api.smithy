@@ -7,6 +7,7 @@ service EqualIQ {
     version: "2023-01-01"
     resources: [
         Contract,
+        ContractSummary,
         User
     ]
     operations: [
@@ -16,25 +17,40 @@ service EqualIQ {
 
 // Resources
 
+// Define two separate resource types while maintaining the same API operation names
 resource Contract {
     identifiers: { contractId: ContractId }
     properties: {
         name: String,
-        status: ContractStatus,
         type: ContractType,
         isOwner: Boolean,
         ownerId: UserId,
-        sharedWith: UserIdList
+        sharedWith: UserIdList,
+        terms: Document,
+        iq_qa: QASections
     }
     read: GetContract
-    list: ListContracts
-    create: UploadContract
+    create: GetUploadURL
     update: UpdateContract
     delete: DeleteContract
     operations: [
         ShareContract,
         GetContractReadURL
     ]
+}
+
+resource ContractSummary {
+    identifiers: { contractId: ContractId }
+    properties: {
+        name: String,
+        uploadedOn: Timestamp,
+        type: ContractType,
+        status: ContractStatus,
+        isOwner: Boolean,
+        ownerId: UserId,
+        sharedWith: UserIdList
+    }
+    list: ListContracts
 }
 
 resource User {
@@ -150,6 +166,7 @@ structure GetContractInput {
     contractId: ContractId
 }
 
+// The output structure for GetContract matches the Contract resource properties
 structure GetContractOutput {
     @required
     contractId: ContractId
@@ -164,7 +181,7 @@ structure GetContractOutput {
     terms: Document
     
     @required
-    qa_sections: QASections
+    qa_sections: QASections // Note: this is returned as "iq_qa" in the response but we map it to qa_sections
     
     @required
     isOwner: Boolean
@@ -173,12 +190,37 @@ structure GetContractOutput {
     ownerId: UserId
     
     @required
-    sharedUsers: UserIdList
+    sharedUsers: UserIdList // This field is named differently in the API (sharedUsers vs sharedWith)
 }
 
+// This matches the structure of the iq_qa field returned by the API
 structure QASections {
-    // Structure containing question-answer sections
-    // Implementation details based on contract analysis
+    @required
+    sections: SectionList
+}
+
+list SectionList {
+    member: QASection
+}
+
+structure QASection {
+    @required
+    title: String
+    
+    @required
+    questions: QuestionList
+}
+
+list QuestionList {
+    member: Question
+}
+
+structure Question {
+    @required
+    question: String
+    
+    @required
+    answer: String
 }
 
 @readonly
@@ -204,10 +246,12 @@ structure ListContractsOutput {
 }
 
 list ContractSummaryList {
-    member: ContractSummary
+    member: ContractSummaryItem
 }
 
-structure ContractSummary {
+// This structure matches the ContractSummary resource's properties
+// but is specifically for use in list responses
+structure ContractSummaryItem {
     @required
     contractId: ContractId
     
@@ -233,9 +277,9 @@ structure ContractSummary {
 }
 
 @idempotent
-operation UploadContract {
-    input: UploadContractInput
-    output: UploadContractOutput
+operation GetUploadURL {
+    input: GetUploadURLInput
+    output: GetUploadURLOutput
     errors: [
         AuthenticationError,
         ValidationError,
@@ -243,12 +287,12 @@ operation UploadContract {
     ]
 }
 
-structure UploadContractInput {
+structure GetUploadURLInput {
     @required
     name: String
 }
 
-structure UploadContractOutput {
+structure GetUploadURLOutput {
     @required
     url_info: PresignedPostData
 }
