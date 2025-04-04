@@ -5,69 +5,19 @@ namespace equaliq
 /// Provides contract management, upload, sharing, and user profile functionality
 service EqualIQ {
     version: "2023-01-01"
-    resources: [
-        Contract,
-        ContractSummary,
-        User
-    ]
     operations: [
-        Ping
-    ]
-}
-
-// Resources
-
-// Define two separate resource types while maintaining the same API operation names
-resource Contract {
-    identifiers: { contractId: ContractId }
-    properties: {
-        name: String,
-        type: ContractType,
-        isOwner: Boolean,
-        ownerId: UserId,
-        sharedWith: UserIdList,
-        terms: Document,
-        iq_qa: QASections
-    }
-    read: GetContract
-    create: GetUploadURL
-    update: UpdateContract
-    delete: DeleteContract
-    operations: [
+        GetContract,
+        ListContracts,
+        GetUploadURL,
+        UpdateContract,
+        DeleteContract,
         ShareContract,
-        GetContractReadURL
-    ]
-}
-
-resource ContractSummary {
-    identifiers: { contractId: ContractId }
-    properties: {
-        name: String,
-        uploadedOn: Timestamp,
-        type: ContractType,
-        status: ContractStatus,
-        isOwner: Boolean,
-        ownerId: UserId,
-        sharedWith: UserIdList
-    }
-    list: ListContracts
-}
-
-resource User {
-    identifiers: { userId: UserId }
-    properties: {
-        firstName: String,
-        lastName: String,
-        displayName: String,
-        email: String,
-        accountType: AccountType,
-        bio: String
-    }
-    read: GetProfile
-    update: UpdateProfile
-    operations: [
+        GetContractReadURL,
+        GetProfile,
+        UpdateProfile,
         UploadProfilePicture,
-        GetProfilePicture
+        GetProfilePicture,
+        Ping
     ]
 }
 
@@ -83,69 +33,27 @@ list UserIdList {
     member: UserId
 }
 
-@enum([
-    {
-        value: "processing",
-        name: "PROCESSING"
-    },
-    {
-        value: "complete",
-        name: "COMPLETE"
-    },
-    {
-        value: "error",
-        name: "ERROR"
-    },
-    {
-        value: "awaiting_upload",
-        name: "AWAITING_UPLOAD"
-    }
-])
-string ContractStatus
+enum ContractStatus {
+    PROCESSING = "processing"
+    COMPLETE = "complete"
+    ERROR = "error"
+    AWAITING_UPLOAD = "awaiting_upload"
+}
 
-@enum([
-    {
-        value: "recording",
-        name: "RECORDING"
-    },
-    {
-        value: "publishing",
-        name: "PUBLISHING"
-    },
-    {
-        value: "management",
-        name: "MANAGEMENT"
-    },
-    {
-        value: "producer",
-        name: "PRODUCER"
-    },
-    {
-        value: "tbd",
-        name: "TBD"
-    }
-])
-string ContractType
+enum ContractType {
+    RECORDING = "recording"
+    PUBLISHING = "publishing"
+    MANAGEMENT = "management"
+    PRODUCER = "producer"
+    TBD = "tbd"
+}
 
-@enum([
-    {
-        value: "artist",
-        name: "ARTIST"
-    },
-    {
-        value: "manager",
-        name: "MANAGER"
-    },
-    {
-        value: "lawyer",
-        name: "LAWYER"
-    },
-    {
-        value: "producer",
-        name: "PRODUCER"
-    }
-])
-string AccountType
+enum AccountType {
+    ARTIST = "artist"
+    MANAGER = "manager"
+    LAWYER = "lawyer"
+    PRODUCER = "producer"
+}
 
 // Contract operations
 
@@ -166,7 +74,6 @@ structure GetContractInput {
     contractId: ContractId
 }
 
-// The output structure for GetContract matches the Contract resource properties
 structure GetContractOutput {
     @required
     contractId: ContractId
@@ -181,7 +88,7 @@ structure GetContractOutput {
     terms: Document
     
     @required
-    qa_sections: QASections // Note: this is returned as "iq_qa" in the response but we map it to qa_sections
+    iq_qa: QASections
     
     @required
     isOwner: Boolean
@@ -190,10 +97,9 @@ structure GetContractOutput {
     ownerId: UserId
     
     @required
-    sharedUsers: UserIdList // This field is named differently in the API (sharedUsers vs sharedWith)
+    sharedWith: UserIdList
 }
 
-// This matches the structure of the iq_qa field returned by the API
 structure QASections {
     @required
     sections: SectionList
@@ -249,8 +155,6 @@ list ContractSummaryList {
     member: ContractSummaryItem
 }
 
-// This structure matches the ContractSummary resource's properties
-// but is specifically for use in list responses
 structure ContractSummaryItem {
     @required
     contractId: ContractId

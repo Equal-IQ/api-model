@@ -1,0 +1,13 @@
+{
+  "version": "1.0",
+  "projections": {
+    "openapi": {
+      "plugins": {
+        "openapi": {
+          "service": "equaliq#EqualIQ",
+          "format": "json"
+        }
+      }
+    }
+  }
+}
