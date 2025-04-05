@@ -1,4 +1,5 @@
 $version: "2"
+
 namespace equaliq
 
 /// Equal IQ API Service
@@ -6,23 +7,22 @@ namespace equaliq
 service EqualIQ {
     version: "2023-01-01"
     operations: [
-        GetContract,
-        ListContracts,
-        GetUploadURL,
-        UpdateContract,
-        DeleteContract,
-        ShareContract,
-        GetContractReadURL,
-        GetProfile,
-        UpdateProfile,
-        UploadProfilePicture,
-        GetProfilePicture,
+        GetContract
+        ListContracts
+        GetUploadURL
+        UpdateContract
+        DeleteContract
+        ShareContract
+        GetContractReadURL
+        GetProfile
+        UpdateProfile
+        UploadProfilePicture
+        GetProfilePicture
         Ping
     ]
 }
 
 // Types
-
 @pattern("^[A-Za-z0-9-]+$")
 string ContractId
 
@@ -56,15 +56,14 @@ enum AccountType {
 }
 
 // Contract operations
-
 @readonly
 operation GetContract {
     input: GetContractInput
     output: GetContractOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
-        ProcessingIncompleteError,
+        AuthenticationError
+        ResourceNotFoundError
+        ProcessingIncompleteError
         InternalServerError
     ]
 }
@@ -77,25 +76,25 @@ structure GetContractInput {
 structure GetContractOutput {
     @required
     contractId: ContractId
-    
+
     @required
     name: String
-    
+
     @required
     type: ContractType
-    
+
     @required
     terms: Document
-    
+
     @required
     iq_qa: QASections
-    
+
     @required
     isOwner: Boolean
-    
+
     @required
     ownerId: UserId
-    
+
     @required
     sharedWith: UserIdList
 }
@@ -112,7 +111,7 @@ list SectionList {
 structure QASection {
     @required
     title: String
-    
+
     @required
     questions: QuestionList
 }
@@ -124,7 +123,7 @@ list QuestionList {
 structure Question {
     @required
     question: String
-    
+
     @required
     answer: String
 }
@@ -134,7 +133,7 @@ operation ListContracts {
     input: ListContractsInput
     output: ListContractsOutput
     errors: [
-        AuthenticationError,
+        AuthenticationError
         InternalServerError
     ]
 }
@@ -146,7 +145,7 @@ structure ListContractsInput {
 structure ListContractsOutput {
     @required
     owned: ContractSummaryList
-    
+
     @required
     shared: ContractSummaryList
 }
@@ -158,25 +157,25 @@ list ContractSummaryList {
 structure ContractSummaryItem {
     @required
     contractId: ContractId
-    
+
     @required
     name: String
-    
+
     @required
     uploadedOn: Timestamp
-    
+
     @required
     type: ContractType
-    
+
     @required
     status: ContractStatus
-    
+
     @required
     isOwner: Boolean
-    
+
     @required
     ownerId: UserId
-    
+
     sharedWith: UserIdList
 }
 
@@ -185,8 +184,8 @@ operation GetUploadURL {
     input: GetUploadURLInput
     output: GetUploadURLOutput
     errors: [
-        AuthenticationError,
-        ValidationError,
+        AuthenticationError
+        ValidationError
         InternalServerError
     ]
 }
@@ -204,7 +203,7 @@ structure GetUploadURLOutput {
 structure PresignedPostData {
     @required
     url: String
-    
+
     @required
     fields: Document
 }
@@ -214,9 +213,9 @@ operation UpdateContract {
     input: UpdateContractInput
     output: UpdateContractOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
-        ValidationError,
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
         InternalServerError
     ]
 }
@@ -224,7 +223,7 @@ operation UpdateContract {
 structure UpdateContractInput {
     @required
     contractId: ContractId
-    
+
     @required
     name: String
 }
@@ -239,8 +238,8 @@ operation DeleteContract {
     input: DeleteContractInput
     output: DeleteContractOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
+        AuthenticationError
+        ResourceNotFoundError
         InternalServerError
     ]
 }
@@ -260,9 +259,9 @@ operation ShareContract {
     input: ShareContractInput
     output: ShareContractOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
-        ValidationError,
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
         InternalServerError
     ]
 }
@@ -270,9 +269,9 @@ operation ShareContract {
 structure ShareContractInput {
     @required
     contractId: ContractId
-    
+
     emailsToAdd: EmailList
-    
+
     emailsToRemove: EmailList
 }
 
@@ -283,17 +282,17 @@ list EmailList {
 structure ShareContractOutput {
     @required
     success: Boolean
-    
+
     @required
     contractId: ContractId
-    
+
     @required
     sharedWith: SharedUserDetailsList
-    
+
     added: EmailList
-    
+
     removed: EmailList
-    
+
     invalidRemoves: EmailList
 }
 
@@ -304,10 +303,10 @@ list SharedUserDetailsList {
 structure SharedUserDetails {
     @required
     userId: UserId
-    
+
     @required
     email: String
-    
+
     @required
     sharedTime: Timestamp
 }
@@ -317,8 +316,8 @@ operation GetContractReadURL {
     input: GetContractReadURLInput
     output: GetContractReadURLOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
+        AuthenticationError
+        ResourceNotFoundError
         InternalServerError
     ]
 }
@@ -334,26 +333,27 @@ structure GetContractReadURLOutput {
 }
 
 // User Profile operations
-
 @readonly
 operation GetProfile {
     input: GetProfileInput
     output: GetProfileOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
+        AuthenticationError
+        ResourceNotFoundError
         InternalServerError
     ]
 }
 
 structure GetProfileInput {
-    userId: UserId  // Optional - defaults to authenticated user if not provided
+    userId: UserId
+
+    // Optional - defaults to authenticated user if not provided
 }
 
 structure GetProfileOutput {
     @required
     userId: UserId
-    
+
     @required
     profile: UserProfile
 }
@@ -373,8 +373,8 @@ operation UpdateProfile {
     input: UpdateProfileInput
     output: UpdateProfileOutput
     errors: [
-        AuthenticationError,
-        ValidationError,
+        AuthenticationError
+        ValidationError
         InternalServerError
     ]
 }
@@ -391,13 +391,13 @@ structure UpdateProfileInput {
 structure UpdateProfileOutput {
     @required
     success: Boolean
-    
+
     @required
     message: String
-    
+
     @required
     userId: UserId
-    
+
     updatedFields: StringList
 }
 
@@ -410,8 +410,8 @@ operation UploadProfilePicture {
     input: UploadProfilePictureInput
     output: UploadProfilePictureOutput
     errors: [
-        AuthenticationError,
-        ValidationError,
+        AuthenticationError
+        ValidationError
         InternalServerError
     ]
 }
@@ -419,8 +419,10 @@ operation UploadProfilePicture {
 structure UploadProfilePictureInput {
     @required
     image: Base64EncodedImage
-    
-    userId: UserId  // Optional - defaults to authenticated user if not provided
+
+    userId: UserId
+
+    // Optional - defaults to authenticated user if not provided
 }
 
 string Base64EncodedImage
@@ -428,7 +430,7 @@ string Base64EncodedImage
 structure UploadProfilePictureOutput {
     @required
     success: Boolean
-    
+
     profilePictureURL: String
 }
 
@@ -437,14 +439,16 @@ operation GetProfilePicture {
     input: GetProfilePictureInput
     output: GetProfilePictureOutput
     errors: [
-        AuthenticationError,
-        ResourceNotFoundError,
+        AuthenticationError
+        ResourceNotFoundError
         InternalServerError
     ]
 }
 
 structure GetProfilePictureInput {
-    userId: UserId  // Optional - defaults to authenticated user if not provided
+    userId: UserId
+
+    // Optional - defaults to authenticated user if not provided
 }
 
 structure GetProfilePictureOutput {
@@ -452,7 +456,6 @@ structure GetProfilePictureOutput {
 }
 
 // Utility operations
-
 @readonly
 operation Ping {
     input: PingInput
@@ -469,11 +472,9 @@ structure PingOutput {
 }
 
 // Common structures
-
 document Document
 
 // Error structures
-
 @error("client")
 structure AuthenticationError {
     @required

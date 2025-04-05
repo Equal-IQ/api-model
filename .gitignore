@@ -1,7 +1,7 @@
 # Smithy build artifacts
 /build/
 /smithyprojections/
-/.gradle/
+.gradle/
 /out/
 
 # IntelliJ / VSCode / Eclipse
