@@ -15,6 +15,10 @@ https://smithy.io/2.0/index.html
 - Java 11+
 - Gradle 7+ (Install via `brew install gradle` or [Gradle install guide](https://gradle.org/install/))
 
+OR
+
+- Docker (for containerized builds)
+
 ---
 
 ### 📁 Folder Structure
@@ -27,11 +31,15 @@ api-model/
 ├── build.gradle.kts         # Gradle config
 ├── settings.gradle.kts
 ├── build/                   # Auto-generated output
+├── Dockerfile               # For containerized builds
+├── build-docker.sh          # Docker build script
 ```
 
 ---
 
 ## Build the Project
+
+### Local Build
 
 From the project root, run:
 
@@ -39,7 +47,25 @@ From the project root, run:
 ./gradlew clean build
 ```
 
+### Containerized Build
+
+For a completely containerized build without requiring local Gradle/Java installation:
+
+```bash
+# Make script executable (first time only)
+chmod +x build-docker.sh
+
+# Run the build in Docker
+./build-docker.sh
+```
+
 This will:
+
+- Build a Docker image with all necessary dependencies
+- Run the Gradle build inside the container
+- Output the build results to your local `build/` directory
+
+Both methods will:
 
 - Validate your Smithy model
 - Generate OpenAPI in:

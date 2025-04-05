@@ -10,11 +10,7 @@ repositories {
 
 dependencies {
     implementation("software.amazon.smithy:smithy-openapi:1.56.0")
-}
-
-
-dependencies {
     implementation("software.amazon.smithy:smithy-cli:1.56.0")
-    implementation("software.amazon.smithy:smithy-model:1.56.0")
+    implementation("software.amazon.smithy:smithy-model:1.56.0") 
     implementation("software.amazon.smithy:smithy-build:1.56.0")
 }
