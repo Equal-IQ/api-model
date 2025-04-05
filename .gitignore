@@ -1,0 +1,32 @@
+# Smithy build artifacts
+/build/
+/smithyprojections/
+/.gradle/
+/out/
+
+# IntelliJ / VSCode / Eclipse
+.idea/
+.vscode/
+.classpath
+.project
+.settings/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Python virtual envs (if used)
+venv/
+.env/
+
+# Node dependencies (if using JS tooling for types/docs)
+node_modules/
+dist/
+
+# Logs and debug
+*.log
+*.tmp
+
+# Backup files
+*~
+*.swp
