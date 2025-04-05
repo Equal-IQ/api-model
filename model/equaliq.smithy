@@ -2,8 +2,11 @@ $version: "2"
 
 namespace equaliq
 
+use aws.protocols#restJson1
+
 /// Equal IQ API Service
 /// Provides contract management, upload, sharing, and user profile functionality
+@restJson1
 service EqualIQ {
     version: "2023-01-01"
     operations: [
@@ -16,8 +19,6 @@ service EqualIQ {
         GetContractReadURL
         GetProfile
         UpdateProfile
-        UploadProfilePicture
-        GetProfilePicture
         Ping
     ]
 }
@@ -56,7 +57,7 @@ enum AccountType {
 }
 
 // Contract operations
-@readonly
+@http(method: "POST", uri: "/getContract")
 operation GetContract {
     input: GetContractInput
     output: GetContractOutput
@@ -128,7 +129,7 @@ structure Question {
     answer: String
 }
 
-@readonly
+@http(method: "POST", uri: "/listContracts")
 operation ListContracts {
     input: ListContractsInput
     output: ListContractsOutput
@@ -180,6 +181,7 @@ structure ContractSummaryItem {
 }
 
 @idempotent
+@http(method: "POST", uri: "/getUploadURL")
 operation GetUploadURL {
     input: GetUploadURLInput
     output: GetUploadURLOutput
@@ -209,6 +211,7 @@ structure PresignedPostData {
 }
 
 @idempotent
+@http(method: "POST", uri: "/updateContract")
 operation UpdateContract {
     input: UpdateContractInput
     output: UpdateContractOutput
@@ -234,6 +237,7 @@ structure UpdateContractOutput {
 }
 
 @idempotent
+@http(method: "POST", uri: "/deleteContract")
 operation DeleteContract {
     input: DeleteContractInput
     output: DeleteContractOutput
@@ -255,6 +259,7 @@ structure DeleteContractOutput {
 }
 
 @idempotent
+@http(method: "POST", uri: "/shareContract")
 operation ShareContract {
     input: ShareContractInput
     output: ShareContractOutput
@@ -311,7 +316,7 @@ structure SharedUserDetails {
     sharedTime: Timestamp
 }
 
-@readonly
+@http(method: "POST", uri: "/getContractReadURL")
 operation GetContractReadURL {
     input: GetContractReadURLInput
     output: GetContractReadURLOutput
@@ -333,7 +338,7 @@ structure GetContractReadURLOutput {
 }
 
 // User Profile operations
-@readonly
+@http(method: "POST", uri: "/getProfile")
 operation GetProfile {
     input: GetProfileInput
     output: GetProfileOutput
@@ -369,6 +374,7 @@ structure UserProfile {
 }
 
 @idempotent
+@http(method: "POST", uri: "/updateProfile")
 operation UpdateProfile {
     input: UpdateProfileInput
     output: UpdateProfileOutput
@@ -405,58 +411,8 @@ list StringList {
     member: String
 }
 
-@idempotent
-operation UploadProfilePicture {
-    input: UploadProfilePictureInput
-    output: UploadProfilePictureOutput
-    errors: [
-        AuthenticationError
-        ValidationError
-        InternalServerError
-    ]
-}
-
-structure UploadProfilePictureInput {
-    @required
-    image: Base64EncodedImage
-
-    userId: UserId
-
-    // Optional - defaults to authenticated user if not provided
-}
-
-string Base64EncodedImage
-
-structure UploadProfilePictureOutput {
-    @required
-    success: Boolean
-
-    profilePictureURL: String
-}
-
-@readonly
-operation GetProfilePicture {
-    input: GetProfilePictureInput
-    output: GetProfilePictureOutput
-    errors: [
-        AuthenticationError
-        ResourceNotFoundError
-        InternalServerError
-    ]
-}
-
-structure GetProfilePictureInput {
-    userId: UserId
-
-    // Optional - defaults to authenticated user if not provided
-}
-
-structure GetProfilePictureOutput {
-    profilePictureURL: String
-}
-
 // Utility operations
-@readonly
+@http(method: "POST", uri: "/ping")
 operation Ping {
     input: PingInput
     output: PingOutput
