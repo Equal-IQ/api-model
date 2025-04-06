@@ -22,7 +22,7 @@ usage() {
 # Default values
 PYTHON=false
 TYPESCRIPT=false
-OUTPUT_DIR="./output"
+OUTPUT_DIR=""  # No default output directory since we have dedicated package directories
 OPENAPI_FILE="build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json"
 
 # Parse command-line arguments
@@ -60,8 +60,10 @@ if [[ ! -f "$OPENAPI_FILE" ]]; then
   exit 1
 fi
 
-# Create output directory
-mkdir -p "$OUTPUT_DIR"
+# Create output directory if specified
+if [[ -n "$OUTPUT_DIR" ]]; then
+  mkdir -p "$OUTPUT_DIR"
+fi
 
 # Generate Python models with a dedicated container build
 if [[ "$PYTHON" == "true" ]]; then
@@ -97,17 +99,23 @@ EOF
   # Ensure the python package directory exists
   mkdir -p "$PYTHON_PACKAGE_DIR"
   
-  # Write output to both the specified output directory and the python package
-  docker run --rm equaliq-python-codegen > "$OUTPUT_DIR/models.py"
+  # Always write to the python package directory
   docker run --rm equaliq-python-codegen > "$PYTHON_PACKAGE_DIR/models.py"
+  
+  # Write to additional output directory if specified
+  if [[ -n "$OUTPUT_DIR" ]]; then
+    mkdir -p "$OUTPUT_DIR"
+    docker run --rm equaliq-python-codegen > "$OUTPUT_DIR/models.py"
+  fi
   
   # Clean up
   docker rmi equaliq-python-codegen >/dev/null 2>&1
   rm -rf "$TEMP_DIR"
   
-  echo "✅ Python models generated in:"
-  echo "   - $OUTPUT_DIR/models.py"
-  echo "   - $PYTHON_PACKAGE_DIR/models.py (Python package)"
+  echo "✅ Python models generated in $PYTHON_PACKAGE_DIR/ package"
+  if [[ -n "$OUTPUT_DIR" ]]; then
+    echo "   - Additional output written to $OUTPUT_DIR/models.py"
+  fi
 fi
 
 # Generate TypeScript types with a dedicated container build
@@ -185,26 +193,30 @@ EOF
   # Ensure the typescript package directory exists
   mkdir -p "$TYPESCRIPT_PACKAGE_DIR"
   
-  # Create output directory and typescript package directory
-  mkdir -p "$OUTPUT_DIR"
-  mkdir -p "$TYPESCRIPT_PACKAGE_DIR"
-  
-  # Get the models.ts file
-  docker run --rm equaliq-ts-codegen cat /app/models.ts > "$OUTPUT_DIR/models.ts"
+  # Always write to the typescript package directory
   docker run --rm equaliq-ts-codegen cat /app/models.ts > "$TYPESCRIPT_PACKAGE_DIR/models.ts"
-  
-  # Get the index.ts file
-  docker run --rm equaliq-ts-codegen cat /app/index.ts > "$OUTPUT_DIR/index.ts"
   docker run --rm equaliq-ts-codegen cat /app/index.ts > "$TYPESCRIPT_PACKAGE_DIR/index.ts"
+  
+  # Write to additional output directory if specified
+  if [[ -n "$OUTPUT_DIR" ]]; then
+    mkdir -p "$OUTPUT_DIR"
+    docker run --rm equaliq-ts-codegen cat /app/models.ts > "$OUTPUT_DIR/models.ts"
+    docker run --rm equaliq-ts-codegen cat /app/index.ts > "$OUTPUT_DIR/index.ts"
+  fi
   
   # Clean up
   docker rmi equaliq-ts-codegen >/dev/null 2>&1
   rm -rf "$TEMP_DIR"
   
-  echo "✅ TypeScript types generated in:"
-  echo "   - $OUTPUT_DIR/models.ts and $OUTPUT_DIR/index.ts"
-  echo "   - $TYPESCRIPT_PACKAGE_DIR/ (TypeScript package)"
+  echo "✅ TypeScript types generated in $TYPESCRIPT_PACKAGE_DIR/ package"
+  if [[ -n "$OUTPUT_DIR" ]]; then
+    echo "   - Additional output written to $OUTPUT_DIR/"
+  fi
   echo "   - All schema types are automatically exported as top-level types"
 fi
 
-echo "Done! Generated files are in $OUTPUT_DIR"
+if [[ -n "$OUTPUT_DIR" ]]; then
+  echo "Done! Generated files are in $OUTPUT_DIR"
+else
+  echo "Done! Generated files are in python/ and typescript/ packages"
+fi

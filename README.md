@@ -82,14 +82,23 @@ Both methods will:
 Generate both Python and TypeScript types in one command without local dependencies:
 
 ```bash
-# Generate both Python and TypeScript
-./build-types.sh --all --output-dir ./types
+# Generate both Python and TypeScript packages
+./build-types.sh --all
 
-# Or generate just Python
-./build-types.sh --python --output-dir ./types
+# Or generate just Python package
+./build-types.sh --python
 
-# Or generate just TypeScript
-./build-types.sh --typescript --output-dir ./types
+# Or generate just TypeScript package
+./build-types.sh --typescript
+```
+
+The generated files will be placed in the appropriate package directories:
+- Python: `./python/api_model/types/models.py`
+- TypeScript: `./typescript/src/models.ts` and `./typescript/src/index.ts`
+
+You can optionally specify an additional output directory:
+```bash
+./build-types.sh --all --output-dir ./my-output-dir
 ```
 
 This will:
