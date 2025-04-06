@@ -12,12 +12,13 @@ https://smithy.io/2.0/index.html
 
 ### 📦 Prerequisites
 
+Only **Docker** is required for containerized builds. No need to install Java, Gradle, Python, or Node.js locally.
+
+For manual builds:
 - Java 11+
-- Gradle 7+ (Install via `brew install gradle` or [Gradle install guide](https://gradle.org/install/))
-
-OR
-
-- Docker (for containerized builds)
+- Gradle 7+
+- Python 3.9+ (for Python/Pydantic models)
+- Node.js 18+ (for TypeScript types)
 
 ---
 
@@ -32,69 +33,89 @@ api-model/
 ├── settings.gradle.kts
 ├── build/                   # Auto-generated output
 ├── Dockerfile               # For containerized builds
-├── build-docker.sh          # Docker build script
+├── build-docker.sh          # Run Smithy build in Docker
+├── build-types.sh           # Generate Python/TypeScript in Docker
 ```
 
 ---
 
 ## Build the Project
 
-### Local Build
+### Containerized Build (Recommended)
 
-From the project root, run:
+For a completely containerized build without requiring local installations:
+
+```bash
+# Make scripts executable (first time only)
+chmod +x build-docker.sh build-types.sh
+
+# Run the Smithy build in Docker
+./build-docker.sh
+```
+
+This will:
+- Build a Docker image with all necessary dependencies
+- Run the Gradle build inside the container
+- Copy the build results to your local `build/` directory
+
+### Local Build (Alternative)
+
+If you have Java and Gradle installed, you can run:
 
 ```bash
 ./gradlew clean build
 ```
 
-### Containerized Build
-
-For a completely containerized build without requiring local Gradle/Java installation:
-
-```bash
-# Make script executable (first time only)
-chmod +x build-docker.sh
-
-# Run the build in Docker
-./build-docker.sh
-```
-
-This will:
-
-- Build a Docker image with all necessary dependencies
-- Run the Gradle build inside the container
-- Output the build results to your local `build/` directory
-
 Both methods will:
-
 - Validate your Smithy model
 - Generate OpenAPI in:
-
-```
-build/smithyprojections/openapi/source/openapi/equaliq.openapi.json
-```
+  ```
+  build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json
+  ```
 
 ---
 
 ## Generate Python/TypeScript Types
 
-### 🐍 Python (Pydantic)
+### Containerized Type Generation (Recommended)
+
+Generate both Python and TypeScript types in one command without local dependencies:
+
+```bash
+# Generate both Python and TypeScript
+./build-types.sh --all --output-dir ./types
+
+# Or generate just Python
+./build-types.sh --python --output-dir ./types
+
+# Or generate just TypeScript
+./build-types.sh --typescript --output-dir ./types
+```
+
+This will:
+- Run the Smithy build first if needed
+- Use Docker containers to generate the types
+- Output the files to the specified directory
+
+### Manual Type Generation (Alternative)
+
+#### 🐍 Python (Pydantic)
 
 ```bash
 pip install datamodel-code-generator
 
 datamodel-codegen \
-  --input build/smithyprojections/openapi/source/openapi/equaliq.openapi.json \
+  --input build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json \
   --input-file-type openapi \
   --output models.py
 ```
 
-### 🧠 TypeScript
+#### 🧠 TypeScript
 
 ```bash
 npm install -g json-schema-to-typescript
 
-json2ts -i build/smithyprojections/openapi/source/openapi/equaliq.openapi.json -o models.ts
+json2ts -i build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json -o models.ts
 ```
 
 ---
@@ -112,18 +133,5 @@ json2ts -i build/smithyprojections/openapi/source/openapi/equaliq.openapi.json -
 - Smithy Docs: https://smithy.io/2.0/
 - Smithy OpenAPI Plugin: https://github.com/awslabs/smithy-openapi
 - Smithy CLI Guide: https://smithy.io/2.0/guides/smithy-cli/cli_installation.html
-(Other option available, but you may need to install other dependencies to build)
-https://smithy.io/2.0/guides/smithy-cli/cli_installation.html
-
-You can also install it via:
-- macOS (Homebrew):
-    brew install smithy-cli
-- Linux (yum-based):
-    sudo yum install java-17-openjdk
-    curl -o smithy-cli.zip https://software.amazon.com/smithy-cli/latest.zip
-    unzip smithy-cli.zip
-    chmod +x smithy
-- Windows (via GitHub Releases):
-    Download and unzip from https://github.com/awslabs/smithy-cli/releases
 
 There are IDE extensions available for syntax highlighting and autocomplete.
