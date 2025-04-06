@@ -38,6 +38,10 @@ while [[ "$#" -gt 0 ]]; do
   shift
 done
 
+# Define package directories
+PYTHON_PACKAGE_DIR="./python/api_model/types"
+TYPESCRIPT_PACKAGE_DIR="./typescript/src"
+
 # Ensure we have something to generate
 if [[ "$PYTHON" == "false" && "$TYPESCRIPT" == "false" ]]; then
   echo "Error: No output type specified. Use --python, --typescript, or --all"
@@ -89,13 +93,21 @@ EOF
   
   # Build and run the container, capturing the output directly
   (cd "$TEMP_DIR" && docker build -t equaliq-python-codegen .)
+  
+  # Ensure the python package directory exists
+  mkdir -p "$PYTHON_PACKAGE_DIR"
+  
+  # Write output to both the specified output directory and the python package
   docker run --rm equaliq-python-codegen > "$OUTPUT_DIR/models.py"
+  docker run --rm equaliq-python-codegen > "$PYTHON_PACKAGE_DIR/models.py"
   
   # Clean up
   docker rmi equaliq-python-codegen >/dev/null 2>&1
   rm -rf "$TEMP_DIR"
   
-  echo "✅ Python models generated in $OUTPUT_DIR/models.py"
+  echo "✅ Python models generated in:"
+  echo "   - $OUTPUT_DIR/models.py"
+  echo "   - $PYTHON_PACKAGE_DIR/models.py (Python package)"
 fi
 
 # Generate TypeScript types with a dedicated container build
@@ -113,7 +125,7 @@ if [[ "$TYPESCRIPT" == "true" ]]; then
 const fs = require('fs');
 const { exec } = require('child_process');
 
-// Use a simpler approach with the CLI tool
+// Generate the base TypeScript file from OpenAPI
 exec('npx openapi-typescript /app/api.json -o /app/models.ts', (error, stdout, stderr) => {
   if (error) {
     console.error('Error generating TypeScript types:', error);
@@ -121,7 +133,30 @@ exec('npx openapi-typescript /app/api.json -o /app/models.ts', (error, stdout, s
     process.exit(1);
   }
   console.log(stdout);
-  console.log('TypeScript types generated successfully');
+  console.log('TypeScript base models generated successfully');
+  
+  // Now create an index.ts file that exports all the components.schemas
+  const indexContent = \`// Auto-generated index file
+// Export all schemas from the OpenAPI specification
+export * from './models';
+export { components } from './models';
+
+// Re-export schemas as top-level types for easier importing
+import { components } from './models';
+export type Schemas = components['schemas'];
+
+// Make each schema available as a top-level export
+type SchemaNames = keyof components['schemas'];
+type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
+
+\${Object.keys(require('/app/api.json').components.schemas)
+  .map(schemaName => \`export type \${schemaName} = ExtractSchema<'\${schemaName}'>\`)
+  .join('\\n')
+}
+\`;
+
+  fs.writeFileSync('/app/index.ts', indexContent);
+  console.log('TypeScript index with type exports generated successfully');
 });
 EOF
   
@@ -146,13 +181,30 @@ EOF
   
   # Build and run the container, capturing the output directly
   (cd "$TEMP_DIR" && docker build -t equaliq-ts-codegen .)
-  docker run --rm equaliq-ts-codegen > "$OUTPUT_DIR/models.ts"
+  
+  # Ensure the typescript package directory exists
+  mkdir -p "$TYPESCRIPT_PACKAGE_DIR"
+  
+  # Create output directory and typescript package directory
+  mkdir -p "$OUTPUT_DIR"
+  mkdir -p "$TYPESCRIPT_PACKAGE_DIR"
+  
+  # Get the models.ts file
+  docker run --rm equaliq-ts-codegen cat /app/models.ts > "$OUTPUT_DIR/models.ts"
+  docker run --rm equaliq-ts-codegen cat /app/models.ts > "$TYPESCRIPT_PACKAGE_DIR/models.ts"
+  
+  # Get the index.ts file
+  docker run --rm equaliq-ts-codegen cat /app/index.ts > "$OUTPUT_DIR/index.ts"
+  docker run --rm equaliq-ts-codegen cat /app/index.ts > "$TYPESCRIPT_PACKAGE_DIR/index.ts"
   
   # Clean up
   docker rmi equaliq-ts-codegen >/dev/null 2>&1
   rm -rf "$TEMP_DIR"
   
-  echo "✅ TypeScript types generated in $OUTPUT_DIR/models.ts"
+  echo "✅ TypeScript types generated in:"
+  echo "   - $OUTPUT_DIR/models.ts and $OUTPUT_DIR/index.ts"
+  echo "   - $TYPESCRIPT_PACKAGE_DIR/ (TypeScript package)"
+  echo "   - All schema types are automatically exported as top-level types"
 fi
 
 echo "Done! Generated files are in $OUTPUT_DIR"

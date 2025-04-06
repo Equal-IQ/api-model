@@ -140,14 +140,14 @@ There are IDE extensions available for syntax highlighting and autocomplete.
 
 ## 🐍 Using the Python Models in Lambda Functions
 
-The generated Python models have been packaged as a proper Python package. There are two ways to use them:
+The generated Python models have been packaged as a proper Python package in the `/python` directory. There are two ways to use them:
 
 ### 1. Local Development (with live reload)
 
 From the cdk directory, install the models in editable mode:
 
 ```bash
-pip install -e ../api-model
+pip install -e ../api-model/python
 ```
 
 This creates an editable install that automatically reflects any changes made to the models without needing to reinstall.
@@ -157,7 +157,7 @@ This creates an editable install that automatically reflects any changes made to
 Add this to your requirements.txt:
 
 ```
-git+https://github.com/Equal-IQ/api-model.git@main#egg=api_model
+git+https://github.com/Equal-IQ/api-model.git@main#subdirectory=python&egg=api_model
 ```
 
 ### Example Usage
@@ -174,4 +174,54 @@ json_data = ping_response.json()
 
 # Deserialize from dict
 contract = GetContractResponseContent(**data_dict)
+```
+
+## 🧠 Using the TypeScript Models in Frontend / Tests
+
+The generated TypeScript models have been packaged as a proper npm package in the `/typescript` directory:
+
+### 1. Local Development
+
+Add the package to your project using a local path:
+
+```bash
+# From your frontend or test directory
+npm install --save ../api-model/typescript
+```
+
+Or using yarn:
+
+```bash
+yarn add ../api-model/typescript
+```
+
+### 2. For Production/CI/CD
+
+Add the package to your project using the GitHub repository:
+
+```bash
+npm install --save github:Equal-IQ/api-model#main:typescript
+```
+
+Or in your package.json:
+
+```json
+"dependencies": {
+  "@equaliq/api-model": "github:Equal-IQ/api-model#main:typescript"
+}
+```
+
+### Example Usage
+
+```typescript
+// Import specific interfaces
+import { PingResponseContent, GetContractResponseContent } from '@equaliq/api-model';
+
+// Use the interfaces
+const pingResponse: PingResponseContent = { message: "Pong!" };
+
+// Type checking for API responses
+function handleApiResponse(response: GetContractResponseContent) {
+  console.log(`Contract ${response.contractId} loaded`);
+}
 ```
