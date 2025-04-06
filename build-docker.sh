@@ -2,17 +2,20 @@
 set -e
 
 IMAGE_NAME="equaliq-api-model"
-CONTAINER_NAME="equaliq-api-model-build"
+CONTAINER_NAME="equaliq-api-model-build-$(date +%s)"
 
 # Clean up previous build directory
 rm -rf "$(pwd)/build"
 mkdir -p "$(pwd)/build"
 
+# Clean up any existing containers with similar names (from previous runs)
+docker ps -a | grep 'equaliq-api-model-build' | awk '{print $1}' | xargs -r docker rm -f
+
 echo "🔨 Building Docker image..."
 docker build -t $IMAGE_NAME .
 
 echo "🚀 Running build in container..."
-# Run the container but don't remove it yet - we need to copy files from it
+# Run the container with unique name 
 docker run --name $CONTAINER_NAME $IMAGE_NAME
 
 # Copy build artifacts from container to host
