@@ -62,12 +62,15 @@ mkdir -p "$OUTPUT_DIR"
 # Generate Python models
 if [[ "$PYTHON" == "true" ]]; then
   echo "Generating Python models..."
+  
+  # Run Python in a container with our script
   docker run --rm \
-    -v "$(pwd)/$OPENAPI_FILE:/app/api.json" \
+    -v "$(pwd)/$OPENAPI_FILE:/app/openapi.json:ro" \
+    -v "$(pwd)/generate-python-types.py:/app/generate.py:ro" \
     -v "$(pwd)/$OUTPUT_DIR:/app/output" \
-    --workdir /app \
+    -w /app \
     docker.io/python:3.9-slim \
-    bash -c "pip install --no-cache-dir datamodel-code-generator && datamodel-codegen --input api.json --input-file-type openapi --output output/models.py"
+    bash -c "pip install --no-cache-dir datamodel-code-generator && python generate.py openapi.json output/models.py"
   
   echo "✅ Python models generated in $OUTPUT_DIR/models.py"
 fi
@@ -75,12 +78,15 @@ fi
 # Generate TypeScript types
 if [[ "$TYPESCRIPT" == "true" ]]; then
   echo "Generating TypeScript types..."
+  
+  # Run Node.js in a container with our script
   docker run --rm \
-    -v "$(pwd)/$OPENAPI_FILE:/app/api.json" \
+    -v "$(pwd)/$OPENAPI_FILE:/app/openapi.json:ro" \
+    -v "$(pwd)/generate-ts-types.js:/app/generate.js:ro" \
     -v "$(pwd)/$OUTPUT_DIR:/app/output" \
-    --workdir /app \
+    -w /app \
     docker.io/node:18-slim \
-    bash -c "npm install -g json-schema-to-typescript && json2ts -i api.json -o output/models.ts"
+    bash -c "npm install -g json-schema-to-typescript && node generate.js openapi.json output/models.ts"
   
   echo "✅ TypeScript types generated in $OUTPUT_DIR/models.ts"
 fi
