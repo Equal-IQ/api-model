@@ -111,21 +111,18 @@ if [[ "$TYPESCRIPT" == "true" ]]; then
   # Create a typescript generator script
   cat > "$TEMP_DIR/generate.js" << EOF
 const fs = require('fs');
-const OpenAPISchemaToTypeScript = require('openapi-typescript').default;
+const { exec } = require('child_process');
 
-async function main() {
-  try {
-    const schema = JSON.parse(fs.readFileSync('/app/api.json', 'utf-8'));
-    const output = await OpenAPISchemaToTypeScript(schema);
-    fs.writeFileSync('/app/models.ts', output);
-    console.log('TypeScript types generated successfully');
-  } catch (error) {
+// Use a simpler approach with the CLI tool
+exec('npx openapi-typescript /app/api.json -o /app/models.ts', (error, stdout, stderr) => {
+  if (error) {
     console.error('Error generating TypeScript types:', error);
+    console.error(stderr);
     process.exit(1);
   }
-}
-
-main();
+  console.log(stdout);
+  console.log('TypeScript types generated successfully');
+});
 EOF
   
   # Create a Dockerfile for TypeScript
