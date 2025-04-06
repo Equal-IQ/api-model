@@ -135,3 +135,43 @@ json2ts -i build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.jso
 - Smithy CLI Guide: https://smithy.io/2.0/guides/smithy-cli/cli_installation.html
 
 There are IDE extensions available for syntax highlighting and autocomplete.
+
+---
+
+## 🐍 Using the Python Models in Lambda Functions
+
+The generated Python models have been packaged as a proper Python package. There are two ways to use them:
+
+### 1. Local Development (with live reload)
+
+From the cdk directory, install the models in editable mode:
+
+```bash
+pip install -e ../api-model
+```
+
+This creates an editable install that automatically reflects any changes made to the models without needing to reinstall.
+
+### 2. For Production/CI/CD
+
+Add this to your requirements.txt:
+
+```
+git+https://github.com/Equal-IQ/api-model.git@main#egg=api_model
+```
+
+### Example Usage
+
+```python
+# Import specific models
+from api_model.types.models import PingResponseContent, GetContractResponseContent
+
+# Create model instances
+ping_response = PingResponseContent(message="Pong!")
+
+# Serialize to JSON
+json_data = ping_response.json()
+
+# Deserialize from dict
+contract = GetContractResponseContent(**data_dict)
+```
