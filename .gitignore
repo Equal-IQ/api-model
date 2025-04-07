@@ -19,6 +19,15 @@ Thumbs.db
 venv/
 .env/
 
+# Python cache and package files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+
 # Node dependencies (if using JS tooling for types/docs)
 node_modules/
 dist/

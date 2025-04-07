@@ -108,9 +108,8 @@ fi
 # Install Python package if requested
 if [[ "$PYTHON" == "true" && "$INSTALL" == "true" ]]; then
   echo "Installing Python package in development mode..."
-  pip install -e python/ > /dev/null
-  pip install -e . > /dev/null
-  echo "✅ Python package installation complete"
+  pip install -e "python/" > /dev/null
+  echo "✅ Python package installation complete (from 'python/' subdirectory)"
 fi
 
 # Generate TypeScript types with a dedicated container build
