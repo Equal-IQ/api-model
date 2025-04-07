@@ -1,0 +1,15 @@
+FROM node:18-slim
+
+WORKDIR /app
+
+# Install dependencies
+RUN npm install openapi-typescript
+
+# Copy files
+COPY api.json /app/api.json
+COPY generate.js /app/generate.js
+
+# Generate the models
+RUN node generate.js
+
+CMD ["cat", "/app/models.ts"]

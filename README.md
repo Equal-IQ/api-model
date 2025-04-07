@@ -51,7 +51,7 @@ For a completely containerized build without requiring local installations:
 chmod +x build-docker.sh build-types.sh
 
 # Run the Smithy build in Docker
-./build-docker.sh
+./build-openapi.sh
 ```
 
 This will:

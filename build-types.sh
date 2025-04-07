@@ -69,32 +69,14 @@ fi
 if [[ "$PYTHON" == "true" ]]; then
   echo "Generating Python models..."
   
-  # Create a temporary directory for our Dockerfile and context
+  # Create a temporary directory for our container context
   TEMP_DIR=$(mktemp -d)
   
   # Copy the OpenAPI file to the temp directory
   cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
   
-  # Create a Dockerfile for Python
-  cat > "$TEMP_DIR/Dockerfile" << EOF
-FROM python:3.9-slim
-
-WORKDIR /app
-
-# Install dependencies
-RUN pip install --no-cache-dir datamodel-code-generator
-
-# Copy the OpenAPI file
-COPY api.json /app/api.json
-
-# Generate the models
-RUN datamodel-codegen --input api.json --input-file-type openapi --output /app/models.py
-
-CMD ["cat", "/app/models.py"]
-EOF
-  
-  # Build and run the container, capturing the output directly
-  (cd "$TEMP_DIR" && docker build -t equaliq-python-codegen .)
+  # Build and run the container using the external Containerfile
+  docker build -t equaliq-python-codegen -f Containers/Containerfile-python-codegen "$TEMP_DIR"
   
   # Ensure the python package directory exists
   mkdir -p "$PYTHON_PACKAGE_DIR"
@@ -122,73 +104,17 @@ fi
 if [[ "$TYPESCRIPT" == "true" ]]; then
   echo "Generating TypeScript types..."
   
-  # Create a temporary directory for our Dockerfile and context
+  # Create a temporary directory for our container context
   TEMP_DIR=$(mktemp -d)
   
   # Copy the OpenAPI file to the temp directory
   cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
   
-  # Create a typescript generator script
-  cat > "$TEMP_DIR/generate.js" << EOF
-const fs = require('fs');
-const { exec } = require('child_process');
-
-// Generate the base TypeScript file from OpenAPI
-exec('npx openapi-typescript /app/api.json -o /app/models.ts', (error, stdout, stderr) => {
-  if (error) {
-    console.error('Error generating TypeScript types:', error);
-    console.error(stderr);
-    process.exit(1);
-  }
-  console.log(stdout);
-  console.log('TypeScript base models generated successfully');
+  # Copy the generate.js file to the temp directory
+  cp "Containers/generate.js" "$TEMP_DIR/generate.js"
   
-  // Now create an index.ts file that exports all the components.schemas
-  const indexContent = \`// Auto-generated index file
-// Export all schemas from the OpenAPI specification
-export * from './models';
-export { components } from './models';
-
-// Re-export schemas as top-level types for easier importing
-import { components } from './models';
-export type Schemas = components['schemas'];
-
-// Make each schema available as a top-level export
-type SchemaNames = keyof components['schemas'];
-type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
-
-\${Object.keys(require('/app/api.json').components.schemas)
-  .map(schemaName => \`export type \${schemaName} = ExtractSchema<'\${schemaName}'>\`)
-  .join('\\n')
-}
-\`;
-
-  fs.writeFileSync('/app/index.ts', indexContent);
-  console.log('TypeScript index with type exports generated successfully');
-});
-EOF
-  
-  # Create a Dockerfile for TypeScript
-  cat > "$TEMP_DIR/Dockerfile" << EOF
-FROM node:18-slim
-
-WORKDIR /app
-
-# Install dependencies
-RUN npm install openapi-typescript
-
-# Copy files
-COPY api.json /app/api.json
-COPY generate.js /app/generate.js
-
-# Generate the models
-RUN node generate.js
-
-CMD ["cat", "/app/models.ts"]
-EOF
-  
-  # Build and run the container, capturing the output directly
-  (cd "$TEMP_DIR" && docker build -t equaliq-ts-codegen .)
+  # Build and run the container using the external Containerfile
+  docker build -t equaliq-ts-codegen -f Containers/Containerfile-typescript-codegen "$TEMP_DIR"
   
   # Ensure the typescript package directory exists
   mkdir -p "$TYPESCRIPT_PACKAGE_DIR"

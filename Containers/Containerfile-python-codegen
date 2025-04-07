@@ -1,0 +1,17 @@
+FROM python:3.9-slim
+
+WORKDIR /app
+
+# Install the latest version of datamodel-code-generator
+RUN pip install --no-cache-dir 'datamodel-code-generator>=0.25.0'
+
+# Copy the OpenAPI file
+COPY api.json /app/api.json
+
+# Generate the models with Pydantic v2 compatibility
+RUN datamodel-codegen --input api.json --input-file-type openapi --output /app/models.py \
+    --output-model-type pydantic_v2.BaseModel \
+    --target-python-version 3.11 \
+    --field-constraints
+
+CMD ["cat", "/app/models.py"]
