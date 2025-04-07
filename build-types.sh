@@ -12,6 +12,7 @@ usage() {
   echo "  -t, --typescript  Generate TypeScript types"
   echo "  -a, --all         Generate both Python and TypeScript"
   echo "  -o, --output-dir  Output directory (default: ./output)"
+  echo "  -i, --install     Install Python package in development mode"
   echo "  -h, --help        Show this help message"
   echo ""
   echo "Example: $0 --all --output-dir ./types"
@@ -25,6 +26,9 @@ TYPESCRIPT=false
 OUTPUT_DIR=""  # No default output directory since we have dedicated package directories
 OPENAPI_FILE="build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json"
 
+# Default value for installation
+INSTALL=false
+
 # Parse command-line arguments
 while [[ "$#" -gt 0 ]]; do
   case $1 in
@@ -32,6 +36,7 @@ while [[ "$#" -gt 0 ]]; do
     -t|--typescript) TYPESCRIPT=true ;;
     -a|--all) PYTHON=true; TYPESCRIPT=true ;;
     -o|--output-dir) OUTPUT_DIR="$2"; shift ;;
+    -i|--install) INSTALL=true ;;
     -h|--help) usage ;;
     *) echo "Unknown parameter: $1"; usage ;;
   esac
@@ -98,6 +103,14 @@ if [[ "$PYTHON" == "true" ]]; then
   if [[ -n "$OUTPUT_DIR" ]]; then
     echo "   - Additional output written to $OUTPUT_DIR/models.py"
   fi
+fi
+
+# Install Python package if requested
+if [[ "$PYTHON" == "true" && "$INSTALL" == "true" ]]; then
+  echo "Installing Python package in development mode..."
+  pip install -e python/ > /dev/null
+  pip install -e . > /dev/null
+  echo "✅ Python package installation complete"
 fi
 
 # Generate TypeScript types with a dedicated container build
