@@ -18,4 +18,4 @@ dependencies = [
 "Homepage" = "https://github.com/equaliq/api-model"
 
 [tool.setuptools]
-packages = ["api_model"]
+packages = ["api_model", "api_model.types"]
