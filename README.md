@@ -32,9 +32,10 @@ api-model/
 ├── build.gradle.kts         # Gradle config
 ├── settings.gradle.kts
 ├── build/                   # Auto-generated output
-├── Dockerfile               # For containerized builds
-├── build-docker.sh          # Run Smithy build in Docker
-├── build-types.sh           # Generate Python/TypeScript in Docker
+├── Containers               # For containerized builds
+│   └── Containerfile-xxx
+├── build-openapi.sh         # Generate OpenAPI types (Container)
+├── build-types.sh           # Generate Python/TypeScript (Containers)
 ```
 
 ---

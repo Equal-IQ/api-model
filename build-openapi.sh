@@ -12,7 +12,7 @@ mkdir -p "$(pwd)/build"
 docker ps -a | grep 'equaliq-api-model-build' | awk '{print $1}' | xargs -r docker rm -f
 
 echo "🔨 Building Container image..."
-docker build -t $IMAGE_NAME -f Containerfile-openapi  .
+docker build -t $IMAGE_NAME -f Containers/Containerfile-openapi .
 
 echo "🚀 Running build in container..."
 # Run the container with unique name 
