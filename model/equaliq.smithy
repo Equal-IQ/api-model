@@ -178,10 +178,12 @@ structure ContractSummaryItem {
     ownerId: UserId
 
     sharedWith: UserIdList
+    sharedUsers: UserIdList
+    sharedEmails: EmailList
 }
 
 @idempotent
-@http(method: "POST", uri: "/getUploadURL")
+@http(method: "POST", uri: "/uploadURL")
 operation GetUploadURL {
     input: GetUploadURLInput
     output: GetUploadURLOutput
