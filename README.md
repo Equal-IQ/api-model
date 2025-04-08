@@ -157,17 +157,17 @@ The generated Python models have been packaged as a proper Python package in the
 From the cdk directory, install the models in editable mode:
 
 ```bash
-pip install -e ../api-model/python
+pip install -e file://$MODEL_CODE_PATH/python
 ```
 
 This creates an editable install that automatically reflects any changes made to the models without needing to reinstall.
 
-### 2. For Production/CI/CD
+### 2. Via GH
 
 Add this to your requirements.txt:
 
 ```
-git+https://github.com/Equal-IQ/api-model.git@main#subdirectory=python&egg=api_model
+git+https://$GITHUB_READ_TOKEN@github.com/Equal-IQ/api-model.git@main#subdirectory=python&egg=api_model
 ```
 
 ### Example Usage

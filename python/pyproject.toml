@@ -19,3 +19,9 @@ dependencies = [
 
 [tool.setuptools]
 packages = ["api_model", "api_model.types"]
+
+[tool.setuptools.package-data]
+api_model = ["py.typed"]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
