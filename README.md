@@ -107,6 +107,10 @@ This will:
 - Use Docker containers to generate the types
 - Output the files to the specified directory
 
+### Cut Release ###
+For Typescript (Frontend) use, you can cut a public release using https://gitpkg.vercel.app/
+
+
 ### Manual Type Generation (Alternative)
 
 #### 🐍 Python (Pydantic)
