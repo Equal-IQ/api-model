@@ -68,6 +68,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/getProfilePicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetProfilePicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/listContracts": {
         parameters: {
             query?: never;
@@ -214,6 +230,12 @@ export interface components {
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
+        };
+        GetProfilePictureRequestContent: {
+            userId?: string;
+        };
+        GetProfilePictureResponseContent: {
+            profilePictureURL: string;
         };
         GetProfileRequestContent: {
             userId?: string;
@@ -466,6 +488,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetProfileResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetProfilePicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GetProfilePictureRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetProfilePicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetProfilePictureResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */

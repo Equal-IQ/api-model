@@ -18,6 +18,7 @@ service EqualIQ {
         ShareContract
         GetContractReadURL
         GetProfile
+        GetProfilePicture
         UpdateProfile
         Ping
     ]
@@ -363,6 +364,28 @@ structure GetProfileOutput {
 
     @required
     profile: UserProfile
+}
+
+@http(method: "POST", uri: "/getProfilePicture")
+operation GetProfilePicture {
+    input: GetProfilePictureInput
+    output: GetProfilePictureOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetProfilePictureInput {
+    userId: UserId
+
+    // Optional - defaults to authenticated user if not provided
+}
+
+structure GetProfilePictureOutput {
+    @required
+    profilePictureURL: String
 }
 
 structure UserProfile {
