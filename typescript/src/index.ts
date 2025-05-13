@@ -44,5 +44,7 @@ export type UpdateContractRequestContent = ExtractSchema<'UpdateContractRequestC
 export type UpdateContractResponseContent = ExtractSchema<'UpdateContractResponseContent'>
 export type UpdateProfileRequestContent = ExtractSchema<'UpdateProfileRequestContent'>
 export type UpdateProfileResponseContent = ExtractSchema<'UpdateProfileResponseContent'>
+export type UploadProfilePictureRequestContent = ExtractSchema<'UploadProfilePictureRequestContent'>
+export type UploadProfilePictureResponseContent = ExtractSchema<'UploadProfilePictureResponseContent'>
 export type UserProfile = ExtractSchema<'UserProfile'>
 export type ValidationErrorResponseContent = ExtractSchema<'ValidationErrorResponseContent'>
