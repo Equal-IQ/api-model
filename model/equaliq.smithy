@@ -531,7 +531,7 @@ structure SignContractInput {
     signerName: String
     @required
     signerEmail: String
-    signingDate: String
+    signingDate: String 
 }
 
 structure SignContractOutput {
