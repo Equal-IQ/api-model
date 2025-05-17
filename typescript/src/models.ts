@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/sign": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SignContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/updateContract": {
         parameters: {
             query?: never;
@@ -315,6 +331,16 @@ export interface components {
             email: string;
             /** Format: double */
             sharedTime: number;
+        };
+        SignContractRequestContent: {
+            contractId: string;
+            signerName: string;
+            signerEmail: string;
+            signingDate?: string;
+        };
+        SignContractResponseContent: {
+            success: boolean;
+            message?: string;
         };
         UpdateContractRequestContent: {
             contractId: string;
@@ -663,6 +689,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    SignContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SignContractRequestContent"];
+            };
+        };
+        responses: {
+            /** @description SignContract 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SignContractResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

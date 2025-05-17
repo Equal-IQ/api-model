@@ -22,6 +22,7 @@ service EqualIQ {
         UploadProfilePicture
         UpdateProfile
         Ping
+        SignContract
     ]
 }
 
@@ -506,5 +507,35 @@ structure ProcessingIncompleteError {
 @error("server")
 structure InternalServerError {
     @required
+    message: String
+}
+
+
+@idempotent
+@http(method: "POST", uri: "/sign")
+operation SignContract {
+    input: SignContractInput
+    output: SignContractOutput
+    errors: [
+        AuthenticationError,
+        ValidationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+
+structure SignContractInput {
+    @required
+    contractId: ContractId
+    @required
+    signerName: String
+    @required
+    signerEmail: String
+    signingDate: String
+}
+
+structure SignContractOutput {
+    @required
+    success: Boolean
     message: String
 }

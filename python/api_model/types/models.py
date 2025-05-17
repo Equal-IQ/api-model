@@ -221,3 +221,5 @@ class GetContractResponseContent(BaseModel):
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: List[SharedWithItem]
+
+
