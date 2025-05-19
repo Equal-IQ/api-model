@@ -201,7 +201,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        AccountType: "artist" | "manager" | "lawyer" | "producer";
+        AccountType: "artist" | "manager" | "lawyer" | "producer" | "publisher";
         AuthenticationErrorResponseContent: {
             message: string;
         };

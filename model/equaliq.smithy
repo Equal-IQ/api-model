@@ -56,6 +56,7 @@ enum AccountType {
     MANAGER = "manager"
     LAWYER = "lawyer"
     PRODUCER = "producer"
+    PUBLISHER = "publisher"
 }
 
 // Contract operations
