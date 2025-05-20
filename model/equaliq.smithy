@@ -526,16 +526,12 @@ operation SignContract {
 
 structure SignContractInput {
     @required
-    contractId: ContractId
-    @required
     signerName: String
-    @required
-    signerEmail: String
-    signingDate: String 
+
 }
 
 structure SignContractOutput {
     @required
-    success: Boolean
+    success: String
     message: String
 }

@@ -333,13 +333,10 @@ export interface components {
             sharedTime: number;
         };
         SignContractRequestContent: {
-            contractId: string;
             signerName: string;
-            signerEmail: string;
-            signingDate?: string;
         };
         SignContractResponseContent: {
-            success: boolean;
+            success: string;
             message?: string;
         };
         UpdateContractRequestContent: {
