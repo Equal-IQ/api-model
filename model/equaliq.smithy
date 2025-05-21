@@ -535,6 +535,6 @@ structure SignContractInput {
 
 structure SignContractOutput {
     @required
-    success: String
+    success: Boolean
     message: String
 }

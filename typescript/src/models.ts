@@ -338,7 +338,7 @@ export interface components {
             status: string;
         };
         SignContractResponseContent: {
-            success: string;
+            success: boolean;
             message?: string;
         };
         UpdateContractRequestContent: {
