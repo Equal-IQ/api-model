@@ -333,7 +333,9 @@ export interface components {
             sharedTime: number;
         };
         SignContractRequestContent: {
-            signerName: string;
+            contractId: string;
+            userId: string;
+            status: string;
         };
         SignContractResponseContent: {
             success: string;

@@ -526,8 +526,11 @@ operation SignContract {
 
 structure SignContractInput {
     @required
-    signerName: String
-
+    contractId: String
+    @required
+    userId: String
+    @required
+    status: String
 }
 
 structure SignContractOutput {
