@@ -1,8 +1,8 @@
 const fs = require('fs');
 const { exec } = require('child_process');
 
-// Generate the base TypeScript file from OpenAPI
-exec('npx openapi-typescript /app/api.json -o /app/models.ts', (error, stdout, stderr) => {
+// Generate the base TypeScript file from OpenAPI using the --enum flag
+exec('npx openapi-typescript /app/api.json -o /app/models.ts --enum', (error, stdout, stderr) => {
   if (error) {
     console.error('Error generating TypeScript types:', error);
     console.error(stderr);

@@ -201,12 +201,12 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        AccountType: "artist" | "manager" | "lawyer" | "producer" | "publisher";
+        AccountType: AccountType;
         AuthenticationErrorResponseContent: {
             message: string;
         };
         /** @enum {string} */
-        ContractStatus: "processing" | "complete" | "error" | "awaiting_upload";
+        ContractStatus: ContractStatus;
         ContractSummaryItem: {
             contractId: string;
             name: string;
@@ -221,7 +221,7 @@ export interface components {
             sharedEmails?: string[];
         };
         /** @enum {string} */
-        ContractType: "recording" | "publishing" | "management" | "producer" | "tbd";
+        ContractType: ContractType;
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -844,4 +844,24 @@ export interface operations {
             };
         };
     };
+}
+export enum AccountType {
+    artist = "artist",
+    manager = "manager",
+    lawyer = "lawyer",
+    producer = "producer",
+    publisher = "publisher"
+}
+export enum ContractStatus {
+    processing = "processing",
+    complete = "complete",
+    error = "error",
+    awaiting_upload = "awaiting_upload"
+}
+export enum ContractType {
+    recording = "recording",
+    publishing = "publishing",
+    management = "management",
+    producer = "producer",
+    tbd = "tbd"
 }
