@@ -228,6 +228,18 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        FixedTermValue: {
+            unit: string;
+            value: string;
+            name?: string;
+            /** Format: float */
+            numericValue?: number;
+            condition?: string;
+        };
+        FixedValueTermInference: {
+            primary: components["schemas"]["FixedTermValue"];
+            subterms?: components["schemas"]["FixedTermValue"][];
+        };
         GetContractReadURLRequestContent: {
             contractId: string;
         };
@@ -241,8 +253,8 @@ export interface components {
             contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
-            terms: unknown;
-            iq_qa: components["schemas"]["QASections"];
+            terms: components["schemas"]["Term"][];
+            qa_sections: components["schemas"]["QASection"][];
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
@@ -283,16 +295,13 @@ export interface components {
         ProcessingIncompleteErrorResponseContent: {
             message: string;
         };
-        QASection: {
-            title: string;
-            questions: components["schemas"]["Question"][];
-        };
-        QASections: {
-            sections: components["schemas"]["QASection"][];
-        };
-        Question: {
+        QA: {
             question: string;
             answer: string;
+        };
+        QASection: {
+            section: string;
+            qa: components["schemas"]["QA"][];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -315,6 +324,13 @@ export interface components {
             email: string;
             /** Format: double */
             sharedTime: number;
+        };
+        Term: {
+            name: string;
+            definition: string;
+            unitType: string;
+            citation?: string;
+            fixedValues?: components["schemas"]["FixedValueTermInference"];
         };
         UpdateContractRequestContent: {
             contractId: string;

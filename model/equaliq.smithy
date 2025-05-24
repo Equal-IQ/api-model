@@ -103,7 +103,6 @@ structure GetContractOutput {
     sharedWith: UserIdList
 }
 
-// Define QA Section format to match existing implementation
 list QASectionsList {
     member: QASection
 }
