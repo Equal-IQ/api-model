@@ -22,7 +22,20 @@ service EqualIQ {
         UploadProfilePicture
         UpdateProfile
         Ping
+        ExposeTypes
     ]
+
+}
+
+// When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
+structure ExposedTypes { 
+  QASectionsList: QASectionsList
+}
+
+// This API is used simply to expose types
+@http(method: "POST", uri: "/notARealEndpoint")
+operation ExposeTypes {
+    output: ExposedTypes
 }
 
 // Types
@@ -91,7 +104,7 @@ structure GetContractOutput {
     terms: TermsList
 
     @required
-    qa_sections: QASectionsList
+    qa_sections: String
 
     @required
     isOwner: Boolean
@@ -517,6 +530,7 @@ structure FixedTermValue {
     
     condition: String
 }
+
 
 // Common structures
 document Document

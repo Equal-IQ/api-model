@@ -100,6 +100,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notARealEndpoint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExposeTypes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ping": {
         parameters: {
             query?: never;
@@ -228,6 +244,9 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        ExposeTypesResponseContent: {
+            QASectionsList?: components["schemas"]["QASection"][];
+        };
         FixedTermValue: {
             unit: string;
             value: string;
@@ -254,7 +273,7 @@ export interface components {
             name: string;
             type: components["schemas"]["ContractType"];
             terms: components["schemas"]["Term"][];
-            qa_sections: components["schemas"]["QASection"][];
+            qa_sections: string;
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
@@ -626,6 +645,26 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ExposeTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ExposeTypes 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
                 };
             };
         };

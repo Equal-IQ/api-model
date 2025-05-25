@@ -18,6 +18,7 @@ export type ContractSummaryItem = ExtractSchema<'ContractSummaryItem'>
 export type ContractType = ExtractSchema<'ContractType'>
 export type DeleteContractRequestContent = ExtractSchema<'DeleteContractRequestContent'>
 export type DeleteContractResponseContent = ExtractSchema<'DeleteContractResponseContent'>
+export type ExposeTypesResponseContent = ExtractSchema<'ExposeTypesResponseContent'>
 export type FixedTermValue = ExtractSchema<'FixedTermValue'>
 export type FixedValueTermInference = ExtractSchema<'FixedValueTermInference'>
 export type GetContractReadURLRequestContent = ExtractSchema<'GetContractReadURLRequestContent'>
