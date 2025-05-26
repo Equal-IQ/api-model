@@ -23,6 +23,9 @@ service EqualIQ {
         UpdateProfile
         Ping
         SignContract
+        GetContractSignatures
+        UpdateSignatureStatus
+        DeleteContractSignature
     ]
 }
 
@@ -521,7 +524,6 @@ structure InternalServerError {
     message: String
 }
 
-
 @idempotent
 @http(method: "POST", uri: "/sign")
 operation SignContract {
@@ -579,3 +581,52 @@ structure GetContractSignaturesOutput {
     contractId: String
     signatures: SignatureList
 }
+
+@http(method: "POST", uri: "/updateSignatureStatus")
+operation UpdateSignatureStatus {
+    input: UpdateSignatureStatusInput
+    output: UpdateSignatureStatusOutput
+    errors: [
+        AuthenticationError,
+        ValidationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+structure UpdateSignatureStatusInput {
+    @required
+    contractId: ContractId
+    @required
+    status: SignatureStatus
+}
+
+structure UpdateSignatureStatusOutput {
+    @required
+    result: SignContractResult
+    @required
+    message: String
+}
+
+
+@idempotent
+@http(method: "POST", uri: "/deleteContractSignature")
+operation DeleteContractSignature {
+    input: DeleteContractSignatureInput
+    output: DeleteContractSignatureOutput
+    errors: [
+        AuthenticationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+
+structure DeleteContractSignatureInput {
+    @required
+    contractId: String
+}
+
+structure DeleteContractSignatureOutput {
+    result: SignContractResult
+    message: String
+}
+
