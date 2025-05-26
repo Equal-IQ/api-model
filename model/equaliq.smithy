@@ -59,6 +59,17 @@ enum AccountType {
     PRODUCER = "producer"
 }
 
+enum SignatureStatus {
+    SIGNED = "signed"
+    DECLINED = "declined"
+    PENDING = "pending"
+}
+
+enum SignContractResult {
+    SUCCESS 
+    FAILURE
+}
+
 // Contract operations
 @http(method: "POST", uri: "/getContract")
 operation GetContract {
@@ -528,13 +539,43 @@ structure SignContractInput {
     @required
     contractId: String
     @required
-    userId: String
-    @required
-    status: String
+    status: SignatureStatus
 }
 
 structure SignContractOutput {
     @required
-    success: Boolean
+    result: SignContractResult
     message: String
+}
+
+
+@http(method: "POST", uri: "/getContractSignatures")
+operation GetContractSignatures {
+    input: GetContractSignaturesInput
+    output: GetContractSignaturesOutput
+    errors: [
+        AuthenticationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+
+structure GetContractSignaturesInput {
+    @required
+    contractId: String
+}
+
+list SignatureList {
+    member: ContractSignature
+}
+
+structure ContractSignature {
+    userId: String
+    status: SignatureStatus
+    timestamp: Timestamp
+}
+
+structure GetContractSignaturesOutput {
+    contractId: String
+    signatures: SignatureList
 }

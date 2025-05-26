@@ -334,13 +334,16 @@ export interface components {
         };
         SignContractRequestContent: {
             contractId: string;
-            userId: string;
-            status: string;
+            status: components["schemas"]["SignatureStatus"];
         };
         SignContractResponseContent: {
-            success: boolean;
+            result: components["schemas"]["SignContractResult"];
             message?: string;
         };
+        /** @enum {string} */
+        SignContractResult: "SUCCESS" | "FAILURE";
+        /** @enum {string} */
+        SignatureStatus: "signed" | "declined" | "pending";
         UpdateContractRequestContent: {
             contractId: string;
             name: string;
