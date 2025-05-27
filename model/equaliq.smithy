@@ -27,6 +27,12 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
+        CreateComposerContract
+        UpdateComposerContract
+        ListComposerContracts
+        GetComposerContract
+        SubmitComposerContractForAnalysis
+        DeleteComposerContract
     ]
 
 }
@@ -95,6 +101,18 @@ enum SignatureStatus {
 
 enum SignContractResult {
     SUCCESS 
+    FAILURE
+}
+
+enum ComposerContractStatus {
+    DRAFT
+    FINALIZED
+    SUBMITTED
+    ANALYZED
+}
+
+enum ComposerContractResult {
+    SUCCESS
     FAILURE
 }
 
@@ -698,3 +716,130 @@ structure DeleteContractSignatureOutput {
     message: String
 }
 
+
+structure ComposerContractSection {
+    sectionId: String
+    name: String
+    content: String
+    plainTextSummary: String
+}
+
+structure ComposerContract {
+    contractId: ContractId
+    title: String
+    type: ContractType
+    sections: ComposerContractSectionList
+    status: ComposerContractStatus
+    createdAt: Timestamp
+    updatedAt: Timestamp
+}
+
+list ComposerContractList {
+    member: ComposerContract
+}
+
+list ComposerContractSectionList {
+    member: ComposerContractSection
+}
+
+@idempotent
+@http(method: "POST", uri: "/composer/create")
+operation CreateComposerContract {
+    input: CreateComposerContractInput
+    output: CreateComposerContractOutput
+}
+
+structure CreateComposerContractInput {
+    @required
+    title: String
+    @required
+    type: ContractType
+}
+
+structure CreateComposerContractOutput {
+    contract: ComposerContract
+}
+
+@idempotent
+@http(method: "POST", uri: "/composer/update")
+operation UpdateComposerContract {
+    input: UpdateComposerContractInput
+    output: UpdateComposerContractOutput
+}
+
+structure UpdateComposerContractInput {
+    @required
+    contractId: ContractId
+    title: String
+    sections: ComposerContractSectionList
+    status: ComposerContractStatus
+}
+
+structure UpdateComposerContractOutput {
+    contract: ComposerContract
+}
+
+@http(method: "POST", uri: "/composer/list")
+operation ListComposerContracts {
+    input: ListComposerContractsInput
+    output: ListComposerContractsOutput
+}
+
+structure ListComposerContractsInput {}
+
+structure ListComposerContractsOutput {
+    contracts: ComposerContractList
+}
+
+@http(method: "POST", uri: "/composer/get")
+operation GetComposerContract {
+    input: GetComposerContractInput
+    output: GetComposerContractOutput
+}
+
+structure GetComposerContractInput {
+    @required
+    contractId: ContractId
+}
+
+structure GetComposerContractOutput {
+    contract: ComposerContract
+}
+
+@http(method: "POST", uri: "/composer/submit")
+operation SubmitComposerContractForAnalysis {
+    input: SubmitComposerContractForAnalysisInput
+    output: SubmitComposerContractForAnalysisOutput
+}
+
+structure SubmitComposerContractForAnalysisInput {
+    @required
+    contractId: ContractId
+}
+
+structure SubmitComposerContractForAnalysisOutput {
+    @required
+    success: ComposerContractResult
+}
+
+@idempotent
+@http(method: "POST", uri: "/composer/delete")
+operation DeleteComposerContract {
+    input: DeleteComposerContractInput
+    output: DeleteComposerContractOutput
+    errors: [
+        AuthenticationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+
+structure DeleteComposerContractInput {
+    @required
+    contractId: ContractId
+}
+
+structure DeleteComposerContractOutput {
+    @required
+    success: ComposerContractResult
+}
