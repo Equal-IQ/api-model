@@ -15,6 +15,7 @@ class AccountType(Enum):
     manager = 'manager'
     lawyer = 'lawyer'
     producer = 'producer'
+    publisher = 'publisher'
 
 
 class AuthenticationErrorResponseContent(BaseModel):
@@ -50,6 +51,19 @@ class DeleteContractRequestContent(BaseModel):
 
 class DeleteContractResponseContent(BaseModel):
     success: bool
+
+
+class FixedTermValue(BaseModel):
+    unit: str
+    value: str
+    name: Optional[str] = None
+    numericValue: Optional[float] = None
+    condition: Optional[str] = None
+
+
+class FixedValueTermInference(BaseModel):
+    primary: FixedTermValue
+    subterms: Optional[List[FixedTermValue]] = None
 
 
 class DeleteContractSignatureRequestContent(BaseModel):
@@ -105,9 +119,14 @@ class ProcessingIncompleteErrorResponseContent(BaseModel):
     message: str
 
 
-class Question(BaseModel):
+class QA(BaseModel):
     question: str
     answer: str
+
+
+class QASection(BaseModel):
+    section: str
+    qa: List[QA]
 
 
 class ResourceNotFoundErrorResponseContent(BaseModel):
@@ -124,6 +143,14 @@ class SharedUserDetails(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     email: str
     sharedTime: float
+
+
+class Term(BaseModel):
+    name: str
+    definition: str
+    unitType: str
+    citation: Optional[str] = None
+    fixedValues: Optional[FixedValueTermInference] = None
 
 
 class SignContractResult(Enum):
@@ -215,6 +242,21 @@ class ContractSummaryItem(BaseModel):
     sharedEmails: Optional[List[str]] = None
 
 
+class ExposeTypesResponseContent(BaseModel):
+    QASectionsList: Optional[List[QASection]] = None
+
+
+class GetContractResponseContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    terms: List[Term]
+    qa_sections: str
+    isOwner: bool
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWith: List[SharedWithItem]
+
+
 class DeleteContractSignatureResponseContent(BaseModel):
     result: Optional[SignContractResult] = None
     message: Optional[str] = None
@@ -237,15 +279,6 @@ class GetUploadURLResponseContent(BaseModel):
 class ListContractsResponseContent(BaseModel):
     owned: List[ContractSummaryItem]
     shared: List[ContractSummaryItem]
-
-
-class QASection(BaseModel):
-    title: str
-    questions: List[Question]
-
-
-class QASections(BaseModel):
-    sections: List[QASection]
 
 
 class ShareContractResponseContent(BaseModel):

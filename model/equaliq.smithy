@@ -22,11 +22,24 @@ service EqualIQ {
         UploadProfilePicture
         UpdateProfile
         Ping
+        ExposeTypes
         SignContract
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
     ]
+
+}
+
+// When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
+structure ExposedTypes { 
+  QASectionsList: QASectionsList
+}
+
+// This API is used simply to expose types
+@http(method: "POST", uri: "/notARealEndpoint")
+operation ExposeTypes {
+    output: ExposedTypes
 }
 
 // Types
@@ -60,6 +73,18 @@ enum AccountType {
     MANAGER = "manager"
     LAWYER = "lawyer"
     PRODUCER = "producer"
+    PUBLISHER = "publisher"
+}
+
+enum SignatureStatus {
+    SIGNED = "signed"
+    DECLINED = "declined"
+    PENDING = "pending"
+}
+
+enum SignContractResult {
+    SUCCESS 
+    FAILURE
 }
 
 enum SignatureStatus {
@@ -102,10 +127,10 @@ structure GetContractOutput {
     type: ContractType
 
     @required
-    terms: Document
+    terms: TermsList
 
     @required
-    iq_qa: QASections
+    qa_sections: String
 
     @required
     isOwner: Boolean
@@ -117,31 +142,26 @@ structure GetContractOutput {
     sharedWith: UserIdList
 }
 
-structure QASections {
-    @required
-    sections: SectionList
-}
-
-list SectionList {
+list QASectionsList {
     member: QASection
 }
 
 structure QASection {
     @required
-    title: String
-
+    section: String
+    
     @required
-    questions: QuestionList
+    qa: QAList
 }
 
-list QuestionList {
-    member: Question
+list QAList {
+    member: QA
 }
 
-structure Question {
+structure QA {
     @required
     question: String
-
+    
     @required
     answer: String
 }
@@ -489,6 +509,54 @@ structure PingOutput {
     @required
     message: String
 }
+
+// Contract Terms structures
+list TermsList {
+    member: Term
+}
+
+structure Term {
+    @required
+    name: String
+    
+    @required
+    definition: String
+    
+    @required
+    unitType: String
+    
+    citation: String
+    
+    fixedValues: FixedValueTermInference
+    
+    // Additional properties will be serialized as part of the Document
+}
+
+structure FixedValueTermInference {
+    @required
+    primary: FixedTermValue
+    
+    subterms: FixedTermValueList
+}
+
+list FixedTermValueList {
+    member: FixedTermValue
+}
+
+structure FixedTermValue {
+    @required
+    unit: String
+    
+    @required
+    value: String
+    
+    name: String
+    
+    numericValue: Float
+    
+    condition: String
+}
+
 
 // Common structures
 document Document

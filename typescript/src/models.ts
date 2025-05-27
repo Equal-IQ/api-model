@@ -132,6 +132,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/notARealEndpoint": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ExposeTypes"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ping": {
         parameters: {
             query?: never;
@@ -265,7 +281,7 @@ export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
         /** @enum {string} */
-        AccountType: "artist" | "manager" | "lawyer" | "producer";
+        AccountType: AccountType;
         AuthenticationErrorResponseContent: {
             message: string;
         };
@@ -276,7 +292,7 @@ export interface components {
             timestamp?: number;
         };
         /** @enum {string} */
-        ContractStatus: "processing" | "complete" | "error" | "awaiting_upload";
+        ContractStatus: ContractStatus;
         ContractSummaryItem: {
             contractId: string;
             name: string;
@@ -291,12 +307,27 @@ export interface components {
             sharedEmails?: string[];
         };
         /** @enum {string} */
-        ContractType: "recording" | "publishing" | "management" | "producer" | "tbd";
+        ContractType: ContractType;
         DeleteContractRequestContent: {
             contractId: string;
         };
         DeleteContractResponseContent: {
             success: boolean;
+        };
+        ExposeTypesResponseContent: {
+            QASectionsList?: components["schemas"]["QASection"][];
+        };
+        FixedTermValue: {
+            unit: string;
+            value: string;
+            name?: string;
+            /** Format: float */
+            numericValue?: number;
+            condition?: string;
+        };
+        FixedValueTermInference: {
+            primary: components["schemas"]["FixedTermValue"];
+            subterms?: components["schemas"]["FixedTermValue"][];
         };
         DeleteContractSignatureRequestContent: {
             contractId: string;
@@ -318,8 +349,8 @@ export interface components {
             contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
-            terms: unknown;
-            iq_qa: components["schemas"]["QASections"];
+            terms: components["schemas"]["Term"][];
+            qa_sections: string;
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
@@ -367,16 +398,13 @@ export interface components {
         ProcessingIncompleteErrorResponseContent: {
             message: string;
         };
-        QASection: {
-            title: string;
-            questions: components["schemas"]["Question"][];
-        };
-        QASections: {
-            sections: components["schemas"]["QASection"][];
-        };
-        Question: {
+        QA: {
             question: string;
             answer: string;
+        };
+        QASection: {
+            section: string;
+            qa: components["schemas"]["QA"][];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -399,6 +427,13 @@ export interface components {
             email: string;
             /** Format: double */
             sharedTime: number;
+        };
+        Term: {
+            name: string;
+            definition: string;
+            unitType: string;
+            citation?: string;
+            fixedValues?: components["schemas"]["FixedValueTermInference"];
         };
         SignContractRequestContent: {
             contractId: string;
@@ -802,6 +837,26 @@ export interface operations {
             };
         };
     };
+    ExposeTypes: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ExposeTypes 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
+                };
+            };
+        };
+    };
     Ping: {
         parameters: {
             query?: never;
@@ -1116,4 +1171,24 @@ export interface operations {
             };
         };
     };
+}
+export enum AccountType {
+    artist = "artist",
+    manager = "manager",
+    lawyer = "lawyer",
+    producer = "producer",
+    publisher = "publisher"
+}
+export enum ContractStatus {
+    processing = "processing",
+    complete = "complete",
+    error = "error",
+    awaiting_upload = "awaiting_upload"
+}
+export enum ContractType {
+    recording = "recording",
+    publishing = "publishing",
+    management = "management",
+    producer = "producer",
+    tbd = "tbd"
 }
