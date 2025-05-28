@@ -4,102 +4,6 @@
  */
 
 export interface paths {
-    "/composer/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateComposerContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composer/delete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteComposerContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composer/get": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetComposerContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composer/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListComposerContracts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composer/submit": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SubmitComposerContractForAnalysis"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composer/update": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateComposerContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -381,27 +285,6 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
-        ComposerContract: {
-            contractId?: string;
-            title?: string;
-            type?: components["schemas"]["ContractType"];
-            sections?: components["schemas"]["ComposerContractSection"][];
-            status?: components["schemas"]["ComposerContractStatus"];
-            /** Format: double */
-            createdAt?: number;
-            /** Format: double */
-            updatedAt?: number;
-        };
-        /** @enum {string} */
-        ComposerContractResult: ComposerContractResult;
-        ComposerContractSection: {
-            sectionId?: string;
-            name?: string;
-            content?: string;
-            plainTextSummary?: string;
-        };
-        /** @enum {string} */
-        ComposerContractStatus: ComposerContractStatus;
         ContractSignature: {
             userId?: string;
             status?: components["schemas"]["SignatureStatus"];
@@ -422,22 +305,10 @@ export interface components {
             sharedWith?: string[];
             sharedUsers?: string[];
             sharedEmails?: string[];
+            isComposerGenerated?: boolean;
         };
         /** @enum {string} */
         ContractType: ContractType;
-        CreateComposerContractRequestContent: {
-            title: string;
-            type: components["schemas"]["ContractType"];
-        };
-        CreateComposerContractResponseContent: {
-            contract?: components["schemas"]["ComposerContract"];
-        };
-        DeleteComposerContractRequestContent: {
-            contractId: string;
-        };
-        DeleteComposerContractResponseContent: {
-            success: components["schemas"]["ComposerContractResult"];
-        };
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -465,12 +336,6 @@ export interface components {
         FixedValueTermInference: {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
-        };
-        GetComposerContractRequestContent: {
-            contractId: string;
-        };
-        GetComposerContractResponseContent: {
-            contract?: components["schemas"]["ComposerContract"];
         };
         GetContractReadURLRequestContent: {
             contractId: string;
@@ -519,9 +384,6 @@ export interface components {
         };
         InternalServerErrorResponseContent: {
             message: string;
-        };
-        ListComposerContractsResponseContent: {
-            contracts?: components["schemas"]["ComposerContract"][];
         };
         ListContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
@@ -579,27 +441,12 @@ export interface components {
         SignContractResult: SignContractResult;
         /** @enum {string} */
         SignatureStatus: SignatureStatus;
-        SubmitComposerContractForAnalysisRequestContent: {
-            contractId: string;
-        };
-        SubmitComposerContractForAnalysisResponseContent: {
-            success: components["schemas"]["ComposerContractResult"];
-        };
         Term: {
             name: string;
             definition: string;
             unitType: string;
             citation?: string;
             fixedValues?: components["schemas"]["FixedValueTermInference"];
-        };
-        UpdateComposerContractRequestContent: {
-            contractId: string;
-            title?: string;
-            sections?: components["schemas"]["ComposerContractSection"][];
-            status?: components["schemas"]["ComposerContractStatus"];
-        };
-        UpdateComposerContractResponseContent: {
-            contract?: components["schemas"]["ComposerContract"];
         };
         UpdateContractRequestContent: {
             contractId: string;
@@ -659,164 +506,6 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    CreateComposerContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateComposerContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateComposerContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateComposerContractResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteComposerContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteComposerContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteComposerContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteComposerContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetComposerContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetComposerContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetComposerContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetComposerContractResponseContent"];
-                };
-            };
-        };
-    };
-    ListComposerContracts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ListComposerContracts 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListComposerContractsResponseContent"];
-                };
-            };
-        };
-    };
-    SubmitComposerContractForAnalysis: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SubmitComposerContractForAnalysisRequestContent"];
-            };
-        };
-        responses: {
-            /** @description SubmitComposerContractForAnalysis 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SubmitComposerContractForAnalysisResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateComposerContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateComposerContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateComposerContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateComposerContractResponseContent"];
-                };
-            };
-        };
-    };
     DeleteContract: {
         parameters: {
             query?: never;
@@ -1490,16 +1179,6 @@ export enum AccountType {
     lawyer = "lawyer",
     producer = "producer",
     publisher = "publisher"
-}
-export enum ComposerContractResult {
-    SUCCESS = "SUCCESS",
-    FAILURE = "FAILURE"
-}
-export enum ComposerContractStatus {
-    DRAFT = "DRAFT",
-    FINALIZED = "FINALIZED",
-    SUBMITTED = "SUBMITTED",
-    ANALYZED = "ANALYZED"
 }
 export enum ContractStatus {
     processing = "processing",

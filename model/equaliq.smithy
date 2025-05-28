@@ -27,14 +27,24 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
-        CreateComposerContract
-        UpdateComposerContract
-        ListComposerContracts
-        GetComposerContract
-        SubmitComposerContractForAnalysis
-        DeleteComposerContract
     ]
 
+}
+
+resource ComposerContract {
+    identifiers: { contractId: ComposerContractId }
+    create: CreateComposerContract
+    read: GetComposerContractMeta 
+    update: UpdateComposerContractMeta
+    delete: ArchiveComposerContract
+    list: ListComposerContracts
+
+    operations: [
+        GetComposerContractContent,
+        UpdateComposerContractContent,
+        SaveComposerContractToVault,
+        ListComposerContractVersions
+    ]
 }
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
@@ -54,6 +64,12 @@ string ContractId
 
 @pattern("^[A-Za-z0-9-]+$")
 string UserId
+
+@pattern("^[A-Fa-f0-9-]{36}$")
+string ComposerContractId
+
+@pattern("^[A-Fa-f0-9-]{36}$")
+string RevisionId
 
 list UserIdList {
     member: UserId
@@ -105,15 +121,22 @@ enum SignContractResult {
 }
 
 enum ComposerContractStatus {
-    DRAFT
-    FINALIZED
-    SUBMITTED
-    ANALYZED
+    NEW
+    CLEAN_IN_VAULT
+    DIRTY
+    ARCHIVED
 }
 
-enum ComposerContractResult {
-    SUCCESS
-    FAILURE
+enum ComposerContractType {
+    PRODUCER 
+}
+
+enum ComposerContractSection {
+    SERVICES
+    COMPENSATION
+    INTELLECTUAL_PROPERTY
+    TERM_AND_TERMINATION
+    CONFIDENTIALITY
 }
 
 // Contract operations
@@ -235,6 +258,7 @@ structure ContractSummaryItem {
     sharedWith: UserIdList
     sharedUsers: UserIdList
     sharedEmails: EmailList
+    isComposerGenerated: Boolean
 }
 
 @idempotent
@@ -716,31 +740,53 @@ structure DeleteContractSignatureOutput {
     message: String
 }
 
-
-structure ComposerContractSection {
-    sectionId: String
-    name: String
-    content: String
-    plainTextSummary: String
-}
-
-structure ComposerContract {
-    contractId: ContractId
+structure ComposerContractMeta {
+    contractId: ComposerContractId
+    revisionId: String
     title: String
-    type: ContractType
-    sections: ComposerContractSectionList
+    type: ComposerContractType
     status: ComposerContractStatus
     createdAt: Timestamp
     updatedAt: Timestamp
+    revisionHistory: RevisionIdList
 }
 
-list ComposerContractList {
-    member: ComposerContract
+list RevisionIdList {
+    member: String
+}
+
+structure ComposerContractContent {
+    sections: ComposerContractSectionList
+}
+
+structure ComposerContractData {
+    meta: ComposerContractMeta
+    content: ComposerContractContent
 }
 
 list ComposerContractSectionList {
-    member: ComposerContractSection
+  member: SectionUnion
 }
+
+union SectionUnion {
+  term: TermSection
+  clause: ClauseSection
+  // more structured section types
+}
+
+structure TermSection {
+    sectionId: ComposerContractSection
+    name: String
+    definition: String
+    citation: String
+    unit: String
+}
+
+structure ClauseSection {
+    sectionId: ComposerContractSection
+    text: String
+}
+
 
 @idempotent
 @http(method: "POST", uri: "/composer/create")
@@ -753,80 +799,130 @@ structure CreateComposerContractInput {
     @required
     title: String
     @required
-    type: ContractType
+    type: ComposerContractType
+    formDetails: ComposerFormData
+    sourceRevisionId: RevisionId
+}
+structure CreateComposerContractOutput {
+    contract: ComposerContractData
 }
 
-structure CreateComposerContractOutput {
-    contract: ComposerContract
+structure ComposerFormData {
+    // Add structured form inputs here
 }
+
+@readonly
+@http(method: "POST", uri: "/composer/getMeta")
+operation GetComposerContractMeta {
+  input: GetComposerContractInput
+  output: GetComposerContractMetaOutput
+}
+
+structure GetComposerContractMetaOutput {
+  meta: ComposerContractMeta
+}
+
+@http(method: "POST", uri: "/composer/getContent")
+operation GetComposerContractContent {
+  input: GetComposerContractInput
+  output: GetComposerContractContentOutput
+}
+structure GetComposerContractInput {
+  @required
+  contractId: ComposerContractId
+}
+
+structure GetComposerContractContentOutput {
+  content: ComposerContractContent
+}
+
 
 @idempotent
-@http(method: "POST", uri: "/composer/update")
-operation UpdateComposerContract {
-    input: UpdateComposerContractInput
-    output: UpdateComposerContractOutput
+@http(method: "POST", uri: "/composer/updateMeta")
+operation UpdateComposerContractMeta {
+    input: UpdateComposerContractMetaInput
+    output: UpdateComposerContractMetaOutput
 }
 
-structure UpdateComposerContractInput {
+structure UpdateComposerContractMetaInput {
     @required
-    contractId: ContractId
+    contractId: ComposerContractId
     title: String
     sections: ComposerContractSectionList
     status: ComposerContractStatus
 }
 
-structure UpdateComposerContractOutput {
-    contract: ComposerContract
+structure UpdateComposerContractMetaOutput {
+    contract: ComposerContractData
 }
 
+@http(method: "POST", uri: "/composer/updateContent")
+operation UpdateComposerContractContent {
+    input: UpdateComposerContractContentInput
+    output: UpdateComposerContractContentOutput
+}
+
+structure UpdateComposerContractContentInput {
+    @required
+    contractId: ComposerContractId
+    sections: ComposerContractSectionList
+}
+
+structure UpdateComposerContractContentOutput {
+    contract: ComposerContractData
+}
+
+@readonly
 @http(method: "POST", uri: "/composer/list")
 operation ListComposerContracts {
     input: ListComposerContractsInput
     output: ListComposerContractsOutput
 }
 
-structure ListComposerContractsInput {}
+structure ListComposerContractsInput {
+  // temp - ask Parker
+}
+
+list ComposerContractMetaList {
+    member: ComposerContractMeta
+}
 
 structure ListComposerContractsOutput {
-    contracts: ComposerContractList
+    contracts: ComposerContractMetaList
 }
 
-@http(method: "POST", uri: "/composer/get")
-operation GetComposerContract {
+@http(method: "POST", uri: "/composer/listVersions")
+operation ListComposerContractVersions {
     input: GetComposerContractInput
-    output: GetComposerContractOutput
+    output: ListComposerContractVersionsOutput
 }
 
-structure GetComposerContractInput {
+structure ListComposerContractVersionsOutput {
+    contractId: ComposerContractId
+    versions: ComposerContractMetaList
+}
+
+@http(method: "POST", uri: "/composer/publish")
+operation SaveComposerContractToVault {
+    input: SaveComposerContractToVaultInput
+    output: SaveComposerContractToVaultOutput
+}
+
+structure SaveComposerContractToVaultInput {
     @required
-    contractId: ContractId
+    contractId: ComposerContractId
 }
 
-structure GetComposerContractOutput {
-    contract: ComposerContract
-}
-
-@http(method: "POST", uri: "/composer/submit")
-operation SubmitComposerContractForAnalysis {
-    input: SubmitComposerContractForAnalysisInput
-    output: SubmitComposerContractForAnalysisOutput
-}
-
-structure SubmitComposerContractForAnalysisInput {
+structure SaveComposerContractToVaultOutput {
     @required
-    contractId: ContractId
-}
-
-structure SubmitComposerContractForAnalysisOutput {
-    @required
-    success: ComposerContractResult
+      message: String
 }
 
 @idempotent
-@http(method: "POST", uri: "/composer/delete")
-operation DeleteComposerContract {
-    input: DeleteComposerContractInput
-    output: DeleteComposerContractOutput
+@http(method: "POST", uri: "/composer/archive")
+operation ArchiveComposerContract {
+    input: ArchiveComposerContractInput
+    output: ArchiveComposerContractOutput
     errors: [
         AuthenticationError,
         ResourceNotFoundError,
@@ -834,12 +930,13 @@ operation DeleteComposerContract {
     ]
 }
 
-structure DeleteComposerContractInput {
+structure ArchiveComposerContractInput {
     @required
-    contractId: ContractId
+    contractId: ComposerContractId
 }
 
-structure DeleteComposerContractOutput {
+structure ArchiveComposerContractOutput {
     @required
-    success: ComposerContractResult
+    message: String
 }
+
