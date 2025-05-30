@@ -4,6 +4,150 @@
  */
 
 export interface paths {
+    "/composer/archive": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ArchiveComposerContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateComposerContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/getContent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetComposerContractContent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/getMeta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetComposerContractMeta"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListComposerContracts"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/listVersions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListComposerContractVersions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/publish": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["SaveComposerContractToVault"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/updateContent": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateComposerContractContent"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/composer/updateMeta": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateComposerContractMeta"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -282,9 +426,45 @@ export interface components {
     schemas: {
         /** @enum {string} */
         AccountType: AccountType;
+        ArchiveComposerContractRequestContent: {
+            contractId: string;
+        };
+        ArchiveComposerContractResponseContent: {
+            message: string;
+        };
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        ClauseSection: {
+            sectionId?: components["schemas"]["ComposerContractSection"];
+            text?: string;
+        };
+        ComposerContractContent: {
+            sections?: components["schemas"]["SectionUnion"][];
+        };
+        ComposerContractData: {
+            meta?: components["schemas"]["ComposerContractMeta"];
+            content?: components["schemas"]["ComposerContractContent"];
+        };
+        ComposerContractMeta: {
+            contractId?: string;
+            revisionId?: string;
+            title?: string;
+            type?: components["schemas"]["ComposerContractType"];
+            status?: components["schemas"]["ComposerContractStatus"];
+            /** Format: double */
+            createdAt?: number;
+            /** Format: double */
+            updatedAt?: number;
+            revisionHistory?: string[];
+        };
+        /** @enum {string} */
+        ComposerContractSection: ComposerContractSection;
+        /** @enum {string} */
+        ComposerContractStatus: ComposerContractStatus;
+        /** @enum {string} */
+        ComposerContractType: ComposerContractType;
+        ComposerFormData: Record<string, never>;
         ContractSignature: {
             userId?: string;
             status?: components["schemas"]["SignatureStatus"];
@@ -309,6 +489,15 @@ export interface components {
         };
         /** @enum {string} */
         ContractType: ContractType;
+        CreateComposerContractRequestContent: {
+            title: string;
+            type: components["schemas"]["ComposerContractType"];
+            formDetails?: components["schemas"]["ComposerFormData"];
+            sourceRevisionId?: string;
+        };
+        CreateComposerContractResponseContent: {
+            contract?: components["schemas"]["ComposerContractData"];
+        };
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -336,6 +525,18 @@ export interface components {
         FixedValueTermInference: {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
+        };
+        GetComposerContractContentRequestContent: {
+            contractId: string;
+        };
+        GetComposerContractContentResponseContent: {
+            content?: components["schemas"]["ComposerContractContent"];
+        };
+        GetComposerContractMetaRequestContent: {
+            contractId: string;
+        };
+        GetComposerContractMetaResponseContent: {
+            meta?: components["schemas"]["ComposerContractMeta"];
         };
         GetContractReadURLRequestContent: {
             contractId: string;
@@ -385,6 +586,16 @@ export interface components {
         InternalServerErrorResponseContent: {
             message: string;
         };
+        ListComposerContractVersionsRequestContent: {
+            contractId: string;
+        };
+        ListComposerContractVersionsResponseContent: {
+            contractId?: string;
+            versions?: components["schemas"]["ComposerContractMeta"][];
+        };
+        ListComposerContractsResponseContent: {
+            contracts?: components["schemas"]["ComposerContractMeta"][];
+        };
         ListContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
@@ -409,6 +620,17 @@ export interface components {
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
+        };
+        SaveComposerContractToVaultRequestContent: {
+            contractId: string;
+        };
+        SaveComposerContractToVaultResponseContent: {
+            message: string;
+        };
+        SectionUnion: {
+            term: components["schemas"]["TermSection"];
+        } | {
+            clause: components["schemas"]["ClauseSection"];
         };
         ShareContractRequestContent: {
             contractId: string;
@@ -447,6 +669,29 @@ export interface components {
             unitType: string;
             citation?: string;
             fixedValues?: components["schemas"]["FixedValueTermInference"];
+        };
+        TermSection: {
+            sectionId?: components["schemas"]["ComposerContractSection"];
+            name?: string;
+            definition?: string;
+            citation?: string;
+            unit?: string;
+        };
+        UpdateComposerContractContentRequestContent: {
+            contractId: string;
+            sections?: components["schemas"]["SectionUnion"][];
+        };
+        UpdateComposerContractContentResponseContent: {
+            contract?: components["schemas"]["ComposerContractData"];
+        };
+        UpdateComposerContractMetaRequestContent: {
+            contractId: string;
+            title?: string;
+            sections?: components["schemas"]["SectionUnion"][];
+            status?: components["schemas"]["ComposerContractStatus"];
+        };
+        UpdateComposerContractMetaResponseContent: {
+            contract?: components["schemas"]["ComposerContractData"];
         };
         UpdateContractRequestContent: {
             contractId: string;
@@ -506,6 +751,236 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    ArchiveComposerContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ArchiveComposerContractRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ArchiveComposerContract 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ArchiveComposerContractResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateComposerContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateComposerContractRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateComposerContract 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateComposerContractResponseContent"];
+                };
+            };
+        };
+    };
+    GetComposerContractContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetComposerContractContentRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetComposerContractContent 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetComposerContractContentResponseContent"];
+                };
+            };
+        };
+    };
+    GetComposerContractMeta: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetComposerContractMetaRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetComposerContractMeta 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetComposerContractMetaResponseContent"];
+                };
+            };
+        };
+    };
+    ListComposerContracts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ListComposerContracts 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListComposerContractsResponseContent"];
+                };
+            };
+        };
+    };
+    ListComposerContractVersions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListComposerContractVersionsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListComposerContractVersions 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListComposerContractVersionsResponseContent"];
+                };
+            };
+        };
+    };
+    SaveComposerContractToVault: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveComposerContractToVaultRequestContent"];
+            };
+        };
+        responses: {
+            /** @description SaveComposerContractToVault 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SaveComposerContractToVaultResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateComposerContractContent: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateComposerContractContentRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateComposerContractContent 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateComposerContractContentResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateComposerContractMeta: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateComposerContractMetaRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateComposerContractMeta 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateComposerContractMetaResponseContent"];
+                };
+            };
+        };
+    };
     DeleteContract: {
         parameters: {
             query?: never;
@@ -1179,6 +1654,22 @@ export enum AccountType {
     lawyer = "lawyer",
     producer = "producer",
     publisher = "publisher"
+}
+export enum ComposerContractSection {
+    SERVICES = "SERVICES",
+    COMPENSATION = "COMPENSATION",
+    INTELLECTUAL_PROPERTY = "INTELLECTUAL_PROPERTY",
+    TERM_AND_TERMINATION = "TERM_AND_TERMINATION",
+    CONFIDENTIALITY = "CONFIDENTIALITY"
+}
+export enum ComposerContractStatus {
+    NEW = "NEW",
+    CLEAN_IN_VAULT = "CLEAN_IN_VAULT",
+    DIRTY = "DIRTY",
+    ARCHIVED = "ARCHIVED"
+}
+export enum ComposerContractType {
+    PRODUCER = "PRODUCER"
 }
 export enum ContractStatus {
     processing = "processing",

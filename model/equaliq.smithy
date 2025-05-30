@@ -27,6 +27,15 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
+        CreateComposerContract
+        GetComposerContractMeta
+        GetComposerContractContent
+        UpdateComposerContractMeta
+        UpdateComposerContractContent
+        SaveComposerContractToVault
+        ListComposerContracts
+        ListComposerContractVersions
+        ArchiveComposerContract
     ]
 
 }
