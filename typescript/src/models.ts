@@ -526,18 +526,6 @@ export interface components {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
         };
-        GetComposerContractContentRequestContent: {
-            contractId: string;
-        };
-        GetComposerContractContentResponseContent: {
-            content?: components["schemas"]["ComposerContractContent"];
-        };
-        GetComposerContractMetaRequestContent: {
-            contractId: string;
-        };
-        GetComposerContractMetaResponseContent: {
-            meta?: components["schemas"]["ComposerContractMeta"];
-        };
         GetContractReadURLRequestContent: {
             contractId: string;
         };
@@ -669,29 +657,6 @@ export interface components {
             unitType: string;
             citation?: string;
             fixedValues?: components["schemas"]["FixedValueTermInference"];
-        };
-        TermSection: {
-            sectionId?: components["schemas"]["ComposerContractSection"];
-            name?: string;
-            definition?: string;
-            citation?: string;
-            unit?: string;
-        };
-        UpdateComposerContractContentRequestContent: {
-            contractId: string;
-            sections?: components["schemas"]["SectionUnion"][];
-        };
-        UpdateComposerContractContentResponseContent: {
-            contract?: components["schemas"]["ComposerContractData"];
-        };
-        UpdateComposerContractMetaRequestContent: {
-            contractId: string;
-            title?: string;
-            sections?: components["schemas"]["SectionUnion"][];
-            status?: components["schemas"]["ComposerContractStatus"];
-        };
-        UpdateComposerContractMetaResponseContent: {
-            contract?: components["schemas"]["ComposerContractData"];
         };
         UpdateContractRequestContent: {
             contractId: string;
