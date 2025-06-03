@@ -27,8 +27,33 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
+        CreateComposerContract
+        GetComposerContractMeta
+        GetComposerContractContent
+        UpdateComposerContractMeta
+        UpdateComposerContractContent
+        SaveComposerContractToVault
+        ListComposerContracts
+        ListComposerContractVersions
+        ArchiveComposerContract
     ]
 
+}
+
+resource ComposerContract {
+    identifiers: { contractId: ComposerContractId }
+    create: CreateComposerContract
+    read: GetComposerContractMeta 
+    update: UpdateComposerContractMeta
+    delete: ArchiveComposerContract
+    list: ListComposerContracts
+
+    operations: [
+        GetComposerContractContent,
+        UpdateComposerContractContent,
+        SaveComposerContractToVault,
+        ListComposerContractVersions
+    ]
 }
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
@@ -48,6 +73,12 @@ string ContractId
 
 @pattern("^[A-Za-z0-9-]+$")
 string UserId
+
+@pattern("^[A-Fa-f0-9-]{36}$")
+string ComposerContractId
+
+@pattern("^[A-Fa-f0-9-]{36}$")
+string RevisionId
 
 list UserIdList {
     member: UserId
@@ -96,6 +127,25 @@ enum SignatureStatus {
 enum SignContractResult {
     SUCCESS 
     FAILURE
+}
+
+enum ComposerContractStatus {
+    NEW
+    CLEAN_IN_VAULT
+    DIRTY
+    ARCHIVED
+}
+
+enum ComposerContractType {
+    PRODUCER 
+}
+
+enum ComposerContractSection {
+    SERVICES
+    COMPENSATION
+    INTELLECTUAL_PROPERTY
+    TERM_AND_TERMINATION
+    CONFIDENTIALITY
 }
 
 // Contract operations
@@ -217,6 +267,7 @@ structure ContractSummaryItem {
     sharedWith: UserIdList
     sharedUsers: UserIdList
     sharedEmails: EmailList
+    isComposerGenerated: Boolean
 }
 
 @idempotent
@@ -695,6 +746,208 @@ structure DeleteContractSignatureInput {
 
 structure DeleteContractSignatureOutput {
     result: SignContractResult
+    message: String
+}
+
+structure ComposerContractMeta {
+    contractId: ComposerContractId
+    revisionId: String
+    title: String
+    type: ComposerContractType
+    status: ComposerContractStatus
+    createdAt: Timestamp
+    updatedAt: Timestamp
+    revisionHistory: RevisionIdList
+}
+
+list RevisionIdList {
+    member: String
+}
+
+structure ComposerContractContent {
+    sections: ComposerContractSectionList
+}
+
+structure ComposerContractData {
+    meta: ComposerContractMeta
+    content: ComposerContractContent
+}
+
+list ComposerContractSectionList {
+  member: SectionUnion
+}
+
+union SectionUnion {
+  term: TermSection
+  clause: ClauseSection
+  // more structured section types
+}
+
+structure TermSection {
+    sectionId: ComposerContractSection
+    name: String
+    definition: String
+    citation: String
+    unit: String
+}
+
+structure ClauseSection {
+    sectionId: ComposerContractSection
+    text: String
+}
+
+
+@idempotent
+@http(method: "POST", uri: "/composer/create")
+operation CreateComposerContract {
+    input: CreateComposerContractInput
+    output: CreateComposerContractOutput
+}
+
+structure CreateComposerContractInput {
+    @required
+    title: String
+    @required
+    type: ComposerContractType
+    formDetails: ComposerFormData
+    sourceRevisionId: RevisionId
+}
+structure CreateComposerContractOutput {
+    contract: ComposerContractData
+}
+
+structure ComposerFormData {
+    clientName: String
+    providerName: String
+    date: String 
+}
+
+@readonly
+@http(method: "POST", uri: "/composer/getMeta")
+operation GetComposerContractMeta {
+  input: GetComposerContractInput
+  output: GetComposerContractMetaOutput
+}
+
+structure GetComposerContractMetaOutput {
+  meta: ComposerContractMeta
+}
+
+@http(method: "POST", uri: "/composer/getContent")
+operation GetComposerContractContent {
+  input: GetComposerContractInput
+  output: GetComposerContractContentOutput
+}
+structure GetComposerContractInput {
+  @required
+  contractId: ComposerContractId
+}
+
+structure GetComposerContractContentOutput {
+  content: ComposerContractContent
+}
+
+
+@idempotent
+@http(method: "POST", uri: "/composer/updateMeta")
+operation UpdateComposerContractMeta {
+    input: UpdateComposerContractMetaInput
+    output: UpdateComposerContractMetaOutput
+}
+
+structure UpdateComposerContractMetaInput {
+    @required
+    contractId: ComposerContractId
+    title: String
+    sections: ComposerContractSectionList
+    status: ComposerContractStatus
+}
+
+structure UpdateComposerContractMetaOutput {
+    contract: ComposerContractData
+}
+
+@http(method: "POST", uri: "/composer/updateContent")
+operation UpdateComposerContractContent {
+    input: UpdateComposerContractContentInput
+    output: UpdateComposerContractContentOutput
+}
+
+structure UpdateComposerContractContentInput {
+    @required
+    contractId: ComposerContractId
+    sections: ComposerContractSectionList
+}
+
+structure UpdateComposerContractContentOutput {
+    contract: ComposerContractData
+}
+
+@readonly
+@http(method: "POST", uri: "/composer/list")
+operation ListComposerContracts {
+    input: ListComposerContractsInput
+    output: ListComposerContractsOutput
+}
+
+structure ListComposerContractsInput {
+  // temp - ask Parker
+}
+
+list ComposerContractMetaList {
+    member: ComposerContractMeta
+}
+
+structure ListComposerContractsOutput {
+    contracts: ComposerContractMetaList
+}
+
+@http(method: "POST", uri: "/composer/listVersions")
+operation ListComposerContractVersions {
+    input: GetComposerContractInput
+    output: ListComposerContractVersionsOutput
+}
+
+structure ListComposerContractVersionsOutput {
+    contractId: ComposerContractId
+    versions: ComposerContractMetaList
+}
+
+@http(method: "POST", uri: "/composer/publish")
+operation SaveComposerContractToVault {
+    input: SaveComposerContractToVaultInput
+    output: SaveComposerContractToVaultOutput
+}
+
+structure SaveComposerContractToVaultInput {
+    @required
+    contractId: ComposerContractId
+}
+
+structure SaveComposerContractToVaultOutput {
+    @required
+      message: String
+}
+
+@idempotent
+@http(method: "POST", uri: "/composer/archive")
+operation ArchiveComposerContract {
+    input: ArchiveComposerContractInput
+    output: ArchiveComposerContractOutput
+    errors: [
+        AuthenticationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+
+structure ArchiveComposerContractInput {
+    @required
+    contractId: ComposerContractId
+}
+
+structure ArchiveComposerContractOutput {
+    @required
     message: String
 }
 
