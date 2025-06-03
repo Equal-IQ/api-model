@@ -817,7 +817,9 @@ structure CreateComposerContractOutput {
 }
 
 structure ComposerFormData {
-    // Add structured form inputs here
+    clientName: String
+    providerName: String
+    date: String 
 }
 
 @readonly
