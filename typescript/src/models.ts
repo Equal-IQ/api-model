@@ -116,6 +116,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/getTextToSpeech": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetTextToSpeech"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/listContracts": {
         parameters: {
             query?: never;
@@ -314,6 +330,13 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        DeleteContractSignatureRequestContent: {
+            contractId: string;
+        };
+        DeleteContractSignatureResponseContent: {
+            result?: components["schemas"]["SignContractResult"];
+            message?: string;
+        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
         };
@@ -328,13 +351,6 @@ export interface components {
         FixedValueTermInference: {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
-        };
-        DeleteContractSignatureRequestContent: {
-            contractId: string;
-        };
-        DeleteContractSignatureResponseContent: {
-            result?: components["schemas"]["SignContractResult"];
-            message?: string;
         };
         GetContractReadURLRequestContent: {
             contractId: string;
@@ -374,6 +390,12 @@ export interface components {
         GetProfileResponseContent: {
             userId: string;
             profile: components["schemas"]["UserProfile"];
+        };
+        GetTextToSpeechRequestContent: {
+            text: string;
+        };
+        GetTextToSpeechResponseContent: {
+            audioUrl: string;
         };
         GetUploadURLRequestContent: {
             name: string;
@@ -428,13 +450,6 @@ export interface components {
             /** Format: double */
             sharedTime: number;
         };
-        Term: {
-            name: string;
-            definition: string;
-            unitType: string;
-            citation?: string;
-            fixedValues?: components["schemas"]["FixedValueTermInference"];
-        };
         SignContractRequestContent: {
             contractId: string;
             status: components["schemas"]["SignatureStatus"];
@@ -444,9 +459,16 @@ export interface components {
             message?: string;
         };
         /** @enum {string} */
-        SignContractResult: "SUCCESS" | "FAILURE";
+        SignContractResult: SignContractResult;
         /** @enum {string} */
-        SignatureStatus: "signed" | "declined" | "pending";
+        SignatureStatus: SignatureStatus;
+        Term: {
+            name: string;
+            definition: string;
+            unitType: string;
+            citation?: string;
+            fixedValues?: components["schemas"]["FixedValueTermInference"];
+        };
         UpdateContractRequestContent: {
             contractId: string;
             name: string;
@@ -777,6 +799,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetProfilePictureResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetTextToSpeech: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetTextToSpeechRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetTextToSpeech 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetTextToSpeechResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -1191,4 +1255,13 @@ export enum ContractType {
     management = "management",
     producer = "producer",
     tbd = "tbd"
+}
+export enum SignContractResult {
+    SUCCESS = "SUCCESS",
+    FAILURE = "FAILURE"
+}
+export enum SignatureStatus {
+    signed = "signed",
+    declined = "declined",
+    pending = "pending"
 }

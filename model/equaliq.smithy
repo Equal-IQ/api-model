@@ -27,6 +27,7 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
+        GetTextToSpeech
     ]
 
 }
@@ -698,3 +699,22 @@ structure DeleteContractSignatureOutput {
     message: String
 }
 
+@idempotent
+@http(method: "POST", uri: "/getTextToSpeech")
+operation GetTextToSpeech {
+    input: GetTextToSpeechInput
+    output: GetTextToSpeechOutput
+    errors: [
+        AuthenticationError,
+        ResourceNotFoundError,
+        InternalServerError
+    ]
+}
+structure GetTextToSpeechInput {
+    @required
+    text: String
+}
+structure GetTextToSpeechOutput {
+    @required
+    audioUrl: String
+}
