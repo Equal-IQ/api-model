@@ -27,6 +27,16 @@ service EqualIQ {
         GetContractSignatures
         UpdateSignatureStatus
         DeleteContractSignature
+        CreateInvoice
+        GetInvoice
+        ListInvoices
+        AddInvoiceItems
+        UpdateInvoice
+        FinalizeInvoice
+        SendInvoice
+        ListCustomers
+        ListProducts
+        ListPrices
     ]
 
 }
@@ -696,5 +706,642 @@ structure DeleteContractSignatureInput {
 structure DeleteContractSignatureOutput {
     result: SignContractResult
     message: String
+}
+
+//
+// Payment/Invoice Operations and Types
+//
+
+// Common payment types and enums
+@pattern("^[A-Za-z0-9-_]+$")
+string InvoiceId
+
+@pattern("^[A-Za-z0-9-_]+$")
+string CustomerId
+
+@pattern("^[A-Za-z0-9-_]+$")
+string ProductId
+
+@pattern("^[A-Za-z0-9-_]+$")
+string PriceId
+
+enum InvoiceStatus {
+    DRAFT = "draft"
+    OPEN = "open"
+    PAID = "paid"
+    VOID = "void"
+    UNCOLLECTIBLE = "uncollectible"
+}
+
+enum CollectionMethod {
+    SEND_INVOICE = "send_invoice"
+    CHARGE_AUTOMATICALLY = "charge_automatically"
+}
+
+// Invoice operations
+@http(method: "POST", uri: "/createInvoice")
+operation CreateInvoice {
+    input: CreateInvoiceInput
+    output: CreateInvoiceOutput
+    errors: [
+        AuthenticationError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure CreateInvoiceInput {
+    @required
+    customer: InvoiceCustomer
+
+    @required
+    currency: String
+
+    collectionMethod: CollectionMethod
+
+    daysUntilDue: Integer
+
+    description: String
+
+    @required
+    lineItems: InvoiceLineItemList
+
+    autoFinalize: Boolean
+
+    metadata: Document
+}
+
+structure InvoiceCustomer {
+    @required
+    email: String
+
+    name: String
+
+    customerId: String
+
+    stripeCustomerId: String
+}
+
+list InvoiceLineItemList {
+    member: InvoiceLineItem
+}
+
+structure InvoiceLineItem {
+    @required
+    description: String
+
+    @required
+    amount: Long
+
+    quantity: Integer
+
+    existingPriceId: String
+
+    existingProductId: String
+
+    productName: String
+}
+
+structure CreateInvoiceOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    stripeCustomerId: String
+
+    @required
+    status: InvoiceStatus
+
+    @required
+    amount: Long
+
+    @required
+    currency: String
+
+    @required
+    customerEmail: String
+
+    customerName: String
+
+    hostedInvoiceUrl: String
+
+    invoicePdf: String
+
+    @required
+    createdAt: Timestamp
+
+    dueDate: Timestamp
+
+    @required
+    lineItems: InvoiceLineItemResponseList
+}
+
+list InvoiceLineItemResponseList {
+    member: InvoiceLineItemResponse
+}
+
+structure InvoiceLineItemResponse {
+    @required
+    description: String
+
+    @required
+    amount: Long
+
+    @required
+    quantity: Integer
+
+    stripeProductId: String
+
+    stripePriceId: String
+}
+
+@http(method: "POST", uri: "/getInvoice")
+operation GetInvoice {
+    input: GetInvoiceInput
+    output: GetInvoiceOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetInvoiceInput {
+    @required
+    invoiceId: InvoiceId
+}
+
+structure GetInvoiceOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    status: String
+
+    @required
+    amount: Long
+
+    @required
+    currency: String
+
+    @required
+    customerEmail: String
+
+    customerName: String
+
+    customerId: String
+
+    description: String
+
+    @required
+    createdAt: Timestamp
+
+    dueDate: Timestamp
+
+    paidAt: Timestamp
+
+    hostedInvoiceUrl: String
+
+    invoicePdf: String
+
+    metadata: Document
+
+    lineItems: InvoiceLineItemResponseList
+}
+
+@http(method: "POST", uri: "/listInvoices")
+operation ListInvoices {
+    input: ListInvoicesInput
+    output: ListInvoicesOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListInvoicesInput {
+    limit: Integer
+
+    status: InvoiceStatus
+
+    customerId: String
+
+    startingAfter: String
+
+    endingBefore: String
+}
+
+structure ListInvoicesOutput {
+    @required
+    invoices: InvoiceListItemList
+
+    @required
+    hasMore: Boolean
+
+    totalCount: Integer
+}
+
+list InvoiceListItemList {
+    member: InvoiceListItem
+}
+
+structure InvoiceListItem {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    status: String
+
+    @required
+    amount: Long
+
+    @required
+    currency: String
+
+    @required
+    customerEmail: String
+
+    customerName: String
+
+    description: String
+
+    @required
+    createdAt: Timestamp
+
+    dueDate: Timestamp
+
+    hostedInvoiceUrl: String
+
+    metadata: Document
+}
+
+@http(method: "POST", uri: "/addInvoiceItems")
+operation AddInvoiceItems {
+    input: AddInvoiceItemsInput
+    output: AddInvoiceItemsOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure AddInvoiceItemsInput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    lineItems: InvoiceLineItemList
+}
+
+structure AddInvoiceItemsOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    addedItems: AddedInvoiceItemList
+
+    @required
+    totalAmount: Long
+}
+
+list AddedInvoiceItemList {
+    member: AddedInvoiceItem
+}
+
+structure AddedInvoiceItem {
+    @required
+    description: String
+
+    @required
+    amount: Long
+
+    @required
+    quantity: Integer
+
+    stripeProductId: String
+
+    stripePriceId: String
+
+    @required
+    stripeInvoiceItemId: String
+}
+
+@http(method: "POST", uri: "/updateInvoice")
+operation UpdateInvoice {
+    input: UpdateInvoiceInput
+    output: UpdateInvoiceOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure UpdateInvoiceInput {
+    @required
+    invoiceId: InvoiceId
+
+    collectionMethod: CollectionMethod
+
+    daysUntilDue: Integer
+
+    description: String
+
+    metadata: Document
+
+    customerEmail: String
+
+    customerName: String
+}
+
+structure UpdateInvoiceOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    status: InvoiceStatus
+
+    @required
+    collectionMethod: CollectionMethod
+
+    daysUntilDue: Integer
+
+    description: String
+
+    @required
+    customerEmail: String
+
+    customerName: String
+
+    @required
+    updatedAt: Timestamp
+}
+
+@http(method: "POST", uri: "/finalizeInvoice")
+operation FinalizeInvoice {
+    input: FinalizeInvoiceInput
+    output: FinalizeInvoiceOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure FinalizeInvoiceInput {
+    @required
+    invoiceId: InvoiceId
+
+    autoAdvance: Boolean
+}
+
+structure FinalizeInvoiceOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    stripeInvoiceId: String
+
+    @required
+    status: InvoiceStatus
+
+    hostedInvoiceUrl: String
+
+    invoicePdf: String
+
+    @required
+    finalizedAt: Timestamp
+}
+
+@http(method: "POST", uri: "/sendInvoice")
+operation SendInvoice {
+    input: SendInvoiceInput
+    output: SendInvoiceOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure SendInvoiceInput {
+    @required
+    invoiceId: InvoiceId
+
+    sendEmail: Boolean
+
+    customMessage: String
+}
+
+structure SendInvoiceOutput {
+    @required
+    invoiceId: InvoiceId
+
+    @required
+    status: String
+
+    @required
+    sentAt: Timestamp
+
+    hostedInvoiceUrl: String
+}
+
+@http(method: "POST", uri: "/listCustomers")
+operation ListCustomers {
+    input: ListCustomersInput
+    output: ListCustomersOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListCustomersInput {
+    limit: Integer
+
+    email: String
+
+    startingAfter: String
+
+    endingBefore: String
+}
+
+structure ListCustomersOutput {
+    @required
+    customers: CustomerListItemList
+
+    @required
+    hasMore: Boolean
+
+    totalCount: Integer
+}
+
+list CustomerListItemList {
+    member: CustomerListItem
+}
+
+structure CustomerListItem {
+    @required
+    customerId: CustomerId
+
+    @required
+    stripeCustomerId: String
+
+    @required
+    email: String
+
+    name: String
+
+    @required
+    createdAt: Timestamp
+
+    metadata: Document
+}
+
+@http(method: "POST", uri: "/listProducts")
+operation ListProducts {
+    input: ListProductsInput
+    output: ListProductsOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListProductsInput {
+    limit: Integer
+
+    active: Boolean
+
+    startingAfter: String
+
+    endingBefore: String
+}
+
+structure ListProductsOutput {
+    @required
+    products: ProductListItemList
+
+    @required
+    hasMore: Boolean
+
+    totalCount: Integer
+}
+
+list ProductListItemList {
+    member: ProductListItem
+}
+
+structure ProductListItem {
+    @required
+    productId: ProductId
+
+    @required
+    stripeProductId: String
+
+    @required
+    name: String
+
+    description: String
+
+    @required
+    active: Boolean
+
+    @required
+    createdAt: Timestamp
+
+    updatedAt: Timestamp
+
+    defaultPriceId: String
+
+    metadata: Document
+}
+
+@http(method: "POST", uri: "/listPrices")
+operation ListPrices {
+    input: ListPricesInput
+    output: ListPricesOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListPricesInput {
+    limit: Integer
+
+    active: Boolean
+
+    currency: String
+
+    productId: String
+
+    startingAfter: String
+
+    endingBefore: String
+}
+
+structure ListPricesOutput {
+    @required
+    prices: PriceListItemList
+
+    @required
+    hasMore: Boolean
+
+    totalCount: Integer
+}
+
+list PriceListItemList {
+    member: PriceListItem
+}
+
+structure PriceListItem {
+    @required
+    priceId: PriceId
+
+    @required
+    stripePriceId: String
+
+    @required
+    productId: ProductId
+
+    @required
+    stripeProductId: String
+
+    @required
+    unitAmount: Long
+
+    @required
+    currency: String
+
+    @required
+    active: Boolean
+
+    @required
+    createdAt: Timestamp
+
+    productName: String
+
+    metadata: Document
 }
 
