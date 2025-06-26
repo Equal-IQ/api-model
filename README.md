@@ -108,8 +108,8 @@ This will:
 - Output the files to the specified directory
 
 ### Cut Release ###
-For Typescript (Frontend) use, you can cut a public release using https://gitpkg.vercel.app/
-
+For Typescript (Frontend, LLM) use, we are version locking to commits using https://gitpkg.vercel.app/
+After a commit is pushed to github, you can update the commit in use in the package.json and install update
 
 ### Manual Type Generation (Alternative)
 
