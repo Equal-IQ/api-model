@@ -1241,7 +1241,8 @@ export enum AccountType {
     manager = "manager",
     lawyer = "lawyer",
     producer = "producer",
-    publisher = "publisher"
+    publisher = "publisher",
+    executive = "executive"
 }
 export enum ContractStatus {
     processing = "processing",
