@@ -314,6 +314,13 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        DeleteContractSignatureRequestContent: {
+            contractId: string;
+        };
+        DeleteContractSignatureResponseContent: {
+            result?: components["schemas"]["SignContractResult"];
+            message?: string;
+        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
         };
@@ -328,13 +335,6 @@ export interface components {
         FixedValueTermInference: {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
-        };
-        DeleteContractSignatureRequestContent: {
-            contractId: string;
-        };
-        DeleteContractSignatureResponseContent: {
-            result?: components["schemas"]["SignContractResult"];
-            message?: string;
         };
         GetContractReadURLRequestContent: {
             contractId: string;
@@ -428,13 +428,6 @@ export interface components {
             /** Format: double */
             sharedTime: number;
         };
-        Term: {
-            name: string;
-            definition: string;
-            unitType: string;
-            citation?: string;
-            fixedValues?: components["schemas"]["FixedValueTermInference"];
-        };
         SignContractRequestContent: {
             contractId: string;
             status: components["schemas"]["SignatureStatus"];
@@ -444,9 +437,16 @@ export interface components {
             message?: string;
         };
         /** @enum {string} */
-        SignContractResult: "SUCCESS" | "FAILURE";
+        SignContractResult: SignContractResult;
         /** @enum {string} */
-        SignatureStatus: "signed" | "declined" | "pending";
+        SignatureStatus: SignatureStatus;
+        Term: {
+            name: string;
+            definition: string;
+            unitType: string;
+            citation?: string;
+            fixedValues?: components["schemas"]["FixedValueTermInference"];
+        };
         UpdateContractRequestContent: {
             contractId: string;
             name: string;
@@ -1177,7 +1177,8 @@ export enum AccountType {
     manager = "manager",
     lawyer = "lawyer",
     producer = "producer",
-    publisher = "publisher"
+    publisher = "publisher",
+    executive = "executive"
 }
 export enum ContractStatus {
     processing = "processing",
@@ -1191,4 +1192,13 @@ export enum ContractType {
     management = "management",
     producer = "producer",
     tbd = "tbd"
+}
+export enum SignContractResult {
+    SUCCESS = "SUCCESS",
+    FAILURE = "FAILURE"
+}
+export enum SignatureStatus {
+    signed = "signed",
+    declined = "declined",
+    pending = "pending"
 }

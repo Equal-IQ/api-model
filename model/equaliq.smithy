@@ -74,6 +74,7 @@ enum AccountType {
     LAWYER = "lawyer"
     PRODUCER = "producer"
     PUBLISHER = "publisher"
+    EXECUTIVE = "executive"
 }
 
 enum SignatureStatus {
