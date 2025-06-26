@@ -26,6 +26,10 @@ type SchemaNames = keyof components['schemas'];
 type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
 
 ${Object.keys(require('/app/api.json').components.schemas)
+  .filter(schemaName => {
+    const schema = require('/app/api.json').components.schemas[schemaName];
+    return schema.type !== 'string' || !schema.enum;
+  })
   .map(schemaName => `export type ${schemaName} = ExtractSchema<'${schemaName}'>`)
   .join('\n')
 }
