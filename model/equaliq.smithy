@@ -12,6 +12,8 @@ service EqualIQ {
     operations: [
         GetContract
         ListContracts
+        GetDemoContract
+        ListDemoContracts
         GetUploadURL
         UpdateContract
         DeleteContract
@@ -182,6 +184,70 @@ structure ListContractsInput {
 }
 
 structure ListContractsOutput {
+    @required
+    owned: ContractSummaryList
+
+    @required
+    shared: ContractSummaryList
+}
+
+@http(method: "POST", uri: "/getDemoContract")
+operation GetDemoContract {
+    input: GetDemoContractInput
+    output: GetDemoContractOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetDemoContractInput {
+    @required
+    contractId: ContractId
+}
+
+structure GetDemoContractOutput {
+    @required
+    contractId: ContractId
+
+    @required
+    name: String
+
+    @required
+    type: ContractType
+
+    @required
+    terms: TermsList
+
+    @required
+    qa_sections: String
+
+    @required
+    isOwner: Boolean
+
+    @required
+    ownerId: UserId
+
+    @required
+    sharedWith: UserIdList
+}
+
+@http(method: "POST", uri: "/listDemoContracts")
+operation ListDemoContracts {
+    input: ListDemoContractsInput
+    output: ListDemoContractsOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListDemoContractsInput {
+    // Empty input - authentication handled via Bearer token
+}
+
+structure ListDemoContractsOutput {
     @required
     owned: ContractSummaryList
 
