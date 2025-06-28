@@ -87,6 +87,10 @@ class GetContractSignaturesRequestContent(BaseModel):
     contractId: str
 
 
+class GetDemoContractRequestContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class GetProfilePictureRequestContent(BaseModel):
     userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
 
@@ -276,6 +280,17 @@ class GetContractSignaturesResponseContent(BaseModel):
     signatures: Optional[List[ContractSignature]] = None
 
 
+class GetDemoContractResponseContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    terms: List[Term]
+    qa_sections: str
+    isOwner: bool
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWith: List[SharedWithItem]
+
+
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
@@ -286,6 +301,11 @@ class GetUploadURLResponseContent(BaseModel):
 
 
 class ListContractsResponseContent(BaseModel):
+    owned: List[ContractSummaryItem]
+    shared: List[ContractSummaryItem]
+
+
+class ListDemoContractsResponseContent(BaseModel):
     owned: List[ContractSummaryItem]
     shared: List[ContractSummaryItem]
 
