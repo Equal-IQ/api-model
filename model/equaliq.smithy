@@ -67,6 +67,7 @@ enum ContractType {
     PUBLISHING = "publishing"
     MANAGEMENT = "management"
     PRODUCER = "producer"
+    SERVICES = "services"
     TBD = "tbd"
 }
 
