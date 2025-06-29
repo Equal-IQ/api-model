@@ -1384,6 +1384,7 @@ export enum ContractType {
     publishing = "publishing",
     management = "management",
     producer = "producer",
+    services = "services",
     tbd = "tbd"
 }
 export enum SignContractResult {

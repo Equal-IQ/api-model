@@ -43,6 +43,7 @@ class ContractType(Enum):
     publishing = 'publishing'
     management = 'management'
     producer = 'producer'
+    services = 'services'
     tbd = 'tbd'
 
 
