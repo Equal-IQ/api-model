@@ -84,22 +84,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getDemoContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetDemoContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/getProfile": {
         parameters: {
             query?: never;
@@ -126,6 +110,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetProfilePicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/getSpecialContract": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetSpecialContract"];
         delete?: never;
         options?: never;
         head?: never;
@@ -164,7 +164,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/listDemoContracts": {
+    "/listSpecialContracts": {
         parameters: {
             query?: never;
             header?: never;
@@ -173,7 +173,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ListDemoContracts"];
+        post: operations["ListSpecialContracts"];
         delete?: never;
         options?: never;
         head?: never;
@@ -410,19 +410,6 @@ export interface components {
             contractId?: string;
             signatures?: components["schemas"]["ContractSignature"][];
         };
-        GetDemoContractRequestContent: {
-            contractId: string;
-        };
-        GetDemoContractResponseContent: {
-            contractId: string;
-            name: string;
-            type: components["schemas"]["ContractType"];
-            terms: components["schemas"]["Term"][];
-            qa_sections: string;
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith: string[];
-        };
         GetProfilePictureRequestContent: {
             userId?: string;
         };
@@ -442,6 +429,19 @@ export interface components {
         GetTextToSpeechResponseContent: {
             audioUrl: string;
         };
+        GetSpecialContractRequestContent: {
+            contractId: string;
+        };
+        GetSpecialContractResponseContent: {
+            contractId: string;
+            name: string;
+            type: components["schemas"]["ContractType"];
+            eqmode: unknown;
+            sections: unknown;
+            isOwner: boolean;
+            ownerId: string;
+            sharedWith: string[];
+        };
         GetUploadURLRequestContent: {
             name: string;
         };
@@ -455,7 +455,7 @@ export interface components {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
-        ListDemoContractsResponseContent: {
+        ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
@@ -786,48 +786,6 @@ export interface operations {
             };
         };
     };
-    GetDemoContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetDemoContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetDemoContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetDemoContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     GetProfile: {
         parameters: {
             query?: never;
@@ -899,6 +857,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetSpecialContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetSpecialContractRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetSpecialContract 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetSpecialContractResponseContent"];
+                };
+            };
+            /** @description ProcessingIncompleteError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -992,7 +992,7 @@ export interface operations {
             };
         };
     };
-    ListDemoContracts: {
+    ListSpecialContracts: {
         parameters: {
             query?: never;
             header?: never;
@@ -1001,13 +1001,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description ListDemoContracts 200 response */
+            /** @description ListSpecialContracts 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListDemoContractsResponseContent"];
+                    "application/json": components["schemas"]["ListSpecialContractsResponseContent"];
                 };
             };
             /** @description AuthenticationError 400 response */
