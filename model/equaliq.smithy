@@ -35,9 +35,9 @@ service EqualIQ {
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
 structure ExposedTypes { 
-  QASectionsList: QASectionsList
-  ContractVariable: ContractVariable
-  ContractVariableType: ContractVariableType
+  QASectionsList: QASectionsList // This type is not properly included in API response currently
+  ContractVariable: ContractVariable // New feature in development by Ty
+  ContractVariableType: ContractVariableType // New feature in development by Ty
 }
 
 // This API is used simply to expose types
