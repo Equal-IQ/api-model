@@ -643,7 +643,7 @@ structure ContractVariable {
     @required
     type: ContractVariableType
 
-    // unique identifier for markup tags
+    @required
     id: String
 
     // the definition/explanation for this variable
