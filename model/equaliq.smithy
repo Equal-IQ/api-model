@@ -14,6 +14,7 @@ service EqualIQ {
         ListContracts
         GetSpecialContract
         ListSpecialContracts
+        GetTTSURLs
         GetUploadURL
         UpdateContract
         DeleteContract
@@ -168,28 +169,63 @@ structure GetSpecialContractInput {
 
 structure GetSpecialContractOutput {
     @required
+    contract: SpecialContractData
+}
+
+structure SpecialContractData {
+    @required
+    id: ContractId
+
+    @required
+    type: String
+
+    format: String
+    tts_directory_uuid: String
+    
+    // These fields may change, so keeping as Document for flexibility
+    parties: Document
+    financials: Document
+    ownership: Document
+    obligations: Document
+    duration: Document
+    risks: Document
+
+    // These are stable structures
+    @required
+    eqmode: EQModeData
+
+    @required
+    sections: SpecialContractSectionsList
+}
+
+@http(method: "POST", uri: "/getTTSURLs")
+operation GetTTSURLs {
+    input: GetTTSURLsInput
+    output: GetTTSURLsOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetTTSURLsInput {
+    @required
     contractId: ContractId
+}
 
+structure GetTTSURLsOutput {
     @required
-    name: String
+    contractId: ContractId
+    
+    @required
+    tts_presigned_urls: TTSPresignedUrlMap
+}
 
-    @required
-    type: ContractType
-
-    @required
-    eqmode: Document
-
-    @required
-    sections: Document
-
-    @required
-    isOwner: Boolean
-
-    @required
-    ownerId: UserId
-
-    @required
-    sharedWith: UserIdList
+// Map of audio source IDs to presigned URLs
+map TTSPresignedUrlMap {
+    key: String   // AudioSrcId
+    value: String // Presigned S3 URL
 }
 
 list QASectionsList {
@@ -629,6 +665,99 @@ structure FixedTermValue {
     condition: String
 }
 
+
+// Special Contract Structures (only the stable ones)
+
+// EQMode data structure - matches the eqmode field in seniSpecialData
+map EQModeData {
+    key: String      // Section key (e.g., "moneyYouReceive", "whatYouOwn")
+    value: EQModeCard
+}
+
+// Individual EQMode card
+structure EQModeCard {
+    @required
+    id: String
+    
+    @required
+    title: String
+    
+    @required
+    type: String
+    
+    eqTitle: String
+    totalAdvance: String
+    audioSrc: String
+    items: EQModeItemList
+}
+
+list EQModeItemList {
+    member: EQModeItem
+}
+
+structure EQModeItem {
+    title: String
+    value: String
+}
+
+// Sections structure - matches the sections field in seniSpecialData
+list SpecialContractSectionsList {
+    member: SpecialContractSection
+}
+
+structure SpecialContractSection {
+    @required
+    id: String
+    
+    @required
+    name: String
+    
+    @required
+    title: String
+    
+    @required
+    questions: SpecialContractQuestionList
+}
+
+list SpecialContractQuestionList {
+    member: SpecialContractQuestion
+}
+
+structure SpecialContractQuestion {
+    @required
+    question: String
+    
+    @required
+    perspective: QuestionPerspective
+    
+    @required
+    glossarizedTerm: GlossarizedTerm
+    
+    @required
+    audioSrc: QuestionAudioSrc
+}
+
+// Supporting structures for questions
+structure QuestionPerspective {
+    consultant: String
+    company: String
+}
+
+structure QuestionAudioSrc {
+    consultant: String
+    company: String
+}
+
+structure GlossarizedTerm {
+    @required
+    name: String
+    
+    @required
+    definition: String
+    
+    @required
+    section: String
+}
 
 // Common structures
 document Document

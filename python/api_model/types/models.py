@@ -5,7 +5,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -57,6 +57,11 @@ class DeleteContractResponseContent(BaseModel):
 
 class DeleteContractSignatureRequestContent(BaseModel):
     contractId: str
+
+
+class EQModeItem(BaseModel):
+    title: Optional[str] = None
+    value: Optional[str] = None
 
 
 class FixedTermValue(BaseModel):
@@ -112,6 +117,12 @@ class GetUploadURLRequestContent(BaseModel):
     name: str
 
 
+class GlossarizedTerm(BaseModel):
+    name: str
+    definition: str
+    section: str
+
+
 class InternalServerErrorResponseContent(BaseModel):
     message: str
 
@@ -139,6 +150,16 @@ class QASection(BaseModel):
     qa: List[QA]
 
 
+class QuestionAudioSrc(BaseModel):
+    consultant: Optional[str] = None
+    company: Optional[str] = None
+
+
+class QuestionPerspective(BaseModel):
+    consultant: Optional[str] = None
+    company: Optional[str] = None
+
+
 class ResourceNotFoundErrorResponseContent(BaseModel):
     message: str
 
@@ -164,6 +185,24 @@ class SignatureStatus(Enum):
     signed = 'signed'
     declined = 'declined'
     pending = 'pending'
+
+
+class SpecialContractQuestion(BaseModel):
+    question: str
+    perspective: QuestionPerspective
+    glossarizedTerm: GlossarizedTerm
+    audioSrc: QuestionAudioSrc
+
+
+class SpecialContractSection(BaseModel):
+    id: str
+    name: str
+    title: str
+    questions: List[SpecialContractQuestion]
+
+
+class TTSPresignedUrlMap(RootModel[Optional[Dict[str, str]]]):
+    root: Optional[Dict[str, str]] = None
 
 
 class Term(BaseModel):
@@ -257,6 +296,20 @@ class DeleteContractSignatureResponseContent(BaseModel):
     message: Optional[str] = None
 
 
+class EQModeCard(BaseModel):
+    id: str
+    title: str
+    type: str
+    eqTitle: Optional[str] = None
+    totalAdvance: Optional[str] = None
+    audioSrc: Optional[str] = None
+    items: Optional[List[EQModeItem]] = None
+
+
+class EQModeData(RootModel[Optional[Dict[str, EQModeCard]]]):
+    root: Optional[Dict[str, EQModeCard]] = None
+
+
 class ExposeTypesResponseContent(BaseModel):
     QASectionsList: Optional[List[QASection]] = None
 
@@ -280,6 +333,11 @@ class GetContractSignaturesResponseContent(BaseModel):
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
+
+
+class GetTTSURLsResponseContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    tts_presigned_urls: TTSPresignedUrlMap
 
 
 class GetUploadURLResponseContent(BaseModel):
@@ -313,3 +371,22 @@ class SignContractRequestContent(BaseModel):
 class SignContractResponseContent(BaseModel):
     result: SignContractResult
     message: Optional[str] = None
+
+
+class SpecialContractData(BaseModel):
+    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    type: str
+    format: Optional[str] = None
+    tts_directory_uuid: Optional[str] = None
+    parties: Optional[Any] = None
+    financials: Optional[Any] = None
+    ownership: Optional[Any] = None
+    obligations: Optional[Any] = None
+    duration: Optional[Any] = None
+    risks: Optional[Any] = None
+    eqmode: EQModeData
+    sections: List[SpecialContractSection]
+
+
+class GetSpecialContractResponseContent(BaseModel):
+    contract: SpecialContractData
