@@ -10,6 +10,13 @@ https://smithy.io/2.0/index.html
 
 ## 🚀 Quickstart: Generate OpenAPI + Type Definitions
 
+Modify the model in ./smithy then run 
+
+```bash
+./build-openapi.sh && ./build-types.sh --all
+```
+
+
 ### 📦 Prerequisites
 
 Only **Docker** is required for containerized builds. No need to install Java, Gradle, Python, or Node.js locally.
