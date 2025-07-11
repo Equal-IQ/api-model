@@ -3,8 +3,7 @@ $version: "2"
 namespace equaliq
 
 // User profile operations and structures
-@pattern("^[A-Za-z0-9-]+$")
-string UserId
+string UserId with [UuidLikeMixin]
 
 list UserIdList {
     member: UserId

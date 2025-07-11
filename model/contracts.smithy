@@ -4,8 +4,7 @@ namespace equaliq
 
 // Contract structures
 
-@pattern("^[A-Za-z0-9-]+$")
-string ContractId
+string ContractId with [UuidLikeMixin]
 
 enum ContractStatus {
     PROCESSING = "processing"
