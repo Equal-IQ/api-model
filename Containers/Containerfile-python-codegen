@@ -12,6 +12,7 @@ COPY api.json /app/api.json
 RUN datamodel-codegen --input api.json --input-file-type openapi --output /app/models.py \
     --output-model-type pydantic_v2.BaseModel \
     --target-python-version 3.11 \
-    --field-constraints
+    --field-constraints \
+    --disable-timestamp
 
 CMD ["cat", "/app/models.py"]

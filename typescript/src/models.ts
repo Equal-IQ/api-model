@@ -132,22 +132,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getTTSURLs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetTTSURLs"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/listContracts": {
         parameters: {
             query?: never;
@@ -356,6 +340,22 @@ export interface components {
         };
         /** @enum {string} */
         ContractType: ContractType;
+        ContractVariable: {
+            name: string;
+            type: components["schemas"]["ContractVariableType"];
+            id: string;
+            value?: string;
+            level?: number;
+            /** Format: float */
+            confidence?: number;
+            firstOccurrence?: number;
+            context?: string;
+            variations?: string[];
+            referencedSection?: string;
+            definitionCitation?: string;
+        };
+        /** @enum {string} */
+        ContractVariableType: ContractVariableType;
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -369,24 +369,10 @@ export interface components {
             result?: components["schemas"]["SignContractResult"];
             message?: string;
         };
-        EQModeCard: {
-            id: string;
-            title: string;
-            type: string;
-            eqTitle?: string;
-            totalAdvance?: string;
-            audioSrc?: string;
-            items?: components["schemas"]["EQModeItem"][];
-        };
-        EQModeData: {
-            [key: string]: components["schemas"]["EQModeCard"];
-        };
-        EQModeItem: {
-            title?: string;
-            value?: string;
-        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
+            ContractVariable?: components["schemas"]["ContractVariable"];
+            ContractVariableType?: components["schemas"]["ContractVariableType"];
         };
         FixedTermValue: {
             unit: string;
@@ -439,35 +425,24 @@ export interface components {
             userId: string;
             profile: components["schemas"]["UserProfile"];
         };
-        GetTextToSpeechRequestContent: {
-            text: string;
-        };
-        GetTextToSpeechResponseContent: {
-            audioUrl: string;
-        };
         GetSpecialContractRequestContent: {
             contractId: string;
         };
         GetSpecialContractResponseContent: {
-            contract: components["schemas"]["SpecialContractData"];
-        };
-        GetTTSURLsRequestContent: {
             contractId: string;
-        };
-        GetTTSURLsResponseContent: {
-            contractId: string;
-            tts_presigned_urls: components["schemas"]["TTSPresignedUrlMap"];
+            name: string;
+            type: components["schemas"]["ContractType"];
+            eqmode: unknown;
+            sections: unknown;
+            isOwner: boolean;
+            ownerId: string;
+            sharedWith: string[];
         };
         GetUploadURLRequestContent: {
             name: string;
         };
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
-        };
-        GlossarizedTerm: {
-            name: string;
-            definition: string;
-            section: string;
         };
         InternalServerErrorResponseContent: {
             message: string;
@@ -497,14 +472,6 @@ export interface components {
         QASection: {
             section: string;
             qa: components["schemas"]["QA"][];
-        };
-        QuestionAudioSrc: {
-            consultant?: string;
-            company?: string;
-        };
-        QuestionPerspective: {
-            consultant?: string;
-            company?: string;
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -540,35 +507,6 @@ export interface components {
         SignContractResult: SignContractResult;
         /** @enum {string} */
         SignatureStatus: SignatureStatus;
-        SpecialContractData: {
-            id: string;
-            type: string;
-            format?: string;
-            tts_directory_uuid?: string;
-            parties?: unknown;
-            financials?: unknown;
-            ownership?: unknown;
-            obligations?: unknown;
-            duration?: unknown;
-            risks?: unknown;
-            eqmode: components["schemas"]["EQModeData"];
-            sections: components["schemas"]["SpecialContractSection"][];
-        };
-        SpecialContractQuestion: {
-            question: string;
-            perspective: components["schemas"]["QuestionPerspective"];
-            glossarizedTerm: components["schemas"]["GlossarizedTerm"];
-            audioSrc: components["schemas"]["QuestionAudioSrc"];
-        };
-        SpecialContractSection: {
-            id: string;
-            name: string;
-            title: string;
-            questions: components["schemas"]["SpecialContractQuestion"][];
-        };
-        TTSPresignedUrlMap: {
-            [key: string]: string;
-        };
         Term: {
             name: string;
             definition: string;
@@ -957,48 +895,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetTTSURLs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetTTSURLsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetTTSURLs 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetTTSURLsResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1444,6 +1340,12 @@ export enum ContractType {
     producer = "producer",
     services = "services",
     tbd = "tbd"
+}
+export enum ContractVariableType {
+    eq_term = "eq_term",
+    discovered_term = "discovered_term",
+    external_term = "external_term",
+    internal_citation = "internal_citation"
 }
 export enum SignContractResult {
     SUCCESS = "SUCCESS",
