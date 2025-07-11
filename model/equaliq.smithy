@@ -15,6 +15,7 @@ service EqualIQ {
         ListContracts
         GetSpecialContract
         ListSpecialContracts
+        GetTTSURLs
         GetUploadURL
         UpdateContract
         DeleteContract
@@ -78,10 +79,12 @@ string UuidLikeMixin
 
 // Common structures
 document Document
+
 // Generics
 list StringList {
     member: String
 }
+
 // Error structures
 @error("client")
 structure AuthenticationError {
