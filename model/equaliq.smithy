@@ -912,6 +912,8 @@ operation GetTextToSpeech {
 }
 structure GetTextToSpeechInput {
     @required
+    @length(min: 1, max: 5000)
+    @pattern("^[\\p{L}\\p{N}\\p{P}\\p{Z}]+$")
     text: String
 }
 structure GetTextToSpeechOutput {
