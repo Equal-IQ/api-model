@@ -12,8 +12,8 @@ service EqualIQ {
     operations: [
         GetContract
         ListContracts
-        GetDemoContract
-        ListDemoContracts
+        GetSpecialContract
+        ListSpecialContracts
         GetUploadURL
         UpdateContract
         DeleteContract
@@ -124,6 +124,7 @@ operation GetContract {
     ]
 }
 
+
 structure GetContractInput {
     @required
     contractId: ContractId
@@ -144,6 +145,50 @@ structure GetContractOutput {
 
     @required
     qa_sections: String
+
+    @required
+    isOwner: Boolean
+
+    @required
+    ownerId: UserId
+
+    @required
+    sharedWith: UserIdList
+}
+
+
+@http(method: "POST", uri: "/getSpecialContract")
+operation GetSpecialContract {
+    input: GetSpecialContractInput
+    output: GetSpecialContractOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ProcessingIncompleteError
+        InternalServerError
+    ]
+}
+
+structure GetSpecialContractInput {
+    @required
+    contractId: ContractId
+}
+
+structure GetSpecialContractOutput {
+    @required
+    contractId: ContractId
+
+    @required
+    name: String
+
+    @required
+    type: ContractType
+
+    @required
+    eqmode: Document
+
+    @required
+    sections: Document
 
     @required
     isOwner: Boolean
@@ -201,69 +246,27 @@ structure ListContractsOutput {
     shared: ContractSummaryList
 }
 
-@http(method: "POST", uri: "/getDemoContract")
-operation GetDemoContract {
-    input: GetDemoContractInput
-    output: GetDemoContractOutput
-    errors: [
-        AuthenticationError
-        ResourceNotFoundError
-        InternalServerError
-    ]
-}
-
-structure GetDemoContractInput {
-    @required
-    contractId: ContractId
-}
-
-structure GetDemoContractOutput {
-    @required
-    contractId: ContractId
-
-    @required
-    name: String
-
-    @required
-    type: ContractType
-
-    @required
-    terms: TermsList
-
-    @required
-    qa_sections: String
-
-    @required
-    isOwner: Boolean
-
-    @required
-    ownerId: UserId
-
-    @required
-    sharedWith: UserIdList
-}
-
-@http(method: "POST", uri: "/listDemoContracts")
-operation ListDemoContracts {
-    input: ListDemoContractsInput
-    output: ListDemoContractsOutput
+@http(method: "POST", uri: "/listSpecialContracts")
+operation ListSpecialContracts {
+    input: ListSpecialContractsInput
+    output: ListSpecialContractsOutput
     errors: [
         AuthenticationError
         InternalServerError
     ]
 }
 
-structure ListDemoContractsInput {
+structure ListSpecialContractsInput {
     // Empty input - authentication handled via Bearer token
 }
-
-structure ListDemoContractsOutput {
+structure ListSpecialContractsOutput {
     @required
     owned: ContractSummaryList
 
     @required
     shared: ContractSummaryList
 }
+
 
 list ContractSummaryList {
     member: ContractSummaryItem
