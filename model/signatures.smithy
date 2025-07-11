@@ -13,17 +13,6 @@ enum SignContractResult {
     FAILURE
 }
 
-enum SignatureStatus {
-    SIGNED = "signed"
-    DECLINED = "declined"
-    PENDING = "pending"
-}
-
-enum SignContractResult {
-    SUCCESS 
-    FAILURE
-}
-
 
 @idempotent
 @http(method: "POST", uri: "/sign")
