@@ -14,6 +14,7 @@ type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
 export type AuthenticationErrorResponseContent = ExtractSchema<'AuthenticationErrorResponseContent'>
 export type ContractSignature = ExtractSchema<'ContractSignature'>
 export type ContractSummaryItem = ExtractSchema<'ContractSummaryItem'>
+export type ContractVariable = ExtractSchema<'ContractVariable'>
 export type DeleteContractRequestContent = ExtractSchema<'DeleteContractRequestContent'>
 export type DeleteContractResponseContent = ExtractSchema<'DeleteContractResponseContent'>
 export type DeleteContractSignatureRequestContent = ExtractSchema<'DeleteContractSignatureRequestContent'>

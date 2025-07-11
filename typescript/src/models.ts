@@ -340,6 +340,22 @@ export interface components {
         };
         /** @enum {string} */
         ContractType: ContractType;
+        ContractVariable: {
+            name: string;
+            type: components["schemas"]["ContractVariableType"];
+            id: string;
+            value?: string;
+            level?: number;
+            /** Format: float */
+            confidence?: number;
+            firstOccurrence?: number;
+            context?: string;
+            variations?: string[];
+            referencedSection?: string;
+            definitionCitation?: string;
+        };
+        /** @enum {string} */
+        ContractVariableType: ContractVariableType;
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -355,6 +371,8 @@ export interface components {
         };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
+            ContractVariable?: components["schemas"]["ContractVariable"];
+            ContractVariableType?: components["schemas"]["ContractVariableType"];
         };
         FixedTermValue: {
             unit: string;
@@ -1322,6 +1340,12 @@ export enum ContractType {
     producer = "producer",
     services = "services",
     tbd = "tbd"
+}
+export enum ContractVariableType {
+    eq_term = "eq_term",
+    discovered_term = "discovered_term",
+    external_term = "external_term",
+    internal_citation = "internal_citation"
 }
 export enum SignContractResult {
     SUCCESS = "SUCCESS",
