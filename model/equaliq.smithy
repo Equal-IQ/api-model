@@ -35,7 +35,9 @@ service EqualIQ {
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
 structure ExposedTypes { 
-  QASectionsList: QASectionsList
+  QASectionsList: QASectionsList // This type is not properly included in API response currently
+  ContractVariable: ContractVariable // New feature in development by Ty
+  ContractVariableType: ContractVariableType // New feature in development by Ty
 }
 
 // This API is used simply to expose types
@@ -100,6 +102,13 @@ enum SignatureStatus {
 enum SignContractResult {
     SUCCESS 
     FAILURE
+}
+
+enum ContractVariableType {
+    EQ_TERM = "eq_term"
+    DISCOVERED_TERM = "discovered_term"
+    EXTERNAL_TERM = "external_term"
+    INTERNAL_CITATION = "internal_citation"
 }
 
 // Contract operations
@@ -628,6 +637,41 @@ structure FixedTermValue {
     condition: String
 }
 
+// Contract variable structures
+
+structure ContractVariable {
+    @required
+    name: String
+
+    @required
+    type: ContractVariableType
+
+    @required
+    id: String
+
+    // the definition/explanation for this variable
+    value: String
+
+    // 1-10 difficulty level (external terms only)
+    level: Integer
+
+    confidence: Float
+
+    // character position
+    firstOccurrence: Integer
+
+    // surrounding text
+    context: String
+
+    // alternative forms
+    variations: StringList
+
+    // for internal citations
+    referencedSection: String
+
+    // where the term is defined (e.g., "Section 7(ii)(c)(I)") - for EQ_TERM and DISCOVERED_TERM only
+    definitionCitation: String
+}
 
 // Common structures
 document Document
