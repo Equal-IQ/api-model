@@ -75,8 +75,8 @@ if [[ "$PYTHON" == "true" ]]; then
   echo "Generating Python models..."
   
   # Create a temporary directory for our container context
-  TEMP_DIR=$(mktemp -d)
-  
+  TEMP_DIR=$(mkdir -p "build/python" && cd "build/python" && pwd)
+
   # Copy the OpenAPI file to the temp directory
   cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
   
@@ -117,8 +117,8 @@ if [[ "$TYPESCRIPT" == "true" ]]; then
   echo "Generating TypeScript types..."
   
   # Create a temporary directory for our container context
-  TEMP_DIR=$(mktemp -d)
-  
+  TEMP_DIR=$(mkdir -p "build/typescript" && cd "build/typescript" && pwd)
+
   # Copy the OpenAPI file to the temp directory
   cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
   
