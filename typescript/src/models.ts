@@ -317,6 +317,21 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        CompleteTerm: {
+            name: string;
+            definition: string;
+            unitType: string;
+            explanation: string;
+            notes: string;
+            citation: string;
+            fixedValues: components["schemas"]["FixedValueTermInference"];
+            fixedValueGuideline?: string;
+            originalValue?: string;
+        };
+        ContractMarkupResult: {
+            markedUpContract: string;
+            statistics: components["schemas"]["MarkupStatistics"];
+        };
         ContractSignature: {
             userId?: string;
             status?: components["schemas"]["SignatureStatus"];
@@ -325,6 +340,10 @@ export interface components {
         };
         /** @enum {string} */
         ContractStatus: ContractStatus;
+        ContractSummary: {
+            type: string;
+            parties: string[];
+        };
         ContractSummaryItem: {
             contractId: string;
             name: string;
@@ -369,10 +388,19 @@ export interface components {
             result?: components["schemas"]["SignContractResult"];
             message?: string;
         };
+        EQResult: {
+            terms: components["schemas"]["CompleteTerm"][];
+        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
             ContractVariable?: components["schemas"]["ContractVariable"];
             ContractVariableType?: components["schemas"]["ContractVariableType"];
+            SummaryResult?: components["schemas"]["SummaryResult"];
+            EQResult?: components["schemas"]["EQResult"];
+            IQResult?: components["schemas"]["IQResult"];
+            VariableExtractionResult?: components["schemas"]["VariableExtractionResult"];
+            ContractMarkupResult?: components["schemas"]["ContractMarkupResult"];
+            IQAnswersMarkupResult?: components["schemas"]["IQAnswersMarkupResult"];
         };
         FixedTermValue: {
             unit: string;
@@ -444,6 +472,13 @@ export interface components {
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
+        IQAnswersMarkupResult: {
+            markedUpPerspectiveQA: components["schemas"]["PerspectiveQASet"];
+        };
+        IQResult: {
+            qa: components["schemas"]["QASection"][];
+            perspectiveQA: components["schemas"]["PerspectiveQASet"];
+        };
         InternalServerErrorResponseContent: {
             message: string;
         };
@@ -454,6 +489,17 @@ export interface components {
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
+        };
+        MarkupStatistics: {
+            originalLength: number;
+            markedUpLength: number;
+            totalVariables: number;
+            /** Format: float */
+            processingTimeSeconds: number;
+            chunksProcessed: number;
+        };
+        PerspectiveQASet: {
+            [key: string]: components["schemas"]["QASection"][];
         };
         PingResponseContent: {
             message: string;
@@ -507,6 +553,9 @@ export interface components {
         SignContractResult: SignContractResult;
         /** @enum {string} */
         SignatureStatus: SignatureStatus;
+        SummaryResult: {
+            summary: components["schemas"]["ContractSummary"];
+        };
         Term: {
             name: string;
             definition: string;
@@ -562,6 +611,9 @@ export interface components {
         };
         ValidationErrorResponseContent: {
             message: string;
+        };
+        VariableExtractionResult: {
+            variables: components["schemas"]["ContractVariable"][];
         };
     };
     responses: never;

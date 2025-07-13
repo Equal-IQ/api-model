@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -27,6 +27,11 @@ class ContractStatus(Enum):
     complete = 'complete'
     error = 'error'
     awaiting_upload = 'awaiting_upload'
+
+
+class ContractSummary(BaseModel):
+    type: str
+    parties: List[str]
 
 
 class SharedWithItem(RootModel[str]):
@@ -129,6 +134,14 @@ class InternalServerErrorResponseContent(BaseModel):
     message: str
 
 
+class MarkupStatistics(BaseModel):
+    originalLength: float
+    markedUpLength: float
+    totalVariables: float
+    processingTimeSeconds: float
+    chunksProcessed: float
+
+
 class PingResponseContent(BaseModel):
     message: str
 
@@ -177,6 +190,10 @@ class SignatureStatus(Enum):
     signed = 'signed'
     declined = 'declined'
     pending = 'pending'
+
+
+class SummaryResult(BaseModel):
+    summary: ContractSummary
 
 
 class Term(BaseModel):
@@ -246,6 +263,23 @@ class ValidationErrorResponseContent(BaseModel):
     message: str
 
 
+class CompleteTerm(BaseModel):
+    name: str
+    definition: str
+    unitType: str
+    explanation: str
+    notes: str
+    citation: str
+    fixedValues: FixedValueTermInference
+    fixedValueGuideline: Optional[str] = None
+    originalValue: Optional[str] = None
+
+
+class ContractMarkupResult(BaseModel):
+    markedUpContract: str
+    statistics: MarkupStatistics
+
+
 class ContractSignature(BaseModel):
     userId: Optional[str] = None
     status: Optional[SignatureStatus] = None
@@ -284,14 +318,8 @@ class DeleteContractSignatureResponseContent(BaseModel):
     message: Optional[str] = None
 
 
-class ExposeTypesResponseContent(BaseModel):
-    QASectionsList: Optional[List[QASection]] = None
-    ContractVariable_1: Optional[ContractVariable] = Field(
-        None, alias='ContractVariable'
-    )
-    ContractVariableType_1: Optional[ContractVariableType] = Field(
-        None, alias='ContractVariableType'
-    )
+class EQResult(BaseModel):
+    terms: List[CompleteTerm]
 
 
 class GetContractResponseContent(BaseModel):
@@ -329,6 +357,10 @@ class ListSpecialContractsResponseContent(BaseModel):
     shared: List[ContractSummaryItem]
 
 
+class PerspectiveQASet(RootModel[Optional[Dict[str, List[QASection]]]]):
+    root: Optional[Dict[str, List[QASection]]] = None
+
+
 class ShareContractResponseContent(BaseModel):
     success: bool
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -346,3 +378,38 @@ class SignContractRequestContent(BaseModel):
 class SignContractResponseContent(BaseModel):
     result: SignContractResult
     message: Optional[str] = None
+
+
+class VariableExtractionResult(BaseModel):
+    variables: List[ContractVariable]
+
+
+class IQAnswersMarkupResult(BaseModel):
+    markedUpPerspectiveQA: PerspectiveQASet
+
+
+class IQResult(BaseModel):
+    qa: List[QASection]
+    perspectiveQA: PerspectiveQASet
+
+
+class ExposeTypesResponseContent(BaseModel):
+    QASectionsList: Optional[List[QASection]] = None
+    ContractVariable_1: Optional[ContractVariable] = Field(
+        None, alias='ContractVariable'
+    )
+    ContractVariableType_1: Optional[ContractVariableType] = Field(
+        None, alias='ContractVariableType'
+    )
+    SummaryResult_1: Optional[SummaryResult] = Field(None, alias='SummaryResult')
+    EQResult_1: Optional[EQResult] = Field(None, alias='EQResult')
+    IQResult_1: Optional[IQResult] = Field(None, alias='IQResult')
+    VariableExtractionResult_1: Optional[VariableExtractionResult] = Field(
+        None, alias='VariableExtractionResult'
+    )
+    ContractMarkupResult_1: Optional[ContractMarkupResult] = Field(
+        None, alias='ContractMarkupResult'
+    )
+    IQAnswersMarkupResult_1: Optional[IQAnswersMarkupResult] = Field(
+        None, alias='IQAnswersMarkupResult'
+    )
