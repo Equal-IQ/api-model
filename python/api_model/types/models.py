@@ -278,6 +278,10 @@ class ContractVariable(BaseModel):
     definitionCitation: Optional[str] = None
 
 
+class EqSection(BaseModel):
+    terms: Optional[List[Term]] = None
+
+
 class ExposeTypesResponseContent(BaseModel):
     QASectionsList: Optional[List[QASection]] = None
     ContractVariable_1: Optional[ContractVariable] = Field(
@@ -286,17 +290,6 @@ class ExposeTypesResponseContent(BaseModel):
     ContractVariableType_1: Optional[ContractVariableType] = Field(
         None, alias='ContractVariableType'
     )
-
-
-class GetContractResponseContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: ContractType
-    terms: List[Term]
-    qa_sections: str
-    isOwner: bool
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: List[SharedWithItem]
 
 
 class GetProfileResponseContent(BaseModel):
@@ -311,6 +304,10 @@ class GetTTSURLsResponseContent(BaseModel):
 
 class GetUploadURLResponseContent(BaseModel):
     url_info: PresignedPostData
+
+
+class IqSection(BaseModel):
+    qa_sections: Optional[List[QASection]] = None
 
 
 class ListContractsResponseContent(BaseModel):
@@ -330,3 +327,16 @@ class ShareContractResponseContent(BaseModel):
     added: Optional[List[AddedItem]] = None
     removed: Optional[List[RemovedItem]] = None
     invalidRemoves: Optional[List[InvalidRemove]] = None
+
+
+class GetContractResponseContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    terms: Optional[List[Term]] = None
+    qa_sections: Optional[str] = None
+    eq_section: Optional[EqSection] = None
+    iq_section: Optional[IqSection] = None
+    isOwner: bool
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWith: List[SharedWithItem]

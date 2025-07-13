@@ -29,6 +29,21 @@ enum ContractVariableType {
     INTERNAL_CITATION = "internal_citation"
 }
 
+structure EqSection {
+  @documentation("deprecation path (v0.5)")
+  terms: TermsList
+
+  //v1 version
+  eqModeData: EQModeData
+}
+
+structure IqSection {
+  @documentation("deprecation path (v0.5)")
+  qa_sections: QASectionsList
+
+  // v1 version
+
+}
 
 // Contract operations
 @http(method: "POST", uri: "/getContract")
@@ -58,11 +73,14 @@ structure GetContractOutput {
     @required
     type: ContractType
 
-    @required
+    @documentation("deprecation path (v0)")
     terms: TermsList
 
-    @required
+    @documentation("deprecation path (v0)")
     qa_sections: String
+
+    eq_section: EqSection
+    iq_section: IqSection
 
     @required
     isOwner: Boolean
@@ -452,34 +470,90 @@ structure QA {
 }
 
 // Special Contract Structures (only the stable ones)
+enum EqCardKey {
+  MONEY_RECEIVED = "moneyYouReceive"
+  OWNERSHIP = "whatYouOwn"
+  RESPONSIBILITES = "whatYoureResponsibleFor"
+  DURATION = "howLongThisDealLasts"
+  LEGAL = "risksCostsLegalStuff"
+}
+
+// TODO Gwyn fill out these card structures
+structure EqMoneyCard {
+    majorNumber: String,
+}
+
+structure EqOwnershipCard {
+}
+
+structure EqResponsibilitesCard {
+}
+
+structure EqDurationCard {
+    durationText: String,
+    endDate: String,
+}
+
+structure EqLegalCard {
+}
+
+union EqCardUniqueData {
+  MONEY_RECEIVED: EqMoneyCard
+  OWNERSHIP: EqOwnershipCard
+  RESPONSIBILITES: EqResponsibilitesCard 
+  DURATION: EqDurationCard
+  LEGAL: EqLegalCard
+  EMPTY: EmptyStructure
+}
 
 // EQMode data structure - matches the eqmode field in seniSpecialData
 map EQModeData {
-    key: String      // Section key (e.g., "moneyYouReceive", "whatYouOwn")
+    key: EqCardKey
     value: EQModeCard
+}
+
+enum EqCardType {
+  @documentation("v0")
+  A = "A"
+  
+  @documentation("v1")
+  B = "B"
 }
 
 // Individual EQMode card
 structure EQModeCard {
     @required
-    id: String
+    id: EqCardKey
     
     @required
     title: String
     
     @required
-    type: String
-    
-    eqTitle: String
-    totalAdvance: String
-    audioSrc: String
-    items: EQModeItemList
-}
+    type: EqCardType
 
+    @required
+    cardUniqueData: EqCardUniqueData
+    
+    @documentation("Deprecated, use subTitle Instead")
+    eqTitle: String
+    subTitle: String
+
+    @documentation("Deprecated, this should be in the in a custom subtype")
+    totalAdvance: String
+
+    @documentation("Deprecated, this should be in the in a custom subtype")
+    items: EQModeItemList
+
+    @documentation("Deprecated, use the ttsSrcUrl")
+    audioSrc: String
+
+    ttsSrcUrl: Url
+}
+@documentation("Deprecated")
 list EQModeItemList {
     member: EQModeItem
 }
-
+@documentation("Deprecated")
 structure EQModeItem {
     title: String
     value: String
@@ -544,6 +618,7 @@ structure GlossarizedTerm {
     section: String
 }
 
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
 @http(method: "POST", uri: "/getTTSURLs")
 operation GetTTSURLs {
     input: GetTTSURLsInput
@@ -555,19 +630,22 @@ operation GetTTSURLs {
     ]
 }
 
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
 structure GetTTSURLsInput {
     @required
     contractId: ContractId
 }
 
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
 structure GetTTSURLsOutput {
     @required
     contractId: ContractId
     
     @required
-    tts_presigned_urls: TTSPresignedUrlMap
+    ttsSrcUrl: TTSPresignedUrlMap
 }
 
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
 // Map of audio source IDs to presigned URLs
 map TTSPresignedUrlMap {
     key: String   // AudioSrcId

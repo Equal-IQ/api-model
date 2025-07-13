@@ -308,6 +308,9 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        EqSection: {
+            terms?: components["schemas"]["Term"][];
+        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
             ContractVariable?: components["schemas"]["ContractVariable"];
@@ -338,8 +341,10 @@ export interface components {
             contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
-            terms: components["schemas"]["Term"][];
-            qa_sections: string;
+            terms?: components["schemas"]["Term"][];
+            qa_sections?: string;
+            eq_section?: components["schemas"]["EqSection"];
+            iq_section?: components["schemas"]["IqSection"];
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
@@ -385,6 +390,9 @@ export interface components {
         };
         InternalServerErrorResponseContent: {
             message: string;
+        };
+        IqSection: {
+            qa_sections?: components["schemas"]["QASection"][];
         };
         ListContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
