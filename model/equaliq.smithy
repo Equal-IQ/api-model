@@ -45,6 +45,14 @@ structure ExposedTypes {
   QASectionsList: QASectionsList // This type is not properly included in API response currently
   ContractVariable: ContractVariable // New feature in development by Ty
   ContractVariableType: ContractVariableType // New feature in development by Ty
+  
+  // Contract analysis service result types
+  SummaryResult: SummaryResult
+  EQResult: EQResult
+  IQResult: IQResult
+  VariableExtractionResult: VariableExtractionResult
+  ContractMarkupResult: ContractMarkupResult
+  IQAnswersMarkupResult: IQAnswersMarkupResult
 }
 
 // This API is used simply to expose types

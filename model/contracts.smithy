@@ -454,3 +454,106 @@ structure QA {
     @required
     answer: String
 }
+
+// Contract analysis service result types
+
+structure SummaryResult {
+    @required
+    summary: ContractSummary
+}
+
+structure ContractSummary {
+    @required
+    type: String
+    
+    @required
+    parties: StringList
+}
+
+structure EQResult {
+    @required
+    terms: CompleteTermList
+}
+
+list CompleteTermList {
+    member: CompleteTerm
+}
+
+structure CompleteTerm {
+    @required
+    name: String
+    
+    @required
+    definition: String
+    
+    @required
+    unitType: String
+    
+    @required
+    explanation: String
+    
+    @required
+    notes: String
+    
+    @required
+    citation: String
+    
+    @required
+    fixedValues: FixedValueTermInference
+    
+    fixedValueGuideline: String
+    
+    originalValue: String
+}
+
+structure IQResult {
+    @required
+    qa: QASectionsList
+    
+    @required
+    perspectiveQA: PerspectiveQASet
+}
+
+map PerspectiveQASet {
+    key: String
+    value: QASectionsList
+}
+
+structure VariableExtractionResult {
+    @required
+    variables: ContractVariableList
+}
+
+list ContractVariableList {
+    member: ContractVariable
+}
+
+structure ContractMarkupResult {
+    @required
+    markedUpContract: String
+    
+    @required
+    statistics: MarkupStatistics
+}
+
+structure MarkupStatistics {
+    @required
+    originalLength: Integer
+    
+    @required
+    markedUpLength: Integer
+    
+    @required
+    totalVariables: Integer
+    
+    @required
+    processingTimeSeconds: Float
+    
+    @required
+    chunksProcessed: Integer
+}
+
+structure IQAnswersMarkupResult {
+    @required
+    markedUpPerspectiveQA: PerspectiveQASet
+}
