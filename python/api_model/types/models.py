@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -63,6 +63,53 @@ class DeleteContractRequestContent(BaseModel):
 
 class DeleteContractResponseContent(BaseModel):
     success: bool
+
+
+class EQModeItem(BaseModel):
+    title: Optional[str] = None
+    value: Optional[str] = None
+
+
+class EmptyStructure(BaseModel):
+    pass
+
+
+class EqCardKey(Enum):
+    moneyYouReceive = 'moneyYouReceive'
+    whatYouOwn = 'whatYouOwn'
+    whatYoureResponsibleFor = 'whatYoureResponsibleFor'
+    howLongThisDealLasts = 'howLongThisDealLasts'
+    risksCostsLegalStuff = 'risksCostsLegalStuff'
+
+
+class EqCardType(Enum):
+    A = 'A'
+    B = 'B'
+
+
+class EqCardUniqueData6(BaseModel):
+    EMPTY: EmptyStructure
+
+
+class EqDurationCard(BaseModel):
+    durationText: Optional[str] = None
+    endDate: Optional[str] = None
+
+
+class EqLegalCard(BaseModel):
+    pass
+
+
+class EqMoneyCard(BaseModel):
+    majorNumber: Optional[str] = None
+
+
+class EqOwnershipCard(BaseModel):
+    pass
+
+
+class EqResponsibilitesCard(BaseModel):
+    pass
 
 
 class FixedTermValue(BaseModel):
@@ -278,8 +325,46 @@ class ContractVariable(BaseModel):
     definitionCitation: Optional[str] = None
 
 
-class EqSection(BaseModel):
-    terms: Optional[List[Term]] = None
+class EqCardUniqueData1(BaseModel):
+    MONEY_RECEIVED: EqMoneyCard
+
+
+class EqCardUniqueData2(BaseModel):
+    OWNERSHIP: EqOwnershipCard
+
+
+class EqCardUniqueData3(BaseModel):
+    RESPONSIBILITES: EqResponsibilitesCard
+
+
+class EqCardUniqueData4(BaseModel):
+    DURATION: EqDurationCard
+
+
+class EqCardUniqueData5(BaseModel):
+    LEGAL: EqLegalCard
+
+
+class EqCardUniqueData(
+    RootModel[
+        Union[
+            EqCardUniqueData1,
+            EqCardUniqueData2,
+            EqCardUniqueData3,
+            EqCardUniqueData4,
+            EqCardUniqueData5,
+            EqCardUniqueData6,
+        ]
+    ]
+):
+    root: Union[
+        EqCardUniqueData1,
+        EqCardUniqueData2,
+        EqCardUniqueData3,
+        EqCardUniqueData4,
+        EqCardUniqueData5,
+        EqCardUniqueData6,
+    ]
 
 
 class ExposeTypesResponseContent(BaseModel):
@@ -299,7 +384,7 @@ class GetProfileResponseContent(BaseModel):
 
 class GetTTSURLsResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    tts_presigned_urls: TTSPresignedUrlMap
+    ttsSrcUrl: TTSPresignedUrlMap
 
 
 class GetUploadURLResponseContent(BaseModel):
@@ -307,7 +392,9 @@ class GetUploadURLResponseContent(BaseModel):
 
 
 class IqSection(BaseModel):
-    qa_sections: Optional[List[QASection]] = None
+    qa_sections: Optional[List[QASection]] = Field(
+        None, description='deprecation path (v0.5)'
+    )
 
 
 class ListContractsResponseContent(BaseModel):
@@ -329,12 +416,38 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: Optional[List[InvalidRemove]] = None
 
 
+class EQModeCard(BaseModel):
+    id: EqCardKey
+    title: str
+    type: EqCardType
+    cardUniqueData: EqCardUniqueData
+    eqTitle: Optional[str] = Field(None, description='Deprecated, use subTitle Instead')
+    subTitle: Optional[str] = None
+    totalAdvance: Optional[str] = Field(
+        None, description='Deprecated, this should be in the in a custom subtype'
+    )
+    items: Optional[List[EQModeItem]] = Field(
+        None, description='Deprecated, this should be in the in a custom subtype'
+    )
+    audioSrc: Optional[str] = Field(None, description='Deprecated, use the ttsSrcUrl')
+    ttsSrcUrl: Optional[str] = None
+
+
+class EQModeData(RootModel[Optional[Dict[str, EQModeCard]]]):
+    root: Optional[Dict[str, EQModeCard]] = None
+
+
+class EqSection(BaseModel):
+    terms: Optional[List[Term]] = Field(None, description='deprecation path (v0.5)')
+    eqModeData: Optional[EQModeData] = None
+
+
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: ContractType
-    terms: Optional[List[Term]] = None
-    qa_sections: Optional[str] = None
+    terms: Optional[List[Term]] = Field(None, description='deprecation path (v0)')
+    qa_sections: Optional[str] = Field(None, description='deprecation path (v0)')
     eq_section: Optional[EqSection] = None
     iq_section: Optional[IqSection] = None
     isOwner: bool

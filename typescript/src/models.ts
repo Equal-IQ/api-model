@@ -308,8 +308,62 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        EQModeCard: {
+            id: components["schemas"]["EqCardKey"];
+            title: string;
+            type: components["schemas"]["EqCardType"];
+            cardUniqueData: components["schemas"]["EqCardUniqueData"];
+            /** @description Deprecated, use subTitle Instead */
+            eqTitle?: string;
+            subTitle?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            totalAdvance?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            items?: components["schemas"]["EQModeItem"][];
+            /** @description Deprecated, use the ttsSrcUrl */
+            audioSrc?: string;
+            ttsSrcUrl?: string;
+        };
+        EQModeData: {
+            [key: string]: components["schemas"]["EQModeCard"];
+        };
+        /** @description Deprecated */
+        EQModeItem: {
+            title?: string;
+            value?: string;
+        };
+        EmptyStructure: Record<string, never>;
+        /** @enum {string} */
+        EqCardKey: EqCardKey;
+        /** @enum {string} */
+        EqCardType: EqCardType;
+        EqCardUniqueData: {
+            MONEY_RECEIVED: components["schemas"]["EqMoneyCard"];
+        } | {
+            OWNERSHIP: components["schemas"]["EqOwnershipCard"];
+        } | {
+            RESPONSIBILITES: components["schemas"]["EqResponsibilitesCard"];
+        } | {
+            DURATION: components["schemas"]["EqDurationCard"];
+        } | {
+            LEGAL: components["schemas"]["EqLegalCard"];
+        } | {
+            EMPTY: components["schemas"]["EmptyStructure"];
+        };
+        EqDurationCard: {
+            durationText?: string;
+            endDate?: string;
+        };
+        EqLegalCard: Record<string, never>;
+        EqMoneyCard: {
+            majorNumber?: string;
+        };
+        EqOwnershipCard: Record<string, never>;
+        EqResponsibilitesCard: Record<string, never>;
         EqSection: {
+            /** @description deprecation path (v0.5) */
             terms?: components["schemas"]["Term"][];
+            eqModeData?: components["schemas"]["EQModeData"];
         };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
@@ -341,7 +395,9 @@ export interface components {
             contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
+            /** @description deprecation path (v0) */
             terms?: components["schemas"]["Term"][];
+            /** @description deprecation path (v0) */
             qa_sections?: string;
             eq_section?: components["schemas"]["EqSection"];
             iq_section?: components["schemas"]["IqSection"];
@@ -380,7 +436,7 @@ export interface components {
         };
         GetTTSURLsResponseContent: {
             contractId: string;
-            tts_presigned_urls: components["schemas"]["TTSPresignedUrlMap"];
+            ttsSrcUrl: components["schemas"]["TTSPresignedUrlMap"];
         };
         GetUploadURLRequestContent: {
             name: string;
@@ -392,6 +448,7 @@ export interface components {
             message: string;
         };
         IqSection: {
+            /** @description deprecation path (v0.5) */
             qa_sections?: components["schemas"]["QASection"][];
         };
         ListContractsResponseContent: {
@@ -1150,4 +1207,15 @@ export enum ContractVariableType {
     discovered_term = "discovered_term",
     external_term = "external_term",
     internal_citation = "internal_citation"
+}
+export enum EqCardKey {
+    moneyYouReceive = "moneyYouReceive",
+    whatYouOwn = "whatYouOwn",
+    whatYoureResponsibleFor = "whatYoureResponsibleFor",
+    howLongThisDealLasts = "howLongThisDealLasts",
+    risksCostsLegalStuff = "risksCostsLegalStuff"
+}
+export enum EqCardType {
+    A = "A",
+    B = "B"
 }
