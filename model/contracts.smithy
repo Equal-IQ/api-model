@@ -292,10 +292,6 @@ structure ShareContractInput {
     emailsToRemove: EmailList
 }
 
-list EmailList {
-    member: String
-}
-
 structure ShareContractOutput {
     @required
     success: Boolean
@@ -322,7 +318,7 @@ structure SharedUserDetails {
     userId: UserId
 
     @required
-    email: String
+    email: Email
 
     @required
     sharedTime: Timestamp

@@ -22,12 +22,6 @@ service EqualIQ {
         ShareContract
         GetContractReadURL
 
-        // signatures.smithy
-        SignContract
-        GetContractSignatures
-        UpdateSignatureStatus
-        DeleteContractSignature
-
         // profiles.smithy
         GetProfile
         GetProfilePicture
@@ -68,21 +62,6 @@ structure PingInput {
 structure PingOutput {
     @required
     message: String
-}
-
-// Shared types used across operations - keep these in main file for reference
-
-// Common patterns
-@mixin
-@pattern("^[A-Za-z0-9-]+$")
-string UuidLikeMixin
-
-// Common structures
-document Document
-
-// Generics
-list StringList {
-    member: String
 }
 
 // Error structures
