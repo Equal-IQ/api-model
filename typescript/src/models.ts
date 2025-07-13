@@ -20,22 +20,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/deleteContractSignature": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteContractSignature"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/getContract": {
         parameters: {
             query?: never;
@@ -62,22 +46,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetContractReadURL"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getContractSignatures": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContractSignatures"];
         delete?: never;
         options?: never;
         head?: never;
@@ -126,6 +94,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetSpecialContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/getTTSURLs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetTTSURLs"];
         delete?: never;
         options?: never;
         head?: never;
@@ -212,22 +196,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sign": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SignContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/updateContract": {
         parameters: {
             query?: never;
@@ -254,22 +222,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["UpdateProfile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/updateSignatureStatus": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateSignatureStatus"];
         delete?: never;
         options?: never;
         head?: never;
@@ -317,12 +269,6 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
-        ContractSignature: {
-            userId?: string;
-            status?: components["schemas"]["SignatureStatus"];
-            /** Format: double */
-            timestamp?: number;
-        };
         /** @enum {string} */
         ContractStatus: ContractStatus;
         ContractSummaryItem: {
@@ -362,13 +308,6 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
-        DeleteContractSignatureRequestContent: {
-            contractId: string;
-        };
-        DeleteContractSignatureResponseContent: {
-            result?: components["schemas"]["SignContractResult"];
-            message?: string;
-        };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
             ContractVariable?: components["schemas"]["ContractVariable"];
@@ -405,13 +344,6 @@ export interface components {
             ownerId: string;
             sharedWith: string[];
         };
-        GetContractSignaturesRequestContent: {
-            contractId: string;
-        };
-        GetContractSignaturesResponseContent: {
-            contractId?: string;
-            signatures?: components["schemas"]["ContractSignature"][];
-        };
         GetProfilePictureRequestContent: {
             userId?: string;
         };
@@ -437,6 +369,13 @@ export interface components {
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
+        };
+        GetTTSURLsRequestContent: {
+            contractId: string;
+        };
+        GetTTSURLsResponseContent: {
+            contractId: string;
+            tts_presigned_urls: components["schemas"]["TTSPresignedUrlMap"];
         };
         GetUploadURLRequestContent: {
             name: string;
@@ -495,18 +434,9 @@ export interface components {
             /** Format: double */
             sharedTime: number;
         };
-        SignContractRequestContent: {
-            contractId: string;
-            status: components["schemas"]["SignatureStatus"];
+        TTSPresignedUrlMap: {
+            [key: string]: string;
         };
-        SignContractResponseContent: {
-            result: components["schemas"]["SignContractResult"];
-            message?: string;
-        };
-        /** @enum {string} */
-        SignContractResult: SignContractResult;
-        /** @enum {string} */
-        SignatureStatus: SignatureStatus;
         Term: {
             name: string;
             definition: string;
@@ -534,14 +464,6 @@ export interface components {
             message: string;
             userId: string;
             updatedFields?: string[];
-        };
-        UpdateSignatureStatusRequestContent: {
-            contractId: string;
-            status: components["schemas"]["SignatureStatus"];
-        };
-        UpdateSignatureStatusResponseContent: {
-            result: components["schemas"]["SignContractResult"];
-            message: string;
         };
         UploadProfilePictureRequestContent: {
             image?: string;
@@ -592,48 +514,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeleteContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteContractSignature: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteContractSignatureRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteContractSignature 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteContractSignatureResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -718,48 +598,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetContractReadURLResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetContractSignatures: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractSignaturesRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContractSignatures 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractSignaturesResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -895,6 +733,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetTTSURLs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetTTSURLsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetTTSURLs 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetTTSURLsResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1066,48 +946,6 @@ export interface operations {
             };
         };
     };
-    SignContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SignContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description SignContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SignContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     UpdateContract: {
         parameters: {
             query?: never;
@@ -1179,48 +1017,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateSignatureStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateSignatureStatusRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateSignatureStatus 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateSignatureStatusResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1346,13 +1142,4 @@ export enum ContractVariableType {
     discovered_term = "discovered_term",
     external_term = "external_term",
     internal_citation = "internal_citation"
-}
-export enum SignContractResult {
-    SUCCESS = "SUCCESS",
-    FAILURE = "FAILURE"
-}
-export enum SignatureStatus {
-    signed = "signed",
-    declined = "declined",
-    pending = "pending"
 }

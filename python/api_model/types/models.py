@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, List, Optional
+from typing import Any, Dict, List, Optional
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -37,6 +37,10 @@ class SharedUser(RootModel[str]):
     root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class SharedEmail(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
 class ContractType(Enum):
     recording = 'recording'
     publishing = 'publishing'
@@ -59,10 +63,6 @@ class DeleteContractRequestContent(BaseModel):
 
 class DeleteContractResponseContent(BaseModel):
     success: bool
-
-
-class DeleteContractSignatureRequestContent(BaseModel):
-    contractId: str
 
 
 class FixedTermValue(BaseModel):
@@ -90,10 +90,6 @@ class GetContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
-class GetContractSignaturesRequestContent(BaseModel):
-    contractId: str
-
-
 class GetProfilePictureRequestContent(BaseModel):
     userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
 
@@ -119,6 +115,10 @@ class GetSpecialContractResponseContent(BaseModel):
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: List[SharedWithItem]
+
+
+class GetTTSURLsRequestContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetUploadURLRequestContent(BaseModel):
@@ -156,27 +156,40 @@ class ResourceNotFoundErrorResponseContent(BaseModel):
     message: str
 
 
+class EmailsToAddItem(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
+class EmailsToRemoveItem(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
 class ShareContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    emailsToAdd: Optional[List[str]] = None
-    emailsToRemove: Optional[List[str]] = None
+    emailsToAdd: Optional[List[EmailsToAddItem]] = None
+    emailsToRemove: Optional[List[EmailsToRemoveItem]] = None
+
+
+class AddedItem(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
+class RemovedItem(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
+class InvalidRemove(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
 class SharedUserDetails(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    email: str
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     sharedTime: float
 
 
-class SignContractResult(Enum):
-    SUCCESS = 'SUCCESS'
-    FAILURE = 'FAILURE'
-
-
-class SignatureStatus(Enum):
-    signed = 'signed'
-    declined = 'declined'
-    pending = 'pending'
+class TTSPresignedUrlMap(RootModel[Optional[Dict[str, str]]]):
+    root: Optional[Dict[str, str]] = None
 
 
 class Term(BaseModel):
@@ -212,16 +225,6 @@ class UpdateProfileResponseContent(BaseModel):
     updatedFields: Optional[List[str]] = None
 
 
-class UpdateSignatureStatusRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    status: SignatureStatus
-
-
-class UpdateSignatureStatusResponseContent(BaseModel):
-    result: SignContractResult
-    message: str
-
-
 class UploadProfilePictureRequestContent(BaseModel):
     image: Optional[str] = None
     userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
@@ -237,19 +240,15 @@ class UserProfile(BaseModel):
     firstName: Optional[str] = None
     lastName: Optional[str] = None
     displayName: Optional[str] = None
-    email: Optional[str] = None
+    email: Optional[str] = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
     accountType: Optional[AccountType] = None
     bio: Optional[str] = None
 
 
 class ValidationErrorResponseContent(BaseModel):
     message: str
-
-
-class ContractSignature(BaseModel):
-    userId: Optional[str] = None
-    status: Optional[SignatureStatus] = None
-    timestamp: Optional[float] = None
 
 
 class ContractSummaryItem(BaseModel):
@@ -262,7 +261,7 @@ class ContractSummaryItem(BaseModel):
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: Optional[List[SharedWithItem]] = None
     sharedUsers: Optional[List[SharedUser]] = None
-    sharedEmails: Optional[List[str]] = None
+    sharedEmails: Optional[List[SharedEmail]] = None
 
 
 class ContractVariable(BaseModel):
@@ -277,11 +276,6 @@ class ContractVariable(BaseModel):
     variations: Optional[List[str]] = None
     referencedSection: Optional[str] = None
     definitionCitation: Optional[str] = None
-
-
-class DeleteContractSignatureResponseContent(BaseModel):
-    result: Optional[SignContractResult] = None
-    message: Optional[str] = None
 
 
 class ExposeTypesResponseContent(BaseModel):
@@ -305,14 +299,14 @@ class GetContractResponseContent(BaseModel):
     sharedWith: List[SharedWithItem]
 
 
-class GetContractSignaturesResponseContent(BaseModel):
-    contractId: Optional[str] = None
-    signatures: Optional[List[ContractSignature]] = None
-
-
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
+
+
+class GetTTSURLsResponseContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    tts_presigned_urls: TTSPresignedUrlMap
 
 
 class GetUploadURLResponseContent(BaseModel):
@@ -333,16 +327,6 @@ class ShareContractResponseContent(BaseModel):
     success: bool
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: List[SharedUserDetails]
-    added: Optional[List[str]] = None
-    removed: Optional[List[str]] = None
-    invalidRemoves: Optional[List[str]] = None
-
-
-class SignContractRequestContent(BaseModel):
-    contractId: str
-    status: SignatureStatus
-
-
-class SignContractResponseContent(BaseModel):
-    result: SignContractResult
-    message: Optional[str] = None
+    added: Optional[List[AddedItem]] = None
+    removed: Optional[List[RemovedItem]] = None
+    invalidRemoves: Optional[List[InvalidRemove]] = None
