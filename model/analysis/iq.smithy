@@ -2,6 +2,8 @@ $version: "2"
 
 namespace equaliq.iq
 
+use equaliq#Url
+
 list IQModeSectionList {
   member: IQModeSection
 }
@@ -38,7 +40,7 @@ structure IQModeQuestion {
     @required
     glossarizedTerm: IQModeGlossarizedTerm
 
-    ttsSrcUrl: String
+    ttsSrcUrl: Url
 }
 
 list IQModePerspectiveList {

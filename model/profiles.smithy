@@ -61,7 +61,7 @@ structure GetProfilePictureInput {
 
 structure GetProfilePictureOutput {
     @required
-    profilePictureURL: String
+    profilePictureURL: Url
 }
 
 @http(method: "POST", uri: "/uploadProfilePicture")

@@ -16,10 +16,11 @@ string UuidLikeMixin
 @pattern("^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$")
 string Email
 
-@pattern("^\\d{4}-[01]\\d-[0-3]dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$")
+@pattern("^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$")
 string ISODate
 
-string Url // Putting a regex on this is a nightmare, so leaving it open for now
+@pattern("^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&\/=]*)$")
+string Url // This pattern passes for any URLs we're currently using (S3 Presigned URLs)
 
 // Generics
 list StringList {

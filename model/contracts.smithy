@@ -314,7 +314,7 @@ structure GetUploadURLOutput {
 
 structure PresignedPostData {
     @required
-    url: String
+    url: Url
 
     @required
     fields: Document
@@ -440,7 +440,7 @@ structure GetContractReadURLInput {
 
 structure GetContractReadURLOutput {
     @required
-    url: String
+    url: Url
 }
 
 // Contract Terms structures
@@ -640,5 +640,5 @@ structure GetTTSURLsOutput {
 // Map of audio source IDs to presigned URLs
 map TTSPresignedUrlMap {
     key: String   // AudioSrcId
-    value: String // Presigned S3 URL
+    value: Url // Presigned S3 URL
 }
