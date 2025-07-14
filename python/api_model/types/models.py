@@ -126,12 +126,23 @@ class FixedValueTermInference(BaseModel):
     subterms: list[FixedTermValue] | None
 
 
+class GetContractAnalysisRequestContent(BaseModel):
+    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class GetContractMetadataRequestContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class GetContractReadURLRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetContractReadURLResponseContent(BaseModel):
-    url: str
+    url: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
 
 
 class GetContractRequestContent(BaseModel):
@@ -143,7 +154,10 @@ class GetProfilePictureRequestContent(BaseModel):
 
 
 class GetProfilePictureResponseContent(BaseModel):
-    profilePictureURL: str
+    profilePictureURL: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
 
 
 class GetProfileRequestContent(BaseModel):
@@ -173,6 +187,35 @@ class GetUploadURLRequestContent(BaseModel):
     name: str
 
 
+class IQModeGlossarizedTerm(BaseModel):
+    name: str
+    definition: str
+    section: str
+
+
+class IQModePerspective(BaseModel):
+    party: str
+    perspectiveText: str
+
+
+class IQModeQuestion(BaseModel):
+    question: str
+    perspective: list[IQModePerspective]
+    glossarizedTerm: IQModeGlossarizedTerm
+    ttsSrcUrl: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+
+
+class IQModeSectionKey(Enum):
+    earnings = 'earnings'
+    qualityOfRights = 'qualityOfRights'
+    usageObligations = 'usageObligations'
+    agreementLength = 'agreementLength'
+    liabilitySafeguards = 'liabilitySafeguards'
+
+
 class InternalServerErrorResponseContent(BaseModel):
     message: str
 
@@ -182,7 +225,10 @@ class PingResponseContent(BaseModel):
 
 
 class PresignedPostData(BaseModel):
-    url: str
+    url: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
     fields: Any
 
 
@@ -242,7 +288,10 @@ class SimpleTermDescription(BaseModel):
 
 
 class TTSPresignedUrlMap(RootModel[dict[str, str] | None]):
-    root: dict[str, str] | None
+    root: dict[str, str] | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
 
 
 class Term(BaseModel):
@@ -302,6 +351,22 @@ class ValidationErrorResponseContent(BaseModel):
     message: str
 
 
+class ContractMetadata(BaseModel):
+    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    status: ContractStatus
+    uploadedOn: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWith: list[SharedUserDetails]
+    isOwner: bool | None
+    hasTTS: bool | None
+    isSpecial: bool | None
+
+
 class ContractSummaryItem(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -348,7 +413,7 @@ class EqOwnershipCard(BaseModel):
 
 
 class EqResponsibilitesCard(BaseModel):
-    resposibilites: list[SimpleTermDescription]
+    responsibilites: list[SimpleTermDescription]
 
 
 class ExposeTypesResponseContent(BaseModel):
@@ -357,6 +422,10 @@ class ExposeTypesResponseContent(BaseModel):
     ContractVariableType_1: ContractVariableType | None = Field(
         None, alias='ContractVariableType'
     )
+
+
+class GetContractMetadataResponseContent(BaseModel):
+    contract: ContractMetadata
 
 
 class GetProfileResponseContent(BaseModel):
@@ -371,6 +440,13 @@ class GetTTSURLsResponseContent(BaseModel):
 
 class GetUploadURLResponseContent(BaseModel):
     url_info: PresignedPostData
+
+
+class IQModeSection(BaseModel):
+    id: IQModeSectionKey
+    name: str
+    title: str
+    questions: list[IQModeQuestion]
 
 
 class IqSection(BaseModel):
@@ -398,12 +474,16 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: list[InvalidRemove] | None
 
 
+class ListContractMetadataResponseContent(BaseModel):
+    contracts: list[ContractMetadata]
+
+
 class OWNERSHIP(BaseModel):
     OWNERSHIP: EqOwnershipCard
 
 
-class RESPONSIBILITES(BaseModel):
-    RESPONSIBILITES: EqResponsibilitesCard
+class RESPONSIBILITIES(BaseModel):
+    RESPONSIBILITIES: EqResponsibilitesCard
 
 
 class DURATION(BaseModel):
@@ -411,9 +491,9 @@ class DURATION(BaseModel):
 
 
 class EqCardUniqueData(
-    RootModel[MONEYRECEIVED | OWNERSHIP | RESPONSIBILITES | DURATION | LEGAL | EMPTY]
+    RootModel[MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY]
 ):
-    root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITES | DURATION | LEGAL | EMPTY
+    root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY
 
 
 class EQModeCard(BaseModel):
@@ -430,7 +510,10 @@ class EQModeCard(BaseModel):
         None, description='Deprecated, this should be in the in a custom subtype'
     )
     audioSrc: str | None = Field(None, description='Deprecated, use the ttsSrcUrl')
-    ttsSrcUrl: str | None
+    ttsSrcUrl: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
 
 
 class EQModeData(RootModel[dict[str, EQModeCard] | None]):
@@ -440,6 +523,12 @@ class EQModeData(RootModel[dict[str, EQModeCard] | None]):
 class EqSection(BaseModel):
     terms: list[Term] | None = Field(None, description='deprecation path (v0.5)')
     eqModeData: EQModeData | None
+
+
+class GetContractAnalysisResponseContent(BaseModel):
+    eq: list[EQModeCard]
+    iq: list[IQModeSection]
+    contractViewerText: str
 
 
 class GetContractResponseContent(BaseModel):

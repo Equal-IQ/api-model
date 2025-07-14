@@ -14,6 +14,8 @@ service EqualIQ {
         GetContract
         ListContracts
         GetContractAnalysis
+        GetContractMetadata
+        listContractMetadata
         GetSpecialContract
         ListSpecialContracts
         GetTTSURLs
