@@ -13,6 +13,9 @@ RUN datamodel-codegen --input api.json --input-file-type openapi --output /app/m
     --output-model-type pydantic_v2.BaseModel \
     --target-python-version 3.11 \
     --field-constraints \
-    --disable-timestamp
+    --disable-timestamp \
+    --use-union-operator \
+    --use-schema-description \
+    --use-title-as-name
 
 CMD ["cat", "/app/models.py"]

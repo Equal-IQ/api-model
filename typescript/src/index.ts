@@ -57,6 +57,7 @@ export type ResourceNotFoundErrorResponseContent = ExtractSchema<'ResourceNotFou
 export type ShareContractRequestContent = ExtractSchema<'ShareContractRequestContent'>
 export type ShareContractResponseContent = ExtractSchema<'ShareContractResponseContent'>
 export type SharedUserDetails = ExtractSchema<'SharedUserDetails'>
+export type SimpleTermDescription = ExtractSchema<'SimpleTermDescription'>
 export type TTSPresignedUrlMap = ExtractSchema<'TTSPresignedUrlMap'>
 export type Term = ExtractSchema<'Term'>
 export type UpdateContractRequestContent = ExtractSchema<'UpdateContractRequestContent'>

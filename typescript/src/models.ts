@@ -308,6 +308,8 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        /** @enum {string} */
+        DurationType: DurationType;
         EQModeCard: {
             id: components["schemas"]["EqCardKey"];
             title: string;
@@ -351,15 +353,25 @@ export interface components {
             EMPTY: components["schemas"]["EmptyStructure"];
         };
         EqDurationCard: {
+            durationType: components["schemas"]["DurationType"];
             durationText?: string;
-            endDate?: string;
+            durationDetails?: components["schemas"]["SimpleTermDescription"][];
         };
-        EqLegalCard: Record<string, never>;
+        EqLegalCard: {
+            risks: string;
+            costs: string;
+            legal: string;
+        };
         EqMoneyCard: {
-            majorNumber?: string;
+            majorNumber: string;
+            paidAfterList?: string[];
         };
-        EqOwnershipCard: Record<string, never>;
-        EqResponsibilitesCard: Record<string, never>;
+        EqOwnershipCard: {
+            ownershipTerms: components["schemas"]["SimpleTermDescription"][];
+        };
+        EqResponsibilitesCard: {
+            resposibilites: components["schemas"]["SimpleTermDescription"][];
+        };
         EqSection: {
             /** @description deprecation path (v0.5) */
             terms?: components["schemas"]["Term"][];
@@ -498,6 +510,10 @@ export interface components {
             email: string;
             /** Format: double */
             sharedTime: number;
+        };
+        SimpleTermDescription: {
+            title: string;
+            description: string;
         };
         TTSPresignedUrlMap: {
             [key: string]: string;
@@ -1207,6 +1223,12 @@ export enum ContractVariableType {
     discovered_term = "discovered_term",
     external_term = "external_term",
     internal_citation = "internal_citation"
+}
+export enum DurationType {
+    fixed = "fixed",
+    indefinite = "indefinite",
+    renewable = "renewable",
+    other = "other"
 }
 export enum EqCardKey {
     moneyYouReceive = "moneyYouReceive",

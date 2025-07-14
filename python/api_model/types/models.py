@@ -4,7 +4,7 @@
 from __future__ import annotations
 
 from enum import Enum
-from typing import Any, Dict, List, Optional, Union
+from typing import Any, Dict, List
 
 from pydantic import BaseModel, Field, RootModel
 
@@ -65,9 +65,20 @@ class DeleteContractResponseContent(BaseModel):
     success: bool
 
 
+class DurationType(Enum):
+    fixed = 'fixed'
+    indefinite = 'indefinite'
+    renewable = 'renewable'
+    other = 'other'
+
+
 class EQModeItem(BaseModel):
-    title: Optional[str] = None
-    value: Optional[str] = None
+    """
+    Deprecated
+    """
+
+    title: str | None = None
+    value: str | None = None
 
 
 class EmptyStructure(BaseModel):
@@ -87,42 +98,32 @@ class EqCardType(Enum):
     B = 'B'
 
 
-class EqCardUniqueData6(BaseModel):
+class EMPTY(BaseModel):
     EMPTY: EmptyStructure
 
 
-class EqDurationCard(BaseModel):
-    durationText: Optional[str] = None
-    endDate: Optional[str] = None
-
-
 class EqLegalCard(BaseModel):
-    pass
+    risks: str
+    costs: str
+    legal: str
 
 
 class EqMoneyCard(BaseModel):
-    majorNumber: Optional[str] = None
-
-
-class EqOwnershipCard(BaseModel):
-    pass
-
-
-class EqResponsibilitesCard(BaseModel):
-    pass
+    majorNumber: str
+    paidAfterList: List[str] | None = None
 
 
 class FixedTermValue(BaseModel):
     unit: str
     value: str
-    name: Optional[str] = None
-    numericValue: Optional[float] = None
-    condition: Optional[str] = None
+    name: str | None = None
+    numericValue: float | None = None
+    condition: str | None = None
 
 
 class FixedValueTermInference(BaseModel):
     primary: FixedTermValue
-    subterms: Optional[List[FixedTermValue]] = None
+    subterms: List[FixedTermValue] | None = None
 
 
 class GetContractReadURLRequestContent(BaseModel):
@@ -138,7 +139,7 @@ class GetContractRequestContent(BaseModel):
 
 
 class GetProfilePictureRequestContent(BaseModel):
-    userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class GetProfilePictureResponseContent(BaseModel):
@@ -146,7 +147,7 @@ class GetProfilePictureResponseContent(BaseModel):
 
 
 class GetProfileRequestContent(BaseModel):
-    userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class GetSpecialContractRequestContent(BaseModel):
@@ -213,8 +214,8 @@ class EmailsToRemoveItem(RootModel[str]):
 
 class ShareContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    emailsToAdd: Optional[List[EmailsToAddItem]] = None
-    emailsToRemove: Optional[List[EmailsToRemoveItem]] = None
+    emailsToAdd: List[EmailsToAddItem] | None = None
+    emailsToRemove: List[EmailsToRemoveItem] | None = None
 
 
 class AddedItem(RootModel[str]):
@@ -235,16 +236,21 @@ class SharedUserDetails(BaseModel):
     sharedTime: float
 
 
-class TTSPresignedUrlMap(RootModel[Optional[Dict[str, str]]]):
-    root: Optional[Dict[str, str]] = None
+class SimpleTermDescription(BaseModel):
+    title: str
+    description: str
+
+
+class TTSPresignedUrlMap(RootModel[Dict[str, str] | None]):
+    root: Dict[str, str] | None = None
 
 
 class Term(BaseModel):
     name: str
     definition: str
     unitType: str
-    citation: Optional[str] = None
-    fixedValues: Optional[FixedValueTermInference] = None
+    citation: str | None = None
+    fixedValues: FixedValueTermInference | None = None
 
 
 class UpdateContractRequestContent(BaseModel):
@@ -257,41 +263,39 @@ class UpdateContractResponseContent(BaseModel):
 
 
 class UpdateProfileRequestContent(BaseModel):
-    firstName: Optional[str] = None
-    lastName: Optional[str] = None
-    displayName: Optional[str] = None
-    accountType: Optional[AccountType] = None
-    bio: Optional[str] = None
-    isOver18: Optional[bool] = None
+    firstName: str | None = None
+    lastName: str | None = None
+    displayName: str | None = None
+    accountType: AccountType | None = None
+    bio: str | None = None
+    isOver18: bool | None = None
 
 
 class UpdateProfileResponseContent(BaseModel):
     success: bool
     message: str
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    updatedFields: Optional[List[str]] = None
+    updatedFields: List[str] | None = None
 
 
 class UploadProfilePictureRequestContent(BaseModel):
-    image: Optional[str] = None
-    userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
+    image: str | None = None
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class UploadProfilePictureResponseContent(BaseModel):
-    message: Optional[str] = None
-    picture_id: Optional[str] = None
+    message: str | None = None
+    picture_id: str | None = None
 
 
 class UserProfile(BaseModel):
-    userId: Optional[str] = Field(None, pattern='^[A-Za-z0-9-]+$')
-    firstName: Optional[str] = None
-    lastName: Optional[str] = None
-    displayName: Optional[str] = None
-    email: Optional[str] = Field(
-        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
-    )
-    accountType: Optional[AccountType] = None
-    bio: Optional[str] = None
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    firstName: str | None = None
+    lastName: str | None = None
+    displayName: str | None = None
+    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    accountType: AccountType | None = None
+    bio: str | None = None
 
 
 class ValidationErrorResponseContent(BaseModel):
@@ -306,73 +310,51 @@ class ContractSummaryItem(BaseModel):
     status: ContractStatus
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: Optional[List[SharedWithItem]] = None
-    sharedUsers: Optional[List[SharedUser]] = None
-    sharedEmails: Optional[List[SharedEmail]] = None
+    sharedWith: List[SharedWithItem] | None = None
+    sharedUsers: List[SharedUser] | None = None
+    sharedEmails: List[SharedEmail] | None = None
 
 
 class ContractVariable(BaseModel):
     name: str
     type: ContractVariableType
     id: str
-    value: Optional[str] = None
-    level: Optional[float] = None
-    confidence: Optional[float] = None
-    firstOccurrence: Optional[float] = None
-    context: Optional[str] = None
-    variations: Optional[List[str]] = None
-    referencedSection: Optional[str] = None
-    definitionCitation: Optional[str] = None
+    value: str | None = None
+    level: float | None = None
+    confidence: float | None = None
+    firstOccurrence: float | None = None
+    context: str | None = None
+    variations: List[str] | None = None
+    referencedSection: str | None = None
+    definitionCitation: str | None = None
 
 
-class EqCardUniqueData1(BaseModel):
+class MONEYRECEIVED(BaseModel):
     MONEY_RECEIVED: EqMoneyCard
 
 
-class EqCardUniqueData2(BaseModel):
-    OWNERSHIP: EqOwnershipCard
-
-
-class EqCardUniqueData3(BaseModel):
-    RESPONSIBILITES: EqResponsibilitesCard
-
-
-class EqCardUniqueData4(BaseModel):
-    DURATION: EqDurationCard
-
-
-class EqCardUniqueData5(BaseModel):
+class LEGAL(BaseModel):
     LEGAL: EqLegalCard
 
 
-class EqCardUniqueData(
-    RootModel[
-        Union[
-            EqCardUniqueData1,
-            EqCardUniqueData2,
-            EqCardUniqueData3,
-            EqCardUniqueData4,
-            EqCardUniqueData5,
-            EqCardUniqueData6,
-        ]
-    ]
-):
-    root: Union[
-        EqCardUniqueData1,
-        EqCardUniqueData2,
-        EqCardUniqueData3,
-        EqCardUniqueData4,
-        EqCardUniqueData5,
-        EqCardUniqueData6,
-    ]
+class EqDurationCard(BaseModel):
+    durationType: DurationType
+    durationText: str | None = None
+    durationDetails: List[SimpleTermDescription] | None = None
+
+
+class EqOwnershipCard(BaseModel):
+    ownershipTerms: List[SimpleTermDescription]
+
+
+class EqResponsibilitesCard(BaseModel):
+    resposibilites: List[SimpleTermDescription]
 
 
 class ExposeTypesResponseContent(BaseModel):
-    QASectionsList: Optional[List[QASection]] = None
-    ContractVariable_1: Optional[ContractVariable] = Field(
-        None, alias='ContractVariable'
-    )
-    ContractVariableType_1: Optional[ContractVariableType] = Field(
+    QASectionsList: List[QASection] | None = None
+    ContractVariable_1: ContractVariable | None = Field(None, alias='ContractVariable')
+    ContractVariableType_1: ContractVariableType | None = Field(
         None, alias='ContractVariableType'
     )
 
@@ -392,7 +374,7 @@ class GetUploadURLResponseContent(BaseModel):
 
 
 class IqSection(BaseModel):
-    qa_sections: Optional[List[QASection]] = Field(
+    qa_sections: List[QASection] | None = Field(
         None, description='deprecation path (v0.5)'
     )
 
@@ -411,9 +393,27 @@ class ShareContractResponseContent(BaseModel):
     success: bool
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: List[SharedUserDetails]
-    added: Optional[List[AddedItem]] = None
-    removed: Optional[List[RemovedItem]] = None
-    invalidRemoves: Optional[List[InvalidRemove]] = None
+    added: List[AddedItem] | None = None
+    removed: List[RemovedItem] | None = None
+    invalidRemoves: List[InvalidRemove] | None = None
+
+
+class OWNERSHIP(BaseModel):
+    OWNERSHIP: EqOwnershipCard
+
+
+class RESPONSIBILITES(BaseModel):
+    RESPONSIBILITES: EqResponsibilitesCard
+
+
+class DURATION(BaseModel):
+    DURATION: EqDurationCard
+
+
+class EqCardUniqueData(
+    RootModel[MONEYRECEIVED | OWNERSHIP | RESPONSIBILITES | DURATION | LEGAL | EMPTY]
+):
+    root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITES | DURATION | LEGAL | EMPTY
 
 
 class EQModeCard(BaseModel):
@@ -421,35 +421,35 @@ class EQModeCard(BaseModel):
     title: str
     type: EqCardType
     cardUniqueData: EqCardUniqueData
-    eqTitle: Optional[str] = Field(None, description='Deprecated, use subTitle Instead')
-    subTitle: Optional[str] = None
-    totalAdvance: Optional[str] = Field(
+    eqTitle: str | None = Field(None, description='Deprecated, use subTitle Instead')
+    subTitle: str | None = None
+    totalAdvance: str | None = Field(
         None, description='Deprecated, this should be in the in a custom subtype'
     )
-    items: Optional[List[EQModeItem]] = Field(
+    items: List[EQModeItem] | None = Field(
         None, description='Deprecated, this should be in the in a custom subtype'
     )
-    audioSrc: Optional[str] = Field(None, description='Deprecated, use the ttsSrcUrl')
-    ttsSrcUrl: Optional[str] = None
+    audioSrc: str | None = Field(None, description='Deprecated, use the ttsSrcUrl')
+    ttsSrcUrl: str | None = None
 
 
-class EQModeData(RootModel[Optional[Dict[str, EQModeCard]]]):
-    root: Optional[Dict[str, EQModeCard]] = None
+class EQModeData(RootModel[Dict[str, EQModeCard] | None]):
+    root: Dict[str, EQModeCard] | None = None
 
 
 class EqSection(BaseModel):
-    terms: Optional[List[Term]] = Field(None, description='deprecation path (v0.5)')
-    eqModeData: Optional[EQModeData] = None
+    terms: List[Term] | None = Field(None, description='deprecation path (v0.5)')
+    eqModeData: EQModeData | None = None
 
 
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: ContractType
-    terms: Optional[List[Term]] = Field(None, description='deprecation path (v0)')
-    qa_sections: Optional[str] = Field(None, description='deprecation path (v0)')
-    eq_section: Optional[EqSection] = None
-    iq_section: Optional[IqSection] = None
+    terms: List[Term] | None = Field(None, description='deprecation path (v0)')
+    qa_sections: str | None = Field(None, description='deprecation path (v0)')
+    eq_section: EqSection | None = None
+    iq_section: IqSection | None = None
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: List[SharedWithItem]
