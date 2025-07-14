@@ -2,6 +2,8 @@ $version: "2"
 
 namespace equaliq
 
+use equaliq.eq#EqSection
+
 // Contract structures
 
 string ContractId with [UuidLikeMixin]
@@ -29,13 +31,6 @@ enum ContractVariableType {
     INTERNAL_CITATION = "internal_citation"
 }
 
-structure EqSection {
-  @documentation("deprecation path (v0.5)")
-  terms: TermsList
-
-  //v1 version
-  eqModeData: EQModeData
-}
 
 structure IqSection {
   @documentation("deprecation path (v0.5)")
@@ -469,95 +464,6 @@ structure QA {
     answer: String
 }
 
-// Special Contract Structures (only the stable ones)
-enum EqCardKey {
-  MONEY_RECEIVED = "moneyYouReceive"
-  OWNERSHIP = "whatYouOwn"
-  RESPONSIBILITES = "whatYoureResponsibleFor"
-  DURATION = "howLongThisDealLasts"
-  LEGAL = "risksCostsLegalStuff"
-}
-
-// TODO Gwyn fill out these card structures
-structure EqMoneyCard {
-    majorNumber: String,
-}
-
-structure EqOwnershipCard {
-}
-
-structure EqResponsibilitesCard {
-}
-
-structure EqDurationCard {
-    durationText: String,
-    endDate: String,
-}
-
-structure EqLegalCard {
-}
-
-union EqCardUniqueData {
-  MONEY_RECEIVED: EqMoneyCard
-  OWNERSHIP: EqOwnershipCard
-  RESPONSIBILITES: EqResponsibilitesCard 
-  DURATION: EqDurationCard
-  LEGAL: EqLegalCard
-  EMPTY: EmptyStructure
-}
-
-// EQMode data structure - matches the eqmode field in seniSpecialData
-map EQModeData {
-    key: EqCardKey
-    value: EQModeCard
-}
-
-enum EqCardType {
-  @documentation("v0")
-  A = "A"
-  
-  @documentation("v1")
-  B = "B"
-}
-
-// Individual EQMode card
-structure EQModeCard {
-    @required
-    id: EqCardKey
-    
-    @required
-    title: String
-    
-    @required
-    type: EqCardType
-
-    @required
-    cardUniqueData: EqCardUniqueData
-    
-    @documentation("Deprecated, use subTitle Instead")
-    eqTitle: String
-    subTitle: String
-
-    @documentation("Deprecated, this should be in the in a custom subtype")
-    totalAdvance: String
-
-    @documentation("Deprecated, this should be in the in a custom subtype")
-    items: EQModeItemList
-
-    @documentation("Deprecated, use the ttsSrcUrl")
-    audioSrc: String
-
-    ttsSrcUrl: Url
-}
-@documentation("Deprecated")
-list EQModeItemList {
-    member: EQModeItem
-}
-@documentation("Deprecated")
-structure EQModeItem {
-    title: String
-    value: String
-}
 
 // Sections structure - matches the sections field in seniSpecialData
 list SpecialContractSectionsList {
