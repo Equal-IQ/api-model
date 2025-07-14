@@ -3,7 +3,7 @@
  * Do not make direct changes to the file.
  */
 
-export interface paths {
+export type paths = {
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -260,9 +260,9 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-}
+};
 export type webhooks = Record<string, never>;
-export interface components {
+export type components = {
     schemas: {
         /** @enum {string} */
         AccountType: AccountType;
@@ -572,7 +572,71 @@ export interface components {
     requestBodies: never;
     headers: never;
     pathItems: never;
-}
+};
+export type AccountType = components['schemas']['AccountType'];
+export type AuthenticationErrorResponseContent = components['schemas']['AuthenticationErrorResponseContent'];
+export type ContractStatus = components['schemas']['ContractStatus'];
+export type ContractSummaryItem = components['schemas']['ContractSummaryItem'];
+export type ContractType = components['schemas']['ContractType'];
+export type ContractVariable = components['schemas']['ContractVariable'];
+export type ContractVariableType = components['schemas']['ContractVariableType'];
+export type DeleteContractRequestContent = components['schemas']['DeleteContractRequestContent'];
+export type DeleteContractResponseContent = components['schemas']['DeleteContractResponseContent'];
+export type DurationType = components['schemas']['DurationType'];
+export type EqModeCard = components['schemas']['EQModeCard'];
+export type EqModeData = components['schemas']['EQModeData'];
+export type EqModeItem = components['schemas']['EQModeItem'];
+export type EmptyStructure = components['schemas']['EmptyStructure'];
+export type EqCardKey = components['schemas']['EqCardKey'];
+export type EqCardType = components['schemas']['EqCardType'];
+export type EqCardUniqueData = components['schemas']['EqCardUniqueData'];
+export type EqDurationCard = components['schemas']['EqDurationCard'];
+export type EqLegalCard = components['schemas']['EqLegalCard'];
+export type EqMoneyCard = components['schemas']['EqMoneyCard'];
+export type EqOwnershipCard = components['schemas']['EqOwnershipCard'];
+export type EqResponsibilitesCard = components['schemas']['EqResponsibilitesCard'];
+export type EqSection = components['schemas']['EqSection'];
+export type ExposeTypesResponseContent = components['schemas']['ExposeTypesResponseContent'];
+export type FixedTermValue = components['schemas']['FixedTermValue'];
+export type FixedValueTermInference = components['schemas']['FixedValueTermInference'];
+export type GetContractReadUrlRequestContent = components['schemas']['GetContractReadURLRequestContent'];
+export type GetContractReadUrlResponseContent = components['schemas']['GetContractReadURLResponseContent'];
+export type GetContractRequestContent = components['schemas']['GetContractRequestContent'];
+export type GetContractResponseContent = components['schemas']['GetContractResponseContent'];
+export type GetProfilePictureRequestContent = components['schemas']['GetProfilePictureRequestContent'];
+export type GetProfilePictureResponseContent = components['schemas']['GetProfilePictureResponseContent'];
+export type GetProfileRequestContent = components['schemas']['GetProfileRequestContent'];
+export type GetProfileResponseContent = components['schemas']['GetProfileResponseContent'];
+export type GetSpecialContractRequestContent = components['schemas']['GetSpecialContractRequestContent'];
+export type GetSpecialContractResponseContent = components['schemas']['GetSpecialContractResponseContent'];
+export type GetTtsurLsRequestContent = components['schemas']['GetTTSURLsRequestContent'];
+export type GetTtsurLsResponseContent = components['schemas']['GetTTSURLsResponseContent'];
+export type GetUploadUrlRequestContent = components['schemas']['GetUploadURLRequestContent'];
+export type GetUploadUrlResponseContent = components['schemas']['GetUploadURLResponseContent'];
+export type InternalServerErrorResponseContent = components['schemas']['InternalServerErrorResponseContent'];
+export type IqSection = components['schemas']['IqSection'];
+export type ListContractsResponseContent = components['schemas']['ListContractsResponseContent'];
+export type ListSpecialContractsResponseContent = components['schemas']['ListSpecialContractsResponseContent'];
+export type PingResponseContent = components['schemas']['PingResponseContent'];
+export type PresignedPostData = components['schemas']['PresignedPostData'];
+export type ProcessingIncompleteErrorResponseContent = components['schemas']['ProcessingIncompleteErrorResponseContent'];
+export type Qa = components['schemas']['QA'];
+export type QaSection = components['schemas']['QASection'];
+export type ResourceNotFoundErrorResponseContent = components['schemas']['ResourceNotFoundErrorResponseContent'];
+export type ShareContractRequestContent = components['schemas']['ShareContractRequestContent'];
+export type ShareContractResponseContent = components['schemas']['ShareContractResponseContent'];
+export type SharedUserDetails = components['schemas']['SharedUserDetails'];
+export type SimpleTermDescription = components['schemas']['SimpleTermDescription'];
+export type TtsPresignedUrlMap = components['schemas']['TTSPresignedUrlMap'];
+export type Term = components['schemas']['Term'];
+export type UpdateContractRequestContent = components['schemas']['UpdateContractRequestContent'];
+export type UpdateContractResponseContent = components['schemas']['UpdateContractResponseContent'];
+export type UpdateProfileRequestContent = components['schemas']['UpdateProfileRequestContent'];
+export type UpdateProfileResponseContent = components['schemas']['UpdateProfileResponseContent'];
+export type UploadProfilePictureRequestContent = components['schemas']['UploadProfilePictureRequestContent'];
+export type UploadProfilePictureResponseContent = components['schemas']['UploadProfilePictureResponseContent'];
+export type UserProfile = components['schemas']['UserProfile'];
+export type ValidationErrorResponseContent = components['schemas']['ValidationErrorResponseContent'];
 export type $defs = Record<string, never>;
 export interface operations {
     DeleteContract: {
