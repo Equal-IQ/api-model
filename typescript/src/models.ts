@@ -157,7 +157,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["listContractMetadata"];
+        post: operations["ListContractMetadata"];
         delete?: never;
         options?: never;
         head?: never;
@@ -560,6 +560,9 @@ export interface components {
             /** @description deprecation path (v0.5) */
             qa_sections?: components["schemas"]["QASection"][];
         };
+        ListContractMetadataResponseContent: {
+            contracts: components["schemas"]["ContractMetadata"][];
+        };
         ListContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
@@ -662,9 +665,6 @@ export interface components {
         };
         ValidationErrorResponseContent: {
             message: string;
-        };
-        listContractMetadataResponseContent: {
-            contracts: components["schemas"]["ContractMetadata"][];
         };
     };
     responses: never;
@@ -1035,7 +1035,7 @@ export interface operations {
             };
         };
     };
-    listContractMetadata: {
+    ListContractMetadata: {
         parameters: {
             query?: never;
             header?: never;
@@ -1044,13 +1044,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description listContractMetadata 200 response */
+            /** @description ListContractMetadata 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["listContractMetadataResponseContent"];
+                    "application/json": components["schemas"]["ListContractMetadataResponseContent"];
                 };
             };
         };

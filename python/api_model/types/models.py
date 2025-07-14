@@ -455,6 +455,10 @@ class IqSection(BaseModel):
     )
 
 
+class ListContractMetadataResponseContent(BaseModel):
+    contracts: list[ContractMetadata]
+
+
 class ListContractsResponseContent(BaseModel):
     owned: list[ContractSummaryItem]
     shared: list[ContractSummaryItem]
@@ -472,10 +476,6 @@ class ShareContractResponseContent(BaseModel):
     added: list[AddedItem] | None
     removed: list[RemovedItem] | None
     invalidRemoves: list[InvalidRemove] | None
-
-
-class ListContractMetadataResponseContent(BaseModel):
-    contracts: list[ContractMetadata]
 
 
 class OWNERSHIP(BaseModel):

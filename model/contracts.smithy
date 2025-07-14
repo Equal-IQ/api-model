@@ -232,7 +232,7 @@ structure GetContractAnalysisOutput {
 }
 
 @http(method: "POST", uri: "/listContractMetadata")
-operation listContractMetadata {
+operation ListContractMetadata {
     input: ListContractMetadataInput
     output: ListContractMetadataOutput
 }
