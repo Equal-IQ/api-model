@@ -1,4 +1,4 @@
-FROM python:3.9-slim
+FROM python:3.11-slim
 
 WORKDIR /app
 
@@ -16,6 +16,8 @@ RUN datamodel-codegen --input api.json --input-file-type openapi --output /app/m
     --disable-timestamp \
     --use-union-operator \
     --use-schema-description \
-    --use-title-as-name
+    --use-title-as-name \
+    --strip-default-none \
+    --use-standard-collections
 
 CMD ["cat", "/app/models.py"]
