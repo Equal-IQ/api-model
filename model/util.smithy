@@ -16,6 +16,9 @@ string UuidLikeMixin
 @pattern("^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$")
 string Email
 
+@pattern("^\\d{4}-[01]\\d-[0-3]dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$")
+string ISODate
+
 string Url // Putting a regex on this is a nightmare, so leaving it open for now
 
 // Generics

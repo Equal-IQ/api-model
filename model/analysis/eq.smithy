@@ -40,7 +40,7 @@ structure EqOwnershipCard {
 
 structure EqResponsibilitesCard {
   @required
-  resposibilites: SimpleTermDescriptionList
+  responsibilites: SimpleTermDescriptionList
 }
 
 enum DurationType {
@@ -73,7 +73,7 @@ structure EqLegalCard {
 union EqCardUniqueData {
   MONEY_RECEIVED: EqMoneyCard
   OWNERSHIP: EqOwnershipCard
-  RESPONSIBILITES: EqResponsibilitesCard 
+  RESPONSIBILITIES: EqResponsibilitesCard 
   DURATION: EqDurationCard
   LEGAL: EqLegalCard
   EMPTY: EmptyStructure
@@ -91,6 +91,10 @@ enum EqCardType {
   
   @documentation("v1")
   B = "B"
+}
+
+list EQModeCardList {
+  member: EQModeCard
 }
 
 // Individual EQMode card
@@ -136,12 +140,12 @@ structure EQModeItem {
 
 structure SimpleTermDescription {
   @required
-  title: String,
+  title: String
 
   @required
-  description: String,
+  description: String
 }
 
 list SimpleTermDescriptionList {
   member: SimpleTermDescription
-} 
+}
