@@ -4,6 +4,22 @@
  */
 
 export interface paths {
+    "/analyzeContract": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AnalyzeContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -266,6 +282,20 @@ export interface components {
     schemas: {
         /** @enum {string} */
         AccountType: AccountType;
+        /** @enum {string} */
+        AnalysisType: AnalysisType;
+        AnalyzeContractRequestContent: {
+            contractId: string;
+            analysisType: components["schemas"]["AnalysisType"];
+        };
+        AnalyzeContractResponseContent: {
+            summary?: components["schemas"]["SummaryResult"];
+            eqMode?: components["schemas"]["EQResult"];
+            iqMode?: components["schemas"]["IQResult"];
+            variableExtraction?: components["schemas"]["VariableExtractionResult"];
+            contractMarkup?: components["schemas"]["ContractMarkupResult"];
+            iqAnswersMarkup?: components["schemas"]["IQAnswersMarkupResult"];
+        };
         AuthenticationErrorResponseContent: {
             message: string;
         };
@@ -415,12 +445,6 @@ export interface components {
             QASectionsList?: components["schemas"]["QASection"][];
             ContractVariable?: components["schemas"]["ContractVariable"];
             ContractVariableType?: components["schemas"]["ContractVariableType"];
-            SummaryResult?: components["schemas"]["SummaryResult"];
-            EQResult?: components["schemas"]["EQResult"];
-            IQResult?: components["schemas"]["IQResult"];
-            VariableExtractionResult?: components["schemas"]["VariableExtractionResult"];
-            ContractMarkupResult?: components["schemas"]["ContractMarkupResult"];
-            IQAnswersMarkupResult?: components["schemas"]["IQAnswersMarkupResult"];
         };
         FixedTermValue: {
             unit: string;
@@ -679,6 +703,48 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    AnalyzeContract: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AnalyzeContractRequestContent"];
+            };
+        };
+        responses: {
+            /** @description AnalyzeContract 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AnalyzeContractResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     DeleteContract: {
         parameters: {
             query?: never;
@@ -1307,6 +1373,14 @@ export enum AccountType {
     producer = "producer",
     publisher = "publisher",
     executive = "executive"
+}
+export enum AnalysisType {
+    summary = "summary",
+    eq_mode = "eq_mode",
+    iq_mode = "iq_mode",
+    variable_extraction = "variable_extraction",
+    contract_markup = "contract_markup",
+    iq_answers_markup = "iq_answers_markup"
 }
 export enum ContractStatus {
     processing = "processing",

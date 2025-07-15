@@ -11,6 +11,8 @@ export type Schemas = components['schemas'];
 type SchemaNames = keyof components['schemas'];
 type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
 
+export type AnalyzeContractRequestContent = ExtractSchema<'AnalyzeContractRequestContent'>
+export type AnalyzeContractResponseContent = ExtractSchema<'AnalyzeContractResponseContent'>
 export type AuthenticationErrorResponseContent = ExtractSchema<'AuthenticationErrorResponseContent'>
 export type CompleteTerm = ExtractSchema<'CompleteTerm'>
 export type ContractMarkupResult = ExtractSchema<'ContractMarkupResult'>

@@ -712,3 +712,41 @@ map TTSPresignedUrlMap {
     key: String   // AudioSrcId
     value: Url // Presigned S3 URL
 }
+
+// Contract analysis operations
+@http(method: "POST", uri: "/analyzeContract")
+operation AnalyzeContract {
+    input: AnalyzeContractInput
+    output: AnalyzeContractOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure AnalyzeContractInput {
+    @required
+    contractId: ContractId
+    
+    @required
+    analysisType: AnalysisType
+}
+
+enum AnalysisType {
+    SUMMARY = "summary"
+    EQ_MODE = "eq_mode"
+    IQ_MODE = "iq_mode"
+    VARIABLE_EXTRACTION = "variable_extraction"
+    CONTRACT_MARKUP = "contract_markup"
+    IQ_ANSWERS_MARKUP = "iq_answers_markup"
+}
+
+structure AnalyzeContractOutput {
+    summary: SummaryResult
+    eqMode: EQResult
+    iqMode: IQResult
+    variableExtraction: VariableExtractionResult
+    contractMarkup: ContractMarkupResult
+    iqAnswersMarkup: IQAnswersMarkupResult
+}

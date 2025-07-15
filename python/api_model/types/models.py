@@ -18,6 +18,20 @@ class AccountType(Enum):
     executive = 'executive'
 
 
+class AnalysisType(Enum):
+    summary = 'summary'
+    eq_mode = 'eq_mode'
+    iq_mode = 'iq_mode'
+    variable_extraction = 'variable_extraction'
+    contract_markup = 'contract_markup'
+    iq_answers_markup = 'iq_answers_markup'
+
+
+class AnalyzeContractRequestContent(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    analysisType: AnalysisType
+
+
 class AuthenticationErrorResponseContent(BaseModel):
     message: str
 
@@ -441,6 +455,14 @@ class EqResponsibilitesCard(BaseModel):
     responsibilites: list[SimpleTermDescription] | None
 
 
+class ExposeTypesResponseContent(BaseModel):
+    QASectionsList: list[QASection] | None
+    ContractVariable_1: ContractVariable | None = Field(None, alias='ContractVariable')
+    ContractVariableType_1: ContractVariableType | None = Field(
+        None, alias='ContractVariableType'
+    )
+
+
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
@@ -538,6 +560,15 @@ class IQResult(BaseModel):
     perspectiveQA: PerspectiveQASet
 
 
+class AnalyzeContractResponseContent(BaseModel):
+    summary: SummaryResult | None
+    eqMode: EQResult | None
+    iqMode: IQResult | None
+    variableExtraction: VariableExtractionResult | None
+    contractMarkup: ContractMarkupResult | None
+    iqAnswersMarkup: IQAnswersMarkupResult | None
+
+
 class EQModeCard(BaseModel):
     id: EqCardKey
     title: str
@@ -565,26 +596,6 @@ class EQModeData(RootModel[dict[str, EQModeCard] | None]):
 class EqSection(BaseModel):
     terms: list[Term] | None = Field(None, description='deprecation path (v0.5)')
     eqModeData: EQModeData | None
-
-
-class ExposeTypesResponseContent(BaseModel):
-    QASectionsList: list[QASection] | None
-    ContractVariable_1: ContractVariable | None = Field(None, alias='ContractVariable')
-    ContractVariableType_1: ContractVariableType | None = Field(
-        None, alias='ContractVariableType'
-    )
-    SummaryResult_1: SummaryResult | None = Field(None, alias='SummaryResult')
-    EQResult_1: EQResult | None = Field(None, alias='EQResult')
-    IQResult_1: IQResult | None = Field(None, alias='IQResult')
-    VariableExtractionResult_1: VariableExtractionResult | None = Field(
-        None, alias='VariableExtractionResult'
-    )
-    ContractMarkupResult_1: ContractMarkupResult | None = Field(
-        None, alias='ContractMarkupResult'
-    )
-    IQAnswersMarkupResult_1: IQAnswersMarkupResult | None = Field(
-        None, alias='IQAnswersMarkupResult'
-    )
 
 
 class GetContractResponseContent(BaseModel):
