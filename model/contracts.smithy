@@ -230,63 +230,8 @@ structure ContractSummaryItem {
     sharedEmails: EmailList
 }
 
-@http(method: "POST", uri: "/getContractAnalysis")
-operation GetContractAnalysis {
-    input: GetContractAnalysisInput
-    output: GetContractAnalysisOutput
-    errors:[
-        AuthenticationError
-        ValidationError
-        InternalServerError
-    ]
-}
-
-structure GetContractAnalysisInput {
-    @required
-    id: ContractId
-}
-structure GetContractAnalysisOutput {
-    @required
-    eq: EQModeCardList
-    @required
-    iq: IQModeSectionList
-    @required
-    contractViewerText: String
-}
-
-@http(method: "POST", uri: "/listContractMetadata")
-operation ListContractMetadata {
-    input: ListContractMetadataInput
-    output: ListContractMetadataOutput
-}
-
-structure ListContractMetadataInput {
-
-}
-
-structure ListContractMetadataOutput {
-    @required
-    contracts: ContractMetadataList
-}
-
 list ContractMetadataList {
     member: ContractMetadata
-}
-
-@http(method: "POST", uri: "/getContractMetadata")
-operation GetContractMetadata {
-    input: GetContractMetadataInput
-    output: GetContractMetadataOutput
-}
-
-structure GetContractMetadataInput {
-    @required
-    contractId: ContractId
-}
-
-structure GetContractMetadataOutput {
-    @required
-    contract: ContractMetadata
 }
 
 structure ContractMetadata {
