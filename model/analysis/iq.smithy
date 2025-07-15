@@ -3,6 +3,7 @@ $version: "2"
 namespace equaliq.iq
 
 use equaliq#Url
+use equaliq#TaggedText
 
 structure IqModeData {
   iqModeData: IqModePerspectiveMap
@@ -48,10 +49,10 @@ list IqModeQuestionsList {
 
 structure IqModeQuestion {
   @required
-  question: String
+  question: TaggedText
 
   @required
-  answer: String
+  answer: TaggedText
 
   ttsSrcUrl: Url
 }

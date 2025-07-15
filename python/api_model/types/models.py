@@ -50,13 +50,6 @@ class ContractType(Enum):
     tbd = 'tbd'
 
 
-class ContractVariableType(Enum):
-    eq_term = 'eq_term'
-    discovered_term = 'discovered_term'
-    external_term = 'external_term'
-    internal_citation = 'internal_citation'
-
-
 class DeleteContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -70,15 +63,6 @@ class DurationType(Enum):
     indefinite = 'indefinite'
     renewable = 'renewable'
     other = 'other'
-
-
-class EQModeItem(BaseModel):
-    """
-    Deprecated
-    """
-
-    title: str | None
-    value: str | None
 
 
 class EmptyStructure(BaseModel):
@@ -103,14 +87,23 @@ class EMPTY(BaseModel):
 
 
 class EqLegalCard(BaseModel):
-    risks: str | None
-    costs: str | None
-    legal: str | None
+    risks: str
+    costs: str
+    legal: str
+
+
+class EqModeItem(BaseModel):
+    """
+    Deprecated
+    """
+
+    title: str | None
+    value: str | None
 
 
 class EqMoneyCard(BaseModel):
-    majorNumber: str | None
-    paidAfterList: list[str] | None
+    majorNumber: str
+    paidAfterList: list[str]
 
 
 class FixedTermValue(BaseModel):
@@ -179,32 +172,16 @@ class GetUploadURLRequestContent(BaseModel):
     name: str
 
 
-class IQModeGlossarizedTerm(BaseModel):
-    name: str | None
-    definition: str | None
-    section: str | None
+class InternalServerErrorResponseContent(BaseModel):
+    message: str
 
 
-class IQModeQuestion(BaseModel):
-    question: str
-    answer: str
-    glossarizedTerm: IQModeGlossarizedTerm | None
-    ttsSrcUrl: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-
-
-class IQModeSectionKey(Enum):
+class IqModeSectionKey(Enum):
     earnings = 'earnings'
     qualityOfRights = 'qualityOfRights'
     usageObligations = 'usageObligations'
     agreementLength = 'agreementLength'
     liabilitySafeguards = 'liabilitySafeguards'
-
-
-class InternalServerErrorResponseContent(BaseModel):
-    message: str
 
 
 class PingResponseContent(BaseModel):
@@ -221,16 +198,6 @@ class PresignedPostData(BaseModel):
 
 class ProcessingIncompleteErrorResponseContent(BaseModel):
     message: str
-
-
-class QA(BaseModel):
-    question: str
-    answer: str
-
-
-class QASection(BaseModel):
-    section: str
-    qa: list[QA]
 
 
 class ResourceNotFoundErrorResponseContent(BaseModel):
@@ -281,12 +248,8 @@ class TTSPresignedUrlMap(RootModel[dict[str, str] | None]):
     )
 
 
-class Term(BaseModel):
-    name: str
-    definition: str
-    unitType: str
-    citation: str | None
-    fixedValues: FixedValueTermInference | None
+class TaggedText(BaseModel):
+    text: str
 
 
 class UpdateContractRequestContent(BaseModel):
@@ -367,20 +330,6 @@ class ContractSummaryItem(BaseModel):
     sharedEmails: list[SharedEmail] | None
 
 
-class ContractVariable(BaseModel):
-    name: str
-    type: ContractVariableType
-    id: str
-    value: str | None
-    level: float | None
-    confidence: float | None
-    firstOccurrence: float | None
-    context: str | None
-    variations: list[str] | None
-    referencedSection: str | None
-    definitionCitation: str | None
-
-
 class MONEYRECEIVED(BaseModel):
     MONEY_RECEIVED: EqMoneyCard
 
@@ -390,25 +339,33 @@ class LEGAL(BaseModel):
 
 
 class EqDurationCard(BaseModel):
-    durationType: DurationType | None
-    durationText: str | None
+    durationType: DurationType
+    durationText: str
     durationDetails: list[SimpleTermDescription] | None
 
 
 class EqOwnershipCard(BaseModel):
-    ownershipTerms: list[SimpleTermDescription] | None
+    ownershipTerms: list[SimpleTermDescription]
 
 
 class EqResponsibilitesCard(BaseModel):
-    responsibilites: list[SimpleTermDescription] | None
+    responsibilites: list[SimpleTermDescription]
 
 
-class ExposeTypesResponseContent(BaseModel):
-    QASectionsList: list[QASection] | None
-    ContractVariable_1: ContractVariable | None = Field(None, alias='ContractVariable')
-    ContractVariableType_1: ContractVariableType | None = Field(
-        None, alias='ContractVariableType'
-    )
+class ExtractionTerm(BaseModel):
+    name: str
+    definition: str
+    unitType: str
+    explanation: str
+    notes: str
+    citation: str
+    fixedValues: FixedValueTermInference | None
+    fixedValueGuideline: str | None
+    originalValue: str | None
+
+
+class ExtractionTermMap(RootModel[dict[str, ExtractionTerm] | None]):
+    root: dict[str, ExtractionTerm] | None
 
 
 class GetProfileResponseContent(BaseModel):
@@ -425,20 +382,23 @@ class GetUploadURLResponseContent(BaseModel):
     url_info: PresignedPostData
 
 
-class IQModeSection(BaseModel):
-    id: IQModeSectionKey
-    sectionTitle: str
-    questions: list[IQModeQuestion]
-
-
-class IQModeSectionMap(RootModel[dict[str, IQModeSection] | None]):
-    root: dict[str, IQModeSection] | None
-
-
-class IqSection(BaseModel):
-    qa_sections: list[QASection] | None = Field(
-        None, description='deprecation path (v0.5)'
+class IqModeQuestion(BaseModel):
+    question: TaggedText
+    answer: TaggedText
+    ttsSrcUrl: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
+
+
+class IqModeSection(BaseModel):
+    id: IqModeSectionKey
+    sectionTitle: str
+    questions: list[IqModeQuestion]
+
+
+class IqModeSectionMap(RootModel[dict[str, IqModeSection] | None]):
+    root: dict[str, IqModeSection] | None
 
 
 class ListContractsResponseContent(BaseModel):
@@ -465,6 +425,16 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: list[InvalidRemove] | None
 
 
+class ContractExtractionResult(BaseModel):
+    extractedType: ContractType | None
+    parties: list[str] | None
+    terms: ExtractionTermMap | None
+    taggedContractText: str | None = Field(
+        None,
+        description='Starting with a raw string here for prototyping, we will want to use a structured object instead.',
+    )
+
+
 class OWNERSHIP(BaseModel):
     OWNERSHIP: EqOwnershipCard
 
@@ -483,15 +453,7 @@ class EqCardUniqueData(
     root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY
 
 
-class IQModePerspective(BaseModel):
-    sections: IQModeSectionMap
-
-
-class IQModePerspectiveMap(RootModel[dict[str, IQModePerspective] | None]):
-    root: dict[str, IQModePerspective] | None
-
-
-class EQModeCard(BaseModel):
+class EqModeCard(BaseModel):
     id: EqCardKey
     title: str
     type: EqCardType
@@ -501,7 +463,7 @@ class EQModeCard(BaseModel):
     totalAdvance: str | None = Field(
         None, description='Deprecated, this should be in the in a custom subtype'
     )
-    items: list[EQModeItem] | None = Field(
+    items: list[EqModeItem] | None = Field(
         None, description='Deprecated, this should be in the in a custom subtype'
     )
     audioSrc: str | None = Field(None, description='Deprecated, use the ttsSrcUrl')
@@ -511,28 +473,33 @@ class EQModeCard(BaseModel):
     )
 
 
-class EQModeData(RootModel[dict[str, EQModeCard] | None]):
-    root: dict[str, EQModeCard] | None
+class EqModeCardMap(RootModel[dict[str, EqModeCard] | None]):
+    root: dict[str, EqModeCard] | None
 
 
-class EqSection(BaseModel):
-    terms: list[Term] | None = Field(None, description='deprecation path (v0.5)')
-    eqModeData: EQModeData | None
+class EqModeData(BaseModel):
+    cards: EqModeCardMap | None
+
+
+class IqModePerspective(BaseModel):
+    sections: IqModeSectionMap
+
+
+class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
+    root: dict[str, IqModePerspective] | None
+
+
+class IqModeData(BaseModel):
+    iqModeData: IqModePerspectiveMap | None
 
 
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: ContractType
-    terms: list[Term] | None = Field(None, description='deprecation path (v0)')
-    qa_sections: str | None = Field(None, description='deprecation path (v0)')
-    eq_section: EqSection | None
-    iq_section: IqSection | None
-    eqmode: Any | None = Field(None, description='deprecation path (v0.5)')
-    sections: Any | None = Field(None, description='deprecation path (v0.5)')
-    eq: list[EQModeCard] | None = Field(None, description='v1')
-    iq: IQModePerspectiveMap | None
-    contractViewerText: str | None = Field(None, description='v1')
-    isOwner: bool
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedWithItem]
+    eqData: EqModeData | None
+    iqData: IqModeData | None
+    contractExtraction: ContractExtractionResult | None
+    sharedWith: list[SharedWithItem] | None
+    isOwner: bool | None

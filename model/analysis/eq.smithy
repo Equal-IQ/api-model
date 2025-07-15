@@ -2,7 +2,6 @@ $version: "2"
 
 namespace equaliq.eq
 
-use equaliq#TermsList
 use equaliq#StringList
 use equaliq#EmptyStructure
 use equaliq#Url
@@ -10,10 +9,6 @@ use equaliq#Url
 // EQ Mode Structures
 
 structure EqModeData {
-  @documentation("deprecation path (v0.5)")
-  terms: TermsList
-
-  @documentation("v1")
   cards: EqModeCardMap
 }
 

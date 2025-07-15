@@ -4,6 +4,7 @@ namespace equaliq
 
 use equaliq.eq#EqModeData
 use equaliq.iq#IqModeData
+use equaliq.extraction#ContractExtractionResult
 
 // Contract structures
 
@@ -23,18 +24,6 @@ enum ContractType {
   PRODUCER = "producer"
   SERVICES = "services"
   TBD = "tbd"
-}
-
-enum ContractVariableType {
-  EQ_TERM = "eq_term"
-  DISCOVERED_TERM = "discovered_term"
-  EXTERNAL_TERM = "external_term"
-  INTERNAL_CITATION = "internal_citation"
-}
-
-
-structure IqSection {
-  qa_sections: QASectionsList
 }
 
 // Contract operations
@@ -68,20 +57,14 @@ structure GetContractOutput {
   @required
   type: ContractType
 
-  @documentation("deprecation path (v0)")
-  terms: TermsList
-
-  @documentation("deprecation path (v0)")
-  qa_sections: String
-
   @documentation("v1)")
-  eq_section: EqModeData
+  eqData: EqModeData
 
   @documentation("v1")
-  iq_section: IqModeData
+  iqData: IqModeData
 
   @documentation("v1")
-  contractViewerText: String
+  contractExtraction: ContractExtractionResult
 
   sharedWith: UserIdList
 
@@ -388,112 +371,6 @@ structure GetContractReadURLInput {
 structure GetContractReadURLOutput {
   @required
   url: Url
-}
-
-// Contract Terms structures
-list TermsList {
-  member: Term
-}
-
-structure Term {
-  @required
-  name: String
-  
-  @required
-  definition: String
-  
-  @required
-  unitType: String
-  
-  citation: String
-  
-  fixedValues: FixedValueTermInference
-  
-  // Additional properties will be serialized as part of the Document
-}
-
-structure FixedValueTermInference {
-  @required
-  primary: FixedTermValue
-  
-  subterms: FixedTermValueList
-}
-
-list FixedTermValueList {
-  member: FixedTermValue
-}
-
-structure FixedTermValue {
-  @required
-  unit: String
-  
-  @required
-  value: String
-  
-  name: String
-  
-  numericValue: Float
-  
-  condition: String
-}
-
-// Contract variable structures
-structure ContractVariable {
-  @required
-  name: String
-
-  @required
-  type: ContractVariableType
-
-  @required
-  id: String
-
-  // the definition/explanation for this variable
-  value: String
-
-  // 1-10 difficulty level (external terms only)
-  level: Integer
-
-  confidence: Float
-
-  // character position
-  firstOccurrence: Integer
-
-  // surrounding text
-  context: String
-
-  // alternative forms
-  variations: StringList
-
-  // for internal citations
-  referencedSection: String
-
-  // where the term is defined (e.g., "Section 7(ii)(c)(I)") - for EQ_TERM and DISCOVERED_TERM only
-  definitionCitation: String
-}
-
-list QASectionsList {
-  member: QASection
-}
-
-structure QASection {
-  @required
-  section: String
-  
-  @required
-  qa: QAList
-}
-
-list QAList {
-  member: QA
-}
-
-structure QA {
-  @required
-  question: String
-  
-  @required
-  answer: String
 }
 
 
