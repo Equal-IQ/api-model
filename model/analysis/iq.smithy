@@ -18,13 +18,13 @@ enum IQModeSectionKey {
 
 
 structure IQModeSection {
-  @required
+  
   id: IQModeSectionKey
-  @required
+  
   name: String
-  @required
+  
   title: String
-  @required
+  
   questions: IQModeQuestionsList
 }
 
@@ -33,11 +33,11 @@ list IQModeQuestionsList {
 }
 
 structure IQModeQuestion {
-    @required
+    
     question: String
-    @required
+    
     perspective: IQModePerspectiveList
-    @required
+    
     glossarizedTerm: IQModeGlossarizedTerm
 
     ttsSrcUrl: Url
@@ -48,17 +48,17 @@ list IQModePerspectiveList {
 }
 
 structure IQModePerspective {
-    @required
+    
     party: String
-    @required
+    
     perspectiveText: String
 }
 
 structure IQModeGlossarizedTerm {
-    @required
+    
     name: String
-    @required
+    
     definition: String
-    @required
+    
     section: String
 }

@@ -27,19 +27,19 @@ enum EqCardKey {
 }
 
 structure EqMoneyCard {
-  @required
+  
   majorNumber: String,
 
   paidAfterList: StringList,
 }
 
 structure EqOwnershipCard {
-  @required
+  
   ownershipTerms: SimpleTermDescriptionList,
 }
 
 structure EqResponsibilitesCard {
-  @required
+  
   responsibilites: SimpleTermDescriptionList
 }
 
@@ -51,7 +51,7 @@ enum DurationType {
 }
 
 structure EqDurationCard {
-  @required
+  
   durationType: DurationType
 
   durationText: String
@@ -60,13 +60,13 @@ structure EqDurationCard {
 }
 
 structure EqLegalCard {
-  @required
+  
   risks: String
   
-  @required
+  
   costs: String
 
-  @required
+  
   legal: String
 }
 

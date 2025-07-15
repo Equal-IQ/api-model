@@ -247,7 +247,7 @@ structure ContractMetadata {
     uploadedOn: ISODate
     @required
     ownerId: UserId
-    @required
+    
     sharedWith: SharedUserDetailsList
 
     isOwner: Boolean
@@ -567,13 +567,13 @@ structure QuestionAudioSrc {
 }
 
 structure GlossarizedTerm {
-    @required
+    
     name: String
     
-    @required
+    
     definition: String
     
-    @required
+    
     section: String
 }
 
