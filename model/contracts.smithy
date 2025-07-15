@@ -76,8 +76,26 @@ structure GetContractOutput {
     @documentation("deprecation path (v0)")
     qa_sections: String
 
+    @documentation("deprecation path (v0)")
     eq_section: EqSection
+    @documentation("deprecation path (v0)")
     iq_section: IqSection
+
+    @documentation("deprecation path (v0.5)")
+    eqmode: Document
+
+    @documentation("deprecation path (v0.5)")
+    sections: Document
+
+    @documentation("v1")
+    eq: EQModeCardList
+
+    @documentation("v1")
+    iq: IQModeSectionList
+
+    @documentation("v1")
+    contractViewerText: String
+
 
     @required
     isOwner: Boolean
@@ -147,11 +165,16 @@ structure ListContractsInput {
 }
 
 structure ListContractsOutput {
-    @required
+    
+    
+    @documentation("Deprecation path (v0.5)")
     owned: ContractSummaryList
 
-    @required
+    @documentation("Deprecation path (v0.5)")
     shared: ContractSummaryList
+
+    @documentation("v1")
+    contracts: ContractMetadataList
 }
 
 @http(method: "POST", uri: "/listSpecialContracts")
