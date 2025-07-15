@@ -103,13 +103,13 @@ class EMPTY(BaseModel):
 
 
 class EqLegalCard(BaseModel):
-    risks: str
-    costs: str
-    legal: str
+    risks: str | None
+    costs: str | None
+    legal: str | None
 
 
 class EqMoneyCard(BaseModel):
-    majorNumber: str
+    majorNumber: str | None
     paidAfterList: list[str] | None
 
 
@@ -180,20 +180,20 @@ class GetUploadURLRequestContent(BaseModel):
 
 
 class IQModeGlossarizedTerm(BaseModel):
-    name: str
-    definition: str
-    section: str
+    name: str | None
+    definition: str | None
+    section: str | None
 
 
 class IQModePerspective(BaseModel):
-    party: str
-    perspectiveText: str
+    party: str | None
+    perspectiveText: str | None
 
 
 class IQModeQuestion(BaseModel):
-    question: str
-    perspective: list[IQModePerspective]
-    glossarizedTerm: IQModeGlossarizedTerm
+    question: str | None
+    perspective: list[IQModePerspective] | None
+    glossarizedTerm: IQModeGlossarizedTerm | None
     ttsSrcUrl: str | None = Field(
         None,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
@@ -353,7 +353,7 @@ class ContractMetadata(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedUserDetails]
+    sharedWith: list[SharedUserDetails] | None
     isOwner: bool | None
     hasTTS: bool | None
     isSpecial: bool | None
@@ -395,17 +395,17 @@ class LEGAL(BaseModel):
 
 
 class EqDurationCard(BaseModel):
-    durationType: DurationType
+    durationType: DurationType | None
     durationText: str | None
     durationDetails: list[SimpleTermDescription] | None
 
 
 class EqOwnershipCard(BaseModel):
-    ownershipTerms: list[SimpleTermDescription]
+    ownershipTerms: list[SimpleTermDescription] | None
 
 
 class EqResponsibilitesCard(BaseModel):
-    responsibilites: list[SimpleTermDescription]
+    responsibilites: list[SimpleTermDescription] | None
 
 
 class ExposeTypesResponseContent(BaseModel):
@@ -431,10 +431,10 @@ class GetUploadURLResponseContent(BaseModel):
 
 
 class IQModeSection(BaseModel):
-    id: IQModeSectionKey
-    name: str
-    title: str
-    questions: list[IQModeQuestion]
+    id: IQModeSectionKey | None
+    name: str | None
+    title: str | None
+    questions: list[IQModeQuestion] | None
 
 
 class IqSection(BaseModel):

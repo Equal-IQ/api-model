@@ -276,7 +276,7 @@ export interface components {
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
-            sharedWith: components["schemas"]["SharedUserDetails"][];
+            sharedWith?: components["schemas"]["SharedUserDetails"][];
             isOwner?: boolean;
             hasTTS?: boolean;
             isSpecial?: boolean;
@@ -365,24 +365,24 @@ export interface components {
             EMPTY: components["schemas"]["EmptyStructure"];
         };
         EqDurationCard: {
-            durationType: components["schemas"]["DurationType"];
+            durationType?: components["schemas"]["DurationType"];
             durationText?: string;
             durationDetails?: components["schemas"]["SimpleTermDescription"][];
         };
         EqLegalCard: {
-            risks: string;
-            costs: string;
-            legal: string;
+            risks?: string;
+            costs?: string;
+            legal?: string;
         };
         EqMoneyCard: {
-            majorNumber: string;
+            majorNumber?: string;
             paidAfterList?: string[];
         };
         EqOwnershipCard: {
-            ownershipTerms: components["schemas"]["SimpleTermDescription"][];
+            ownershipTerms?: components["schemas"]["SimpleTermDescription"][];
         };
         EqResponsibilitesCard: {
-            responsibilites: components["schemas"]["SimpleTermDescription"][];
+            responsibilites?: components["schemas"]["SimpleTermDescription"][];
         };
         EqSection: {
             /** @description deprecation path (v0.5) */
@@ -479,25 +479,25 @@ export interface components {
             url_info: components["schemas"]["PresignedPostData"];
         };
         IQModeGlossarizedTerm: {
-            name: string;
-            definition: string;
-            section: string;
+            name?: string;
+            definition?: string;
+            section?: string;
         };
         IQModePerspective: {
-            party: string;
-            perspectiveText: string;
+            party?: string;
+            perspectiveText?: string;
         };
         IQModeQuestion: {
-            question: string;
-            perspective: components["schemas"]["IQModePerspective"][];
-            glossarizedTerm: components["schemas"]["IQModeGlossarizedTerm"];
+            question?: string;
+            perspective?: components["schemas"]["IQModePerspective"][];
+            glossarizedTerm?: components["schemas"]["IQModeGlossarizedTerm"];
             ttsSrcUrl?: string;
         };
         IQModeSection: {
-            id: components["schemas"]["IQModeSectionKey"];
-            name: string;
-            title: string;
-            questions: components["schemas"]["IQModeQuestion"][];
+            id?: components["schemas"]["IQModeSectionKey"];
+            name?: string;
+            title?: string;
+            questions?: components["schemas"]["IQModeQuestion"][];
         };
         /** @enum {string} */
         IQModeSectionKey: IQModeSectionKey;
