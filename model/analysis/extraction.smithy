@@ -15,10 +15,12 @@ structure ContractExtractionResult {
 
   parties: StringList
 
+  @documentation("Can we remove this? It's redundant with variables")
   terms: ExtractionTermMap
 
-  @documentation("Starting with a raw string here for prototyping, we will want to use a structured object instead.")  
-  taggedContractText: String
+  variables: ContractVariableMap
+
+  contractText: ContractMarkupResult
 }
 
 map ExtractionTermMap {

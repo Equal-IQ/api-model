@@ -50,6 +50,13 @@ class ContractType(Enum):
     tbd = 'tbd'
 
 
+class ContractVariableType(Enum):
+    eq_term = 'eq_term'
+    discovered_term = 'discovered_term'
+    external_term = 'external_term'
+    internal_citation = 'internal_citation'
+
+
 class DeleteContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -184,6 +191,14 @@ class IqModeSectionKey(Enum):
     liabilitySafeguards = 'liabilitySafeguards'
 
 
+class MarkupStatistics(BaseModel):
+    originalLength: float
+    markedUpLength: float
+    totalVariables: float
+    processingTimeSeconds: float
+    chunksProcessed: float
+
+
 class PingResponseContent(BaseModel):
     message: str
 
@@ -301,6 +316,11 @@ class ValidationErrorResponseContent(BaseModel):
     message: str
 
 
+class ContractMarkupResult(BaseModel):
+    markedUpContract: TaggedText
+    statistics: MarkupStatistics
+
+
 class ContractMetadata(BaseModel):
     id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -328,6 +348,24 @@ class ContractSummaryItem(BaseModel):
     sharedWith: list[SharedWithItem] | None
     sharedUsers: list[SharedUser] | None
     sharedEmails: list[SharedEmail] | None
+
+
+class ContractVariable(BaseModel):
+    name: str
+    type: ContractVariableType
+    id: str
+    value: str | None
+    level: float | None
+    confidence: float | None
+    firstOccurrence: float | None
+    context: str | None
+    variations: list[str] | None
+    referencedSection: str | None
+    definitionCitation: str | None
+
+
+class ContractVariableMap(RootModel[dict[str, ContractVariable] | None]):
+    root: dict[str, ContractVariable] | None
 
 
 class MONEYRECEIVED(BaseModel):
@@ -429,10 +467,8 @@ class ContractExtractionResult(BaseModel):
     extractedType: ContractType | None
     parties: list[str] | None
     terms: ExtractionTermMap | None
-    taggedContractText: str | None = Field(
-        None,
-        description='Starting with a raw string here for prototyping, we will want to use a structured object instead.',
-    )
+    variables: ContractVariableMap | None
+    contractText: ContractMarkupResult | None
 
 
 class OWNERSHIP(BaseModel):

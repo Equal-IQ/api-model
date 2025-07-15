@@ -273,8 +273,12 @@ export interface components {
             extractedType?: components["schemas"]["ContractType"];
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
-            /** @description Starting with a raw string here for prototyping, we will want to use a structured object instead. */
-            taggedContractText?: string;
+            variables?: components["schemas"]["ContractVariableMap"];
+            contractText?: components["schemas"]["ContractMarkupResult"];
+        };
+        ContractMarkupResult: {
+            markedUpContract: components["schemas"]["TaggedText"];
+            statistics: components["schemas"]["MarkupStatistics"];
         };
         ContractMetadata: {
             id: string;
@@ -305,6 +309,25 @@ export interface components {
         };
         /** @enum {string} */
         ContractType: ContractType;
+        ContractVariable: {
+            name: string;
+            type: components["schemas"]["ContractVariableType"];
+            id: string;
+            value?: string;
+            level?: number;
+            /** Format: float */
+            confidence?: number;
+            firstOccurrence?: number;
+            context?: string;
+            variations?: string[];
+            referencedSection?: string;
+            definitionCitation?: string;
+        };
+        ContractVariableMap: {
+            [key: string]: components["schemas"]["ContractVariable"];
+        };
+        /** @enum {string} */
+        ContractVariableType: ContractVariableType;
         DeleteContractRequestContent: {
             contractId: string;
         };
@@ -501,6 +524,14 @@ export interface components {
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
+        };
+        MarkupStatistics: {
+            originalLength: number;
+            markedUpLength: number;
+            totalVariables: number;
+            /** Format: float */
+            processingTimeSeconds: number;
+            chunksProcessed: number;
         };
         PingResponseContent: {
             message: string;
@@ -1234,6 +1265,12 @@ export enum ContractType {
     producer = "producer",
     services = "services",
     tbd = "tbd"
+}
+export enum ContractVariableType {
+    eq_term = "eq_term",
+    discovered_term = "discovered_term",
+    external_term = "external_term",
+    internal_citation = "internal_citation"
 }
 export enum DurationType {
     fixed = "fixed",
