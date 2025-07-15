@@ -36,38 +36,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getContractAnalysis": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContractAnalysis"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getContractMetadata": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContractMetadata"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/getContractReadURL": {
         parameters: {
             query?: never;
@@ -142,22 +110,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetTTSURLs"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/listContractMetadata": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListContractMetadata"];
         delete?: never;
         options?: never;
         head?: never;
@@ -454,20 +406,6 @@ export interface components {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
         };
-        GetContractAnalysisRequestContent: {
-            id: string;
-        };
-        GetContractAnalysisResponseContent: {
-            eq: components["schemas"]["EQModeCard"][];
-            iq: components["schemas"]["IQModeSection"][];
-            contractViewerText: string;
-        };
-        GetContractMetadataRequestContent: {
-            contractId: string;
-        };
-        GetContractMetadataResponseContent: {
-            contract: components["schemas"]["ContractMetadata"];
-        };
         GetContractReadURLRequestContent: {
             contractId: string;
         };
@@ -487,6 +425,16 @@ export interface components {
             qa_sections?: string;
             eq_section?: components["schemas"]["EqSection"];
             iq_section?: components["schemas"]["IqSection"];
+            /** @description deprecation path (v0.5) */
+            eqmode?: unknown;
+            /** @description deprecation path (v0.5) */
+            sections?: unknown;
+            /** @description v1 */
+            eq?: components["schemas"]["EQModeCard"][];
+            /** @description v1 */
+            iq?: components["schemas"]["IQModeSection"][];
+            /** @description v1 */
+            contractViewerText?: string;
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
@@ -560,12 +508,13 @@ export interface components {
             /** @description deprecation path (v0.5) */
             qa_sections?: components["schemas"]["QASection"][];
         };
-        ListContractMetadataResponseContent: {
-            contracts: components["schemas"]["ContractMetadata"][];
-        };
         ListContractsResponseContent: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
+            /** @description Deprecation path (v0.5) */
+            owned?: components["schemas"]["ContractSummaryItem"][];
+            /** @description Deprecation path (v0.5) */
+            shared?: components["schemas"]["ContractSummaryItem"][];
+            /** @description v1 */
+            contracts?: components["schemas"]["ContractMetadata"][];
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
@@ -755,72 +704,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetContractAnalysis: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractAnalysisRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContractAnalysis 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractAnalysisResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetContractMetadata: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractMetadataRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContractMetadata 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractMetadataResponseContent"];
                 };
             };
         };
@@ -1031,26 +914,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListContractMetadata: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ListContractMetadata 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListContractMetadataResponseContent"];
                 };
             };
         };

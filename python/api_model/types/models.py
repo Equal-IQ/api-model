@@ -126,14 +126,6 @@ class FixedValueTermInference(BaseModel):
     subterms: list[FixedTermValue] | None
 
 
-class GetContractAnalysisRequestContent(BaseModel):
-    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class GetContractMetadataRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
 class GetContractReadURLRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -424,10 +416,6 @@ class ExposeTypesResponseContent(BaseModel):
     )
 
 
-class GetContractMetadataResponseContent(BaseModel):
-    contract: ContractMetadata
-
-
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
@@ -455,13 +443,14 @@ class IqSection(BaseModel):
     )
 
 
-class ListContractMetadataResponseContent(BaseModel):
-    contracts: list[ContractMetadata]
-
-
 class ListContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem]
-    shared: list[ContractSummaryItem]
+    owned: list[ContractSummaryItem] | None = Field(
+        None, description='Deprecation path (v0.5)'
+    )
+    shared: list[ContractSummaryItem] | None = Field(
+        None, description='Deprecation path (v0.5)'
+    )
+    contracts: list[ContractMetadata] | None = Field(None, description='v1')
 
 
 class ListSpecialContractsResponseContent(BaseModel):
@@ -525,12 +514,6 @@ class EqSection(BaseModel):
     eqModeData: EQModeData | None
 
 
-class GetContractAnalysisResponseContent(BaseModel):
-    eq: list[EQModeCard]
-    iq: list[IQModeSection]
-    contractViewerText: str
-
-
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -539,6 +522,11 @@ class GetContractResponseContent(BaseModel):
     qa_sections: str | None = Field(None, description='deprecation path (v0)')
     eq_section: EqSection | None
     iq_section: IqSection | None
+    eqmode: Any | None = Field(None, description='deprecation path (v0.5)')
+    sections: Any | None = Field(None, description='deprecation path (v0.5)')
+    eq: list[EQModeCard] | None = Field(None, description='v1')
+    iq: list[IQModeSection] | None = Field(None, description='v1')
+    contractViewerText: str | None = Field(None, description='v1')
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: list[SharedWithItem]

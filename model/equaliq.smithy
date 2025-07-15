@@ -13,9 +13,6 @@ service EqualIQ {
         // contracts.smithy
         GetContract
         ListContracts
-        GetContractAnalysis
-        GetContractMetadata
-        ListContractMetadata
         GetSpecialContract
         ListSpecialContracts
         GetTTSURLs
