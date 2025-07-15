@@ -198,7 +198,7 @@ list ContractMetadataList {
 
 structure ContractMetadata {
   @required
-  id: ContractId
+  contractId: ContractId
   @required
   name: String
   @required
