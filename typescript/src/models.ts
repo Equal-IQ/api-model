@@ -431,8 +431,7 @@ export interface components {
             sections?: unknown;
             /** @description v1 */
             eq?: components["schemas"]["EQModeCard"][];
-            /** @description v1 */
-            iq?: components["schemas"]["IQModeSection"][];
+            iq?: components["schemas"]["IQModePerspectiveMap"];
             /** @description v1 */
             contractViewerText?: string;
             isOwner: boolean;
@@ -484,23 +483,27 @@ export interface components {
             section?: string;
         };
         IQModePerspective: {
-            party?: string;
-            perspectiveText?: string;
+            sections: components["schemas"]["IQModeSectionMap"];
+        };
+        IQModePerspectiveMap: {
+            [key: string]: components["schemas"]["IQModePerspective"];
         };
         IQModeQuestion: {
-            question?: string;
-            perspective?: components["schemas"]["IQModePerspective"][];
+            question: string;
+            answer: string;
             glossarizedTerm?: components["schemas"]["IQModeGlossarizedTerm"];
             ttsSrcUrl?: string;
         };
         IQModeSection: {
-            id?: components["schemas"]["IQModeSectionKey"];
-            name?: string;
-            title?: string;
-            questions?: components["schemas"]["IQModeQuestion"][];
+            id: components["schemas"]["IQModeSectionKey"];
+            sectionTitle: string;
+            questions: components["schemas"]["IQModeQuestion"][];
         };
         /** @enum {string} */
         IQModeSectionKey: IQModeSectionKey;
+        IQModeSectionMap: {
+            [key: string]: components["schemas"]["IQModeSection"];
+        };
         InternalServerErrorResponseContent: {
             message: string;
         };

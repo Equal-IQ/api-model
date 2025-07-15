@@ -185,14 +185,9 @@ class IQModeGlossarizedTerm(BaseModel):
     section: str | None
 
 
-class IQModePerspective(BaseModel):
-    party: str | None
-    perspectiveText: str | None
-
-
 class IQModeQuestion(BaseModel):
-    question: str | None
-    perspective: list[IQModePerspective] | None
+    question: str
+    answer: str
     glossarizedTerm: IQModeGlossarizedTerm | None
     ttsSrcUrl: str | None = Field(
         None,
@@ -431,10 +426,13 @@ class GetUploadURLResponseContent(BaseModel):
 
 
 class IQModeSection(BaseModel):
-    id: IQModeSectionKey | None
-    name: str | None
-    title: str | None
-    questions: list[IQModeQuestion] | None
+    id: IQModeSectionKey
+    sectionTitle: str
+    questions: list[IQModeQuestion]
+
+
+class IQModeSectionMap(RootModel[dict[str, IQModeSection] | None]):
+    root: dict[str, IQModeSection] | None
 
 
 class IqSection(BaseModel):
@@ -485,6 +483,14 @@ class EqCardUniqueData(
     root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY
 
 
+class IQModePerspective(BaseModel):
+    sections: IQModeSectionMap
+
+
+class IQModePerspectiveMap(RootModel[dict[str, IQModePerspective] | None]):
+    root: dict[str, IQModePerspective] | None
+
+
 class EQModeCard(BaseModel):
     id: EqCardKey
     title: str
@@ -525,7 +531,7 @@ class GetContractResponseContent(BaseModel):
     eqmode: Any | None = Field(None, description='deprecation path (v0.5)')
     sections: Any | None = Field(None, description='deprecation path (v0.5)')
     eq: list[EQModeCard] | None = Field(None, description='v1')
-    iq: list[IQModeSection] | None = Field(None, description='v1')
+    iq: IQModePerspectiveMap | None
     contractViewerText: str | None = Field(None, description='v1')
     isOwner: bool
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
