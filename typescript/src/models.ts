@@ -20,22 +20,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/deleteContractSignature": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteContractSignature"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/getContract": {
         parameters: {
             query?: never;
@@ -62,22 +46,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetContractReadURL"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getContractSignatures": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContractSignatures"];
         delete?: never;
         options?: never;
         head?: never;
@@ -126,6 +94,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetSpecialContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/getTTSURLs": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetTTSURLs"];
         delete?: never;
         options?: never;
         head?: never;
@@ -212,22 +196,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/sign": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["SignContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/updateContract": {
         parameters: {
             query?: never;
@@ -254,22 +222,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["UpdateProfile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/updateSignatureStatus": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateSignatureStatus"];
         delete?: never;
         options?: never;
         head?: never;
@@ -317,11 +269,17 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
-        ContractSignature: {
-            userId?: string;
-            status?: components["schemas"]["SignatureStatus"];
-            /** Format: double */
-            timestamp?: number;
+        ContractMetadata: {
+            id: string;
+            name: string;
+            type: components["schemas"]["ContractType"];
+            status: components["schemas"]["ContractStatus"];
+            uploadedOn: string;
+            ownerId: string;
+            sharedWith?: components["schemas"]["SharedUserDetails"][];
+            isOwner?: boolean;
+            hasTTS?: boolean;
+            isSpecial?: boolean;
         };
         /** @enum {string} */
         ContractStatus: ContractStatus;
@@ -362,12 +320,74 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
-        DeleteContractSignatureRequestContent: {
-            contractId: string;
+        /** @enum {string} */
+        DurationType: DurationType;
+        EQModeCard: {
+            id: components["schemas"]["EqCardKey"];
+            title: string;
+            type: components["schemas"]["EqCardType"];
+            cardUniqueData: components["schemas"]["EqCardUniqueData"];
+            /** @description Deprecated, use subTitle Instead */
+            eqTitle?: string;
+            subTitle?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            totalAdvance?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            items?: components["schemas"]["EQModeItem"][];
+            /** @description Deprecated, use the ttsSrcUrl */
+            audioSrc?: string;
+            ttsSrcUrl?: string;
         };
-        DeleteContractSignatureResponseContent: {
-            result?: components["schemas"]["SignContractResult"];
-            message?: string;
+        EQModeData: {
+            [key: string]: components["schemas"]["EQModeCard"];
+        };
+        /** @description Deprecated */
+        EQModeItem: {
+            title?: string;
+            value?: string;
+        };
+        EmptyStructure: Record<string, never>;
+        /** @enum {string} */
+        EqCardKey: EqCardKey;
+        /** @enum {string} */
+        EqCardType: EqCardType;
+        EqCardUniqueData: {
+            MONEY_RECEIVED: components["schemas"]["EqMoneyCard"];
+        } | {
+            OWNERSHIP: components["schemas"]["EqOwnershipCard"];
+        } | {
+            RESPONSIBILITIES: components["schemas"]["EqResponsibilitesCard"];
+        } | {
+            DURATION: components["schemas"]["EqDurationCard"];
+        } | {
+            LEGAL: components["schemas"]["EqLegalCard"];
+        } | {
+            EMPTY: components["schemas"]["EmptyStructure"];
+        };
+        EqDurationCard: {
+            durationType?: components["schemas"]["DurationType"];
+            durationText?: string;
+            durationDetails?: components["schemas"]["SimpleTermDescription"][];
+        };
+        EqLegalCard: {
+            risks?: string;
+            costs?: string;
+            legal?: string;
+        };
+        EqMoneyCard: {
+            majorNumber?: string;
+            paidAfterList?: string[];
+        };
+        EqOwnershipCard: {
+            ownershipTerms?: components["schemas"]["SimpleTermDescription"][];
+        };
+        EqResponsibilitesCard: {
+            responsibilites?: components["schemas"]["SimpleTermDescription"][];
+        };
+        EqSection: {
+            /** @description deprecation path (v0.5) */
+            terms?: components["schemas"]["Term"][];
+            eqModeData?: components["schemas"]["EQModeData"];
         };
         ExposeTypesResponseContent: {
             QASectionsList?: components["schemas"]["QASection"][];
@@ -399,18 +419,24 @@ export interface components {
             contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
-            terms: components["schemas"]["Term"][];
-            qa_sections: string;
+            /** @description deprecation path (v0) */
+            terms?: components["schemas"]["Term"][];
+            /** @description deprecation path (v0) */
+            qa_sections?: string;
+            eq_section?: components["schemas"]["EqSection"];
+            iq_section?: components["schemas"]["IqSection"];
+            /** @description deprecation path (v0.5) */
+            eqmode?: unknown;
+            /** @description deprecation path (v0.5) */
+            sections?: unknown;
+            /** @description v1 */
+            eq?: components["schemas"]["EQModeCard"][];
+            iq?: components["schemas"]["IQModePerspectiveMap"];
+            /** @description v1 */
+            contractViewerText?: string;
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
-        };
-        GetContractSignaturesRequestContent: {
-            contractId: string;
-        };
-        GetContractSignaturesResponseContent: {
-            contractId?: string;
-            signatures?: components["schemas"]["ContractSignature"][];
         };
         GetProfilePictureRequestContent: {
             userId?: string;
@@ -438,18 +464,60 @@ export interface components {
             ownerId: string;
             sharedWith: string[];
         };
+        GetTTSURLsRequestContent: {
+            contractId: string;
+        };
+        GetTTSURLsResponseContent: {
+            contractId: string;
+            ttsSrcUrl: components["schemas"]["TTSPresignedUrlMap"];
+        };
         GetUploadURLRequestContent: {
             name: string;
         };
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
+        IQModeGlossarizedTerm: {
+            name?: string;
+            definition?: string;
+            section?: string;
+        };
+        IQModePerspective: {
+            sections: components["schemas"]["IQModeSectionMap"];
+        };
+        IQModePerspectiveMap: {
+            [key: string]: components["schemas"]["IQModePerspective"];
+        };
+        IQModeQuestion: {
+            question: string;
+            answer: string;
+            glossarizedTerm?: components["schemas"]["IQModeGlossarizedTerm"];
+            ttsSrcUrl?: string;
+        };
+        IQModeSection: {
+            id: components["schemas"]["IQModeSectionKey"];
+            sectionTitle: string;
+            questions: components["schemas"]["IQModeQuestion"][];
+        };
+        /** @enum {string} */
+        IQModeSectionKey: IQModeSectionKey;
+        IQModeSectionMap: {
+            [key: string]: components["schemas"]["IQModeSection"];
+        };
         InternalServerErrorResponseContent: {
             message: string;
         };
+        IqSection: {
+            /** @description deprecation path (v0.5) */
+            qa_sections?: components["schemas"]["QASection"][];
+        };
         ListContractsResponseContent: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
+            /** @description Deprecation path (v0.5) */
+            owned?: components["schemas"]["ContractSummaryItem"][];
+            /** @description Deprecation path (v0.5) */
+            shared?: components["schemas"]["ContractSummaryItem"][];
+            /** @description v1 */
+            contracts?: components["schemas"]["ContractMetadata"][];
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
@@ -495,18 +563,13 @@ export interface components {
             /** Format: double */
             sharedTime: number;
         };
-        SignContractRequestContent: {
-            contractId: string;
-            status: components["schemas"]["SignatureStatus"];
+        SimpleTermDescription: {
+            title: string;
+            description: string;
         };
-        SignContractResponseContent: {
-            result: components["schemas"]["SignContractResult"];
-            message?: string;
+        TTSPresignedUrlMap: {
+            [key: string]: string;
         };
-        /** @enum {string} */
-        SignContractResult: SignContractResult;
-        /** @enum {string} */
-        SignatureStatus: SignatureStatus;
         Term: {
             name: string;
             definition: string;
@@ -534,14 +597,6 @@ export interface components {
             message: string;
             userId: string;
             updatedFields?: string[];
-        };
-        UpdateSignatureStatusRequestContent: {
-            contractId: string;
-            status: components["schemas"]["SignatureStatus"];
-        };
-        UpdateSignatureStatusResponseContent: {
-            result: components["schemas"]["SignContractResult"];
-            message: string;
         };
         UploadProfilePictureRequestContent: {
             image?: string;
@@ -592,48 +647,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["DeleteContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteContractSignature: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteContractSignatureRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteContractSignature 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteContractSignatureResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -718,48 +731,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["GetContractReadURLResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetContractSignatures: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractSignaturesRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContractSignatures 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractSignaturesResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -895,6 +866,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetTTSURLs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetTTSURLsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetTTSURLs 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetTTSURLsResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1066,48 +1079,6 @@ export interface operations {
             };
         };
     };
-    SignContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["SignContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description SignContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["SignContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     UpdateContract: {
         parameters: {
             query?: never;
@@ -1179,48 +1150,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateSignatureStatus: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateSignatureStatusRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateSignatureStatus 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateSignatureStatusResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1347,12 +1276,27 @@ export enum ContractVariableType {
     external_term = "external_term",
     internal_citation = "internal_citation"
 }
-export enum SignContractResult {
-    SUCCESS = "SUCCESS",
-    FAILURE = "FAILURE"
+export enum DurationType {
+    fixed = "fixed",
+    indefinite = "indefinite",
+    renewable = "renewable",
+    other = "other"
 }
-export enum SignatureStatus {
-    signed = "signed",
-    declined = "declined",
-    pending = "pending"
+export enum EqCardKey {
+    moneyYouReceive = "moneyYouReceive",
+    whatYouOwn = "whatYouOwn",
+    whatYoureResponsibleFor = "whatYoureResponsibleFor",
+    howLongThisDealLasts = "howLongThisDealLasts",
+    risksCostsLegalStuff = "risksCostsLegalStuff"
+}
+export enum EqCardType {
+    A = "A",
+    B = "B"
+}
+export enum IQModeSectionKey {
+    earnings = "earnings",
+    qualityOfRights = "qualityOfRights",
+    usageObligations = "usageObligations",
+    agreementLength = "agreementLength",
+    liabilitySafeguards = "liabilitySafeguards"
 }

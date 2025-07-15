@@ -2,6 +2,10 @@ $version: "2"
 
 namespace equaliq
 
+use equaliq.eq#EqSection
+use equaliq.eq#EQModeCardList
+use equaliq.iq#IQModePerspectiveMap
+
 // Contract structures
 
 string ContractId with [UuidLikeMixin]
@@ -29,6 +33,14 @@ enum ContractVariableType {
     INTERNAL_CITATION = "internal_citation"
 }
 
+
+structure IqSection {
+  @documentation("deprecation path (v0.5)")
+  qa_sections: QASectionsList
+
+  // v1 version
+
+}
 
 // Contract operations
 @http(method: "POST", uri: "/getContract")
@@ -58,11 +70,32 @@ structure GetContractOutput {
     @required
     type: ContractType
 
-    @required
+    @documentation("deprecation path (v0)")
     terms: TermsList
 
-    @required
+    @documentation("deprecation path (v0)")
     qa_sections: String
+
+    @documentation("deprecation path (v0)")
+    eq_section: EqSection
+    @documentation("deprecation path (v0)")
+    iq_section: IqSection
+
+    @documentation("deprecation path (v0.5)")
+    eqmode: Document
+
+    @documentation("deprecation path (v0.5)")
+    sections: Document
+
+    @documentation("v1")
+    eq: EQModeCardList
+
+    @documentation("v1")
+    iq: IQModePerspectiveMap
+
+    @documentation("v1")
+    contractViewerText: String
+
 
     @required
     isOwner: Boolean
@@ -132,11 +165,16 @@ structure ListContractsInput {
 }
 
 structure ListContractsOutput {
-    @required
+    
+    
+    @documentation("Deprecation path (v0.5)")
     owned: ContractSummaryList
 
-    @required
+    @documentation("Deprecation path (v0.5)")
     shared: ContractSummaryList
+
+    @documentation("v1")
+    contracts: ContractMetadataList
 }
 
 @http(method: "POST", uri: "/listSpecialContracts")
@@ -192,6 +230,34 @@ structure ContractSummaryItem {
     sharedEmails: EmailList
 }
 
+list ContractMetadataList {
+    member: ContractMetadata
+}
+
+structure ContractMetadata {
+    @required
+    id: ContractId
+    @required
+    name: String
+    @required
+    type: ContractType
+    @required
+    status: ContractStatus
+    @required
+    uploadedOn: ISODate
+    @required
+    ownerId: UserId
+    
+    sharedWith: SharedUserDetailsList
+
+    isOwner: Boolean
+    hasTTS: Boolean
+
+    // Flag for demo / differently-shaped contract data
+    isSpecial: Boolean
+
+}
+
 @idempotent
 @http(method: "POST", uri: "/uploadURL")
 operation GetUploadURL {
@@ -216,7 +282,7 @@ structure GetUploadURLOutput {
 
 structure PresignedPostData {
     @required
-    url: String
+    url: Url
 
     @required
     fields: Document
@@ -292,10 +358,6 @@ structure ShareContractInput {
     emailsToRemove: EmailList
 }
 
-list EmailList {
-    member: String
-}
-
 structure ShareContractOutput {
     @required
     success: Boolean
@@ -322,7 +384,7 @@ structure SharedUserDetails {
     userId: UserId
 
     @required
-    email: String
+    email: Email
 
     @required
     sharedTime: Timestamp
@@ -346,7 +408,7 @@ structure GetContractReadURLInput {
 
 structure GetContractReadURLOutput {
     @required
-    url: String
+    url: Url
 }
 
 // Contract Terms structures
@@ -453,4 +515,98 @@ structure QA {
     
     @required
     answer: String
+}
+
+
+// Sections structure - matches the sections field in seniSpecialData
+list SpecialContractSectionsList {
+    member: SpecialContractSection
+}
+
+structure SpecialContractSection {
+    @required
+    id: String
+    
+    @required
+    name: String
+    
+    @required
+    title: String
+    
+    @required
+    questions: SpecialContractQuestionList
+}
+
+list SpecialContractQuestionList {
+    member: SpecialContractQuestion
+}
+
+structure SpecialContractQuestion {
+    @required
+    question: String
+    
+    @required
+    perspective: QuestionPerspective
+    
+    @required
+    glossarizedTerm: GlossarizedTerm
+    
+    @required
+    audioSrc: QuestionAudioSrc
+}
+
+// Supporting structures for questions
+structure QuestionPerspective {
+    consultant: String
+    company: String
+}
+
+structure QuestionAudioSrc {
+    consultant: String
+    company: String
+}
+
+structure GlossarizedTerm {
+    
+    name: String
+    
+    
+    definition: String
+    
+    
+    section: String
+}
+
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
+@http(method: "POST", uri: "/getTTSURLs")
+operation GetTTSURLs {
+    input: GetTTSURLsInput
+    output: GetTTSURLsOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
+structure GetTTSURLsInput {
+    @required
+    contractId: ContractId
+}
+
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
+structure GetTTSURLsOutput {
+    @required
+    contractId: ContractId
+    
+    @required
+    ttsSrcUrl: TTSPresignedUrlMap
+}
+
+// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
+// Map of audio source IDs to presigned URLs
+map TTSPresignedUrlMap {
+    key: String   // AudioSrcId
+    value: Url // Presigned S3 URL
 }

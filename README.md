@@ -13,7 +13,7 @@ https://smithy.io/2.0/index.html
 Modify the model in ./smithy then run 
 
 ```bash
-./build-openapi.sh && ./build-types.sh --all
+./build.sh
 ```
 
 
