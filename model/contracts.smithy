@@ -4,7 +4,7 @@ namespace equaliq
 
 use equaliq.eq#EqSection
 use equaliq.eq#EQModeCardList
-use equaliq.iq#IQModeSectionList
+use equaliq.iq#IQModePerspectiveMap
 
 // Contract structures
 
@@ -91,7 +91,7 @@ structure GetContractOutput {
     eq: EQModeCardList
 
     @documentation("v1")
-    iq: IQModeSectionList
+    iq: IQModePerspectiveMap
 
     @documentation("v1")
     contractViewerText: String

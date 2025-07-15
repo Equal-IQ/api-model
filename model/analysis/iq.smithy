@@ -4,28 +4,41 @@ namespace equaliq.iq
 
 use equaliq#Url
 
-list IQModeSectionList {
-  member: IQModeSection
-}
-
 enum IQModeSectionKey {
-        EARNINGS = "earnings"
-        QUALITY = "qualityOfRights"
-        USAGE = "usageObligations"
-        AGREEMENT = "agreementLength"
-        LIABILITY = "liabilitySafeguards"
+    EARNINGS = "earnings"
+    QUALITY = "qualityOfRights"
+    USAGE = "usageObligations"
+    AGREEMENT = "agreementLength"
+    LIABILITY = "liabilitySafeguards"
 }
 
+map IQModePerspectiveMap {
+    key: String
+    value: IQModePerspective
+}
+
+structure IQModePerspective {
+    @required
+    sections: IQModeSectionMap
+}
+
+map IQModeSectionMap {
+    key: IQModeSectionKey
+    value: IQModeSection
+}
 
 structure IQModeSection {
-  
-  id: IQModeSectionKey
-  
-  name: String
-  
-  title: String
-  
-  questions: IQModeQuestionsList
+    @required
+    id: IQModeSectionKey
+
+    @required
+    name: String
+
+    @required
+    title: String
+
+    @required
+    questions: IQModeQuestionsList
 }
 
 list IQModeQuestionsList {
@@ -33,32 +46,19 @@ list IQModeQuestionsList {
 }
 
 structure IQModeQuestion {
-    
+    @required
     question: String
-    
-    perspective: IQModePerspectiveList
-    
+
+    @required
+    answer: String
+
     glossarizedTerm: IQModeGlossarizedTerm
 
     ttsSrcUrl: Url
 }
 
-list IQModePerspectiveList {
-    member: IQModePerspective
-}
-
-structure IQModePerspective {
-    
-    party: String
-    
-    perspectiveText: String
-}
-
 structure IQModeGlossarizedTerm {
-    
     name: String
-    
     definition: String
-    
     section: String
 }
