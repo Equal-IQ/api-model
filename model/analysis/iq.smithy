@@ -32,10 +32,7 @@ structure IQModeSection {
     id: IQModeSectionKey
 
     @required
-    name: String
-
-    @required
-    title: String
+    sectionTitle: String
 
     @required
     questions: IQModeQuestionsList
