@@ -82,7 +82,7 @@ structure UploadProfilePictureInput {
 
 structure UploadProfilePictureOutput {
     message: String
-    picture_id: String
+    pictureId: String
 }
 
 structure UserProfile {

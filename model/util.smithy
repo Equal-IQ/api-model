@@ -5,7 +5,7 @@ namespace equaliq
 // Shared types used across operations - keep these in main file for reference
 
 structure EmptyStructure {
-    // Empty structure - avoid using, but useful in data migrations or making union workable
+  // Empty structure - avoid using, but useful in data migrations or making union workable
 }
 
 // Common patterns
@@ -24,9 +24,15 @@ string Url // This pattern passes for any URLs we're currently using (S3 Presign
 
 // Generics
 list StringList {
-    member: String
+  member: String
 }
 
 list EmailList {
-    member: Email
+  member: Email
+}
+
+// We plan to extend this Tagged Text system to a more structured format 
+structure TaggedText {
+  @required
+  text: String
 }

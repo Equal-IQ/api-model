@@ -269,6 +269,17 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        ContractExtractionResult: {
+            extractedType?: components["schemas"]["ContractType"];
+            parties?: string[];
+            terms?: components["schemas"]["ExtractionTermMap"];
+            variables?: components["schemas"]["ContractVariableMap"];
+            contractText?: components["schemas"]["ContractMarkupResult"];
+        };
+        ContractMarkupResult: {
+            markedUpContract: components["schemas"]["TaggedText"];
+            statistics: components["schemas"]["MarkupStatistics"];
+        };
         ContractMetadata: {
             id: string;
             name: string;
@@ -312,6 +323,9 @@ export interface components {
             referencedSection?: string;
             definitionCitation?: string;
         };
+        ContractVariableMap: {
+            [key: string]: components["schemas"]["ContractVariable"];
+        };
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
         DeleteContractRequestContent: {
@@ -322,30 +336,6 @@ export interface components {
         };
         /** @enum {string} */
         DurationType: DurationType;
-        EQModeCard: {
-            id: components["schemas"]["EqCardKey"];
-            title: string;
-            type: components["schemas"]["EqCardType"];
-            cardUniqueData: components["schemas"]["EqCardUniqueData"];
-            /** @description Deprecated, use subTitle Instead */
-            eqTitle?: string;
-            subTitle?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            totalAdvance?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            items?: components["schemas"]["EQModeItem"][];
-            /** @description Deprecated, use the ttsSrcUrl */
-            audioSrc?: string;
-            ttsSrcUrl?: string;
-        };
-        EQModeData: {
-            [key: string]: components["schemas"]["EQModeCard"];
-        };
-        /** @description Deprecated */
-        EQModeItem: {
-            title?: string;
-            value?: string;
-        };
         EmptyStructure: Record<string, never>;
         /** @enum {string} */
         EqCardKey: EqCardKey;
@@ -365,34 +355,65 @@ export interface components {
             EMPTY: components["schemas"]["EmptyStructure"];
         };
         EqDurationCard: {
-            durationType?: components["schemas"]["DurationType"];
-            durationText?: string;
+            durationType: components["schemas"]["DurationType"];
+            durationText: string;
             durationDetails?: components["schemas"]["SimpleTermDescription"][];
         };
         EqLegalCard: {
-            risks?: string;
-            costs?: string;
-            legal?: string;
+            risks: string;
+            costs: string;
+            legal: string;
+        };
+        EqModeCard: {
+            id: components["schemas"]["EqCardKey"];
+            title: string;
+            type: components["schemas"]["EqCardType"];
+            cardUniqueData: components["schemas"]["EqCardUniqueData"];
+            /** @description Deprecated, use subTitle Instead */
+            eqTitle?: string;
+            subTitle?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            totalAdvance?: string;
+            /** @description Deprecated, this should be in the in a custom subtype */
+            items?: components["schemas"]["EqModeItem"][];
+            /** @description Deprecated, use the ttsSrcUrl */
+            audioSrc?: string;
+            ttsSrcUrl?: string;
+        };
+        EqModeCardMap: {
+            [key: string]: components["schemas"]["EqModeCard"];
+        };
+        EqModeData: {
+            cards?: components["schemas"]["EqModeCardMap"];
+        };
+        /** @description Deprecated */
+        EqModeItem: {
+            title?: string;
+            value?: string;
         };
         EqMoneyCard: {
-            majorNumber?: string;
-            paidAfterList?: string[];
+            majorNumber: string;
+            paidAfterList: string[];
         };
         EqOwnershipCard: {
-            ownershipTerms?: components["schemas"]["SimpleTermDescription"][];
+            ownershipTerms: components["schemas"]["SimpleTermDescription"][];
         };
         EqResponsibilitesCard: {
-            responsibilites?: components["schemas"]["SimpleTermDescription"][];
+            responsibilites: components["schemas"]["SimpleTermDescription"][];
         };
-        EqSection: {
-            /** @description deprecation path (v0.5) */
-            terms?: components["schemas"]["Term"][];
-            eqModeData?: components["schemas"]["EQModeData"];
+        ExtractionTerm: {
+            name: string;
+            definition: string;
+            unitType: string;
+            explanation: string;
+            notes: string;
+            citation: string;
+            fixedValues?: components["schemas"]["FixedValueTermInference"];
+            fixedValueGuideline?: string;
+            originalValue?: string;
         };
-        ExposeTypesResponseContent: {
-            QASectionsList?: components["schemas"]["QASection"][];
-            ContractVariable?: components["schemas"]["ContractVariable"];
-            ContractVariableType?: components["schemas"]["ContractVariableType"];
+        ExtractionTermMap: {
+            [key: string]: components["schemas"]["ExtractionTerm"];
         };
         FixedTermValue: {
             unit: string;
@@ -417,26 +438,14 @@ export interface components {
         };
         GetContractResponseContent: {
             contractId: string;
+            ownerId: string;
             name: string;
             type: components["schemas"]["ContractType"];
-            /** @description deprecation path (v0) */
-            terms?: components["schemas"]["Term"][];
-            /** @description deprecation path (v0) */
-            qa_sections?: string;
-            eq_section?: components["schemas"]["EqSection"];
-            iq_section?: components["schemas"]["IqSection"];
-            /** @description deprecation path (v0.5) */
-            eqmode?: unknown;
-            /** @description deprecation path (v0.5) */
-            sections?: unknown;
-            /** @description v1 */
-            eq?: components["schemas"]["EQModeCard"][];
-            iq?: components["schemas"]["IQModePerspectiveMap"];
-            /** @description v1 */
-            contractViewerText?: string;
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith: string[];
+            eqData?: components["schemas"]["EqModeData"];
+            iqData?: components["schemas"]["IqModeData"];
+            contractExtraction?: components["schemas"]["ContractExtractionResult"];
+            sharedWith?: string[];
+            isOwner?: boolean;
         };
         GetProfilePictureRequestContent: {
             userId?: string;
@@ -477,39 +486,32 @@ export interface components {
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
-        IQModeGlossarizedTerm: {
-            name?: string;
-            definition?: string;
-            section?: string;
-        };
-        IQModePerspective: {
-            sections: components["schemas"]["IQModeSectionMap"];
-        };
-        IQModePerspectiveMap: {
-            [key: string]: components["schemas"]["IQModePerspective"];
-        };
-        IQModeQuestion: {
-            question: string;
-            answer: string;
-            glossarizedTerm?: components["schemas"]["IQModeGlossarizedTerm"];
-            ttsSrcUrl?: string;
-        };
-        IQModeSection: {
-            id: components["schemas"]["IQModeSectionKey"];
-            sectionTitle: string;
-            questions: components["schemas"]["IQModeQuestion"][];
-        };
-        /** @enum {string} */
-        IQModeSectionKey: IQModeSectionKey;
-        IQModeSectionMap: {
-            [key: string]: components["schemas"]["IQModeSection"];
-        };
         InternalServerErrorResponseContent: {
             message: string;
         };
-        IqSection: {
-            /** @description deprecation path (v0.5) */
-            qa_sections?: components["schemas"]["QASection"][];
+        IqModeData: {
+            iqModeData?: components["schemas"]["IqModePerspectiveMap"];
+        };
+        IqModePerspective: {
+            sections: components["schemas"]["IqModeSectionMap"];
+        };
+        IqModePerspectiveMap: {
+            [key: string]: components["schemas"]["IqModePerspective"];
+        };
+        IqModeQuestion: {
+            question: components["schemas"]["TaggedText"];
+            answer: components["schemas"]["TaggedText"];
+            ttsSrcUrl?: string;
+        };
+        IqModeSection: {
+            id: components["schemas"]["IqModeSectionKey"];
+            sectionTitle: string;
+            questions: components["schemas"]["IqModeQuestion"][];
+        };
+        /** @enum {string} */
+        IqModeSectionKey: IqModeSectionKey;
+        IqModeSectionMap: {
+            [key: string]: components["schemas"]["IqModeSection"];
         };
         ListContractsResponseContent: {
             /** @description Deprecation path (v0.5) */
@@ -523,6 +525,14 @@ export interface components {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
+        MarkupStatistics: {
+            originalLength: number;
+            markedUpLength: number;
+            totalVariables: number;
+            /** Format: float */
+            processingTimeSeconds: number;
+            chunksProcessed: number;
+        };
         PingResponseContent: {
             message: string;
         };
@@ -532,14 +542,6 @@ export interface components {
         };
         ProcessingIncompleteErrorResponseContent: {
             message: string;
-        };
-        QA: {
-            question: string;
-            answer: string;
-        };
-        QASection: {
-            section: string;
-            qa: components["schemas"]["QA"][];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -570,12 +572,8 @@ export interface components {
         TTSPresignedUrlMap: {
             [key: string]: string;
         };
-        Term: {
-            name: string;
-            definition: string;
-            unitType: string;
-            citation?: string;
-            fixedValues?: components["schemas"]["FixedValueTermInference"];
+        TaggedText: {
+            text: string;
         };
         UpdateContractRequestContent: {
             contractId: string;
@@ -1011,9 +1009,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
-                };
+                content?: never;
             };
         };
     };
@@ -1293,7 +1289,7 @@ export enum EqCardType {
     A = "A",
     B = "B"
 }
-export enum IQModeSectionKey {
+export enum IqModeSectionKey {
     earnings = "earnings",
     qualityOfRights = "qualityOfRights",
     usageObligations = "usageObligations",

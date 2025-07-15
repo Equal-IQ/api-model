@@ -1,0 +1,2 @@
+When creating a set of uniquely named/id objects in the smithy model, prefer to use Map over List.
+The result will provide more ergonomic and extendable code.

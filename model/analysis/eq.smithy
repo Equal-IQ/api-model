@@ -2,19 +2,14 @@ $version: "2"
 
 namespace equaliq.eq
 
-use equaliq#TermsList
 use equaliq#StringList
 use equaliq#EmptyStructure
 use equaliq#Url
 
 // EQ Mode Structures
 
-structure EqSection {
-  @documentation("deprecation path (v0.5)")
-  terms: TermsList
-
-  //v1 version
-  eqModeData: EQModeData
+structure EqModeData {
+  cards: EqModeCardMap
 }
 
 // Special Contract Structures (only the stable ones)
@@ -27,19 +22,20 @@ enum EqCardKey {
 }
 
 structure EqMoneyCard {
-  
+  @required
   majorNumber: String,
 
+  @required
   paidAfterList: StringList,
 }
 
 structure EqOwnershipCard {
-  
+  @required
   ownershipTerms: SimpleTermDescriptionList,
 }
 
 structure EqResponsibilitesCard {
-  
+  @required
   responsibilites: SimpleTermDescriptionList
 }
 
@@ -51,22 +47,23 @@ enum DurationType {
 }
 
 structure EqDurationCard {
-  
+  @required
   durationType: DurationType
 
+  @required
   durationText: String
 
   durationDetails: SimpleTermDescriptionList
 }
 
 structure EqLegalCard {
-  
+  @required
   risks: String
-  
-  
+
+  @required
   costs: String
 
-  
+  @required
   legal: String
 }
 
@@ -80,9 +77,9 @@ union EqCardUniqueData {
 }
 
 // EQMode data structure - matches the eqmode field in seniSpecialData
-map EQModeData {
+map EqModeCardMap {
   key: EqCardKey
-  value: EQModeCard
+  value: EqModeCard
 }
 
 enum EqCardType {
@@ -93,12 +90,8 @@ enum EqCardType {
   B = "B"
 }
 
-list EQModeCardList {
-  member: EQModeCard
-}
-
-// Individual EQMode card
-structure EQModeCard {
+// Individual EqMode card
+structure EqModeCard {
   @required
   id: EqCardKey
   
@@ -119,7 +112,7 @@ structure EQModeCard {
   totalAdvance: String
 
   @documentation("Deprecated, this should be in the in a custom subtype")
-  items: EQModeItemList
+  items: EqModeItemList
 
   @documentation("Deprecated, use the ttsSrcUrl")
   audioSrc: String
@@ -128,12 +121,12 @@ structure EQModeCard {
 }
 
 @documentation("Deprecated")
-list EQModeItemList {
-  member: EQModeItem
+list EqModeItemList {
+  member: EqModeItem
 }
 
 @documentation("Deprecated")
-structure EQModeItem {
+structure EqModeItem {
   title: String
   value: String
 }

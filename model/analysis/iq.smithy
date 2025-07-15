@@ -3,59 +3,56 @@ $version: "2"
 namespace equaliq.iq
 
 use equaliq#Url
+use equaliq#TaggedText
 
-enum IQModeSectionKey {
-    EARNINGS = "earnings"
-    QUALITY = "qualityOfRights"
-    USAGE = "usageObligations"
-    AGREEMENT = "agreementLength"
-    LIABILITY = "liabilitySafeguards"
+structure IqModeData {
+  iqModeData: IqModePerspectiveMap
 }
 
-map IQModePerspectiveMap {
-    key: String
-    value: IQModePerspective
+enum IqModeSectionKey {
+  EARNINGS = "earnings"
+  QUALITY = "qualityOfRights"
+  USAGE = "usageObligations"
+  AGREEMENT = "agreementLength"
+  LIABILITY = "liabilitySafeguards"
 }
 
-structure IQModePerspective {
-    @required
-    sections: IQModeSectionMap
+map IqModePerspectiveMap {
+  key: String
+  value: IqModePerspective
 }
 
-map IQModeSectionMap {
-    key: IQModeSectionKey
-    value: IQModeSection
+structure IqModePerspective {
+  @required
+  sections: IqModeSectionMap
 }
 
-structure IQModeSection {
-    @required
-    id: IQModeSectionKey
-
-    @required
-    sectionTitle: String
-
-    @required
-    questions: IQModeQuestionsList
+map IqModeSectionMap {
+  key: IqModeSectionKey
+  value: IqModeSection
 }
 
-list IQModeQuestionsList {
-    member: IQModeQuestion
+structure IqModeSection {
+  @required
+  id: IqModeSectionKey
+
+  @required
+  sectionTitle: String
+
+  @required
+  questions: IqModeQuestionsList
 }
 
-structure IQModeQuestion {
-    @required
-    question: String
-
-    @required
-    answer: String
-
-    glossarizedTerm: IQModeGlossarizedTerm
-
-    ttsSrcUrl: Url
+list IqModeQuestionsList {
+  member: IqModeQuestion
 }
 
-structure IQModeGlossarizedTerm {
-    name: String
-    definition: String
-    section: String
+structure IqModeQuestion {
+  @required
+  question: TaggedText
+
+  @required
+  answer: TaggedText
+
+  ttsSrcUrl: Url
 }
