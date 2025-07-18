@@ -281,7 +281,7 @@ export interface components {
             statistics: components["schemas"]["MarkupStatistics"];
         };
         ContractMetadata: {
-            id: string;
+            contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
             status: components["schemas"]["ContractStatus"];
@@ -602,7 +602,7 @@ export interface components {
         };
         UploadProfilePictureResponseContent: {
             message?: string;
-            picture_id?: string;
+            pictureId?: string;
         };
         UserProfile: {
             userId?: string;

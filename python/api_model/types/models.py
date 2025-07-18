@@ -299,7 +299,7 @@ class UploadProfilePictureRequestContent(BaseModel):
 
 class UploadProfilePictureResponseContent(BaseModel):
     message: str | None
-    picture_id: str | None
+    pictureId: str | None
 
 
 class UserProfile(BaseModel):
@@ -322,7 +322,7 @@ class ContractMarkupResult(BaseModel):
 
 
 class ContractMetadata(BaseModel):
-    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: ContractType
     status: ContractStatus
