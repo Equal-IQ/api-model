@@ -12,7 +12,137 @@ exec('npx openapi-typescript /app/api.json -o /app/models.ts --enum', (error, st
   console.log('TypeScript base models generated successfully');
   
   // Now create an index.ts file that exports all the components.schemas
-  const indexContent = `// Auto-generated index file
+  const apiSpec = require('/app/api.json');
+  
+  // Function to convert OpenAPI schema to TypeScript type string
+  function convertSchemaToTypeScript(schema, schemaName) {
+    // Handle references first
+    if (schema.$ref) {
+      return schema.$ref.split('/').pop();
+    }
+    
+    if (schema.enum) {
+      // Handle enum types - keep them as string literal unions
+      return `"${schema.enum.join('" | "')}"`;
+    }
+    
+    if (schema.type === 'object' && schema.properties) {
+      // Handle object types - unwrap to interface definitions
+      const properties = Object.entries(schema.properties)
+        .map(([propName, propSchema]) => {
+          const optional = !schema.required?.includes(propName) ? '?' : '';
+          let propType;
+          
+          // Handle references to other schemas
+          if (propSchema.$ref) {
+            propType = propSchema.$ref.split('/').pop();
+          }
+          // Handle arrays
+          else if (propSchema.type === 'array' && propSchema.items) {
+            if (propSchema.items.$ref) {
+              const itemSchemaName = propSchema.items.$ref.split('/').pop();
+              propType = `${itemSchemaName}[]`;
+            } else {
+              propType = `${convertSchemaToTypeScript(propSchema.items, `${schemaName}_${propName}_Item`)}[]`;
+            }
+          }
+          // Handle additionalProperties (Record types)
+          else if (propSchema.type === 'object' && propSchema.additionalProperties) {
+            if (propSchema.additionalProperties.$ref) {
+              const valueSchemaName = propSchema.additionalProperties.$ref.split('/').pop();
+              propType = `{ [key: string]: ${valueSchemaName} }`;
+            } else if (propSchema.additionalProperties === true) {
+              propType = `{ [key: string]: unknown }`;
+            } else {
+              const valueType = convertSchemaToTypeScript(propSchema.additionalProperties, `${schemaName}_${propName}_Value`);
+              propType = `{ [key: string]: ${valueType} }`;
+            }
+          }
+          // Handle basic types
+          else if (propSchema.type === 'string') {
+            propType = 'string';
+          }
+          else if (propSchema.type === 'number' || propSchema.format === 'double' || propSchema.format === 'float') {
+            propType = 'number';
+          }
+          else if (propSchema.type === 'boolean') {
+            propType = 'boolean';
+          }
+          else {
+            propType = convertSchemaToTypeScript(propSchema, `${schemaName}_${propName}`);
+          }
+          
+          return `  ${propName}${optional}: ${propType};`;
+        })
+        .join('\n');
+      
+      return `{\n${properties}\n}`;
+    }
+    
+    // Handle additionalProperties at the root level (Record types)
+    if (schema.type === 'object' && schema.additionalProperties) {
+      if (schema.additionalProperties.$ref) {
+        const valueSchemaName = schema.additionalProperties.$ref.split('/').pop();
+        return `{ [key: string]: ${valueSchemaName} }`;
+      } else if (schema.additionalProperties === true) {
+        return `{ [key: string]: unknown }`;
+      } else {
+        const valueType = convertSchemaToTypeScript(schema.additionalProperties, `${schemaName}_Value`);
+        return `{ [key: string]: ${valueType} }`;
+      }
+    }
+    
+    // Handle union types (oneOf)
+    if (schema.oneOf) {
+      return schema.oneOf.map(subSchema => {
+        if (subSchema.$ref) {
+          return subSchema.$ref.split('/').pop();
+        }
+        return convertSchemaToTypeScript(subSchema, schemaName);
+      }).join(' | ');
+    }
+    
+    // Handle arrays
+    if (schema.type === 'array' && schema.items) {
+      if (schema.items.$ref) {
+        return `${schema.items.$ref.split('/').pop()}[]`;
+      }
+      return `${convertSchemaToTypeScript(schema.items, `${schemaName}_Item`)}[]`;
+    }
+    
+    // Handle basic types
+    if (schema.type === 'string') return 'string';
+    if (schema.type === 'number' || schema.format === 'double' || schema.format === 'float') return 'number';
+    if (schema.type === 'boolean') return 'boolean';
+    
+    return 'unknown';
+  }
+  
+  // Generate unwrapped type definitions for non-enum types
+  const typeDefinitions = Object.entries(apiSpec.components.schemas)
+    .filter(([, schema]) => {
+      // Skip enum types as they are handled separately
+      return !(schema.type === 'string' && schema.enum);
+    })
+    .map(([schemaName, schema]) => {
+      const typeString = convertSchemaToTypeScript(schema, schemaName);
+      return `export type ${schemaName} = ${typeString};`;
+    })
+    .join('\n\n');
+  
+  // Generate enum type definitions
+  const enumDefinitions = Object.entries(apiSpec.components.schemas)
+    .filter(([, schema]) => {
+      // Only include enum types
+      return schema.type === 'string' && schema.enum;
+    })
+    .map(([schemaName, schema]) => {
+      const enumValues = schema.enum.map(value => `  ${value} = "${value}"`).join(',\n');
+      return `export enum ${schemaName} {\n${enumValues}\n}`;
+    })
+    .join('\n\n');
+  
+  const indexContent = `// Auto-generated index file with unwrapped types
 // Export all schemas from the OpenAPI specification
 export * from './models';
 export { components } from './models';
@@ -21,18 +151,11 @@ export { components } from './models';
 import { components } from './models';
 export type Schemas = components['schemas'];
 
-// Make each schema available as a top-level export
-type SchemaNames = keyof components['schemas'];
-type ExtractSchema<K extends SchemaNames> = components['schemas'][K];
+// Unwrapped enum definitions
+${enumDefinitions}
 
-${Object.keys(require('/app/api.json').components.schemas)
-  .filter(schemaName => {
-    const schema = require('/app/api.json').components.schemas[schemaName];
-    return schema.type !== 'string' || !schema.enum;
-  })
-  .map(schemaName => `export type ${schemaName} = ExtractSchema<'${schemaName}'>`)
-  .join('\n')
-}
+// Unwrapped type definitions (no aliases)
+${typeDefinitions}
 `;
 
   fs.writeFileSync('/app/index.ts', indexContent);
