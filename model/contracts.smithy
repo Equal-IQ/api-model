@@ -343,10 +343,13 @@ list SharedUserDetailsList {
 
 structure SharedUserDetails {
   @required
-  userId: UserId
+  sharedWithUserId: UserId
 
   @required
-  email: Email
+  sharedByUserId: UserId
+
+  @required
+  sharedWithUserEmail: Email
 
   @required
   sharedTime: Timestamp
@@ -460,4 +463,29 @@ structure GetTTSURLsOutput {
 map TTSPresignedUrlMap {
   key: String   // AudioSrcId
   value: Url // Presigned S3 URL
+}
+
+structure ContractAnalysisRecord {
+  @required
+  contractId: ContractId
+  @required
+  name: String
+  @required
+  type: ContractType
+  @required
+  status: ContractStatus
+  @required
+  uploadedOn: ISODate
+  @required
+  ownerId: UserId
+  @required
+  eqData: EqModeData
+  @required
+  iqData: IqModeData
+  @required
+  contractExtraction: ContractExtractionResult
+
+  sharedUsers: SharedUserDetailsList
+  hasTTS: Boolean
+  isSpecial: Boolean
 }

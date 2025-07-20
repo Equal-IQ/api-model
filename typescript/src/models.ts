@@ -269,6 +269,20 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        ContractAnalysisRecord: {
+            contractId: string;
+            name: string;
+            type: components["schemas"]["ContractType"];
+            status: components["schemas"]["ContractStatus"];
+            uploadedOn: string;
+            ownerId: string;
+            eqData: components["schemas"]["EqModeData"];
+            iqData: components["schemas"]["IqModeData"];
+            contractExtraction: components["schemas"]["ContractExtractionResult"];
+            sharedUsers?: components["schemas"]["SharedUserDetails"][];
+            hasTTS?: boolean;
+            isSpecial?: boolean;
+        };
         ContractExtractionResult: {
             extractedType?: components["schemas"]["ContractType"];
             parties?: string[];
@@ -400,6 +414,9 @@ export interface components {
         };
         EqResponsibilitesCard: {
             responsibilites: components["schemas"]["SimpleTermDescription"][];
+        };
+        ExposeTypesResponseContent: {
+            contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
         };
         ExtractionTerm: {
             name: string;
@@ -560,8 +577,9 @@ export interface components {
             invalidRemoves?: string[];
         };
         SharedUserDetails: {
-            userId: string;
-            email: string;
+            sharedWithUserId: string;
+            sharedByUserId: string;
+            sharedWithUserEmail: string;
             /** Format: double */
             sharedTime: number;
         };
@@ -1009,7 +1027,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
+                };
             };
         };
     };

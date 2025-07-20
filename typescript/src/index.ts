@@ -73,6 +73,21 @@ export type AuthenticationErrorResponseContent = {
   message: string;
 };
 
+export type ContractAnalysisRecord = {
+  contractId: string;
+  name: string;
+  type: ContractType;
+  status: ContractStatus;
+  uploadedOn: string;
+  ownerId: string;
+  eqData: EqModeData;
+  iqData: IqModeData;
+  contractExtraction: ContractExtractionResult;
+  sharedUsers?: SharedUserDetails[];
+  hasTTS?: boolean;
+  isSpecial?: boolean;
+};
+
 export type ContractExtractionResult = {
   extractedType?: ContractType;
   parties?: string[];
@@ -199,6 +214,10 @@ export type EqOwnershipCard = {
 
 export type EqResponsibilitesCard = {
   responsibilites: SimpleTermDescription[];
+};
+
+export type ExposeTypesResponseContent = {
+  contractAnalysisRecord?: ContractAnalysisRecord;
 };
 
 export type ExtractionTerm = {
@@ -381,8 +400,9 @@ export type ShareContractResponseContent = {
 };
 
 export type SharedUserDetails = {
-  userId: string;
-  email: string;
+  sharedWithUserId: string;
+  sharedByUserId: string;
+  sharedWithUserEmail: string;
   sharedTime: number;
 };
 

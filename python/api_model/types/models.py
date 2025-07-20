@@ -246,8 +246,11 @@ class InvalidRemove(RootModel[str]):
 
 
 class SharedUserDetails(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    sharedWithUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWithUserEmail: str = Field(
+        ..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
     sharedTime: float
 
 
@@ -527,6 +530,28 @@ class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
 
 class IqModeData(BaseModel):
     iqModeData: IqModePerspectiveMap | None
+
+
+class ContractAnalysisRecord(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    status: ContractStatus
+    uploadedOn: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    eqData: EqModeData
+    iqData: IqModeData
+    contractExtraction: ContractExtractionResult
+    sharedUsers: list[SharedUserDetails] | None
+    hasTTS: bool | None
+    isSpecial: bool | None
+
+
+class ExposeTypesResponseContent(BaseModel):
+    contractAnalysisRecord: ContractAnalysisRecord | None
 
 
 class GetContractResponseContent(BaseModel):
