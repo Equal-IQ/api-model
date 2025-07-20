@@ -325,7 +325,7 @@ class ContractMarkupResult(BaseModel):
 
 
 class ContractMetadata(BaseModel):
-    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: ContractType
     status: ContractStatus
@@ -334,7 +334,7 @@ class ContractMetadata(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedUserDetails] | None
+    sharedUsers: list[SharedUserDetails] | None
     isOwner: bool | None
     hasTTS: bool | None
     isSpecial: bool | None

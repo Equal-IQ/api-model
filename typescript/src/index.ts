@@ -102,13 +102,13 @@ export type ContractMarkupResult = {
 };
 
 export type ContractMetadata = {
-  id: string;
+  contractId: string;
   name: string;
   type: ContractType;
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
-  sharedWith?: SharedUserDetails[];
+  sharedUsers?: SharedUserDetails[];
   isOwner?: boolean;
   hasTTS?: boolean;
   isSpecial?: boolean;

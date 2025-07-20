@@ -295,13 +295,13 @@ export interface components {
             statistics: components["schemas"]["MarkupStatistics"];
         };
         ContractMetadata: {
-            id: string;
+            contractId: string;
             name: string;
             type: components["schemas"]["ContractType"];
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
-            sharedWith?: components["schemas"]["SharedUserDetails"][];
+            sharedUsers?: components["schemas"]["SharedUserDetails"][];
             isOwner?: boolean;
             hasTTS?: boolean;
             isSpecial?: boolean;

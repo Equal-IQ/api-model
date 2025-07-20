@@ -198,7 +198,7 @@ list ContractMetadataList {
 
 structure ContractMetadata {
   @required
-  id: ContractId
+  contractId: ContractId
   @required
   name: String
   @required
@@ -210,7 +210,7 @@ structure ContractMetadata {
   @required
   ownerId: UserId
   
-  sharedWith: SharedUserDetailsList
+  sharedUsers: SharedUserDetailsList
 
   isOwner: Boolean
   hasTTS: Boolean
