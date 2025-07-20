@@ -5,6 +5,8 @@ namespace equaliq
 use equaliq.eq#EqModeData
 use equaliq.iq#IqModeData
 use equaliq.extraction#ContractExtractionResult
+use equaliq.extraction#ContractVariableMap
+use equaliq.extraction#ContractMarkupResult
 
 // Contract structures
 
@@ -478,12 +480,20 @@ structure ContractAnalysisRecord {
   uploadedOn: ISODate
   @required
   ownerId: UserId
-  @required
-  eqData: EqModeData
+
+  eqCards: EqModeData
   @required
   iqData: IqModeData
-  @required
+  
   contractExtraction: ContractExtractionResult
+
+  extractedType: ContractType
+
+  parties: StringList
+
+  variables: ContractVariableMap
+
+  contractText: ContractMarkupResult
 
   sharedUsers: SharedUserDetailsList
   hasTTS: Boolean

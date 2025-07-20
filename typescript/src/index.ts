@@ -158,7 +158,7 @@ export type EqCardUniqueData = {
 } | {
   OWNERSHIP: EqOwnershipCard;
 } | {
-  RESPONSIBILITIES: EqResponsibilitesCard;
+  RESPONSIBILITIES: EqResponsibilitiesCard;
 } | {
   DURATION: EqDurationCard;
 } | {
@@ -212,8 +212,8 @@ export type EqOwnershipCard = {
   ownershipTerms: SimpleTermDescription[];
 };
 
-export type EqResponsibilitesCard = {
-  responsibilites: SimpleTermDescription[];
+export type EqResponsibilitiesCard = {
+  responsibilities: SimpleTermDescription[];
 };
 
 export type ExposeTypesResponseContent = {

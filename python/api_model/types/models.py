@@ -389,8 +389,8 @@ class EqOwnershipCard(BaseModel):
     ownershipTerms: list[SimpleTermDescription]
 
 
-class EqResponsibilitesCard(BaseModel):
-    responsibilites: list[SimpleTermDescription]
+class EqResponsibilitiesCard(BaseModel):
+    responsibilities: list[SimpleTermDescription]
 
 
 class ExtractionTerm(BaseModel):
@@ -479,7 +479,7 @@ class OWNERSHIP(BaseModel):
 
 
 class RESPONSIBILITIES(BaseModel):
-    RESPONSIBILITIES: EqResponsibilitesCard
+    RESPONSIBILITIES: EqResponsibilitiesCard
 
 
 class DURATION(BaseModel):

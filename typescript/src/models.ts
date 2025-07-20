@@ -360,7 +360,7 @@ export interface components {
         } | {
             OWNERSHIP: components["schemas"]["EqOwnershipCard"];
         } | {
-            RESPONSIBILITIES: components["schemas"]["EqResponsibilitesCard"];
+            RESPONSIBILITIES: components["schemas"]["EqResponsibilitiesCard"];
         } | {
             DURATION: components["schemas"]["EqDurationCard"];
         } | {
@@ -412,8 +412,8 @@ export interface components {
         EqOwnershipCard: {
             ownershipTerms: components["schemas"]["SimpleTermDescription"][];
         };
-        EqResponsibilitesCard: {
-            responsibilites: components["schemas"]["SimpleTermDescription"][];
+        EqResponsibilitiesCard: {
+            responsibilities: components["schemas"]["SimpleTermDescription"][];
         };
         ExposeTypesResponseContent: {
             contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];

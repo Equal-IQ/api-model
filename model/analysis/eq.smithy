@@ -16,7 +16,7 @@ structure EqModeData {
 enum EqCardKey {
   MONEY_RECEIVED = "moneyYouReceive"
   OWNERSHIP = "whatYouOwn"
-  RESPONSIBILITES = "whatYoureResponsibleFor"
+  RESPONSIBILITIES = "whatYoureResponsibleFor"
   DURATION = "howLongThisDealLasts"
   LEGAL = "risksCostsLegalStuff"
 }
@@ -34,9 +34,9 @@ structure EqOwnershipCard {
   ownershipTerms: SimpleTermDescriptionList,
 }
 
-structure EqResponsibilitesCard {
+structure EqResponsibilitiesCard {
   @required
-  responsibilites: SimpleTermDescriptionList
+  responsibilities: SimpleTermDescriptionList
 }
 
 enum DurationType {
@@ -70,7 +70,7 @@ structure EqLegalCard {
 union EqCardUniqueData {
   MONEY_RECEIVED: EqMoneyCard
   OWNERSHIP: EqOwnershipCard
-  RESPONSIBILITIES: EqResponsibilitesCard 
+  RESPONSIBILITIES: EqResponsibilitiesCard 
   DURATION: EqDurationCard
   LEGAL: EqLegalCard
   EMPTY: EmptyStructure
