@@ -4,7 +4,7 @@ namespace equaliq
 
 use equaliq.eq#EqModeData
 use equaliq.iq#IqModeData
-use equaliq.extraction#ContractExtractionResult
+use equaliq.extraction#ExtractionTermMap
 use equaliq.extraction#ContractVariableMap
 use equaliq.extraction#ContractMarkupResult
 
@@ -433,39 +433,11 @@ structure GlossarizedTerm {
   section: String
 }
 
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-@http(method: "POST", uri: "/getTTSURLs")
-operation GetTTSURLs {
-  input: GetTTSURLsInput
-  output: GetTTSURLsOutput
-  errors: [
-    AuthenticationError
-    ResourceNotFoundError
-    InternalServerError
-  ]
-}
-
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-structure GetTTSURLsInput {
-  @required
-  contractId: ContractId
-}
-
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-structure GetTTSURLsOutput {
-  @required
-  contractId: ContractId
+structure TTSItem {
+  ttsPrompt: String
   
-  @required
-  ttsSrcUrl: TTSPresignedUrlMap
 }
 
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-// Map of audio source IDs to presigned URLs
-map TTSPresignedUrlMap {
-  key: String   // AudioSrcId
-  value: Url // Presigned S3 URL
-}
 
 structure ContractAnalysisRecord {
   @required
@@ -484,12 +456,12 @@ structure ContractAnalysisRecord {
   eqCards: EqModeData
   @required
   iqData: IqModeData
-  
-  contractExtraction: ContractExtractionResult
 
   extractedType: ContractType
 
   parties: StringList
+
+  terms: ExtractionTermMap
 
   variables: ContractVariableMap
 

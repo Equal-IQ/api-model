@@ -15,7 +15,6 @@ structure ContractExtractionResult {
 
   parties: StringList
 
-  @documentation("Can we remove this? It's redundant with variables")
   terms: ExtractionTermMap
 
   variables: ContractVariableMap
