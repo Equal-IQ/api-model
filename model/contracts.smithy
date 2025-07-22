@@ -4,6 +4,7 @@ namespace equaliq
 
 use equaliq.eq#EqModeData
 use equaliq.iq#IqModeData
+use equaliq.extraction#ContractExtractionResult
 use equaliq.extraction#ExtractionTermMap
 use equaliq.extraction#ContractVariableMap
 use equaliq.extraction#ContractMarkupResult
@@ -435,7 +436,7 @@ structure GlossarizedTerm {
 
 structure TTSItem {
   ttsPrompt: String
-  
+
 }
 
 

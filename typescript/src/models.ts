@@ -100,22 +100,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getTTSURLs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetTTSURLs"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/listContracts": {
         parameters: {
             query?: never;
@@ -276,9 +260,13 @@ export interface components {
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
-            eqData: components["schemas"]["EqModeData"];
+            eqCards?: components["schemas"]["EqModeData"];
             iqData: components["schemas"]["IqModeData"];
-            contractExtraction: components["schemas"]["ContractExtractionResult"];
+            extractedType?: components["schemas"]["ContractType"];
+            parties?: string[];
+            terms?: components["schemas"]["ExtractionTermMap"];
+            variables?: components["schemas"]["ContractVariableMap"];
+            contractText?: components["schemas"]["ContractMarkupResult"];
             sharedUsers?: components["schemas"]["SharedUserDetails"][];
             hasTTS?: boolean;
             isSpecial?: boolean;
@@ -490,13 +478,6 @@ export interface components {
             ownerId: string;
             sharedWith: string[];
         };
-        GetTTSURLsRequestContent: {
-            contractId: string;
-        };
-        GetTTSURLsResponseContent: {
-            contractId: string;
-            ttsSrcUrl: components["schemas"]["TTSPresignedUrlMap"];
-        };
         GetUploadURLRequestContent: {
             name: string;
         };
@@ -586,9 +567,6 @@ export interface components {
         SimpleTermDescription: {
             title: string;
             description: string;
-        };
-        TTSPresignedUrlMap: {
-            [key: string]: string;
         };
         TaggedText: {
             text: string;
@@ -882,48 +860,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetTTSURLs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetTTSURLsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetTTSURLs 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetTTSURLsResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

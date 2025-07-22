@@ -15,7 +15,6 @@ service EqualIQ {
     ListContracts
     GetSpecialContract
     ListSpecialContracts
-    GetTTSURLs
     GetUploadURL
     UpdateContract
     DeleteContract

@@ -80,9 +80,13 @@ export type ContractAnalysisRecord = {
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
-  eqData: EqModeData;
+  eqCards?: EqModeData;
   iqData: IqModeData;
-  contractExtraction: ContractExtractionResult;
+  extractedType?: ContractType;
+  parties?: string[];
+  terms?: ExtractionTermMap;
+  variables?: ContractVariableMap;
+  contractText?: ContractMarkupResult;
   sharedUsers?: SharedUserDetails[];
   hasTTS?: boolean;
   isSpecial?: boolean;
@@ -303,15 +307,6 @@ export type GetSpecialContractResponseContent = {
   sharedWith: string[];
 };
 
-export type GetTTSURLsRequestContent = {
-  contractId: string;
-};
-
-export type GetTTSURLsResponseContent = {
-  contractId: string;
-  ttsSrcUrl: TTSPresignedUrlMap;
-};
-
 export type GetUploadURLRequestContent = {
   name: string;
 };
@@ -410,8 +405,6 @@ export type SimpleTermDescription = {
   title: string;
   description: string;
 };
-
-export type TTSPresignedUrlMap = { [key: string]: string };
 
 export type TaggedText = {
   text: string;
