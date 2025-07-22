@@ -435,6 +435,11 @@ structure GlossarizedTerm {
 }
 
 structure TTSItem {
+  @required
+  contractId: ContractId
+  @required
+  ttsFileId: String // Unique identifier that's used as the file name, associated with its frontend representation
+  @required
   ttsPrompt: String
 
 }
