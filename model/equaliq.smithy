@@ -15,7 +15,6 @@ service EqualIQ {
     ListContracts
     GetSpecialContract
     ListSpecialContracts
-    GetTTSURLs
     GetUploadURL
     UpdateContract
     DeleteContract
@@ -36,6 +35,7 @@ service EqualIQ {
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
 structure ExposedTypes { 
+  contractAnalysisRecord: ContractAnalysisRecord
 }
 
 // This API is used simply to expose types

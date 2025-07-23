@@ -171,10 +171,6 @@ class GetSpecialContractResponseContent(BaseModel):
     sharedWith: list[SharedWithItem]
 
 
-class GetTTSURLsRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
 class GetUploadURLRequestContent(BaseModel):
     name: str
 
@@ -246,21 +242,17 @@ class InvalidRemove(RootModel[str]):
 
 
 class SharedUserDetails(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    sharedWithUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWithUserEmail: str = Field(
+        ..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
     sharedTime: float
 
 
 class SimpleTermDescription(BaseModel):
     title: str
     description: str
-
-
-class TTSPresignedUrlMap(RootModel[dict[str, str] | None]):
-    root: dict[str, str] | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
 
 
 class TaggedText(BaseModel):
@@ -331,7 +323,7 @@ class ContractMetadata(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedUserDetails] | None
+    sharedUsers: list[SharedUserDetails] | None
     isOwner: bool | None
     hasTTS: bool | None
     isSpecial: bool | None
@@ -386,8 +378,8 @@ class EqOwnershipCard(BaseModel):
     ownershipTerms: list[SimpleTermDescription]
 
 
-class EqResponsibilitesCard(BaseModel):
-    responsibilites: list[SimpleTermDescription]
+class EqResponsibilitiesCard(BaseModel):
+    responsibilities: list[SimpleTermDescription]
 
 
 class ExtractionTerm(BaseModel):
@@ -409,11 +401,6 @@ class ExtractionTermMap(RootModel[dict[str, ExtractionTerm] | None]):
 class GetProfileResponseContent(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     profile: UserProfile
-
-
-class GetTTSURLsResponseContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ttsSrcUrl: TTSPresignedUrlMap
 
 
 class GetUploadURLResponseContent(BaseModel):
@@ -476,7 +463,7 @@ class OWNERSHIP(BaseModel):
 
 
 class RESPONSIBILITIES(BaseModel):
-    RESPONSIBILITIES: EqResponsibilitesCard
+    RESPONSIBILITIES: EqResponsibilitiesCard
 
 
 class DURATION(BaseModel):
@@ -527,6 +514,32 @@ class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
 
 class IqModeData(BaseModel):
     iqModeData: IqModePerspectiveMap | None
+
+
+class ContractAnalysisRecord(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: ContractType
+    status: ContractStatus
+    uploadedOn: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    eqCards: EqModeData | None
+    iqData: IqModeData
+    extractedType: ContractType | None
+    parties: list[str] | None
+    terms: ExtractionTermMap | None
+    variables: ContractVariableMap | None
+    contractText: ContractMarkupResult | None
+    sharedUsers: list[SharedUserDetails] | None
+    hasTTS: bool | None
+    isSpecial: bool | None
+
+
+class ExposeTypesResponseContent(BaseModel):
+    contractAnalysisRecord: ContractAnalysisRecord | None
 
 
 class GetContractResponseContent(BaseModel):

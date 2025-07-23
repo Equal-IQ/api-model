@@ -5,6 +5,9 @@ namespace equaliq
 use equaliq.eq#EqModeData
 use equaliq.iq#IqModeData
 use equaliq.extraction#ContractExtractionResult
+use equaliq.extraction#ExtractionTermMap
+use equaliq.extraction#ContractVariableMap
+use equaliq.extraction#ContractMarkupResult
 
 // Contract structures
 
@@ -210,7 +213,7 @@ structure ContractMetadata {
   @required
   ownerId: UserId
   
-  sharedWith: SharedUserDetailsList
+  sharedUsers: SharedUserDetailsList
 
   isOwner: Boolean
   hasTTS: Boolean
@@ -343,10 +346,13 @@ list SharedUserDetailsList {
 
 structure SharedUserDetails {
   @required
-  userId: UserId
+  sharedWithUserId: UserId
 
   @required
-  email: Email
+  sharedByUserId: UserId
+
+  @required
+  sharedWithUserEmail: Email
 
   @required
   sharedTime: Timestamp
@@ -428,36 +434,46 @@ structure GlossarizedTerm {
   section: String
 }
 
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-@http(method: "POST", uri: "/getTTSURLs")
-operation GetTTSURLs {
-  input: GetTTSURLsInput
-  output: GetTTSURLsOutput
-  errors: [
-    AuthenticationError
-    ResourceNotFoundError
-    InternalServerError
-  ]
-}
-
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-structure GetTTSURLsInput {
+structure TTSItem {
   @required
   contractId: ContractId
+  @required
+  ttsFileId: String // Unique identifier that's used as the file name, associated with its frontend representation
+  @required
+  ttsPrompt: String
+
 }
 
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-structure GetTTSURLsOutput {
+
+structure ContractAnalysisRecord {
   @required
   contractId: ContractId
-  
   @required
-  ttsSrcUrl: TTSPresignedUrlMap
-}
+  name: String
+  @required
+  type: ContractType
+  @required
+  status: ContractStatus
+  @required
+  uploadedOn: ISODate
+  @required
+  ownerId: UserId
 
-// Deprecated. Currently, used for SpecialContract only. Use alternative for real contract.
-// Map of audio source IDs to presigned URLs
-map TTSPresignedUrlMap {
-  key: String   // AudioSrcId
-  value: Url // Presigned S3 URL
+  eqCards: EqModeData
+  @required
+  iqData: IqModeData
+
+  extractedType: ContractType
+
+  parties: StringList
+
+  terms: ExtractionTermMap
+
+  variables: ContractVariableMap
+
+  contractText: ContractMarkupResult
+
+  sharedUsers: SharedUserDetailsList
+  hasTTS: Boolean
+  isSpecial: Boolean
 }

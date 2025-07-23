@@ -100,22 +100,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getTTSURLs": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetTTSURLs"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/listContracts": {
         parameters: {
             query?: never;
@@ -269,6 +253,24 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        ContractAnalysisRecord: {
+            contractId: string;
+            name: string;
+            type: components["schemas"]["ContractType"];
+            status: components["schemas"]["ContractStatus"];
+            uploadedOn: string;
+            ownerId: string;
+            eqCards?: components["schemas"]["EqModeData"];
+            iqData: components["schemas"]["IqModeData"];
+            extractedType?: components["schemas"]["ContractType"];
+            parties?: string[];
+            terms?: components["schemas"]["ExtractionTermMap"];
+            variables?: components["schemas"]["ContractVariableMap"];
+            contractText?: components["schemas"]["ContractMarkupResult"];
+            sharedUsers?: components["schemas"]["SharedUserDetails"][];
+            hasTTS?: boolean;
+            isSpecial?: boolean;
+        };
         ContractExtractionResult: {
             extractedType?: components["schemas"]["ContractType"];
             parties?: string[];
@@ -287,7 +289,7 @@ export interface components {
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
-            sharedWith?: components["schemas"]["SharedUserDetails"][];
+            sharedUsers?: components["schemas"]["SharedUserDetails"][];
             isOwner?: boolean;
             hasTTS?: boolean;
             isSpecial?: boolean;
@@ -346,7 +348,7 @@ export interface components {
         } | {
             OWNERSHIP: components["schemas"]["EqOwnershipCard"];
         } | {
-            RESPONSIBILITIES: components["schemas"]["EqResponsibilitesCard"];
+            RESPONSIBILITIES: components["schemas"]["EqResponsibilitiesCard"];
         } | {
             DURATION: components["schemas"]["EqDurationCard"];
         } | {
@@ -398,8 +400,11 @@ export interface components {
         EqOwnershipCard: {
             ownershipTerms: components["schemas"]["SimpleTermDescription"][];
         };
-        EqResponsibilitesCard: {
-            responsibilites: components["schemas"]["SimpleTermDescription"][];
+        EqResponsibilitiesCard: {
+            responsibilities: components["schemas"]["SimpleTermDescription"][];
+        };
+        ExposeTypesResponseContent: {
+            contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
         };
         ExtractionTerm: {
             name: string;
@@ -472,13 +477,6 @@ export interface components {
             isOwner: boolean;
             ownerId: string;
             sharedWith: string[];
-        };
-        GetTTSURLsRequestContent: {
-            contractId: string;
-        };
-        GetTTSURLsResponseContent: {
-            contractId: string;
-            ttsSrcUrl: components["schemas"]["TTSPresignedUrlMap"];
         };
         GetUploadURLRequestContent: {
             name: string;
@@ -560,17 +558,15 @@ export interface components {
             invalidRemoves?: string[];
         };
         SharedUserDetails: {
-            userId: string;
-            email: string;
+            sharedWithUserId: string;
+            sharedByUserId: string;
+            sharedWithUserEmail: string;
             /** Format: double */
             sharedTime: number;
         };
         SimpleTermDescription: {
             title: string;
             description: string;
-        };
-        TTSPresignedUrlMap: {
-            [key: string]: string;
         };
         TaggedText: {
             text: string;
@@ -877,48 +873,6 @@ export interface operations {
             };
         };
     };
-    GetTTSURLs: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetTTSURLsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetTTSURLs 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetTTSURLsResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     ListContracts: {
         parameters: {
             query?: never;
@@ -1009,7 +963,9 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content?: never;
+                content: {
+                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
+                };
             };
         };
     };
