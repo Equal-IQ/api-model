@@ -438,7 +438,7 @@ structure TTSItem {
   @required
   contractId: ContractId
   @required
-  ttsFileId: String // Unique identifier that's used as the file name, associated with its frontend representation
+  ttsFileName: String // file name in the S3 bucket: (contractId/ttsFileName). Also matches to the card/question in the contract data itself
   @required
   ttsPrompt: String
 
