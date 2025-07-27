@@ -92,6 +92,14 @@ export type ContractAnalysisRecord = {
   isSpecial?: boolean;
 };
 
+export type ContractExtractionResult = {
+  extractedType?: ContractType;
+  parties?: string[];
+  terms?: ExtractionTermMap;
+  variables?: ContractVariableMap;
+  contractText?: ContractMarkupResult;
+};
+
 export type ContractMarkupResult = {
   markedUpContract: TaggedText;
   statistics: MarkupStatistics;
@@ -262,9 +270,7 @@ export type GetContractResponseContent = {
   type: ContractType;
   eqData?: EqModeData;
   iqData?: IqModeData;
-  parties?: string[];
-  variables?: ContractVariableMap;
-  contractText?: ContractMarkupResult;
+  contractExtraction?: ContractExtractionResult;
   sharedWith?: string[];
   isOwner?: boolean;
 };
@@ -436,7 +442,7 @@ export type UploadProfilePictureRequestContent = {
 
 export type UploadProfilePictureResponseContent = {
   message?: string;
-  pictureId?: string;
+  picture_id?: string;
 };
 
 export type UserProfile = {

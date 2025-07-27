@@ -67,13 +67,7 @@ structure GetContractOutput {
   iqData: IqModeData
 
   @documentation("v1")
-  parties: StringList
-
-  @documentation("v1")
-  variables: ContractVariableMap
-
-  @documentation("v1")
-  contractText: ContractMarkupResult
+  contractExtraction: ContractExtractionResult
 
   sharedWith: UserIdList
 

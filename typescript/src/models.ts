@@ -271,6 +271,13 @@ export interface components {
             hasTTS?: boolean;
             isSpecial?: boolean;
         };
+        ContractExtractionResult: {
+            extractedType?: components["schemas"]["ContractType"];
+            parties?: string[];
+            terms?: components["schemas"]["ExtractionTermMap"];
+            variables?: components["schemas"]["ContractVariableMap"];
+            contractText?: components["schemas"]["ContractMarkupResult"];
+        };
         ContractMarkupResult: {
             markedUpContract: components["schemas"]["TaggedText"];
             statistics: components["schemas"]["MarkupStatistics"];
@@ -441,10 +448,7 @@ export interface components {
             type: components["schemas"]["ContractType"];
             eqData?: components["schemas"]["EqModeData"];
             iqData?: components["schemas"]["IqModeData"];
-            /** @description v1 */
-            parties?: string[];
-            variables?: components["schemas"]["ContractVariableMap"];
-            contractText?: components["schemas"]["ContractMarkupResult"];
+            contractExtraction?: components["schemas"]["ContractExtractionResult"];
             sharedWith?: string[];
             isOwner?: boolean;
         };
