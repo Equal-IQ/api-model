@@ -446,13 +446,6 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: list[InvalidRemove] | None
 
 
-class ContractExtractionResult(BaseModel):
-    extractedType: ContractType | None
-    parties: list[str] | None
-    terms: ExtractionTermMap | None
-    variables: ContractVariableMap | None
-
-
 class OWNERSHIP(BaseModel):
     OWNERSHIP: EqOwnershipCard
 
@@ -544,6 +537,8 @@ class GetContractResponseContent(BaseModel):
     type: ContractType
     eqData: EqModeData | None
     iqData: IqModeData | None
-    contractExtraction: ContractExtractionResult | None
+    parties: list[str] | None = Field(None, description='v1')
+    variables: ContractVariableMap | None
+    contractTexts: ContractTexts | None
     sharedWith: list[SharedWithItem] | None
     isOwner: bool | None
