@@ -187,16 +187,12 @@ class IqModeSectionKey(Enum):
     liabilitySafeguards = 'liabilitySafeguards'
 
 
-class MarkupStatistics(BaseModel):
-    originalLength: float
-    markedUpLength: float
-    totalVariables: float
-    processingTimeSeconds: float
-    chunksProcessed: float
-
-
 class PingResponseContent(BaseModel):
     message: str
+
+
+class PlainText(BaseModel):
+    text: str
 
 
 class PresignedPostData(BaseModel):
@@ -308,11 +304,6 @@ class ValidationErrorResponseContent(BaseModel):
     message: str
 
 
-class ContractMarkupResult(BaseModel):
-    markedUpContract: TaggedText
-    statistics: MarkupStatistics
-
-
 class ContractMetadata(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -340,6 +331,11 @@ class ContractSummaryItem(BaseModel):
     sharedWith: list[SharedWithItem] | None
     sharedUsers: list[SharedUser] | None
     sharedEmails: list[SharedEmail] | None
+
+
+class ContractTexts(BaseModel):
+    originalText: PlainText | None
+    taggedText: TaggedText | None
 
 
 class ContractVariable(BaseModel):
@@ -455,7 +451,6 @@ class ContractExtractionResult(BaseModel):
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
-    contractText: ContractMarkupResult | None
 
 
 class OWNERSHIP(BaseModel):
@@ -532,7 +527,7 @@ class ContractAnalysisRecord(BaseModel):
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
-    contractText: ContractMarkupResult | None
+    contractTexts: ContractTexts | None
     sharedUsers: list[SharedUserDetails] | None
     hasTTS: bool | None
     isSpecial: bool | None

@@ -5,7 +5,6 @@ namespace equaliq.extraction
 
 use equaliq#StringList
 use equaliq#ContractType
-use equaliq#TaggedText
 
 // General Contract Extraction not directly tied to EQ or IQ analysis
 
@@ -18,8 +17,6 @@ structure ContractExtractionResult {
   terms: ExtractionTermMap
 
   variables: ContractVariableMap
-
-  contractText: ContractMarkupResult
 }
 
 map ExtractionTermMap {
@@ -131,15 +128,6 @@ structure ContractVariable {
 
   // where the term is defined (e.g., "Section 7(ii)(c)(I)") - for EQ_TERM and DISCOVERED_TERM only
   definitionCitation: String
-}
-
-
-structure ContractMarkupResult {
-  @required
-  markedUpContract: TaggedText
-
-  @required
-  statistics: MarkupStatistics
 }
 
 structure MarkupStatistics {

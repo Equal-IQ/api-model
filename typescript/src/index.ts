@@ -86,7 +86,7 @@ export type ContractAnalysisRecord = {
   parties?: string[];
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
-  contractText?: ContractMarkupResult;
+  contractTexts?: ContractTexts;
   sharedUsers?: SharedUserDetails[];
   hasTTS?: boolean;
   isSpecial?: boolean;
@@ -97,12 +97,6 @@ export type ContractExtractionResult = {
   parties?: string[];
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
-  contractText?: ContractMarkupResult;
-};
-
-export type ContractMarkupResult = {
-  markedUpContract: TaggedText;
-  statistics: MarkupStatistics;
 };
 
 export type ContractMetadata = {
@@ -129,6 +123,11 @@ export type ContractSummaryItem = {
   sharedWith?: string[];
   sharedUsers?: string[];
   sharedEmails?: string[];
+};
+
+export type ContractTexts = {
+  originalText?: PlainText;
+  taggedText?: TaggedText;
 };
 
 export type ContractVariable = {
@@ -354,16 +353,12 @@ export type ListSpecialContractsResponseContent = {
   shared: ContractSummaryItem[];
 };
 
-export type MarkupStatistics = {
-  originalLength: number;
-  markedUpLength: number;
-  totalVariables: number;
-  processingTimeSeconds: number;
-  chunksProcessed: number;
-};
-
 export type PingResponseContent = {
   message: string;
+};
+
+export type PlainText = {
+  text: string;
 };
 
 export type PresignedPostData = {
@@ -442,7 +437,7 @@ export type UploadProfilePictureRequestContent = {
 
 export type UploadProfilePictureResponseContent = {
   message?: string;
-  picture_id?: string;
+  pictureId?: string;
 };
 
 export type UserProfile = {
