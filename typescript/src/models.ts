@@ -266,7 +266,7 @@ export interface components {
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
-            contractText?: components["schemas"]["ContractMarkupResult"];
+            contractTexts?: components["schemas"]["ContractTexts"];
             sharedUsers?: components["schemas"]["SharedUserDetails"][];
             hasTTS?: boolean;
             isSpecial?: boolean;
@@ -276,11 +276,6 @@ export interface components {
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
-            contractText?: components["schemas"]["ContractMarkupResult"];
-        };
-        ContractMarkupResult: {
-            markedUpContract: components["schemas"]["TaggedText"];
-            statistics: components["schemas"]["MarkupStatistics"];
         };
         ContractMetadata: {
             contractId: string;
@@ -308,6 +303,10 @@ export interface components {
             sharedWith?: string[];
             sharedUsers?: string[];
             sharedEmails?: string[];
+        };
+        ContractTexts: {
+            originalText?: components["schemas"]["PlainText"];
+            taggedText?: components["schemas"]["TaggedText"];
         };
         /** @enum {string} */
         ContractType: ContractType;
@@ -523,16 +522,11 @@ export interface components {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
-        MarkupStatistics: {
-            originalLength: number;
-            markedUpLength: number;
-            totalVariables: number;
-            /** Format: float */
-            processingTimeSeconds: number;
-            chunksProcessed: number;
-        };
         PingResponseContent: {
             message: string;
+        };
+        PlainText: {
+            text: string;
         };
         PresignedPostData: {
             url: string;

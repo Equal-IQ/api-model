@@ -36,3 +36,8 @@ structure TaggedText {
   @required
   text: String
 }
+
+structure PlainText {
+  @required
+  text: String
+}

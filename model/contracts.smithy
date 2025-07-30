@@ -7,7 +7,8 @@ use equaliq.iq#IqModeData
 use equaliq.extraction#ContractExtractionResult
 use equaliq.extraction#ExtractionTermMap
 use equaliq.extraction#ContractVariableMap
-use equaliq.extraction#ContractMarkupResult
+use equaliq#TaggedText
+use equaliq#PlainText
 
 // Contract structures
 
@@ -444,6 +445,10 @@ structure TTSItem {
 
 }
 
+structure ContractTexts {
+  originalText: PlainText
+  taggedText: TaggedText
+}
 
 structure ContractAnalysisRecord {
   @required
@@ -471,7 +476,7 @@ structure ContractAnalysisRecord {
 
   variables: ContractVariableMap
 
-  contractText: ContractMarkupResult
+  contractTexts: ContractTexts
 
   sharedUsers: SharedUserDetailsList
   hasTTS: Boolean
