@@ -276,6 +276,7 @@ export interface components {
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
+            contractTexts?: components["schemas"]["ContractTexts"];
         };
         ContractMetadata: {
             contractId: string;

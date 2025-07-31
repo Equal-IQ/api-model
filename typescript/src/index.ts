@@ -97,6 +97,7 @@ export type ContractExtractionResult = {
   parties?: string[];
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
+  contractTexts?: ContractTexts;
 };
 
 export type ContractMetadata = {
