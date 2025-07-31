@@ -270,7 +270,7 @@ export type GetContractResponseContent = {
   type: ContractType;
   eqData?: EqModeData;
   iqData?: IqModeData;
-  ContractExtraction?: ContractExtractionResult;
+  contractExtraction?: ContractExtractionResult;
   sharedWith?: string[];
   isOwner?: boolean;
 };

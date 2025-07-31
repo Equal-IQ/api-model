@@ -545,6 +545,6 @@ class GetContractResponseContent(BaseModel):
     type: ContractType
     eqData: EqModeData | None
     iqData: IqModeData | None
-    ContractExtraction: ContractExtractionResult | None
+    contractExtraction: ContractExtractionResult | None
     sharedWith: list[SharedWithItem] | None
     isOwner: bool | None

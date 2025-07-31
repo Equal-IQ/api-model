@@ -68,7 +68,7 @@ structure GetContractOutput {
   iqData: IqModeData
 
   @documentation("v1")
-  ContractExtraction: ContractExtractionResult
+  contractExtraction: ContractExtractionResult
 
   sharedWith: UserIdList
 

@@ -448,7 +448,7 @@ export interface components {
             type: components["schemas"]["ContractType"];
             eqData?: components["schemas"]["EqModeData"];
             iqData?: components["schemas"]["IqModeData"];
-            ContractExtraction?: components["schemas"]["ContractExtractionResult"];
+            contractExtraction?: components["schemas"]["ContractExtractionResult"];
             sharedWith?: string[];
             isOwner?: boolean;
         };
