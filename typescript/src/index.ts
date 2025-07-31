@@ -92,6 +92,14 @@ export type ContractAnalysisRecord = {
   isSpecial?: boolean;
 };
 
+export type ContractExtractionResult = {
+  extractedType?: ContractType;
+  parties?: string[];
+  terms?: ExtractionTermMap;
+  variables?: ContractVariableMap;
+  contractTexts?: ContractTexts;
+};
+
 export type ContractMetadata = {
   contractId: string;
   name: string;
@@ -262,9 +270,7 @@ export type GetContractResponseContent = {
   type: ContractType;
   eqData?: EqModeData;
   iqData?: IqModeData;
-  parties?: string[];
-  variables?: ContractVariableMap;
-  contractTexts?: ContractTexts;
+  ContractExtraction?: ContractExtractionResult;
   sharedWith?: string[];
   isOwner?: boolean;
 };
