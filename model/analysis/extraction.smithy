@@ -5,6 +5,7 @@ namespace equaliq.extraction
 
 use equaliq#StringList
 use equaliq#ContractType
+use equaliq#ContractTexts
 
 // General Contract Extraction not directly tied to EQ or IQ analysis
 
@@ -17,6 +18,8 @@ structure ContractExtractionResult {
   terms: ExtractionTermMap
 
   variables: ContractVariableMap
+
+  contractTexts: ContractTexts
 }
 
 map ExtractionTermMap {

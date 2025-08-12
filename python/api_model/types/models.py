@@ -451,6 +451,7 @@ class ContractExtractionResult(BaseModel):
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
+    contractTexts: ContractTexts | None
 
 
 class OWNERSHIP(BaseModel):
