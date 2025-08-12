@@ -431,14 +431,8 @@ export type UpdateProfileResponseContent = {
   updatedFields?: string[];
 };
 
-export type UploadProfilePictureRequestContent = {
-  image?: string;
-  userId?: string;
-};
-
 export type UploadProfilePictureResponseContent = {
-  message?: string;
-  pictureId?: string;
+  url_info: PresignedPostData;
 };
 
 export type UserProfile = {

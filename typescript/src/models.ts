@@ -587,13 +587,8 @@ export interface components {
             userId: string;
             updatedFields?: string[];
         };
-        UploadProfilePictureRequestContent: {
-            image?: string;
-            userId?: string;
-        };
         UploadProfilePictureResponseContent: {
-            message?: string;
-            pictureId?: string;
+            url_info: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
             userId?: string;
@@ -1117,11 +1112,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["UploadProfilePictureRequestContent"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description UploadProfilePicture 200 response */
             200: {
