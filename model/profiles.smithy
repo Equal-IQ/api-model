@@ -76,13 +76,11 @@ operation UploadProfilePicture {
 }
 
 structure UploadProfilePictureInput {
-    image: String
-    userId: UserId
 }
 
 structure UploadProfilePictureOutput {
-    message: String
-    pictureId: String
+    @required
+    url_info: PresignedPostData
 }
 
 structure UserProfile {
