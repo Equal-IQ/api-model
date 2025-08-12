@@ -405,7 +405,6 @@ export interface components {
         };
         ExposeTypesResponseContent: {
             contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
-            uploadProfilePictureInput?: components["schemas"]["UploadProfilePictureInput"];
         };
         ExtractionTerm: {
             name: string;
@@ -588,7 +587,6 @@ export interface components {
             userId: string;
             updatedFields?: string[];
         };
-        UploadProfilePictureInput: Record<string, never>;
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };

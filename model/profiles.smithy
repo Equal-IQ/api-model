@@ -76,7 +76,6 @@ operation UploadProfilePicture {
 }
 
 structure UploadProfilePictureInput {
-    
 }
 
 structure UploadProfilePictureOutput {

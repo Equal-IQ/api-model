@@ -222,7 +222,6 @@ export type EqResponsibilitiesCard = {
 
 export type ExposeTypesResponseContent = {
   contractAnalysisRecord?: ContractAnalysisRecord;
-  uploadProfilePictureInput?: UploadProfilePictureInput;
 };
 
 export type ExtractionTerm = {
@@ -431,8 +430,6 @@ export type UpdateProfileResponseContent = {
   userId: string;
   updatedFields?: string[];
 };
-
-export type UploadProfilePictureInput = unknown;
 
 export type UploadProfilePictureResponseContent = {
   url_info: PresignedPostData;

@@ -280,10 +280,6 @@ class UpdateProfileResponseContent(BaseModel):
     updatedFields: list[str] | None
 
 
-class UploadProfilePictureInput(BaseModel):
-    pass
-
-
 class UploadProfilePictureResponseContent(BaseModel):
     url_info: PresignedPostData
 
@@ -534,7 +530,6 @@ class ContractAnalysisRecord(BaseModel):
 
 class ExposeTypesResponseContent(BaseModel):
     contractAnalysisRecord: ContractAnalysisRecord | None
-    uploadProfilePictureInput: UploadProfilePictureInput | None
 
 
 class GetContractResponseContent(BaseModel):
