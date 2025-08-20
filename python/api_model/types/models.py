@@ -280,14 +280,8 @@ class UpdateProfileResponseContent(BaseModel):
     updatedFields: list[str] | None
 
 
-class UploadProfilePictureRequestContent(BaseModel):
-    image: str | None
-    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-
-
 class UploadProfilePictureResponseContent(BaseModel):
-    message: str | None
-    pictureId: str | None
+    url_info: PresignedPostData
 
 
 class UserProfile(BaseModel):
