@@ -16,9 +16,15 @@ string ContractId with [UuidLikeMixin]
 
 enum ContractStatus {
   PROCESSING = "processing"
+  AWAITING_UPLOAD = "awaiting_upload"
+  EXTRACTING_TEXT = "extracting_text"
+  EQ_GENERATION = "eq_generation"
+  IQ_GENERATION = "iq_generation"
+  VARIABLE_EXTRACTION = "variable_extraction"
+  CONTRACT_MARKUP = "contract_markup"
+  TTS_GENERATION = "tts_generation"
   COMPLETE = "complete"
   ERROR = "error"
-  AWAITING_UPLOAD = "awaiting_upload"
 }
 
 enum ContractType {
