@@ -1196,9 +1196,15 @@ export enum AccountType {
 }
 export enum ContractStatus {
     processing = "processing",
+    awaiting_upload = "awaiting_upload",
+    extracting_text = "extracting_text",
+    eq_generation = "eq_generation",
+    iq_generation = "iq_generation",
+    variable_extraction = "variable_extraction",
+    contract_markup = "contract_markup",
+    tts_generation = "tts_generation",
     complete = "complete",
-    error = "error",
-    awaiting_upload = "awaiting_upload"
+    error = "error"
 }
 export enum ContractType {
     recording = "recording",
