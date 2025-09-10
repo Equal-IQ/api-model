@@ -9,6 +9,14 @@
           "format": "json"
         }
       }
+    },
+    "openapi-orgs": {
+      "plugins": {
+        "openapi": {
+          "service": "equaliq.orgs#Orgs",
+          "format": "json"
+        }
+      }
     }
   }
 }

@@ -27,26 +27,12 @@ service EqualIQ {
     UploadProfilePicture
     UpdateProfile
 
-    // organizations.smithy
-    CreateOrganization
-    UpdateOrganization
-    DeleteOrganization
-    InviteToOrganization
-    UpdateOrganizationMember
-    RemoveOrganizationMember
-    TransferOrganizationOwnership
-    CreateCustomRole
-    UpdateCustomRole
-    DeleteCustomRole
-    ListOrganizationInvitations
-    CancelOrganizationInvitation
-    ResendOrganizationInvitation
-
     // Utility operations
     Ping
     ExposeTypes
   ]
 }
+
 
 // When changing APIs, we sometimes want to expose unified types that aren't directly tied to any API.
 structure ExposedTypes { 
