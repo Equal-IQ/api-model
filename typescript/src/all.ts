@@ -8,7 +8,6 @@ export { Main };
 export { Orgs };
 
 // Shared types (deduplicated)
-export type AccountType = Main.AccountType;
 export type InternalServerErrorResponseContent = Main.InternalServerErrorResponseContent;
 export type ResourceNotFoundErrorResponseContent = Main.ResourceNotFoundErrorResponseContent;
 export type UserProfile = Main.UserProfile;
