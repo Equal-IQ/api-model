@@ -162,9 +162,9 @@ structure CustomRole {
 }
 
 structure OrgTheme {
-    primaryColor: String
-    secondaryColor: String
-    accentColor: String
+    primaryColor: HexColor
+    secondaryColor: HexColor
+    accentColor: HexColor
 }
 
 // ==================== ORGANIZATION MANAGEMENT APIs ====================
@@ -459,7 +459,7 @@ structure DeleteCustomRoleOutput {
 // ==================== INVITATION MANAGEMENT APIs ====================
 
 
-@http(method: "POST", uri: "/orgs/invite/create")
+@http(method: "POST", uri: "/orgs/invites/create")
 operation CreateOrgInvite {
     input: CreateOrgInviteInput
     output: CreateOrgInviteOutput

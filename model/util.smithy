@@ -22,6 +22,9 @@ string ISODate
 @pattern("^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&\/=]*)$")
 string Url // This pattern passes for any URLs we're currently using (S3 Presigned URLs)
 
+@pattern("^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$")
+string HexColor
+
 // Generics
 list StringList {
   member: String
@@ -41,3 +44,4 @@ structure PlainText {
   @required
   text: String
 }
+

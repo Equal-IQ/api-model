@@ -212,22 +212,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/orgs/invite/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateOrgInvite"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/orgs/invites/cancel": {
         parameters: {
             query?: never;
@@ -238,6 +222,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["CancelOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateOrgInvite"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1602,7 +1602,7 @@ export interface operations {
             };
         };
     };
-    CreateOrgInvite: {
+    CancelOrgInvite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1611,17 +1611,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateOrgInviteRequestContent"];
+                "application/json": components["schemas"]["CancelOrgInviteRequestContent"];
             };
         };
         responses: {
-            /** @description CreateOrgInvite 200 response */
+            /** @description CancelOrgInvite 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateOrgInviteResponseContent"];
+                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1644,7 +1644,7 @@ export interface operations {
             };
         };
     };
-    CancelOrgInvite: {
+    CreateOrgInvite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1653,17 +1653,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CancelOrgInviteRequestContent"];
+                "application/json": components["schemas"]["CreateOrgInviteRequestContent"];
             };
         };
         responses: {
-            /** @description CancelOrgInvite 200 response */
+            /** @description CreateOrgInvite 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
+                    "application/json": components["schemas"]["CreateOrgInviteResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */

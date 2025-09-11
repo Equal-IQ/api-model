@@ -275,9 +275,13 @@ class OrgRole(Enum):
 
 
 class OrgTheme(BaseModel):
-    primaryColor: str | None
-    secondaryColor: str | None
-    accentColor: str | None
+    primaryColor: str | None = Field(
+        None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$'
+    )
+    secondaryColor: str | None = Field(
+        None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$'
+    )
+    accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
 class OrgType(Enum):
