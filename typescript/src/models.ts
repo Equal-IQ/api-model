@@ -572,7 +572,7 @@ export interface components {
             type: components["schemas"]["OrgType"];
             description?: string;
             website?: string;
-            billingEmail?: string;
+            billingEmail: string;
         };
         CreateOrgResponseContent: {
             success: boolean;
@@ -869,6 +869,7 @@ export interface components {
         ResendOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
+            expiresDate?: string;
         };
         ResendOrgInviteResponseContent: {
             success: boolean;

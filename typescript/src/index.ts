@@ -231,7 +231,7 @@ export type CreateOrgRequestContent = {
   type: OrgType;
   description?: string;
   website?: string;
-  billingEmail?: string;
+  billingEmail: string;
 };
 
 export type CreateOrgResponseContent = {
@@ -551,6 +551,7 @@ export type RemoveOrgMemberResponseContent = {
 export type ResendOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
+  expiresDate?: string;
 };
 
 export type ResendOrgInviteResponseContent = {

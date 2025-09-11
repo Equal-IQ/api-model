@@ -555,6 +555,9 @@ structure ResendOrgInviteInput {
 
     @required
     inviteId: InviteId
+
+    expiresDate: ISODate
+
 }
 
 structure ResendOrgInviteOutput {
