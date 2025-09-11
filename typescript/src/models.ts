@@ -148,214 +148,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateOrganization"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/delete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteOrganization"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/invitations": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListOrganizationInvitations"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/invitations/cancel": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CancelOrganizationInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/invitations/resend": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ResendOrganizationInvitation"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/invite": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["InviteToOrganization"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/removeMember": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["RemoveOrganizationMember"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/roles/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateCustomRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/roles/delete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteCustomRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/roles/update": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateCustomRole"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/transferOwnership": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["TransferOrganizationOwnership"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/update": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateOrganization"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/organizations/updateMember": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateOrganizationMember"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/ping": {
         parameters: {
             query?: never;
@@ -458,25 +250,8 @@ export interface components {
     schemas: {
         /** @enum {string} */
         AccountType: AccountType;
-        AuthenticationError: {
-            message: string;
-        };
         AuthenticationErrorResponseContent: {
             message: string;
-        };
-        CancelOrganizationInvitationInput: {
-            organizationId: string;
-            invitationId: string;
-        };
-        CancelOrganizationInvitationOutput: {
-            success: boolean;
-        };
-        CancelOrganizationInvitationRequestContent: {
-            organizationId: string;
-            invitationId: string;
-        };
-        CancelOrganizationInvitationResponseContent: {
-            success: boolean;
         };
         ContractAnalysisRecord: {
             contractId: string;
@@ -555,93 +330,10 @@ export interface components {
         };
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
-        CreateCustomRoleInput: {
-            organizationId: string;
-            name: string;
-            description?: string;
-            permissions: components["schemas"]["OrganizationPermission"][];
-        };
-        CreateCustomRoleOutput: {
-            success: boolean;
-            customRole: components["schemas"]["CustomRole"];
-        };
-        CreateCustomRoleRequestContent: {
-            organizationId: string;
-            name: string;
-            description?: string;
-            permissions: components["schemas"]["OrganizationPermission"][];
-        };
-        CreateCustomRoleResponseContent: {
-            success: boolean;
-            customRole: components["schemas"]["CustomRole"];
-        };
-        CreateOrganizationInput: {
-            name: string;
-            type: components["schemas"]["OrganizationType"];
-            description?: string;
-            website?: string;
-            billingEmail?: string;
-        };
-        CreateOrganizationOutput: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        CreateOrganizationRequestContent: {
-            name: string;
-            type: components["schemas"]["OrganizationType"];
-            description?: string;
-            website?: string;
-            billingEmail?: string;
-        };
-        CreateOrganizationResponseContent: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        CustomRole: {
-            customRoleId: string;
-            organizationId: string;
-            name: string;
-            description?: string;
-            permissions: components["schemas"]["OrganizationPermission"][];
-            createdDate: string;
-            createdBy: string;
-        };
-        DeleteContractInput: {
-            contractId: string;
-        };
-        DeleteContractOutput: {
-            success: boolean;
-        };
         DeleteContractRequestContent: {
             contractId: string;
         };
         DeleteContractResponseContent: {
-            success: boolean;
-        };
-        DeleteCustomRoleInput: {
-            organizationId: string;
-            customRoleId: string;
-        };
-        DeleteCustomRoleOutput: {
-            success: boolean;
-        };
-        DeleteCustomRoleRequestContent: {
-            organizationId: string;
-            customRoleId: string;
-        };
-        DeleteCustomRoleResponseContent: {
-            success: boolean;
-        };
-        DeleteOrganizationInput: {
-            organizationId: string;
-        };
-        DeleteOrganizationOutput: {
-            success: boolean;
-        };
-        DeleteOrganizationRequestContent: {
-            organizationId: string;
-        };
-        DeleteOrganizationResponseContent: {
             success: boolean;
         };
         /** @enum {string} */
@@ -714,9 +406,6 @@ export interface components {
         ExposeTypesResponseContent: {
             contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
         };
-        ExposedTypes: {
-            contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
-        };
         ExtractionTerm: {
             name: string;
             definition: string;
@@ -743,26 +432,6 @@ export interface components {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
         };
-        GetContractInput: {
-            contractId: string;
-        };
-        GetContractOutput: {
-            contractId: string;
-            ownerId: string;
-            name: string;
-            type: components["schemas"]["ContractType"];
-            eqData?: components["schemas"]["EqModeData"];
-            iqData?: components["schemas"]["IqModeData"];
-            contractExtraction?: components["schemas"]["ContractExtractionResult"];
-            sharedWith?: string[];
-            isOwner?: boolean;
-        };
-        GetContractReadURLInput: {
-            contractId: string;
-        };
-        GetContractReadURLOutput: {
-            url: string;
-        };
         GetContractReadURLRequestContent: {
             contractId: string;
         };
@@ -783,19 +452,6 @@ export interface components {
             sharedWith?: string[];
             isOwner?: boolean;
         };
-        GetProfileInput: {
-            userId?: string;
-        };
-        GetProfileOutput: {
-            userId: string;
-            profile: components["schemas"]["UserProfile"];
-        };
-        GetProfilePictureInput: {
-            userId?: string;
-        };
-        GetProfilePictureOutput: {
-            profilePictureURL: string;
-        };
         GetProfilePictureRequestContent: {
             userId?: string;
         };
@@ -808,19 +464,6 @@ export interface components {
         GetProfileResponseContent: {
             userId: string;
             profile: components["schemas"]["UserProfile"];
-        };
-        GetSpecialContractInput: {
-            contractId: string;
-        };
-        GetSpecialContractOutput: {
-            contractId: string;
-            name: string;
-            type: components["schemas"]["ContractType"];
-            eqmode: unknown;
-            sections: unknown;
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith: string[];
         };
         GetSpecialContractRequestContent: {
             contractId: string;
@@ -835,49 +478,14 @@ export interface components {
             ownerId: string;
             sharedWith: string[];
         };
-        GetUploadURLInput: {
-            name: string;
-        };
-        GetUploadURLOutput: {
-            url_info: components["schemas"]["PresignedPostData"];
-        };
         GetUploadURLRequestContent: {
             name: string;
         };
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
-        InternalServerError: {
-            message: string;
-        };
         InternalServerErrorResponseContent: {
             message: string;
-        };
-        /** @enum {string} */
-        InvitationStatus: InvitationStatus;
-        InviteToOrganizationInput: {
-            organizationId: string;
-            emails: string[];
-            role: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            organizationEmail?: string;
-        };
-        InviteToOrganizationOutput: {
-            success: boolean;
-            invitations: components["schemas"]["OrganizationInvitation"][];
-            failedEmails?: string[];
-        };
-        InviteToOrganizationRequestContent: {
-            organizationId: string;
-            emails: string[];
-            role: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            organizationEmail?: string;
-        };
-        InviteToOrganizationResponseContent: {
-            success: boolean;
-            invitations: components["schemas"]["OrganizationInvitation"][];
-            failedEmails?: string[];
         };
         IqModeData: {
             iqModeData?: components["schemas"]["IqModePerspectiveMap"];
@@ -903,15 +511,6 @@ export interface components {
         IqModeSectionMap: {
             [key: string]: components["schemas"]["IqModeSection"];
         };
-        ListContractsInput: Record<string, never>;
-        ListContractsOutput: {
-            /** @description Deprecation path (v0.5) */
-            owned?: components["schemas"]["ContractSummaryItem"][];
-            /** @description Deprecation path (v0.5) */
-            shared?: components["schemas"]["ContractSummaryItem"][];
-            /** @description v1 */
-            contracts?: components["schemas"]["ContractMetadata"][];
-        };
         ListContractsResponseContent: {
             /** @description Deprecation path (v0.5) */
             owned?: components["schemas"]["ContractSummaryItem"][];
@@ -920,73 +519,9 @@ export interface components {
             /** @description v1 */
             contracts?: components["schemas"]["ContractMetadata"][];
         };
-        ListOrganizationInvitationsInput: {
-            organizationId: string;
-            status?: components["schemas"]["InvitationStatus"];
-        };
-        ListOrganizationInvitationsOutput: {
-            invitations: components["schemas"]["OrganizationInvitation"][];
-        };
-        ListOrganizationInvitationsRequestContent: {
-            organizationId: string;
-            status?: components["schemas"]["InvitationStatus"];
-        };
-        ListOrganizationInvitationsResponseContent: {
-            invitations: components["schemas"]["OrganizationInvitation"][];
-        };
-        ListSpecialContractsInput: Record<string, never>;
-        ListSpecialContractsOutput: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
-        };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
-        };
-        Organization: {
-            organizationId: string;
-            name: string;
-            type: components["schemas"]["OrganizationType"];
-            primaryOwner: string;
-            description?: string;
-            website?: string;
-            billingEmail?: string;
-            createdDate: string;
-            memberCount?: number;
-        };
-        OrganizationInvitation: {
-            invitationId: string;
-            organizationId: string;
-            invitedEmail: string;
-            role: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            customRoleName?: string;
-            customPermissions?: components["schemas"]["OrganizationPermission"][];
-            invitedBy: string;
-            status: components["schemas"]["InvitationStatus"];
-            createdDate: string;
-            expiresDate?: string;
-            inviterProfile?: components["schemas"]["UserProfile"];
-        };
-        OrganizationMember: {
-            userId: string;
-            organizationEmail: string;
-            role: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            customRoleName?: string;
-            customPermissions?: components["schemas"]["OrganizationPermission"][];
-            joinedDate: string;
-            userProfile?: components["schemas"]["UserProfile"];
-        };
-        /** @enum {string} */
-        OrganizationPermission: OrganizationPermission;
-        /** @enum {string} */
-        OrganizationRole: OrganizationRole;
-        /** @enum {string} */
-        OrganizationType: OrganizationType;
-        PingInput: Record<string, never>;
-        PingOutput: {
-            message: string;
         };
         PingResponseContent: {
             message: string;
@@ -998,60 +533,11 @@ export interface components {
             url: string;
             fields: unknown;
         };
-        ProcessingIncompleteError: {
-            message: string;
-        };
         ProcessingIncompleteErrorResponseContent: {
-            message: string;
-        };
-        RemoveOrganizationMemberInput: {
-            organizationId: string;
-            userId: string;
-        };
-        RemoveOrganizationMemberOutput: {
-            success: boolean;
-        };
-        RemoveOrganizationMemberRequestContent: {
-            organizationId: string;
-            userId: string;
-        };
-        RemoveOrganizationMemberResponseContent: {
-            success: boolean;
-        };
-        ResendOrganizationInvitationInput: {
-            organizationId: string;
-            invitationId: string;
-        };
-        ResendOrganizationInvitationOutput: {
-            success: boolean;
-            invitation: components["schemas"]["OrganizationInvitation"];
-        };
-        ResendOrganizationInvitationRequestContent: {
-            organizationId: string;
-            invitationId: string;
-        };
-        ResendOrganizationInvitationResponseContent: {
-            success: boolean;
-            invitation: components["schemas"]["OrganizationInvitation"];
-        };
-        ResourceNotFoundError: {
             message: string;
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
-        };
-        ShareContractInput: {
-            contractId: string;
-            emailsToAdd?: string[];
-            emailsToRemove?: string[];
-        };
-        ShareContractOutput: {
-            success: boolean;
-            contractId: string;
-            sharedWith: components["schemas"]["SharedUserDetails"][];
-            added?: string[];
-            removed?: string[];
-            invalidRemoves?: string[];
         };
         ShareContractRequestContent: {
             contractId: string;
@@ -1080,115 +566,12 @@ export interface components {
         TaggedText: {
             text: string;
         };
-        TransferOrganizationOwnershipInput: {
-            organizationId: string;
-            newOwnerId: string;
-        };
-        TransferOrganizationOwnershipOutput: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        TransferOrganizationOwnershipRequestContent: {
-            organizationId: string;
-            newOwnerId: string;
-        };
-        TransferOrganizationOwnershipResponseContent: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        UpdateContractInput: {
-            contractId: string;
-            name: string;
-        };
-        UpdateContractOutput: {
-            success: boolean;
-        };
         UpdateContractRequestContent: {
             contractId: string;
             name: string;
         };
         UpdateContractResponseContent: {
             success: boolean;
-        };
-        UpdateCustomRoleInput: {
-            organizationId: string;
-            customRoleId: string;
-            name?: string;
-            description?: string;
-            permissions?: components["schemas"]["OrganizationPermission"][];
-        };
-        UpdateCustomRoleOutput: {
-            success: boolean;
-            customRole: components["schemas"]["CustomRole"];
-        };
-        UpdateCustomRoleRequestContent: {
-            organizationId: string;
-            customRoleId: string;
-            name?: string;
-            description?: string;
-            permissions?: components["schemas"]["OrganizationPermission"][];
-        };
-        UpdateCustomRoleResponseContent: {
-            success: boolean;
-            customRole: components["schemas"]["CustomRole"];
-        };
-        UpdateOrganizationInput: {
-            organizationId: string;
-            name?: string;
-            description?: string;
-            website?: string;
-            billingEmail?: string;
-        };
-        UpdateOrganizationMemberInput: {
-            organizationId: string;
-            userId: string;
-            role?: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            organizationEmail?: string;
-        };
-        UpdateOrganizationMemberOutput: {
-            success: boolean;
-            member: components["schemas"]["OrganizationMember"];
-        };
-        UpdateOrganizationMemberRequestContent: {
-            organizationId: string;
-            userId: string;
-            role?: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            organizationEmail?: string;
-        };
-        UpdateOrganizationMemberResponseContent: {
-            success: boolean;
-            member: components["schemas"]["OrganizationMember"];
-        };
-        UpdateOrganizationOutput: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        UpdateOrganizationRequestContent: {
-            organizationId: string;
-            name?: string;
-            description?: string;
-            website?: string;
-            billingEmail?: string;
-        };
-        UpdateOrganizationResponseContent: {
-            success: boolean;
-            organization: components["schemas"]["Organization"];
-        };
-        UpdateProfileInput: {
-            firstName?: string;
-            lastName?: string;
-            displayName?: string;
-            accountType?: components["schemas"]["AccountType"];
-            bio?: string;
-            isOver18?: boolean;
-        };
-        UpdateProfileOutput: {
-            success: boolean;
-            message: string;
-            userId: string;
-            updatedFields?: string[];
         };
         UpdateProfileRequestContent: {
             firstName?: string;
@@ -1204,10 +587,6 @@ export interface components {
             userId: string;
             updatedFields?: string[];
         };
-        UploadProfilePictureInput: Record<string, never>;
-        UploadProfilePictureOutput: {
-            url_info: components["schemas"]["PresignedPostData"];
-        };
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
@@ -1219,9 +598,6 @@ export interface components {
             email?: string;
             accountType?: components["schemas"]["AccountType"];
             bio?: string;
-        };
-        ValidationError: {
-            message: string;
         };
         ValidationErrorResponseContent: {
             message: string;
@@ -1583,552 +959,6 @@ export interface operations {
             };
         };
     };
-    CreateOrganization: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateOrganizationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateOrganization 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateOrganizationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteOrganization: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteOrganizationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteOrganization 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteOrganizationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListOrganizationInvitations: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ListOrganizationInvitationsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ListOrganizationInvitations 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListOrganizationInvitationsResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    CancelOrganizationInvitation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CancelOrganizationInvitationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CancelOrganizationInvitation 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CancelOrganizationInvitationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ResendOrganizationInvitation: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ResendOrganizationInvitationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ResendOrganizationInvitation 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResendOrganizationInvitationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    InviteToOrganization: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["InviteToOrganizationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description InviteToOrganization 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InviteToOrganizationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    RemoveOrganizationMember: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RemoveOrganizationMemberRequestContent"];
-            };
-        };
-        responses: {
-            /** @description RemoveOrganizationMember 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoveOrganizationMemberResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    CreateCustomRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateCustomRoleRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateCustomRole 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateCustomRoleResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteCustomRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteCustomRoleRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteCustomRole 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteCustomRoleResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateCustomRole: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateCustomRoleRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateCustomRole 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateCustomRoleResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    TransferOrganizationOwnership: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["TransferOrganizationOwnershipRequestContent"];
-            };
-        };
-        responses: {
-            /** @description TransferOrganizationOwnership 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["TransferOrganizationOwnershipResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateOrganization: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateOrganizationRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateOrganization 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateOrganizationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateOrganizationMember: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateOrganizationMemberRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateOrganizationMember 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateOrganizationMemberResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     Ping: {
         parameters: {
             query?: never;
@@ -2407,44 +1237,10 @@ export enum EqCardType {
     A = "A",
     B = "B"
 }
-export enum InvitationStatus {
-    pending = "pending",
-    accepted = "accepted",
-    declined = "declined",
-    expired = "expired"
-}
 export enum IqModeSectionKey {
     earnings = "earnings",
     qualityOfRights = "qualityOfRights",
     usageObligations = "usageObligations",
     agreementLength = "agreementLength",
     liabilitySafeguards = "liabilitySafeguards"
-}
-export enum OrganizationPermission {
-    manage_members = "manage_members",
-    manage_billing = "manage_billing",
-    manage_settings = "manage_settings",
-    view_all_contracts = "view_all_contracts",
-    manage_contracts = "manage_contracts",
-    invite_users = "invite_users",
-    manage_roles = "manage_roles",
-    view_analytics = "view_analytics"
-}
-export enum OrganizationRole {
-    primary_owner = "primary_owner",
-    admin = "admin",
-    billing_admin = "billing_admin",
-    member = "member",
-    viewer = "viewer",
-    custom = "custom"
-}
-export enum OrganizationType {
-    law_firm = "law_firm",
-    record_label = "record_label",
-    management_company = "management_company",
-    publishing_company = "publishing_company",
-    production_company = "production_company",
-    talent_agency = "talent_agency",
-    distribution_company = "distribution_company",
-    other = "other"
 }

@@ -1,51 +1,14 @@
 $version: "2"
 
-namespace equaliq.orgs
+namespace equaliq
 
-use equaliq#UserId
-use equaliq#Email
-use equaliq#EmailList  
-use equaliq#ISODate
-use equaliq#Url
-use equaliq#UuidLikeMixin
-use equaliq#UserProfile
-use equaliq#AuthenticationError
-use equaliq#ResourceNotFoundError
-use equaliq#ValidationError
-use equaliq#InternalServerError
+// Organization structures and operations
 
-use aws.protocols#restJson1
-
-// Org structures and operations
-
-string OrgId with [UuidLikeMixin]
+string OrganizationId with [UuidLikeMixin]
 string InvitationId with [UuidLikeMixin]
 string CustomRoleId with [UuidLikeMixin]
 
-@restJson1 
-service Orgs {
-  version: "2023-01-01"
-  operations: [
-
-    // organizations.smithy
-    CreateOrg
-    UpdateOrg
-    DeleteOrg
-    InviteToOrg
-    UpdateOrgMember
-    RemoveOrgMember
-    TransferOrgOwnership
-    CreateCustomRole
-    UpdateCustomRole
-    DeleteCustomRole
-    ListOrgInvitations
-    CancelOrgInvitation
-    ResendOrgInvitation
-
-  ]
-}
-
-enum OrgType {
+enum OrganizationType {
     LAW_FIRM = "law_firm"
     RECORD_LABEL = "record_label" 
     MANAGEMENT_COMPANY = "management_company"
@@ -56,7 +19,7 @@ enum OrgType {
     OTHER = "other"
 }
 
-enum OrgRole {
+enum OrganizationRole {
     PRIMARY_OWNER = "primary_owner"
     ADMIN = "admin"
     BILLING_ADMIN = "billing_admin"
@@ -72,7 +35,7 @@ enum InvitationStatus {
     EXPIRED = "expired"
 }
 
-enum OrgPermission {
+enum OrganizationPermission {
     MANAGE_MEMBERS = "manage_members"
     MANAGE_BILLING = "manage_billing"
     MANAGE_SETTINGS = "manage_settings"
@@ -83,31 +46,31 @@ enum OrgPermission {
     VIEW_ANALYTICS = "view_analytics"
 }
 
-list OrgPermissionList {
-    member: OrgPermission
+list PermissionList {
+    member: OrganizationPermission
 }
 
-list OrgMemberList {
-    member: OrgMember
+list OrganizationMemberList {
+    member: OrganizationMember
 }
 
-list OrgInvitationList {
-    member: OrgInvitation
+list OrganizationInvitationList {
+    member: OrganizationInvitation
 }
 
 list CustomRoleList {
     member: CustomRole
 }
 
-structure Org {
+structure Organization {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     name: String
 
     @required
-    type: OrgType
+    type: OrganizationType
 
     @required
     primaryOwner: UserId
@@ -119,10 +82,11 @@ structure Org {
     @required
     createdDate: ISODate
 
+    @required
     memberCount: Integer
 }
 
-structure OrgMember {
+structure OrganizationMember {
     @required
     userId: UserId
 
@@ -130,11 +94,11 @@ structure OrgMember {
     organizationEmail: Email
 
     @required
-    role: OrgRole
+    role: OrganizationRole
 
     customRoleId: CustomRoleId
     customRoleName: String
-    customPermissions: OrgPermissionList
+    customPermissions: PermissionList
 
     @required
     joinedDate: ISODate
@@ -142,22 +106,22 @@ structure OrgMember {
     userProfile: UserProfile
 }
 
-structure OrgInvitation {
+structure OrganizationInvitation {
     @required
     invitationId: InvitationId
 
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     invitedEmail: Email
 
     @required
-    role: OrgRole
+    role: OrganizationRole
 
     customRoleId: CustomRoleId
     customRoleName: String
-    customPermissions: OrgPermissionList
+    customPermissions: PermissionList
 
     @required
     invitedBy: UserId
@@ -177,7 +141,7 @@ structure CustomRole {
     customRoleId: CustomRoleId
 
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     name: String
@@ -185,7 +149,7 @@ structure CustomRole {
     description: String
 
     @required
-    permissions: OrgPermissionList
+    permissions: PermissionList
 
     @required
     createdDate: ISODate
@@ -197,9 +161,9 @@ structure CustomRole {
 // ==================== ORGANIZATION MANAGEMENT APIs ====================
 
 @http(method: "POST", uri: "/organizations/create")
-operation CreateOrg {
-    input: CreateOrgInput
-    output: CreateOrgOutput
+operation CreateOrganization {
+    input: CreateOrganizationInput
+    output: CreateOrganizationOutput
     errors: [
         AuthenticationError
         ValidationError
@@ -207,30 +171,30 @@ operation CreateOrg {
     ]
 }
 
-structure CreateOrgInput {
+structure CreateOrganizationInput {
     @required
     name: String
 
     @required
-    type: OrgType
+    type: OrganizationType
 
     description: String
     website: Url
     billingEmail: Email
 }
 
-structure CreateOrgOutput {
+structure CreateOrganizationOutput {
     @required
     success: Boolean
 
     @required
-    organization: Org
+    organization: Organization
 }
 
 @http(method: "POST", uri: "/organizations/update")
-operation UpdateOrg {
-    input: UpdateOrgInput
-    output: UpdateOrgOutput
+operation UpdateOrganization {
+    input: UpdateOrganizationInput
+    output: UpdateOrganizationOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -239,9 +203,9 @@ operation UpdateOrg {
     ]
 }
 
-structure UpdateOrgInput {
+structure UpdateOrganizationInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     name: String
     description: String
@@ -249,18 +213,18 @@ structure UpdateOrgInput {
     billingEmail: Email
 }
 
-structure UpdateOrgOutput {
+structure UpdateOrganizationOutput {
     @required
     success: Boolean
 
     @required
-    organization: Org
+    organization: Organization
 }
 
 @http(method: "POST", uri: "/organizations/delete")
-operation DeleteOrg {
-    input: DeleteOrgInput
-    output: DeleteOrgOutput
+operation DeleteOrganization {
+    input: DeleteOrganizationInput
+    output: DeleteOrganizationOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -269,12 +233,12 @@ operation DeleteOrg {
     ]
 }
 
-structure DeleteOrgInput {
+structure DeleteOrganizationInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 }
 
-structure DeleteOrgOutput {
+structure DeleteOrganizationOutput {
     @required
     success: Boolean
 }
@@ -282,9 +246,9 @@ structure DeleteOrgOutput {
 // ==================== MEMBER MANAGEMENT APIs ====================
 
 @http(method: "POST", uri: "/organizations/invite")
-operation InviteToOrg {
-    input: InviteToOrgInput
-    output: InviteToOrgOutput
+operation InviteToOrganization {
+    input: InviteToOrganizationInput
+    output: InviteToOrganizationOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -293,34 +257,34 @@ operation InviteToOrg {
     ]
 }
 
-structure InviteToOrgInput {
+structure InviteToOrganizationInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     emails: EmailList
 
     @required
-    role: OrgRole
+    role: OrganizationRole
 
     customRoleId: CustomRoleId
     organizationEmail: Email
 }
 
-structure InviteToOrgOutput {
+structure InviteToOrganizationOutput {
     @required
     success: Boolean
 
     @required
-    invitations: OrgInvitationList
+    invitations: OrganizationInvitationList
 
     failedEmails: EmailList
 }
 
 @http(method: "POST", uri: "/organizations/updateMember")
-operation UpdateOrgMember {
-    input: UpdateOrgMemberInput
-    output: UpdateOrgMemberOutput
+operation UpdateOrganizationMember {
+    input: UpdateOrganizationMemberInput
+    output: UpdateOrganizationMemberOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -329,30 +293,30 @@ operation UpdateOrgMember {
     ]
 }
 
-structure UpdateOrgMemberInput {
+structure UpdateOrganizationMemberInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     userId: UserId
 
-    role: OrgRole
+    role: OrganizationRole
     customRoleId: CustomRoleId
     organizationEmail: Email
 }
 
-structure UpdateOrgMemberOutput {
+structure UpdateOrganizationMemberOutput {
     @required
     success: Boolean
 
     @required
-    member: OrgMember
+    member: OrganizationMember
 }
 
 @http(method: "POST", uri: "/organizations/removeMember")
-operation RemoveOrgMember {
-    input: RemoveOrgMemberInput
-    output: RemoveOrgMemberOutput
+operation RemoveOrganizationMember {
+    input: RemoveOrganizationMemberInput
+    output: RemoveOrganizationMemberOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -361,23 +325,23 @@ operation RemoveOrgMember {
     ]
 }
 
-structure RemoveOrgMemberInput {
+structure RemoveOrganizationMemberInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     userId: UserId
 }
 
-structure RemoveOrgMemberOutput {
+structure RemoveOrganizationMemberOutput {
     @required
     success: Boolean
 }
 
 @http(method: "POST", uri: "/organizations/transferOwnership")
-operation TransferOrgOwnership {
-    input: TransferOrgOwnershipInput
-    output: TransferOrgOwnershipOutput
+operation TransferOrganizationOwnership {
+    input: TransferOrganizationOwnershipInput
+    output: TransferOrganizationOwnershipOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -386,20 +350,20 @@ operation TransferOrgOwnership {
     ]
 }
 
-structure TransferOrgOwnershipInput {
+structure TransferOrganizationOwnershipInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     newOwnerId: UserId
 }
 
-structure TransferOrgOwnershipOutput {
+structure TransferOrganizationOwnershipOutput {
     @required
     success: Boolean
 
     @required
-    organization: Org
+    organization: Organization
 }
 
 // ==================== ROLE MANAGEMENT APIs ====================
@@ -418,7 +382,7 @@ operation CreateCustomRole {
 
 structure CreateCustomRoleInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     name: String
@@ -426,7 +390,7 @@ structure CreateCustomRoleInput {
     description: String
 
     @required
-    permissions: OrgPermissionList
+    permissions: PermissionList
 }
 
 structure CreateCustomRoleOutput {
@@ -451,14 +415,14 @@ operation UpdateCustomRole {
 
 structure UpdateCustomRoleInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     customRoleId: CustomRoleId
 
     name: String
     description: String
-    permissions: OrgPermissionList
+    permissions: PermissionList
 }
 
 structure UpdateCustomRoleOutput {
@@ -483,7 +447,7 @@ operation DeleteCustomRole {
 
 structure DeleteCustomRoleInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     customRoleId: CustomRoleId
@@ -497,9 +461,9 @@ structure DeleteCustomRoleOutput {
 // ==================== INVITATION MANAGEMENT APIs ====================
 
 @http(method: "POST", uri: "/organizations/invitations")
-operation ListOrgInvitations {
-    input: ListOrgInvitationsInput
-    output: ListOrgInvitationsOutput
+operation ListOrganizationInvitations {
+    input: ListOrganizationInvitationsInput
+    output: ListOrganizationInvitationsOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -507,22 +471,22 @@ operation ListOrgInvitations {
     ]
 }
 
-structure ListOrgInvitationsInput {
+structure ListOrganizationInvitationsInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     status: InvitationStatus
 }
 
-structure ListOrgInvitationsOutput {
+structure ListOrganizationInvitationsOutput {
     @required
-    invitations: OrgInvitationList
+    invitations: OrganizationInvitationList
 }
 
 @http(method: "POST", uri: "/organizations/invitations/cancel")
-operation CancelOrgInvitation {
-    input: CancelOrgInvitationInput
-    output: CancelOrgInvitationOutput
+operation CancelOrganizationInvitation {
+    input: CancelOrganizationInvitationInput
+    output: CancelOrganizationInvitationOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -531,23 +495,23 @@ operation CancelOrgInvitation {
     ]
 }
 
-structure CancelOrgInvitationInput {
+structure CancelOrganizationInvitationInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     invitationId: InvitationId
 }
 
-structure CancelOrgInvitationOutput {
+structure CancelOrganizationInvitationOutput {
     @required
     success: Boolean
 }
 
 @http(method: "POST", uri: "/organizations/invitations/resend")
-operation ResendOrgInvitation {
-    input: ResendOrgInvitationInput
-    output: ResendOrgInvitationOutput
+operation ResendOrganizationInvitation {
+    input: ResendOrganizationInvitationInput
+    output: ResendOrganizationInvitationOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -556,18 +520,18 @@ operation ResendOrgInvitation {
     ]
 }
 
-structure ResendOrgInvitationInput {
+structure ResendOrganizationInvitationInput {
     @required
-    organizationId: OrgId
+    organizationId: OrganizationId
 
     @required
     invitationId: InvitationId
 }
 
-structure ResendOrgInvitationOutput {
+structure ResendOrganizationInvitationOutput {
     @required
     success: Boolean
 
     @required
-    invitation: OrgInvitation
+    invitation: OrganizationInvitation
 }
