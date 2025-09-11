@@ -61,6 +61,9 @@ function generateIndexFiles() {
 function generateIndexForSpec(specInfo) {
   const apiSpec = specInfo.spec;
   
+  // Get shared types to reference from root level
+  const sharedTypes = findSharedTypes();
+  
   // Function to convert OpenAPI schema to TypeScript type string
   function convertSchemaToTypeScript(schema, schemaName) {
     // Handle references first
@@ -224,6 +227,13 @@ function generateMasterIndex() {
     };
   });
 
+  // Find shared types across APIs
+  const sharedTypes = findSharedTypes();
+  const sharedTypeExports = sharedTypes.map(typeName => {
+    const mainSpec = apiSpecs.find(s => s.name === 'main');
+    return `export type ${typeName} = ${mainSpec ? 'Main' : namespaceExports[0].namespace}.${typeName};`;
+  }).join('\n');
+
   const masterIndexContent = `// Auto-generated master index file
 // Exports all API namespaces
 ${namespaceExports.map(n => n.import).join('\n')}
@@ -231,10 +241,57 @@ ${namespaceExports.map(n => n.import).join('\n')}
 // Export namespaced APIs
 ${namespaceExports.map(n => `export { ${n.namespace} };`).join('\n')}
 
+// Shared types (deduplicated)
+${sharedTypeExports}
+
 // Export main API at root level for backwards compatibility
 ${apiSpecs.find(s => s.name === 'main') ? "export * from './index';" : ''}
 `;
 
   fs.writeFileSync('/app/all.ts', masterIndexContent);
   console.log('Master index file generated successfully');
+}
+
+function findSharedTypes() {
+  if (apiSpecs.length < 2) return [];
+  
+  const typesBySpec = apiSpecs.map(spec => {
+    const schemas = spec.spec.components?.schemas || {};
+    return {
+      name: spec.name,
+      types: new Set(Object.keys(schemas))
+    };
+  });
+  
+  // Find types that exist in multiple specs with identical structure
+  const sharedTypes = [];
+  const mainTypes = typesBySpec.find(t => t.name === 'main')?.types || new Set();
+  
+  for (const typeName of mainTypes) {
+    let isSharedAcrossAll = true;
+    let sharedStructure = null;
+    
+    for (const spec of apiSpecs) {
+      const schema = spec.spec.components?.schemas?.[typeName];
+      if (!schema) {
+        isSharedAcrossAll = false;
+        break;
+      }
+      
+      const schemaStr = JSON.stringify(schema);
+      if (sharedStructure === null) {
+        sharedStructure = schemaStr;
+      } else if (sharedStructure !== schemaStr) {
+        isSharedAcrossAll = false;
+        break;
+      }
+    }
+    
+    if (isSharedAcrossAll && sharedStructure !== null) {
+      sharedTypes.push(typeName);
+    }
+  }
+  
+  console.log(`Found ${sharedTypes.length} shared types:`, sharedTypes);
+  return sharedTypes;
 }
