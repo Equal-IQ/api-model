@@ -148,6 +148,278 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orgs/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateOrg"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteOrg"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/getOrgPicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetOrgPicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/getOrgTheme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetOrgTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListOrgInvites"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/resend": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ResendOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/removeMember": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RemoveOrgMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/roles/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateCustomRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/roles/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteCustomRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/roles/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateCustomRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/transferOwnership": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["TransferOrgOwnership"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateOrg"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/updateMember": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateOrgMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/updateOrgTheme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateOrgTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/uploadOrgPicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadOrgPicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/ping": {
         parameters: {
             query?: never;
@@ -253,6 +525,13 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        CancelOrgInviteRequestContent: {
+            orgId: string;
+            inviteId: string;
+        };
+        CancelOrgInviteResponseContent: {
+            success: boolean;
+        };
         ContractAnalysisRecord: {
             contractId: string;
             name: string;
@@ -330,10 +609,65 @@ export interface components {
         };
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
+        CreateCustomRoleRequestContent: {
+            orgId: string;
+            name: string;
+            description?: string;
+            permissions: components["schemas"]["OrgPermission"][];
+        };
+        CreateCustomRoleResponseContent: {
+            success: boolean;
+            customRole: components["schemas"]["CustomRole"];
+        };
+        CreateOrgInviteRequestContent: {
+            orgId: string;
+            emails: string[];
+            role: components["schemas"]["OrgRole"];
+            customRoleId?: string;
+            orgEmail?: string;
+        };
+        CreateOrgInviteResponseContent: {
+            success: boolean;
+            invites: components["schemas"]["OrgInviteMap"];
+            failedEmails?: string[];
+        };
+        CreateOrgRequestContent: {
+            name: string;
+            type: components["schemas"]["OrgType"];
+            description?: string;
+            website?: string;
+            billingEmail: string;
+        };
+        CreateOrgResponseContent: {
+            success: boolean;
+            org: components["schemas"]["Org"];
+        };
+        CustomRole: {
+            customRoleId: string;
+            orgId: string;
+            name: string;
+            description?: string;
+            permissions: components["schemas"]["OrgPermission"][];
+            createdDate: string;
+            createdBy: string;
+        };
         DeleteContractRequestContent: {
             contractId: string;
         };
         DeleteContractResponseContent: {
+            success: boolean;
+        };
+        DeleteCustomRoleRequestContent: {
+            orgId: string;
+            customRoleId: string;
+        };
+        DeleteCustomRoleResponseContent: {
+            success: boolean;
+        };
+        DeleteOrgRequestContent: {
+            orgId: string;
+        };
+        DeleteOrgResponseContent: {
             success: boolean;
         };
         /** @enum {string} */
@@ -452,6 +786,18 @@ export interface components {
             sharedWith?: string[];
             isOwner?: boolean;
         };
+        GetOrgPictureRequestContent: {
+            orgId: string;
+        };
+        GetOrgPictureResponseContent: {
+            profilePictureURL: string;
+        };
+        GetOrgThemeRequestContent: {
+            orgId: string;
+        };
+        GetOrgThemeResponseContent: {
+            theme: components["schemas"]["OrgTheme"];
+        };
         GetProfilePictureRequestContent: {
             userId?: string;
         };
@@ -487,6 +833,8 @@ export interface components {
         InternalServerErrorResponseContent: {
             message: string;
         };
+        /** @enum {string} */
+        InviteStatus: InviteStatus;
         IqModeData: {
             iqModeData?: components["schemas"]["IqModePerspectiveMap"];
         };
@@ -519,10 +867,66 @@ export interface components {
             /** @description v1 */
             contracts?: components["schemas"]["ContractMetadata"][];
         };
+        ListOrgInvitesRequestContent: {
+            orgId: string;
+            status?: components["schemas"]["InviteStatus"];
+        };
+        ListOrgInvitesResponseContent: {
+            invites: components["schemas"]["OrgInviteMap"];
+        };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
+        Org: {
+            orgId: string;
+            name: string;
+            type: components["schemas"]["OrgType"];
+            primaryOwner: string;
+            description?: string;
+            website?: string;
+            billingEmail?: string;
+            createdDate: string;
+            memberCount?: number;
+        };
+        OrgInvite: {
+            inviteId: string;
+            orgId: string;
+            invitedEmail: string;
+            role: components["schemas"]["OrgRole"];
+            customRoleId?: string;
+            customRoleName?: string;
+            customPermissions?: components["schemas"]["OrgPermission"][];
+            invitedBy: string;
+            invitedByProfile?: components["schemas"]["UserProfile"];
+            status: components["schemas"]["InviteStatus"];
+            createdDate: string;
+            expiresDate?: string;
+        };
+        OrgInviteMap: {
+            [key: string]: components["schemas"]["OrgInvite"];
+        };
+        OrgMember: {
+            userId: string;
+            orgEmail: string;
+            role: components["schemas"]["OrgRole"];
+            customRoleId?: string;
+            customRoleName?: string;
+            customPermissions?: components["schemas"]["OrgPermission"][];
+            joinedDate: string;
+            userProfile?: components["schemas"]["UserProfile"];
+        };
+        /** @enum {string} */
+        OrgPermission: OrgPermission;
+        /** @enum {string} */
+        OrgRole: OrgRole;
+        OrgTheme: {
+            primaryColor?: string;
+            secondaryColor?: string;
+            accentColor?: string;
+        };
+        /** @enum {string} */
+        OrgType: OrgType;
         PingResponseContent: {
             message: string;
         };
@@ -535,6 +939,22 @@ export interface components {
         };
         ProcessingIncompleteErrorResponseContent: {
             message: string;
+        };
+        RemoveOrgMemberRequestContent: {
+            orgId: string;
+            userId: string;
+        };
+        RemoveOrgMemberResponseContent: {
+            success: boolean;
+        };
+        ResendOrgInviteRequestContent: {
+            orgId: string;
+            inviteId: string;
+            expiresDate?: string;
+        };
+        ResendOrgInviteResponseContent: {
+            success: boolean;
+            invite: components["schemas"]["OrgInvite"];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -566,12 +986,61 @@ export interface components {
         TaggedText: {
             text: string;
         };
+        TransferOrgOwnershipRequestContent: {
+            orgId: string;
+            newOwnerId: string;
+        };
+        TransferOrgOwnershipResponseContent: {
+            success: boolean;
+            org: components["schemas"]["Org"];
+        };
         UpdateContractRequestContent: {
             contractId: string;
             name: string;
         };
         UpdateContractResponseContent: {
             success: boolean;
+        };
+        UpdateCustomRoleRequestContent: {
+            orgId: string;
+            customRoleId: string;
+            name?: string;
+            description?: string;
+            permissions?: components["schemas"]["OrgPermission"][];
+        };
+        UpdateCustomRoleResponseContent: {
+            success: boolean;
+            customRole: components["schemas"]["CustomRole"];
+        };
+        UpdateOrgMemberRequestContent: {
+            orgId: string;
+            userId: string;
+            role?: components["schemas"]["OrgRole"];
+            customRoleId?: string;
+            orgEmail?: string;
+        };
+        UpdateOrgMemberResponseContent: {
+            success: boolean;
+            member: components["schemas"]["OrgMember"];
+        };
+        UpdateOrgRequestContent: {
+            orgId: string;
+            name?: string;
+            description?: string;
+            website?: string;
+            billingEmail?: string;
+        };
+        UpdateOrgResponseContent: {
+            success: boolean;
+            org: components["schemas"]["Org"];
+        };
+        UpdateOrgThemeRequestContent: {
+            orgId: string;
+            theme: components["schemas"]["OrgTheme"];
+        };
+        UpdateOrgThemeResponseContent: {
+            success: boolean;
+            theme: components["schemas"]["OrgTheme"];
         };
         UpdateProfileRequestContent: {
             firstName?: string;
@@ -586,6 +1055,12 @@ export interface components {
             message: string;
             userId: string;
             updatedFields?: string[];
+        };
+        UploadOrgPictureRequestContent: {
+            orgId: string;
+        };
+        UploadOrgPictureResponseContent: {
+            url_info: components["schemas"]["PresignedPostData"];
         };
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
@@ -959,6 +1434,720 @@ export interface operations {
             };
         };
     };
+    CreateOrg: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrgRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateOrg 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateOrgResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteOrg: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteOrgRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteOrg 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteOrgResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetOrgPicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetOrgPictureRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetOrgPicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOrgPictureResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetOrgTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetOrgThemeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetOrgTheme 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOrgThemeResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CancelOrgInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelOrgInviteRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CancelOrgInvite 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateOrgInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateOrgInviteRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateOrgInvite 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListOrgInvites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListOrgInvitesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListOrgInvites 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ResendOrgInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ResendOrgInviteRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ResendOrgInvite 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResendOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RemoveOrgMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RemoveOrgMemberRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RemoveOrgMember 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RemoveOrgMemberResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateCustomRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateCustomRoleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateCustomRole 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateCustomRoleResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteCustomRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteCustomRoleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteCustomRole 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteCustomRoleResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateCustomRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateCustomRoleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateCustomRole 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateCustomRoleResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    TransferOrgOwnership: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["TransferOrgOwnershipRequestContent"];
+            };
+        };
+        responses: {
+            /** @description TransferOrgOwnership 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["TransferOrgOwnershipResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateOrg: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrgRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateOrg 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateOrgResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateOrgMember: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrgMemberRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateOrgMember 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateOrgMemberResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateOrgTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrgThemeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateOrgTheme 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateOrgThemeResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UploadOrgPicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadOrgPictureRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UploadOrgPicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadOrgPictureResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     Ping: {
         parameters: {
             query?: never;
@@ -1237,10 +2426,44 @@ export enum EqCardType {
     A = "A",
     B = "B"
 }
+export enum InviteStatus {
+    pending = "pending",
+    accepted = "accepted",
+    declined = "declined",
+    expired = "expired"
+}
 export enum IqModeSectionKey {
     earnings = "earnings",
     qualityOfRights = "qualityOfRights",
     usageObligations = "usageObligations",
     agreementLength = "agreementLength",
     liabilitySafeguards = "liabilitySafeguards"
+}
+export enum OrgPermission {
+    manage_members = "manage_members",
+    manage_billing = "manage_billing",
+    manage_settings = "manage_settings",
+    view_all_contracts = "view_all_contracts",
+    manage_contracts = "manage_contracts",
+    invite_users = "invite_users",
+    manage_roles = "manage_roles",
+    view_analytics = "view_analytics"
+}
+export enum OrgRole {
+    primary_owner = "primary_owner",
+    admin = "admin",
+    billing_admin = "billing_admin",
+    member = "member",
+    viewer = "viewer",
+    custom = "custom"
+}
+export enum OrgType {
+    law_firm = "law_firm",
+    record_label = "record_label",
+    management_company = "management_company",
+    publishing_company = "publishing_company",
+    production_company = "production_company",
+    talent_agency = "talent_agency",
+    distribution_company = "distribution_company",
+    other = "other"
 }

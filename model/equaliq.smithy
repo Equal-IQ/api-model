@@ -27,6 +27,25 @@ service EqualIQ {
     UploadProfilePicture
     UpdateProfile
 
+    // organizations.smithy
+    CreateOrg
+    UpdateOrg
+    DeleteOrg
+    UpdateOrgMember
+    RemoveOrgMember
+    TransferOrgOwnership
+    CreateCustomRole
+    UpdateCustomRole
+    DeleteCustomRole
+    ListOrgInvites
+    CreateOrgInvite
+    CancelOrgInvite
+    ResendOrgInvite
+    GetOrgPicture
+    UploadOrgPicture
+    GetOrgTheme
+    UpdateOrgTheme
+
     // Utility operations
     Ping
     ExposeTypes
