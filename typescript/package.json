@@ -2,8 +2,8 @@
   "name": "@equaliq/api-model",
   "version": "0.1.0",
   "description": "EqualIQ API TypeScript models generated from Smithy",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "main": "dist/all.js",
+  "types": "dist/all.d.ts",
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
