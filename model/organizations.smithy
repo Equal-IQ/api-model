@@ -80,6 +80,7 @@ structure Org {
 
     description: String
     website: Url
+    
     billingEmail: Email
 
     @required
@@ -182,6 +183,8 @@ structure CreateOrgInput {
 
     description: String
     website: Url
+    
+    @required
     billingEmail: Email
 }
 
