@@ -22,6 +22,15 @@ class AuthenticationErrorResponseContent(BaseModel):
     message: str
 
 
+class CancelOrganizationInvitationRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    invitationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class CancelOrganizationInvitationResponseContent(BaseModel):
+    success: bool
+
+
 class ContractStatus(Enum):
     processing = 'processing'
     awaiting_upload = 'awaiting_upload'
@@ -68,6 +77,23 @@ class DeleteContractRequestContent(BaseModel):
 
 
 class DeleteContractResponseContent(BaseModel):
+    success: bool
+
+
+class DeleteCustomRoleRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class DeleteCustomRoleResponseContent(BaseModel):
+    success: bool
+
+
+class DeleteOrganizationRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class DeleteOrganizationResponseContent(BaseModel):
     success: bool
 
 
@@ -185,12 +211,63 @@ class InternalServerErrorResponseContent(BaseModel):
     message: str
 
 
+class InvitationStatus(Enum):
+    pending = 'pending'
+    accepted = 'accepted'
+    declined = 'declined'
+    expired = 'expired'
+
+
+class Email(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
+class FailedEmail(RootModel[str]):
+    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
 class IqModeSectionKey(Enum):
     earnings = 'earnings'
     qualityOfRights = 'qualityOfRights'
     usageObligations = 'usageObligations'
     agreementLength = 'agreementLength'
     liabilitySafeguards = 'liabilitySafeguards'
+
+
+class ListOrganizationInvitationsRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    status: InvitationStatus | None
+
+
+class OrganizationPermission(Enum):
+    manage_members = 'manage_members'
+    manage_billing = 'manage_billing'
+    manage_settings = 'manage_settings'
+    view_all_contracts = 'view_all_contracts'
+    manage_contracts = 'manage_contracts'
+    invite_users = 'invite_users'
+    manage_roles = 'manage_roles'
+    view_analytics = 'view_analytics'
+
+
+class OrganizationRole(Enum):
+    primary_owner = 'primary_owner'
+    admin = 'admin'
+    billing_admin = 'billing_admin'
+    member = 'member'
+    viewer = 'viewer'
+    custom = 'custom'
+
+
+class OrganizationType(Enum):
+    law_firm = 'law_firm'
+    record_label = 'record_label'
+    management_company = 'management_company'
+    publishing_company = 'publishing_company'
+    production_company = 'production_company'
+    talent_agency = 'talent_agency'
+    distribution_company = 'distribution_company'
+    other = 'other'
 
 
 class PingResponseContent(BaseModel):
@@ -211,6 +288,20 @@ class PresignedPostData(BaseModel):
 
 class ProcessingIncompleteErrorResponseContent(BaseModel):
     message: str
+
+
+class RemoveOrganizationMemberRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class RemoveOrganizationMemberResponseContent(BaseModel):
+    success: bool
+
+
+class ResendOrganizationInvitationRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    invitationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class ResourceNotFoundErrorResponseContent(BaseModel):
@@ -261,6 +352,11 @@ class TaggedText(BaseModel):
     text: str
 
 
+class TransferOrganizationOwnershipRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    newOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class UpdateContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -268,6 +364,37 @@ class UpdateContractRequestContent(BaseModel):
 
 class UpdateContractResponseContent(BaseModel):
     success: bool
+
+
+class UpdateCustomRoleRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str | None
+    description: str | None
+    permissions: list[OrganizationPermission] | None
+
+
+class UpdateOrganizationMemberRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    role: OrganizationRole | None
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    organizationEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+
+
+class UpdateOrganizationRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str | None
+    description: str | None
+    website: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    billingEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
 
 
 class UpdateProfileRequestContent(BaseModel):
@@ -356,6 +483,39 @@ class ContractVariableMap(RootModel[dict[str, ContractVariable] | None]):
     root: dict[str, ContractVariable] | None
 
 
+class CreateCustomRoleRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    description: str | None
+    permissions: list[OrganizationPermission]
+
+
+class CreateOrganizationRequestContent(BaseModel):
+    name: str
+    type: OrganizationType
+    description: str | None
+    website: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    billingEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+
+
+class CustomRole(BaseModel):
+    customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    description: str | None
+    permissions: list[OrganizationPermission]
+    createdDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class MONEYRECEIVED(BaseModel):
     MONEY_RECEIVED: EqMoneyCard
 
@@ -403,6 +563,16 @@ class GetUploadURLResponseContent(BaseModel):
     url_info: PresignedPostData
 
 
+class InviteToOrganizationRequestContent(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    emails: list[Email]
+    role: OrganizationRole
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    organizationEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+
+
 class IqModeQuestion(BaseModel):
     question: TaggedText
     answer: TaggedText
@@ -437,6 +607,68 @@ class ListSpecialContractsResponseContent(BaseModel):
     shared: list[ContractSummaryItem]
 
 
+class Organization(BaseModel):
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: OrganizationType
+    primaryOwner: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    description: str | None
+    website: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    billingEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+    createdDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    memberCount: float
+
+
+class OrganizationInvitation(BaseModel):
+    invitationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    organizationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    invitedEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    role: OrganizationRole
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    customRoleName: str | None
+    customPermissions: list[OrganizationPermission] | None
+    invitedBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    status: InvitationStatus
+    createdDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    expiresDate: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    inviterProfile: UserProfile | None
+
+
+class OrganizationMember(BaseModel):
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    organizationEmail: str = Field(
+        ..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+    role: OrganizationRole
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    customRoleName: str | None
+    customPermissions: list[OrganizationPermission] | None
+    joinedDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    userProfile: UserProfile | None
+
+
+class ResendOrganizationInvitationResponseContent(BaseModel):
+    success: bool
+    invitation: OrganizationInvitation
+
+
 class ShareContractResponseContent(BaseModel):
     success: bool
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -446,12 +678,42 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: list[InvalidRemove] | None
 
 
+class TransferOrganizationOwnershipResponseContent(BaseModel):
+    success: bool
+    organization: Organization
+
+
+class UpdateCustomRoleResponseContent(BaseModel):
+    success: bool
+    customRole: CustomRole
+
+
+class UpdateOrganizationMemberResponseContent(BaseModel):
+    success: bool
+    member: OrganizationMember
+
+
+class UpdateOrganizationResponseContent(BaseModel):
+    success: bool
+    organization: Organization
+
+
 class ContractExtractionResult(BaseModel):
     extractedType: ContractType | None
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
     contractTexts: ContractTexts | None
+
+
+class CreateCustomRoleResponseContent(BaseModel):
+    success: bool
+    customRole: CustomRole
+
+
+class CreateOrganizationResponseContent(BaseModel):
+    success: bool
+    organization: Organization
 
 
 class OWNERSHIP(BaseModel):
@@ -500,12 +762,22 @@ class EqModeData(BaseModel):
     cards: EqModeCardMap | None
 
 
+class InviteToOrganizationResponseContent(BaseModel):
+    success: bool
+    invitations: list[OrganizationInvitation]
+    failedEmails: list[FailedEmail] | None
+
+
 class IqModePerspective(BaseModel):
     sections: IqModeSectionMap
 
 
 class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
     root: dict[str, IqModePerspective] | None
+
+
+class ListOrganizationInvitationsResponseContent(BaseModel):
+    invitations: list[OrganizationInvitation]
 
 
 class IqModeData(BaseModel):

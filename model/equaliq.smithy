@@ -28,19 +28,19 @@ service EqualIQ {
     UpdateProfile
 
     // organizations.smithy
-    CreateOrganization
-    UpdateOrganization
-    DeleteOrganization
-    InviteToOrganization
-    UpdateOrganizationMember
-    RemoveOrganizationMember
-    TransferOrganizationOwnership
+    CreateOrg
+    UpdateOrg
+    DeleteOrg
+    InviteToOrg
+    UpdateOrgMember
+    RemoveOrgMember
+    TransferOrgOwnership
     CreateCustomRole
     UpdateCustomRole
     DeleteCustomRole
-    ListOrganizationInvitations
-    CancelOrganizationInvitation
-    ResendOrganizationInvitation
+    ListOrgInvitations
+    CancelOrgInvitation
+    ResendOrgInvitation
 
     // Utility operations
     Ping
