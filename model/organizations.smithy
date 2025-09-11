@@ -567,3 +567,47 @@ structure ResendOrgInviteOutput {
     @required
     invite: OrgInvite
 }
+
+// ==================== ORG PROFILE PICTURE APIs ====================
+
+@http(method: "POST", uri: "/orgs/getOrgPicture")
+operation GetOrgPicture {
+    input: GetOrgPictureInput
+    output: GetOrgPictureOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetOrgPictureInput {
+    @required
+    orgId: OrgId
+}
+
+structure GetOrgPictureOutput {
+    @required
+    profilePictureURL: Url
+}
+
+@http(method: "POST", uri: "/orgs/uploadOrgPicture")
+operation UploadOrgPicture {
+    input: UploadOrgPictureInput
+    output: UploadOrgPictureOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure UploadOrgPictureInput {
+    @required
+    orgId: OrgId
+}
+
+structure UploadOrgPictureOutput {
+    @required
+    url_info: PresignedPostData
+}
