@@ -148,7 +148,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/create": {
+    "/orgs/create": {
         parameters: {
             query?: never;
             header?: never;
@@ -157,14 +157,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CreateOrganization"];
+        post: operations["CreateOrg"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/delete": {
+    "/orgs/delete": {
         parameters: {
             query?: never;
             header?: never;
@@ -173,14 +173,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["DeleteOrganization"];
+        post: operations["DeleteOrg"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/invitations": {
+    "/orgs/invite": {
         parameters: {
             query?: never;
             header?: never;
@@ -189,14 +189,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ListOrganizationInvitations"];
+        post: operations["CreateOrgInvite"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/invitations/cancel": {
+    "/orgs/invites": {
         parameters: {
             query?: never;
             header?: never;
@@ -205,14 +205,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CancelOrganizationInvitation"];
+        post: operations["ListOrgInvites"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/invitations/resend": {
+    "/orgs/invites/cancel": {
         parameters: {
             query?: never;
             header?: never;
@@ -221,14 +221,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["ResendOrganizationInvitation"];
+        post: operations["CancelOrgInvite"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/invite": {
+    "/orgs/invites/resend": {
         parameters: {
             query?: never;
             header?: never;
@@ -237,14 +237,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["InviteToOrganization"];
+        post: operations["ResendOrgInvite"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/removeMember": {
+    "/orgs/removeMember": {
         parameters: {
             query?: never;
             header?: never;
@@ -253,14 +253,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["RemoveOrganizationMember"];
+        post: operations["RemoveOrgMember"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/roles/create": {
+    "/orgs/roles/create": {
         parameters: {
             query?: never;
             header?: never;
@@ -276,7 +276,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/roles/delete": {
+    "/orgs/roles/delete": {
         parameters: {
             query?: never;
             header?: never;
@@ -292,7 +292,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/roles/update": {
+    "/orgs/roles/update": {
         parameters: {
             query?: never;
             header?: never;
@@ -308,7 +308,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/organizations/transferOwnership": {
+    "/orgs/transferOwnership": {
         parameters: {
             query?: never;
             header?: never;
@@ -317,14 +317,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["TransferOrganizationOwnership"];
+        post: operations["TransferOrgOwnership"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/update": {
+    "/orgs/update": {
         parameters: {
             query?: never;
             header?: never;
@@ -333,14 +333,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["UpdateOrganization"];
+        post: operations["UpdateOrg"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/organizations/updateMember": {
+    "/orgs/updateMember": {
         parameters: {
             query?: never;
             header?: never;
@@ -349,7 +349,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["UpdateOrganizationMember"];
+        post: operations["UpdateOrgMember"];
         delete?: never;
         options?: never;
         head?: never;
@@ -461,11 +461,11 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
-        CancelOrganizationInvitationRequestContent: {
-            organizationId: string;
-            invitationId: string;
+        CancelOrgInviteRequestContent: {
+            orgId: string;
+            inviteId: string;
         };
-        CancelOrganizationInvitationResponseContent: {
+        CancelOrgInviteResponseContent: {
             success: boolean;
         };
         ContractAnalysisRecord: {
@@ -546,32 +546,44 @@ export interface components {
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
         CreateCustomRoleRequestContent: {
-            organizationId: string;
+            orgId: string;
             name: string;
             description?: string;
-            permissions: components["schemas"]["OrganizationPermission"][];
+            permissions: components["schemas"]["OrgPermission"][];
         };
         CreateCustomRoleResponseContent: {
             success: boolean;
             customRole: components["schemas"]["CustomRole"];
         };
-        CreateOrganizationRequestContent: {
+        CreateOrgInviteRequestContent: {
+            orgId: string;
+            emails: string[];
+            role: components["schemas"]["OrgRole"];
+            customRoleId?: string;
+            orgEmail?: string;
+        };
+        CreateOrgInviteResponseContent: {
+            success: boolean;
+            invites: components["schemas"]["OrgInvite"][];
+            failedEmails?: string[];
+        };
+        CreateOrgRequestContent: {
             name: string;
-            type: components["schemas"]["OrganizationType"];
+            type: components["schemas"]["OrgType"];
             description?: string;
             website?: string;
             billingEmail?: string;
         };
-        CreateOrganizationResponseContent: {
+        CreateOrgResponseContent: {
             success: boolean;
-            organization: components["schemas"]["Organization"];
+            org: components["schemas"]["Org"];
         };
         CustomRole: {
             customRoleId: string;
-            organizationId: string;
+            orgId: string;
             name: string;
             description?: string;
-            permissions: components["schemas"]["OrganizationPermission"][];
+            permissions: components["schemas"]["OrgPermission"][];
             createdDate: string;
             createdBy: string;
         };
@@ -582,16 +594,16 @@ export interface components {
             success: boolean;
         };
         DeleteCustomRoleRequestContent: {
-            organizationId: string;
+            orgId: string;
             customRoleId: string;
         };
         DeleteCustomRoleResponseContent: {
             success: boolean;
         };
-        DeleteOrganizationRequestContent: {
-            organizationId: string;
+        DeleteOrgRequestContent: {
+            orgId: string;
         };
-        DeleteOrganizationResponseContent: {
+        DeleteOrgResponseContent: {
             success: boolean;
         };
         /** @enum {string} */
@@ -746,19 +758,7 @@ export interface components {
             message: string;
         };
         /** @enum {string} */
-        InvitationStatus: InvitationStatus;
-        InviteToOrganizationRequestContent: {
-            organizationId: string;
-            emails: string[];
-            role: components["schemas"]["OrganizationRole"];
-            customRoleId?: string;
-            organizationEmail?: string;
-        };
-        InviteToOrganizationResponseContent: {
-            success: boolean;
-            invitations: components["schemas"]["OrganizationInvitation"][];
-            failedEmails?: string[];
-        };
+        InviteStatus: InviteStatus;
         IqModeData: {
             iqModeData?: components["schemas"]["IqModePerspectiveMap"];
         };
@@ -791,58 +791,58 @@ export interface components {
             /** @description v1 */
             contracts?: components["schemas"]["ContractMetadata"][];
         };
-        ListOrganizationInvitationsRequestContent: {
-            organizationId: string;
-            status?: components["schemas"]["InvitationStatus"];
+        ListOrgInvitesRequestContent: {
+            orgId: string;
+            status?: components["schemas"]["InviteStatus"];
         };
-        ListOrganizationInvitationsResponseContent: {
-            invitations: components["schemas"]["OrganizationInvitation"][];
+        ListOrgInvitesResponseContent: {
+            invites: components["schemas"]["OrgInvite"][];
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
-        Organization: {
-            organizationId: string;
+        Org: {
+            orgId: string;
             name: string;
-            type: components["schemas"]["OrganizationType"];
+            type: components["schemas"]["OrgType"];
             primaryOwner: string;
             description?: string;
             website?: string;
             billingEmail?: string;
             createdDate: string;
-            memberCount: number;
+            memberCount?: number;
         };
-        OrganizationInvitation: {
-            invitationId: string;
-            organizationId: string;
+        OrgInvite: {
+            inviteId: string;
+            orgId: string;
             invitedEmail: string;
-            role: components["schemas"]["OrganizationRole"];
+            role: components["schemas"]["OrgRole"];
             customRoleId?: string;
             customRoleName?: string;
-            customPermissions?: components["schemas"]["OrganizationPermission"][];
+            customPermissions?: components["schemas"]["OrgPermission"][];
             invitedBy: string;
-            status: components["schemas"]["InvitationStatus"];
+            status: components["schemas"]["InviteStatus"];
             createdDate: string;
             expiresDate?: string;
             inviterProfile?: components["schemas"]["UserProfile"];
         };
-        OrganizationMember: {
+        OrgMember: {
             userId: string;
-            organizationEmail: string;
-            role: components["schemas"]["OrganizationRole"];
+            orgEmail: string;
+            role: components["schemas"]["OrgRole"];
             customRoleId?: string;
             customRoleName?: string;
-            customPermissions?: components["schemas"]["OrganizationPermission"][];
+            customPermissions?: components["schemas"]["OrgPermission"][];
             joinedDate: string;
             userProfile?: components["schemas"]["UserProfile"];
         };
         /** @enum {string} */
-        OrganizationPermission: OrganizationPermission;
+        OrgPermission: OrgPermission;
         /** @enum {string} */
-        OrganizationRole: OrganizationRole;
+        OrgRole: OrgRole;
         /** @enum {string} */
-        OrganizationType: OrganizationType;
+        OrgType: OrgType;
         PingResponseContent: {
             message: string;
         };
@@ -856,20 +856,20 @@ export interface components {
         ProcessingIncompleteErrorResponseContent: {
             message: string;
         };
-        RemoveOrganizationMemberRequestContent: {
-            organizationId: string;
+        RemoveOrgMemberRequestContent: {
+            orgId: string;
             userId: string;
         };
-        RemoveOrganizationMemberResponseContent: {
+        RemoveOrgMemberResponseContent: {
             success: boolean;
         };
-        ResendOrganizationInvitationRequestContent: {
-            organizationId: string;
-            invitationId: string;
+        ResendOrgInviteRequestContent: {
+            orgId: string;
+            inviteId: string;
         };
-        ResendOrganizationInvitationResponseContent: {
+        ResendOrgInviteResponseContent: {
             success: boolean;
-            invitation: components["schemas"]["OrganizationInvitation"];
+            invite: components["schemas"]["OrgInvite"];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
@@ -901,13 +901,13 @@ export interface components {
         TaggedText: {
             text: string;
         };
-        TransferOrganizationOwnershipRequestContent: {
-            organizationId: string;
+        TransferOrgOwnershipRequestContent: {
+            orgId: string;
             newOwnerId: string;
         };
-        TransferOrganizationOwnershipResponseContent: {
+        TransferOrgOwnershipResponseContent: {
             success: boolean;
-            organization: components["schemas"]["Organization"];
+            org: components["schemas"]["Org"];
         };
         UpdateContractRequestContent: {
             contractId: string;
@@ -917,37 +917,37 @@ export interface components {
             success: boolean;
         };
         UpdateCustomRoleRequestContent: {
-            organizationId: string;
+            orgId: string;
             customRoleId: string;
             name?: string;
             description?: string;
-            permissions?: components["schemas"]["OrganizationPermission"][];
+            permissions?: components["schemas"]["OrgPermission"][];
         };
         UpdateCustomRoleResponseContent: {
             success: boolean;
             customRole: components["schemas"]["CustomRole"];
         };
-        UpdateOrganizationMemberRequestContent: {
-            organizationId: string;
+        UpdateOrgMemberRequestContent: {
+            orgId: string;
             userId: string;
-            role?: components["schemas"]["OrganizationRole"];
+            role?: components["schemas"]["OrgRole"];
             customRoleId?: string;
-            organizationEmail?: string;
+            orgEmail?: string;
         };
-        UpdateOrganizationMemberResponseContent: {
+        UpdateOrgMemberResponseContent: {
             success: boolean;
-            member: components["schemas"]["OrganizationMember"];
+            member: components["schemas"]["OrgMember"];
         };
-        UpdateOrganizationRequestContent: {
-            organizationId: string;
+        UpdateOrgRequestContent: {
+            orgId: string;
             name?: string;
             description?: string;
             website?: string;
             billingEmail?: string;
         };
-        UpdateOrganizationResponseContent: {
+        UpdateOrgResponseContent: {
             success: boolean;
-            organization: components["schemas"]["Organization"];
+            org: components["schemas"]["Org"];
         };
         UpdateProfileRequestContent: {
             firstName?: string;
@@ -1335,7 +1335,7 @@ export interface operations {
             };
         };
     };
-    CreateOrganization: {
+    CreateOrg: {
         parameters: {
             query?: never;
             header?: never;
@@ -1344,17 +1344,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateOrganizationRequestContent"];
+                "application/json": components["schemas"]["CreateOrgRequestContent"];
             };
         };
         responses: {
-            /** @description CreateOrganization 200 response */
+            /** @description CreateOrg 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateOrganizationResponseContent"];
+                    "application/json": components["schemas"]["CreateOrgResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1377,7 +1377,7 @@ export interface operations {
             };
         };
     };
-    DeleteOrganization: {
+    DeleteOrg: {
         parameters: {
             query?: never;
             header?: never;
@@ -1386,17 +1386,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DeleteOrganizationRequestContent"];
+                "application/json": components["schemas"]["DeleteOrgRequestContent"];
             };
         };
         responses: {
-            /** @description DeleteOrganization 200 response */
+            /** @description DeleteOrg 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeleteOrganizationResponseContent"];
+                    "application/json": components["schemas"]["DeleteOrgResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1419,7 +1419,7 @@ export interface operations {
             };
         };
     };
-    ListOrganizationInvitations: {
+    CreateOrgInvite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1428,17 +1428,59 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ListOrganizationInvitationsRequestContent"];
+                "application/json": components["schemas"]["CreateOrgInviteRequestContent"];
             };
         };
         responses: {
-            /** @description ListOrganizationInvitations 200 response */
+            /** @description CreateOrgInvite 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ListOrganizationInvitationsResponseContent"];
+                    "application/json": components["schemas"]["CreateOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListOrgInvites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListOrgInvitesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListOrgInvites 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
                 };
             };
             /** @description ResourceNotFoundError 400 response */
@@ -1461,7 +1503,7 @@ export interface operations {
             };
         };
     };
-    CancelOrganizationInvitation: {
+    CancelOrgInvite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1470,17 +1512,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CancelOrganizationInvitationRequestContent"];
+                "application/json": components["schemas"]["CancelOrgInviteRequestContent"];
             };
         };
         responses: {
-            /** @description CancelOrganizationInvitation 200 response */
+            /** @description CancelOrgInvite 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CancelOrganizationInvitationResponseContent"];
+                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1503,7 +1545,7 @@ export interface operations {
             };
         };
     };
-    ResendOrganizationInvitation: {
+    ResendOrgInvite: {
         parameters: {
             query?: never;
             header?: never;
@@ -1512,17 +1554,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["ResendOrganizationInvitationRequestContent"];
+                "application/json": components["schemas"]["ResendOrgInviteRequestContent"];
             };
         };
         responses: {
-            /** @description ResendOrganizationInvitation 200 response */
+            /** @description ResendOrgInvite 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ResendOrganizationInvitationResponseContent"];
+                    "application/json": components["schemas"]["ResendOrgInviteResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1545,7 +1587,7 @@ export interface operations {
             };
         };
     };
-    InviteToOrganization: {
+    RemoveOrgMember: {
         parameters: {
             query?: never;
             header?: never;
@@ -1554,59 +1596,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["InviteToOrganizationRequestContent"];
+                "application/json": components["schemas"]["RemoveOrgMemberRequestContent"];
             };
         };
         responses: {
-            /** @description InviteToOrganization 200 response */
+            /** @description RemoveOrgMember 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["InviteToOrganizationResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    RemoveOrganizationMember: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["RemoveOrganizationMemberRequestContent"];
-            };
-        };
-        responses: {
-            /** @description RemoveOrganizationMember 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["RemoveOrganizationMemberResponseContent"];
+                    "application/json": components["schemas"]["RemoveOrgMemberResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1755,7 +1755,7 @@ export interface operations {
             };
         };
     };
-    TransferOrganizationOwnership: {
+    TransferOrgOwnership: {
         parameters: {
             query?: never;
             header?: never;
@@ -1764,17 +1764,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["TransferOrganizationOwnershipRequestContent"];
+                "application/json": components["schemas"]["TransferOrgOwnershipRequestContent"];
             };
         };
         responses: {
-            /** @description TransferOrganizationOwnership 200 response */
+            /** @description TransferOrgOwnership 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["TransferOrganizationOwnershipResponseContent"];
+                    "application/json": components["schemas"]["TransferOrgOwnershipResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1797,7 +1797,7 @@ export interface operations {
             };
         };
     };
-    UpdateOrganization: {
+    UpdateOrg: {
         parameters: {
             query?: never;
             header?: never;
@@ -1806,17 +1806,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateOrganizationRequestContent"];
+                "application/json": components["schemas"]["UpdateOrgRequestContent"];
             };
         };
         responses: {
-            /** @description UpdateOrganization 200 response */
+            /** @description UpdateOrg 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UpdateOrganizationResponseContent"];
+                    "application/json": components["schemas"]["UpdateOrgResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1839,7 +1839,7 @@ export interface operations {
             };
         };
     };
-    UpdateOrganizationMember: {
+    UpdateOrgMember: {
         parameters: {
             query?: never;
             header?: never;
@@ -1848,17 +1848,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateOrganizationMemberRequestContent"];
+                "application/json": components["schemas"]["UpdateOrgMemberRequestContent"];
             };
         };
         responses: {
-            /** @description UpdateOrganizationMember 200 response */
+            /** @description UpdateOrgMember 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UpdateOrganizationMemberResponseContent"];
+                    "application/json": components["schemas"]["UpdateOrgMemberResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -2159,7 +2159,7 @@ export enum EqCardType {
     A = "A",
     B = "B"
 }
-export enum InvitationStatus {
+export enum InviteStatus {
     pending = "pending",
     accepted = "accepted",
     declined = "declined",
@@ -2172,7 +2172,7 @@ export enum IqModeSectionKey {
     agreementLength = "agreementLength",
     liabilitySafeguards = "liabilitySafeguards"
 }
-export enum OrganizationPermission {
+export enum OrgPermission {
     manage_members = "manage_members",
     manage_billing = "manage_billing",
     manage_settings = "manage_settings",
@@ -2182,7 +2182,7 @@ export enum OrganizationPermission {
     manage_roles = "manage_roles",
     view_analytics = "view_analytics"
 }
-export enum OrganizationRole {
+export enum OrgRole {
     primary_owner = "primary_owner",
     admin = "admin",
     billing_admin = "billing_admin",
@@ -2190,7 +2190,7 @@ export enum OrganizationRole {
     viewer = "viewer",
     custom = "custom"
 }
-export enum OrganizationType {
+export enum OrgType {
     law_firm = "law_firm",
     record_label = "record_label",
     management_company = "management_company",

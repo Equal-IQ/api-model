@@ -31,16 +31,16 @@ service EqualIQ {
     CreateOrg
     UpdateOrg
     DeleteOrg
-    InviteToOrg
     UpdateOrgMember
     RemoveOrgMember
     TransferOrgOwnership
     CreateCustomRole
     UpdateCustomRole
     DeleteCustomRole
-    ListOrgInvitations
-    CancelOrgInvitation
-    ResendOrgInvitation
+    ListOrgInvites
+    CreateOrgInvite
+    CancelOrgInvite
+    ResendOrgInvite
 
     // Utility operations
     Ping

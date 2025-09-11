@@ -66,7 +66,7 @@ export enum EqCardType {
   B = "B"
 }
 
-export enum InvitationStatus {
+export enum InviteStatus {
   pending = "pending",
   accepted = "accepted",
   declined = "declined",
@@ -81,7 +81,7 @@ export enum IqModeSectionKey {
   liabilitySafeguards = "liabilitySafeguards"
 }
 
-export enum OrganizationPermission {
+export enum OrgPermission {
   manage_members = "manage_members",
   manage_billing = "manage_billing",
   manage_settings = "manage_settings",
@@ -92,7 +92,7 @@ export enum OrganizationPermission {
   view_analytics = "view_analytics"
 }
 
-export enum OrganizationRole {
+export enum OrgRole {
   primary_owner = "primary_owner",
   admin = "admin",
   billing_admin = "billing_admin",
@@ -101,7 +101,7 @@ export enum OrganizationRole {
   custom = "custom"
 }
 
-export enum OrganizationType {
+export enum OrgType {
   law_firm = "law_firm",
   record_label = "record_label",
   management_company = "management_company",
@@ -117,12 +117,12 @@ export type AuthenticationErrorResponseContent = {
   message: string;
 };
 
-export type CancelOrganizationInvitationRequestContent = {
-  organizationId: string;
-  invitationId: string;
+export type CancelOrgInviteRequestContent = {
+  orgId: string;
+  inviteId: string;
 };
 
-export type CancelOrganizationInvitationResponseContent = {
+export type CancelOrgInviteResponseContent = {
   success: boolean;
 };
 
@@ -201,10 +201,10 @@ export type ContractVariable = {
 export type ContractVariableMap = { [key: string]: ContractVariable };
 
 export type CreateCustomRoleRequestContent = {
-  organizationId: string;
+  orgId: string;
   name: string;
   description?: string;
-  permissions: OrganizationPermission[];
+  permissions: OrgPermission[];
 };
 
 export type CreateCustomRoleResponseContent = {
@@ -212,25 +212,39 @@ export type CreateCustomRoleResponseContent = {
   customRole: CustomRole;
 };
 
-export type CreateOrganizationRequestContent = {
+export type CreateOrgInviteRequestContent = {
+  orgId: string;
+  emails: string[];
+  role: OrgRole;
+  customRoleId?: string;
+  orgEmail?: string;
+};
+
+export type CreateOrgInviteResponseContent = {
+  success: boolean;
+  invites: OrgInvite[];
+  failedEmails?: string[];
+};
+
+export type CreateOrgRequestContent = {
   name: string;
-  type: OrganizationType;
+  type: OrgType;
   description?: string;
   website?: string;
   billingEmail?: string;
 };
 
-export type CreateOrganizationResponseContent = {
+export type CreateOrgResponseContent = {
   success: boolean;
-  organization: Organization;
+  org: Org;
 };
 
 export type CustomRole = {
   customRoleId: string;
-  organizationId: string;
+  orgId: string;
   name: string;
   description?: string;
-  permissions: OrganizationPermission[];
+  permissions: OrgPermission[];
   createdDate: string;
   createdBy: string;
 };
@@ -244,7 +258,7 @@ export type DeleteContractResponseContent = {
 };
 
 export type DeleteCustomRoleRequestContent = {
-  organizationId: string;
+  orgId: string;
   customRoleId: string;
 };
 
@@ -252,11 +266,11 @@ export type DeleteCustomRoleResponseContent = {
   success: boolean;
 };
 
-export type DeleteOrganizationRequestContent = {
-  organizationId: string;
+export type DeleteOrgRequestContent = {
+  orgId: string;
 };
 
-export type DeleteOrganizationResponseContent = {
+export type DeleteOrgResponseContent = {
   success: boolean;
 };
 
@@ -424,20 +438,6 @@ export type InternalServerErrorResponseContent = {
   message: string;
 };
 
-export type InviteToOrganizationRequestContent = {
-  organizationId: string;
-  emails: string[];
-  role: OrganizationRole;
-  customRoleId?: string;
-  organizationEmail?: string;
-};
-
-export type InviteToOrganizationResponseContent = {
-  success: boolean;
-  invitations: OrganizationInvitation[];
-  failedEmails?: string[];
-};
-
 export type IqModeData = {
   iqModeData?: IqModePerspectiveMap;
 };
@@ -468,13 +468,13 @@ export type ListContractsResponseContent = {
   contracts?: ContractMetadata[];
 };
 
-export type ListOrganizationInvitationsRequestContent = {
-  organizationId: string;
-  status?: InvitationStatus;
+export type ListOrgInvitesRequestContent = {
+  orgId: string;
+  status?: InviteStatus;
 };
 
-export type ListOrganizationInvitationsResponseContent = {
-  invitations: OrganizationInvitation[];
+export type ListOrgInvitesResponseContent = {
+  invites: OrgInvite[];
 };
 
 export type ListSpecialContractsResponseContent = {
@@ -482,40 +482,40 @@ export type ListSpecialContractsResponseContent = {
   shared: ContractSummaryItem[];
 };
 
-export type Organization = {
-  organizationId: string;
+export type Org = {
+  orgId: string;
   name: string;
-  type: OrganizationType;
+  type: OrgType;
   primaryOwner: string;
   description?: string;
   website?: string;
   billingEmail?: string;
   createdDate: string;
-  memberCount: number;
+  memberCount?: number;
 };
 
-export type OrganizationInvitation = {
-  invitationId: string;
-  organizationId: string;
+export type OrgInvite = {
+  inviteId: string;
+  orgId: string;
   invitedEmail: string;
-  role: OrganizationRole;
+  role: OrgRole;
   customRoleId?: string;
   customRoleName?: string;
-  customPermissions?: OrganizationPermission[];
+  customPermissions?: OrgPermission[];
   invitedBy: string;
-  status: InvitationStatus;
+  status: InviteStatus;
   createdDate: string;
   expiresDate?: string;
   inviterProfile?: UserProfile;
 };
 
-export type OrganizationMember = {
+export type OrgMember = {
   userId: string;
-  organizationEmail: string;
-  role: OrganizationRole;
+  orgEmail: string;
+  role: OrgRole;
   customRoleId?: string;
   customRoleName?: string;
-  customPermissions?: OrganizationPermission[];
+  customPermissions?: OrgPermission[];
   joinedDate: string;
   userProfile?: UserProfile;
 };
@@ -537,23 +537,23 @@ export type ProcessingIncompleteErrorResponseContent = {
   message: string;
 };
 
-export type RemoveOrganizationMemberRequestContent = {
-  organizationId: string;
+export type RemoveOrgMemberRequestContent = {
+  orgId: string;
   userId: string;
 };
 
-export type RemoveOrganizationMemberResponseContent = {
+export type RemoveOrgMemberResponseContent = {
   success: boolean;
 };
 
-export type ResendOrganizationInvitationRequestContent = {
-  organizationId: string;
-  invitationId: string;
+export type ResendOrgInviteRequestContent = {
+  orgId: string;
+  inviteId: string;
 };
 
-export type ResendOrganizationInvitationResponseContent = {
+export type ResendOrgInviteResponseContent = {
   success: boolean;
-  invitation: OrganizationInvitation;
+  invite: OrgInvite;
 };
 
 export type ResourceNotFoundErrorResponseContent = {
@@ -591,14 +591,14 @@ export type TaggedText = {
   text: string;
 };
 
-export type TransferOrganizationOwnershipRequestContent = {
-  organizationId: string;
+export type TransferOrgOwnershipRequestContent = {
+  orgId: string;
   newOwnerId: string;
 };
 
-export type TransferOrganizationOwnershipResponseContent = {
+export type TransferOrgOwnershipResponseContent = {
   success: boolean;
-  organization: Organization;
+  org: Org;
 };
 
 export type UpdateContractRequestContent = {
@@ -611,11 +611,11 @@ export type UpdateContractResponseContent = {
 };
 
 export type UpdateCustomRoleRequestContent = {
-  organizationId: string;
+  orgId: string;
   customRoleId: string;
   name?: string;
   description?: string;
-  permissions?: OrganizationPermission[];
+  permissions?: OrgPermission[];
 };
 
 export type UpdateCustomRoleResponseContent = {
@@ -623,30 +623,30 @@ export type UpdateCustomRoleResponseContent = {
   customRole: CustomRole;
 };
 
-export type UpdateOrganizationMemberRequestContent = {
-  organizationId: string;
+export type UpdateOrgMemberRequestContent = {
+  orgId: string;
   userId: string;
-  role?: OrganizationRole;
+  role?: OrgRole;
   customRoleId?: string;
-  organizationEmail?: string;
+  orgEmail?: string;
 };
 
-export type UpdateOrganizationMemberResponseContent = {
+export type UpdateOrgMemberResponseContent = {
   success: boolean;
-  member: OrganizationMember;
+  member: OrgMember;
 };
 
-export type UpdateOrganizationRequestContent = {
-  organizationId: string;
+export type UpdateOrgRequestContent = {
+  orgId: string;
   name?: string;
   description?: string;
   website?: string;
   billingEmail?: string;
 };
 
-export type UpdateOrganizationResponseContent = {
+export type UpdateOrgResponseContent = {
   success: boolean;
-  organization: Organization;
+  org: Org;
 };
 
 export type UpdateProfileRequestContent = {
