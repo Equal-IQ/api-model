@@ -263,14 +263,13 @@ function findSharedTypes() {
     };
   });
   
-  // Find types that exist in multiple specs with identical structure (excluding enums)
+  // Find types that exist in multiple specs with identical structure
   const sharedTypes = [];
   const mainTypes = typesBySpec.find(t => t.name === 'main')?.types || new Set();
   
   for (const typeName of mainTypes) {
     let isSharedAcrossAll = true;
     let sharedStructure = null;
-    let isEnum = false;
     
     for (const spec of apiSpecs) {
       const schema = spec.spec.components?.schemas?.[typeName];
@@ -282,19 +281,17 @@ function findSharedTypes() {
       const schemaStr = JSON.stringify(schema);
       if (sharedStructure === null) {
         sharedStructure = schemaStr;
-        isEnum = schema.type === 'string' && schema.enum;
       } else if (sharedStructure !== schemaStr) {
         isSharedAcrossAll = false;
         break;
       }
     }
     
-    // Only include non-enum types for deduplication
-    if (isSharedAcrossAll && sharedStructure !== null && !isEnum) {
+    if (isSharedAcrossAll && sharedStructure !== null) {
       sharedTypes.push(typeName);
     }
   }
   
-  console.log(`Found ${sharedTypes.length} shared non-enum types:`, sharedTypes);
+  console.log(`Found ${sharedTypes.length} shared types:`, sharedTypes);
   return sharedTypes;
 }
