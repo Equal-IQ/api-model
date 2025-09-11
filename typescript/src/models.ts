@@ -180,7 +180,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/orgs/invite": {
+    "/orgs/invite/create": {
         parameters: {
             query?: never;
             header?: never;
@@ -190,22 +190,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["CreateOrgInvite"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/orgs/invites": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListOrgInvites"];
         delete?: never;
         options?: never;
         head?: never;
@@ -222,6 +206,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["CancelOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListOrgInvites"];
         delete?: never;
         options?: never;
         head?: never;
@@ -564,7 +564,7 @@ export interface components {
         };
         CreateOrgInviteResponseContent: {
             success: boolean;
-            invites: components["schemas"]["OrgInvite"][];
+            invites: components["schemas"]["OrgInviteMap"];
             failedEmails?: string[];
         };
         CreateOrgRequestContent: {
@@ -796,7 +796,7 @@ export interface components {
             status?: components["schemas"]["InviteStatus"];
         };
         ListOrgInvitesResponseContent: {
-            invites: components["schemas"]["OrgInvite"][];
+            invites: components["schemas"]["OrgInviteMap"];
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
@@ -826,6 +826,9 @@ export interface components {
             createdDate: string;
             expiresDate?: string;
             inviterProfile?: components["schemas"]["UserProfile"];
+        };
+        OrgInviteMap: {
+            [key: string]: components["schemas"]["OrgInvite"];
         };
         OrgMember: {
             userId: string;
@@ -1461,48 +1464,6 @@ export interface operations {
             };
         };
     };
-    ListOrgInvites: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ListOrgInvitesRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ListOrgInvites 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     CancelOrgInvite: {
         parameters: {
             query?: never;
@@ -1532,6 +1493,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListOrgInvites: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListOrgInvitesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListOrgInvites 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

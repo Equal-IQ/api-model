@@ -222,7 +222,7 @@ export type CreateOrgInviteRequestContent = {
 
 export type CreateOrgInviteResponseContent = {
   success: boolean;
-  invites: OrgInvite[];
+  invites: OrgInviteMap;
   failedEmails?: string[];
 };
 
@@ -474,7 +474,7 @@ export type ListOrgInvitesRequestContent = {
 };
 
 export type ListOrgInvitesResponseContent = {
-  invites: OrgInvite[];
+  invites: OrgInviteMap;
 };
 
 export type ListSpecialContractsResponseContent = {
@@ -508,6 +508,8 @@ export type OrgInvite = {
   expiresDate?: string;
   inviterProfile?: UserProfile;
 };
+
+export type OrgInviteMap = { [key: string]: OrgInvite };
 
 export type OrgMember = {
   userId: string;

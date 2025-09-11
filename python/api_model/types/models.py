@@ -648,6 +648,10 @@ class OrgInvite(BaseModel):
     inviterProfile: UserProfile | None
 
 
+class OrgInviteMap(RootModel[dict[str, OrgInvite] | None]):
+    root: dict[str, OrgInvite] | None
+
+
 class OrgMember(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     orgEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
@@ -711,7 +715,7 @@ class CreateCustomRoleResponseContent(BaseModel):
 
 class CreateOrgInviteResponseContent(BaseModel):
     success: bool
-    invites: list[OrgInvite]
+    invites: OrgInviteMap
     failedEmails: list[FailedEmail] | None
 
 
@@ -775,7 +779,7 @@ class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
 
 
 class ListOrgInvitesResponseContent(BaseModel):
-    invites: list[OrgInvite]
+    invites: OrgInviteMap
 
 
 class IqModeData(BaseModel):

@@ -50,16 +50,19 @@ list OrgPermissionList {
     member: OrgPermission
 }
 
-list OrgMemberList {
-    member: OrgMember
+map OrgMemberMap {
+    key: UserId
+    value: OrgMember
 }
 
-list OrgInviteList {
-    member: OrgInvite
+map OrgInviteMap {
+    key: InviteId
+    value: OrgInvite
 }
 
-list CustomRoleList {
-    member: CustomRole
+map CustomRoleMap {
+    key: CustomRoleId
+    value: CustomRole
 }
 
 structure Org {
@@ -365,6 +368,28 @@ structure CreateCustomRoleOutput {
     customRole: CustomRole
 }
 
+@http(method: "POST", uri: "/orgs/roles/list")
+operation ListCustomRoles {
+    input: ListCustomRolesInput
+    output: ListCustomRolesOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure ListCustomRolesInput {
+    @required
+    orgId: OrgId
+}
+
+structure ListCustomRolesOutput {
+    @required
+    roles: CustomRoleMap
+}
+
+
 @http(method: "POST", uri: "/orgs/roles/update")
 operation UpdateCustomRole {
     input: UpdateCustomRoleInput
@@ -425,7 +450,7 @@ structure DeleteCustomRoleOutput {
 // ==================== INVITATION MANAGEMENT APIs ====================
 
 
-@http(method: "POST", uri: "/orgs/invite")
+@http(method: "POST", uri: "/orgs/invite/create")
 operation CreateOrgInvite {
     input: CreateOrgInviteInput
     output: CreateOrgInviteOutput
@@ -456,12 +481,12 @@ structure CreateOrgInviteOutput {
     success: Boolean
 
     @required
-    invites: OrgInviteList
+    invites: OrgInviteMap
 
     failedEmails: EmailList
 }
 
-@http(method: "POST", uri: "/orgs/invites")
+@http(method: "POST", uri: "/orgs/invites/list")
 operation ListOrgInvites {
     input: ListOrgInvitesInput
     output: ListOrgInvitesOutput
@@ -481,7 +506,7 @@ structure ListOrgInvitesInput {
 
 structure ListOrgInvitesOutput {
     @required
-    invites: OrgInviteList
+    invites: OrgInviteMap
 }
 
 @http(method: "POST", uri: "/orgs/invites/cancel")
