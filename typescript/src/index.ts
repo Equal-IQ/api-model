@@ -394,6 +394,22 @@ export type GetContractResponseContent = {
   isOwner?: boolean;
 };
 
+export type GetOrgPictureRequestContent = {
+  orgId: string;
+};
+
+export type GetOrgPictureResponseContent = {
+  profilePictureURL: string;
+};
+
+export type GetOrgThemeRequestContent = {
+  orgId: string;
+};
+
+export type GetOrgThemeResponseContent = {
+  theme: OrgTheme;
+};
+
 export type GetProfilePictureRequestContent = {
   userId?: string;
 };
@@ -520,6 +536,12 @@ export type OrgMember = {
   customPermissions?: OrgPermission[];
   joinedDate: string;
   userProfile?: UserProfile;
+};
+
+export type OrgTheme = {
+  primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
 };
 
 export type PingResponseContent = {
@@ -652,6 +674,16 @@ export type UpdateOrgResponseContent = {
   org: Org;
 };
 
+export type UpdateOrgThemeRequestContent = {
+  orgId: string;
+  theme: OrgTheme;
+};
+
+export type UpdateOrgThemeResponseContent = {
+  success: boolean;
+  theme: OrgTheme;
+};
+
 export type UpdateProfileRequestContent = {
   firstName?: string;
   lastName?: string;
@@ -666,6 +698,14 @@ export type UpdateProfileResponseContent = {
   message: string;
   userId: string;
   updatedFields?: string[];
+};
+
+export type UploadOrgPictureRequestContent = {
+  orgId: string;
+};
+
+export type UploadOrgPictureResponseContent = {
+  url_info: PresignedPostData;
 };
 
 export type UploadProfilePictureResponseContent = {

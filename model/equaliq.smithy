@@ -41,6 +41,10 @@ service EqualIQ {
     CreateOrgInvite
     CancelOrgInvite
     ResendOrgInvite
+    GetOrgPicture
+    UploadOrgPicture
+    GetOrgTheme
+    UpdateOrgTheme
 
     // Utility operations
     Ping

@@ -181,6 +181,21 @@ class GetContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class GetOrgPictureRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class GetOrgPictureResponseContent(BaseModel):
+    profilePictureURL: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+
+
+class GetOrgThemeRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class GetProfilePictureRequestContent(BaseModel):
     userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
@@ -257,6 +272,12 @@ class OrgRole(Enum):
     member = 'member'
     viewer = 'viewer'
     custom = 'custom'
+
+
+class OrgTheme(BaseModel):
+    primaryColor: str | None
+    secondaryColor: str | None
+    accentColor: str | None
 
 
 class OrgType(Enum):
@@ -401,6 +422,16 @@ class UpdateOrgRequestContent(BaseModel):
     )
 
 
+class UpdateOrgThemeRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    theme: OrgTheme
+
+
+class UpdateOrgThemeResponseContent(BaseModel):
+    success: bool
+    theme: OrgTheme
+
+
 class UpdateProfileRequestContent(BaseModel):
     firstName: str | None
     lastName: str | None
@@ -415,6 +446,14 @@ class UpdateProfileResponseContent(BaseModel):
     message: str
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     updatedFields: list[str] | None
+
+
+class UploadOrgPictureRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class UploadOrgPictureResponseContent(BaseModel):
+    url_info: PresignedPostData
 
 
 class UploadProfilePictureResponseContent(BaseModel):
@@ -564,6 +603,10 @@ class ExtractionTerm(BaseModel):
 
 class ExtractionTermMap(RootModel[dict[str, ExtractionTerm] | None]):
     root: dict[str, ExtractionTerm] | None
+
+
+class GetOrgThemeResponseContent(BaseModel):
+    theme: OrgTheme
 
 
 class GetProfileResponseContent(BaseModel):

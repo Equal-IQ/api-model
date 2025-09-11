@@ -180,6 +180,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orgs/getOrgPicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetOrgPicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/getOrgTheme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetOrgTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/invite/create": {
         parameters: {
             query?: never;
@@ -350,6 +382,38 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["UpdateOrgMember"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/updateOrgTheme": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateOrgTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/uploadOrgPicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadOrgPicture"];
         delete?: never;
         options?: never;
         head?: never;
@@ -722,6 +786,18 @@ export interface components {
             sharedWith?: string[];
             isOwner?: boolean;
         };
+        GetOrgPictureRequestContent: {
+            orgId: string;
+        };
+        GetOrgPictureResponseContent: {
+            profilePictureURL: string;
+        };
+        GetOrgThemeRequestContent: {
+            orgId: string;
+        };
+        GetOrgThemeResponseContent: {
+            theme: components["schemas"]["OrgTheme"];
+        };
         GetProfilePictureRequestContent: {
             userId?: string;
         };
@@ -844,6 +920,11 @@ export interface components {
         OrgPermission: OrgPermission;
         /** @enum {string} */
         OrgRole: OrgRole;
+        OrgTheme: {
+            primaryColor?: string;
+            secondaryColor?: string;
+            accentColor?: string;
+        };
         /** @enum {string} */
         OrgType: OrgType;
         PingResponseContent: {
@@ -953,6 +1034,14 @@ export interface components {
             success: boolean;
             org: components["schemas"]["Org"];
         };
+        UpdateOrgThemeRequestContent: {
+            orgId: string;
+            theme: components["schemas"]["OrgTheme"];
+        };
+        UpdateOrgThemeResponseContent: {
+            success: boolean;
+            theme: components["schemas"]["OrgTheme"];
+        };
         UpdateProfileRequestContent: {
             firstName?: string;
             lastName?: string;
@@ -966,6 +1055,12 @@ export interface components {
             message: string;
             userId: string;
             updatedFields?: string[];
+        };
+        UploadOrgPictureRequestContent: {
+            orgId: string;
+        };
+        UploadOrgPictureResponseContent: {
+            url_info: components["schemas"]["PresignedPostData"];
         };
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
@@ -1410,6 +1505,90 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetOrgPicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetOrgPictureRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetOrgPicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOrgPictureResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetOrgTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetOrgThemeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetOrgTheme 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOrgThemeResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1872,6 +2051,90 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateOrgTheme: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrgThemeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateOrgTheme 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateOrgThemeResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UploadOrgPicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadOrgPictureRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UploadOrgPicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadOrgPictureResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

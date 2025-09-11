@@ -161,6 +161,12 @@ structure CustomRole {
     createdBy: UserId
 }
 
+structure OrgTheme {
+    primaryColor: String
+    secondaryColor: String
+    accentColor: String
+}
+
 // ==================== ORGANIZATION MANAGEMENT APIs ====================
 
 @http(method: "POST", uri: "/orgs/create")
@@ -610,4 +616,56 @@ structure UploadOrgPictureInput {
 structure UploadOrgPictureOutput {
     @required
     url_info: PresignedPostData
+}
+
+// ==================== ORG THEME APIs ====================
+
+@http(method: "POST", uri: "/orgs/getOrgTheme")
+operation GetOrgTheme {
+    input: GetOrgThemeInput
+    output: GetOrgThemeOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetOrgThemeInput {
+    @required
+    orgId: OrgId
+}
+
+structure GetOrgThemeOutput {
+    @required
+    theme: OrgTheme
+}
+
+@idempotent
+@http(method: "POST", uri: "/orgs/updateOrgTheme")
+operation UpdateOrgTheme {
+    input: UpdateOrgThemeInput
+    output: UpdateOrgThemeOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure UpdateOrgThemeInput {
+    @required
+    orgId: OrgId
+
+    @required
+    theme: OrgTheme
+}
+
+structure UpdateOrgThemeOutput {
+    @required
+    success: Boolean
+
+    @required
+    theme: OrgTheme
 }
