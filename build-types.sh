@@ -24,7 +24,8 @@ usage() {
 PYTHON=false
 TYPESCRIPT=false
 OUTPUT_DIR=""  # No default output directory since we have dedicated package directories
-OPENAPI_FILE="build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json"
+MAIN_OPENAPI_FILE="build/smithyprojections/api-model/openapi/openapi/EqualIQ.openapi.json"
+ORGS_OPENAPI_FILE="build/smithyprojections/api-model/openapi-orgs/openapi/Orgs.openapi.json"
 
 # Default value for installation
 INSTALL=false
@@ -53,15 +54,20 @@ if [[ "$PYTHON" == "false" && "$TYPESCRIPT" == "false" ]]; then
   usage
 fi
 
-# Check if OpenAPI file exists, if not, run the build
-if [[ ! -f "$OPENAPI_FILE" ]]; then
-  echo "OpenAPI file not found. Running build-docker.sh first..."
-  ./build-docker.sh
+# Check if OpenAPI files exist, if not, run the build
+if [[ ! -f "$MAIN_OPENAPI_FILE" || ! -f "$ORGS_OPENAPI_FILE" ]]; then
+  echo "OpenAPI files not found. Running build first..."
+  ./build-openapi.sh
 fi
 
 # Check again, in case the build failed
-if [[ ! -f "$OPENAPI_FILE" ]]; then
-  echo "Error: OpenAPI file not found at $OPENAPI_FILE after build"
+if [[ ! -f "$MAIN_OPENAPI_FILE" ]]; then
+  echo "Error: Main OpenAPI file not found at $MAIN_OPENAPI_FILE after build"
+  exit 1
+fi
+
+if [[ ! -f "$ORGS_OPENAPI_FILE" ]]; then
+  echo "Error: Organizations OpenAPI file not found at $ORGS_OPENAPI_FILE after build"
   exit 1
 fi
 
@@ -77,8 +83,8 @@ if [[ "$PYTHON" == "true" ]]; then
   # Create a temporary directory for our container context
   TEMP_DIR=$(mkdir -p "build/python" && cd "build/python" && pwd)
 
-  # Copy the OpenAPI file to the temp directory
-  cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
+  # Copy the main OpenAPI file to the temp directory (Python generation uses main API for now)
+  cp "$MAIN_OPENAPI_FILE" "$TEMP_DIR/api.json"
   
   # Build and run the container using the external Containerfile
   docker build -t equaliq-python-codegen -f Containers/Containerfile-python-codegen "$TEMP_DIR"
@@ -119,8 +125,9 @@ if [[ "$TYPESCRIPT" == "true" ]]; then
   # Create a temporary directory for our container context
   TEMP_DIR=$(mkdir -p "build/typescript" && cd "build/typescript" && pwd)
 
-  # Copy the OpenAPI file to the temp directory
-  cp "$OPENAPI_FILE" "$TEMP_DIR/api.json"
+  # Copy both OpenAPI files to the temp directory
+  cp "$MAIN_OPENAPI_FILE" "$TEMP_DIR/api.json"
+  cp "$ORGS_OPENAPI_FILE" "$TEMP_DIR/orgs-api.json"
   
   # Copy the generate.js file to the temp directory
   cp "Containers/generate.js" "$TEMP_DIR/generate.js"
@@ -134,12 +141,18 @@ if [[ "$TYPESCRIPT" == "true" ]]; then
   # Always write to the typescript package directory
   docker run --rm equaliq-ts-codegen cat /app/models.ts > "$TYPESCRIPT_PACKAGE_DIR/models.ts"
   docker run --rm equaliq-ts-codegen cat /app/index.ts > "$TYPESCRIPT_PACKAGE_DIR/index.ts"
+  docker run --rm equaliq-ts-codegen cat /app/orgs-models.ts > "$TYPESCRIPT_PACKAGE_DIR/orgs-models.ts"
+  docker run --rm equaliq-ts-codegen cat /app/orgs-index.ts > "$TYPESCRIPT_PACKAGE_DIR/orgs-index.ts"
+  docker run --rm equaliq-ts-codegen cat /app/all.ts > "$TYPESCRIPT_PACKAGE_DIR/all.ts"
   
   # Write to additional output directory if specified
   if [[ -n "$OUTPUT_DIR" ]]; then
     mkdir -p "$OUTPUT_DIR"
     docker run --rm equaliq-ts-codegen cat /app/models.ts > "$OUTPUT_DIR/models.ts"
     docker run --rm equaliq-ts-codegen cat /app/index.ts > "$OUTPUT_DIR/index.ts"
+    docker run --rm equaliq-ts-codegen cat /app/orgs-models.ts > "$OUTPUT_DIR/orgs-models.ts"
+    docker run --rm equaliq-ts-codegen cat /app/orgs-index.ts > "$OUTPUT_DIR/orgs-index.ts"
+    docker run --rm equaliq-ts-codegen cat /app/all.ts > "$OUTPUT_DIR/all.ts"
   fi
   
   # Clean up

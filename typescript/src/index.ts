@@ -1,4 +1,4 @@
-// Auto-generated index file with unwrapped types
+// Auto-generated index file with unwrapped types for main API
 // Export all schemas from the OpenAPI specification
 export * from './models';
 export { components } from './models';
@@ -66,13 +66,6 @@ export enum EqCardType {
   B = "B"
 }
 
-export enum InvitationStatus {
-  pending = "pending",
-  accepted = "accepted",
-  declined = "declined",
-  expired = "expired"
-}
-
 export enum IqModeSectionKey {
   earnings = "earnings",
   qualityOfRights = "qualityOfRights",
@@ -81,62 +74,9 @@ export enum IqModeSectionKey {
   liabilitySafeguards = "liabilitySafeguards"
 }
 
-export enum OrganizationPermission {
-  manage_members = "manage_members",
-  manage_billing = "manage_billing",
-  manage_settings = "manage_settings",
-  view_all_contracts = "view_all_contracts",
-  manage_contracts = "manage_contracts",
-  invite_users = "invite_users",
-  manage_roles = "manage_roles",
-  view_analytics = "view_analytics"
-}
-
-export enum OrganizationRole {
-  primary_owner = "primary_owner",
-  admin = "admin",
-  billing_admin = "billing_admin",
-  member = "member",
-  viewer = "viewer",
-  custom = "custom"
-}
-
-export enum OrganizationType {
-  law_firm = "law_firm",
-  record_label = "record_label",
-  management_company = "management_company",
-  publishing_company = "publishing_company",
-  production_company = "production_company",
-  talent_agency = "talent_agency",
-  distribution_company = "distribution_company",
-  other = "other"
-}
-
 // Unwrapped type definitions (no aliases)
-export type AuthenticationError = {
-  message: string;
-};
-
 export type AuthenticationErrorResponseContent = {
   message: string;
-};
-
-export type CancelOrganizationInvitationInput = {
-  organizationId: string;
-  invitationId: string;
-};
-
-export type CancelOrganizationInvitationOutput = {
-  success: boolean;
-};
-
-export type CancelOrganizationInvitationRequestContent = {
-  organizationId: string;
-  invitationId: string;
-};
-
-export type CancelOrganizationInvitationResponseContent = {
-  success: boolean;
 };
 
 export type ContractAnalysisRecord = {
@@ -213,113 +153,11 @@ export type ContractVariable = {
 
 export type ContractVariableMap = { [key: string]: ContractVariable };
 
-export type CreateCustomRoleInput = {
-  organizationId: string;
-  name: string;
-  description?: string;
-  permissions: OrganizationPermission[];
-};
-
-export type CreateCustomRoleOutput = {
-  success: boolean;
-  customRole: CustomRole;
-};
-
-export type CreateCustomRoleRequestContent = {
-  organizationId: string;
-  name: string;
-  description?: string;
-  permissions: OrganizationPermission[];
-};
-
-export type CreateCustomRoleResponseContent = {
-  success: boolean;
-  customRole: CustomRole;
-};
-
-export type CreateOrganizationInput = {
-  name: string;
-  type: OrganizationType;
-  description?: string;
-  website?: string;
-  billingEmail?: string;
-};
-
-export type CreateOrganizationOutput = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type CreateOrganizationRequestContent = {
-  name: string;
-  type: OrganizationType;
-  description?: string;
-  website?: string;
-  billingEmail?: string;
-};
-
-export type CreateOrganizationResponseContent = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type CustomRole = {
-  customRoleId: string;
-  organizationId: string;
-  name: string;
-  description?: string;
-  permissions: OrganizationPermission[];
-  createdDate: string;
-  createdBy: string;
-};
-
-export type DeleteContractInput = {
-  contractId: string;
-};
-
-export type DeleteContractOutput = {
-  success: boolean;
-};
-
 export type DeleteContractRequestContent = {
   contractId: string;
 };
 
 export type DeleteContractResponseContent = {
-  success: boolean;
-};
-
-export type DeleteCustomRoleInput = {
-  organizationId: string;
-  customRoleId: string;
-};
-
-export type DeleteCustomRoleOutput = {
-  success: boolean;
-};
-
-export type DeleteCustomRoleRequestContent = {
-  organizationId: string;
-  customRoleId: string;
-};
-
-export type DeleteCustomRoleResponseContent = {
-  success: boolean;
-};
-
-export type DeleteOrganizationInput = {
-  organizationId: string;
-};
-
-export type DeleteOrganizationOutput = {
-  success: boolean;
-};
-
-export type DeleteOrganizationRequestContent = {
-  organizationId: string;
-};
-
-export type DeleteOrganizationResponseContent = {
   success: boolean;
 };
 
@@ -392,10 +230,6 @@ export type ExposeTypesResponseContent = {
   contractAnalysisRecord?: ContractAnalysisRecord;
 };
 
-export type ExposedTypes = {
-  contractAnalysisRecord?: ContractAnalysisRecord;
-};
-
 export type ExtractionTerm = {
   name: string;
   definition: string;
@@ -423,30 +257,6 @@ export type FixedValueTermInference = {
   subterms?: FixedTermValue[];
 };
 
-export type GetContractInput = {
-  contractId: string;
-};
-
-export type GetContractOutput = {
-  contractId: string;
-  ownerId: string;
-  name: string;
-  type: ContractType;
-  eqData?: EqModeData;
-  iqData?: IqModeData;
-  contractExtraction?: ContractExtractionResult;
-  sharedWith?: string[];
-  isOwner?: boolean;
-};
-
-export type GetContractReadURLInput = {
-  contractId: string;
-};
-
-export type GetContractReadURLOutput = {
-  url: string;
-};
-
 export type GetContractReadURLRequestContent = {
   contractId: string;
 };
@@ -471,23 +281,6 @@ export type GetContractResponseContent = {
   isOwner?: boolean;
 };
 
-export type GetProfileInput = {
-  userId?: string;
-};
-
-export type GetProfileOutput = {
-  userId: string;
-  profile: UserProfile;
-};
-
-export type GetProfilePictureInput = {
-  userId?: string;
-};
-
-export type GetProfilePictureOutput = {
-  profilePictureURL: string;
-};
-
 export type GetProfilePictureRequestContent = {
   userId?: string;
 };
@@ -505,21 +298,6 @@ export type GetProfileResponseContent = {
   profile: UserProfile;
 };
 
-export type GetSpecialContractInput = {
-  contractId: string;
-};
-
-export type GetSpecialContractOutput = {
-  contractId: string;
-  name: string;
-  type: ContractType;
-  eqmode: unknown;
-  sections: unknown;
-  isOwner: boolean;
-  ownerId: string;
-  sharedWith: string[];
-};
-
 export type GetSpecialContractRequestContent = {
   contractId: string;
 };
@@ -535,14 +313,6 @@ export type GetSpecialContractResponseContent = {
   sharedWith: string[];
 };
 
-export type GetUploadURLInput = {
-  name: string;
-};
-
-export type GetUploadURLOutput = {
-  url_info: PresignedPostData;
-};
-
 export type GetUploadURLRequestContent = {
   name: string;
 };
@@ -551,40 +321,8 @@ export type GetUploadURLResponseContent = {
   url_info: PresignedPostData;
 };
 
-export type InternalServerError = {
-  message: string;
-};
-
 export type InternalServerErrorResponseContent = {
   message: string;
-};
-
-export type InviteToOrganizationInput = {
-  organizationId: string;
-  emails: string[];
-  role: OrganizationRole;
-  customRoleId?: string;
-  organizationEmail?: string;
-};
-
-export type InviteToOrganizationOutput = {
-  success: boolean;
-  invitations: OrganizationInvitation[];
-  failedEmails?: string[];
-};
-
-export type InviteToOrganizationRequestContent = {
-  organizationId: string;
-  emails: string[];
-  role: OrganizationRole;
-  customRoleId?: string;
-  organizationEmail?: string;
-};
-
-export type InviteToOrganizationResponseContent = {
-  success: boolean;
-  invitations: OrganizationInvitation[];
-  failedEmails?: string[];
 };
 
 export type IqModeData = {
@@ -611,92 +349,15 @@ export type IqModeSection = {
 
 export type IqModeSectionMap = { [key: string]: IqModeSection };
 
-export type ListContractsInput = unknown;
-
-export type ListContractsOutput = {
-  owned?: ContractSummaryItem[];
-  shared?: ContractSummaryItem[];
-  contracts?: ContractMetadata[];
-};
-
 export type ListContractsResponseContent = {
   owned?: ContractSummaryItem[];
   shared?: ContractSummaryItem[];
   contracts?: ContractMetadata[];
 };
 
-export type ListOrganizationInvitationsInput = {
-  organizationId: string;
-  status?: InvitationStatus;
-};
-
-export type ListOrganizationInvitationsOutput = {
-  invitations: OrganizationInvitation[];
-};
-
-export type ListOrganizationInvitationsRequestContent = {
-  organizationId: string;
-  status?: InvitationStatus;
-};
-
-export type ListOrganizationInvitationsResponseContent = {
-  invitations: OrganizationInvitation[];
-};
-
-export type ListSpecialContractsInput = unknown;
-
-export type ListSpecialContractsOutput = {
-  owned: ContractSummaryItem[];
-  shared: ContractSummaryItem[];
-};
-
 export type ListSpecialContractsResponseContent = {
   owned: ContractSummaryItem[];
   shared: ContractSummaryItem[];
-};
-
-export type Organization = {
-  organizationId: string;
-  name: string;
-  type: OrganizationType;
-  primaryOwner: string;
-  description?: string;
-  website?: string;
-  billingEmail?: string;
-  createdDate: string;
-  memberCount?: number;
-};
-
-export type OrganizationInvitation = {
-  invitationId: string;
-  organizationId: string;
-  invitedEmail: string;
-  role: OrganizationRole;
-  customRoleId?: string;
-  customRoleName?: string;
-  customPermissions?: OrganizationPermission[];
-  invitedBy: string;
-  status: InvitationStatus;
-  createdDate: string;
-  expiresDate?: string;
-  inviterProfile?: UserProfile;
-};
-
-export type OrganizationMember = {
-  userId: string;
-  organizationEmail: string;
-  role: OrganizationRole;
-  customRoleId?: string;
-  customRoleName?: string;
-  customPermissions?: OrganizationPermission[];
-  joinedDate: string;
-  userProfile?: UserProfile;
-};
-
-export type PingInput = unknown;
-
-export type PingOutput = {
-  message: string;
 };
 
 export type PingResponseContent = {
@@ -712,73 +373,12 @@ export type PresignedPostData = {
   fields: unknown;
 };
 
-export type ProcessingIncompleteError = {
-  message: string;
-};
-
 export type ProcessingIncompleteErrorResponseContent = {
-  message: string;
-};
-
-export type RemoveOrganizationMemberInput = {
-  organizationId: string;
-  userId: string;
-};
-
-export type RemoveOrganizationMemberOutput = {
-  success: boolean;
-};
-
-export type RemoveOrganizationMemberRequestContent = {
-  organizationId: string;
-  userId: string;
-};
-
-export type RemoveOrganizationMemberResponseContent = {
-  success: boolean;
-};
-
-export type ResendOrganizationInvitationInput = {
-  organizationId: string;
-  invitationId: string;
-};
-
-export type ResendOrganizationInvitationOutput = {
-  success: boolean;
-  invitation: OrganizationInvitation;
-};
-
-export type ResendOrganizationInvitationRequestContent = {
-  organizationId: string;
-  invitationId: string;
-};
-
-export type ResendOrganizationInvitationResponseContent = {
-  success: boolean;
-  invitation: OrganizationInvitation;
-};
-
-export type ResourceNotFoundError = {
   message: string;
 };
 
 export type ResourceNotFoundErrorResponseContent = {
   message: string;
-};
-
-export type ShareContractInput = {
-  contractId: string;
-  emailsToAdd?: string[];
-  emailsToRemove?: string[];
-};
-
-export type ShareContractOutput = {
-  success: boolean;
-  contractId: string;
-  sharedWith: SharedUserDetails[];
-  added?: string[];
-  removed?: string[];
-  invalidRemoves?: string[];
 };
 
 export type ShareContractRequestContent = {
@@ -812,35 +412,6 @@ export type TaggedText = {
   text: string;
 };
 
-export type TransferOrganizationOwnershipInput = {
-  organizationId: string;
-  newOwnerId: string;
-};
-
-export type TransferOrganizationOwnershipOutput = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type TransferOrganizationOwnershipRequestContent = {
-  organizationId: string;
-  newOwnerId: string;
-};
-
-export type TransferOrganizationOwnershipResponseContent = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type UpdateContractInput = {
-  contractId: string;
-  name: string;
-};
-
-export type UpdateContractOutput = {
-  success: boolean;
-};
-
 export type UpdateContractRequestContent = {
   contractId: string;
   name: string;
@@ -848,100 +419,6 @@ export type UpdateContractRequestContent = {
 
 export type UpdateContractResponseContent = {
   success: boolean;
-};
-
-export type UpdateCustomRoleInput = {
-  organizationId: string;
-  customRoleId: string;
-  name?: string;
-  description?: string;
-  permissions?: OrganizationPermission[];
-};
-
-export type UpdateCustomRoleOutput = {
-  success: boolean;
-  customRole: CustomRole;
-};
-
-export type UpdateCustomRoleRequestContent = {
-  organizationId: string;
-  customRoleId: string;
-  name?: string;
-  description?: string;
-  permissions?: OrganizationPermission[];
-};
-
-export type UpdateCustomRoleResponseContent = {
-  success: boolean;
-  customRole: CustomRole;
-};
-
-export type UpdateOrganizationInput = {
-  organizationId: string;
-  name?: string;
-  description?: string;
-  website?: string;
-  billingEmail?: string;
-};
-
-export type UpdateOrganizationMemberInput = {
-  organizationId: string;
-  userId: string;
-  role?: OrganizationRole;
-  customRoleId?: string;
-  organizationEmail?: string;
-};
-
-export type UpdateOrganizationMemberOutput = {
-  success: boolean;
-  member: OrganizationMember;
-};
-
-export type UpdateOrganizationMemberRequestContent = {
-  organizationId: string;
-  userId: string;
-  role?: OrganizationRole;
-  customRoleId?: string;
-  organizationEmail?: string;
-};
-
-export type UpdateOrganizationMemberResponseContent = {
-  success: boolean;
-  member: OrganizationMember;
-};
-
-export type UpdateOrganizationOutput = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type UpdateOrganizationRequestContent = {
-  organizationId: string;
-  name?: string;
-  description?: string;
-  website?: string;
-  billingEmail?: string;
-};
-
-export type UpdateOrganizationResponseContent = {
-  success: boolean;
-  organization: Organization;
-};
-
-export type UpdateProfileInput = {
-  firstName?: string;
-  lastName?: string;
-  displayName?: string;
-  accountType?: AccountType;
-  bio?: string;
-  isOver18?: boolean;
-};
-
-export type UpdateProfileOutput = {
-  success: boolean;
-  message: string;
-  userId: string;
-  updatedFields?: string[];
 };
 
 export type UpdateProfileRequestContent = {
@@ -960,12 +437,6 @@ export type UpdateProfileResponseContent = {
   updatedFields?: string[];
 };
 
-export type UploadProfilePictureInput = unknown;
-
-export type UploadProfilePictureOutput = {
-  url_info: PresignedPostData;
-};
-
 export type UploadProfilePictureResponseContent = {
   url_info: PresignedPostData;
 };
@@ -978,10 +449,6 @@ export type UserProfile = {
   email?: string;
   accountType?: AccountType;
   bio?: string;
-};
-
-export type ValidationError = {
-  message: string;
 };
 
 export type ValidationErrorResponseContent = {

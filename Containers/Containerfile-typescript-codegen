@@ -6,7 +6,7 @@ WORKDIR /app
 RUN npm install openapi-typescript
 
 # Copy files
-COPY api.json /app/api.json
+COPY *api.json /app/
 COPY generate.js /app/generate.js
 
 # Generate the models
