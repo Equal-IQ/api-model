@@ -1,65 +1,18 @@
 const fs = require('fs');
 const { exec } = require('child_process');
-const path = require('path');
 
-// Discover all OpenAPI specs in /app directory
-const apiSpecs = [];
-const files = fs.readdirSync('/app');
-
-files.forEach(file => {
-  if (file.endsWith('.json') && file.includes('api')) {
-    const specPath = path.join('/app', file);
-    try {
-      const spec = require(specPath);
-      if (spec.openapi && spec.info && spec.components) {
-        // Extract projection name from filename (e.g., 'orgs-api.json' -> 'orgs', 'api.json' -> 'main')
-        const projectionName = file === 'api.json' ? 'main' : file.replace('-api.json', '');
-        apiSpecs.push({
-          name: projectionName,
-          file: file,
-          path: specPath,
-          spec: spec,
-          outputFile: projectionName === 'main' ? 'models.ts' : `${projectionName}-models.ts`
-        });
-      }
-    } catch (e) {
-      console.warn(`Skipping ${file}: not a valid OpenAPI spec`);
-    }
+// Generate the base TypeScript file from OpenAPI using the --enum flag
+exec('npx openapi-typescript /app/api.json -o /app/models.ts --enum', (error, stdout, stderr) => {
+  if (error) {
+    console.error('Error generating TypeScript types:', error);
+    console.error(stderr);
+    process.exit(1);
   }
-});
-
-console.log(`Found ${apiSpecs.length} OpenAPI specifications:`, apiSpecs.map(s => s.name));
-
-// Generate TypeScript for each spec
-let completedSpecs = 0;
-apiSpecs.forEach(specInfo => {
-  exec(`npx openapi-typescript ${specInfo.path} -o /app/${specInfo.outputFile} --enum`, (error, stdout, stderr) => {
-    if (error) {
-      console.error(`Error generating TypeScript types for ${specInfo.name}:`, error);
-      console.error(stderr);
-      process.exit(1);
-    }
-    console.log(`TypeScript base models generated successfully for ${specInfo.name}`);
-    
-    completedSpecs++;
-    if (completedSpecs === apiSpecs.length) {
-      generateIndexFiles();
-    }
-  });
-});
-
-function generateIndexFiles() {
-  // Generate index files for each spec
-  apiSpecs.forEach(specInfo => {
-    generateIndexForSpec(specInfo);
-  });
+  console.log(stdout);
+  console.log('TypeScript base models generated successfully');
   
-  // Generate master index that exports all namespaces
-  generateMasterIndex();
-}
-
-function generateIndexForSpec(specInfo) {
-  const apiSpec = specInfo.spec;
+  // Now create an index.ts file that exports all the components.schemas
+  const apiSpec = require('/app/api.json');
   
   // Function to convert OpenAPI schema to TypeScript type string
   function convertSchemaToTypeScript(schema, schemaName) {
@@ -189,16 +142,13 @@ function generateIndexForSpec(specInfo) {
     })
     .join('\n\n');
   
-  const modelsImport = specInfo.name === 'main' ? './models' : `./${specInfo.name}-models`;
-  const indexFileName = specInfo.name === 'main' ? 'index.ts' : `${specInfo.name}-index.ts`;
-  
-  const indexContent = `// Auto-generated index file with unwrapped types for ${specInfo.name} API
+  const indexContent = `// Auto-generated index file with unwrapped types
 // Export all schemas from the OpenAPI specification
-export * from '${modelsImport}';
-export { components } from '${modelsImport}';
+export * from './models';
+export { components } from './models';
 
 // Re-export schemas as top-level types for easier importing
-import { components } from '${modelsImport}';
+import { components } from './models';
 export type Schemas = components['schemas'];
 
 // Unwrapped enum definitions
@@ -208,33 +158,6 @@ ${enumDefinitions}
 ${typeDefinitions}
 `;
 
-  fs.writeFileSync(`/app/${indexFileName}`, indexContent);
-  console.log(`TypeScript index generated successfully for ${specInfo.name} API`);
-}
-
-function generateMasterIndex() {
-  const namespaceExports = apiSpecs.map(specInfo => {
-    const importName = specInfo.name === 'main' ? 'Main' : 
-      specInfo.name.charAt(0).toUpperCase() + specInfo.name.slice(1);
-    const indexFile = specInfo.name === 'main' ? './index' : `./${specInfo.name}-index`;
-    
-    return {
-      namespace: importName,
-      import: `import * as ${importName} from '${indexFile}';`
-    };
-  });
-
-  const masterIndexContent = `// Auto-generated master index file
-// Exports all API namespaces
-${namespaceExports.map(n => n.import).join('\n')}
-
-// Export namespaced APIs
-${namespaceExports.map(n => `export { ${n.namespace} };`).join('\n')}
-
-// Export main API at root level for backwards compatibility
-${apiSpecs.find(s => s.name === 'main') ? "export * from './index';" : ''}
-`;
-
-  fs.writeFileSync('/app/all.ts', masterIndexContent);
-  console.log('Master index file generated successfully');
-}
+  fs.writeFileSync('/app/index.ts', indexContent);
+  console.log('TypeScript index with type exports generated successfully');
+});
