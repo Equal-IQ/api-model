@@ -2,23 +2,23 @@
   "name": "@equaliq/api-model",
   "version": "0.1.0",
   "description": "EqualIQ API TypeScript models generated from Smithy",
-  "main": "dist/all.js",
-  "types": "dist/all.d.ts",
+  "main": "src/all.ts",
+  "types": "src/all.ts",
   "exports": {
     ".": {
-      "types": "./dist/all.d.ts",
-      "import": "./dist/all.js",
-      "require": "./dist/all.js"
+      "types": "./src/all.ts",
+      "import": "./src/all.ts",
+      "require": "./src/all.ts"
     },
     "./orgs": {
-      "types": "./dist/orgs-index.d.ts",
-      "import": "./dist/orgs-index.js",
-      "require": "./dist/orgs-index.js"
+      "types": "./src/orgs-index.ts",
+      "import": "./src/orgs-index.ts",
+      "require": "./src/orgs-index.ts"
     },
     "./main": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.js"
+      "types": "./src/index.ts",
+      "import": "./src/index.ts",
+      "require": "./src/index.ts"
     }
   },
   "scripts": {
