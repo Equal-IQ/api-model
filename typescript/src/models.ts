@@ -898,10 +898,10 @@ export interface components {
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
             invitedBy: string;
+            invitedByProfile?: components["schemas"]["UserProfile"];
             status: components["schemas"]["InviteStatus"];
             createdDate: string;
             expiresDate?: string;
-            inviterProfile?: components["schemas"]["UserProfile"];
         };
         OrgInviteMap: {
             [key: string]: components["schemas"]["OrgInvite"];

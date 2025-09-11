@@ -685,6 +685,7 @@ class OrgInvite(BaseModel):
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
     invitedBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    invitedByProfile: UserProfile | None
     status: InviteStatus
     createdDate: str = Field(
         ...,
@@ -694,7 +695,6 @@ class OrgInvite(BaseModel):
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    inviterProfile: UserProfile | None
 
 
 class OrgInviteMap(RootModel[dict[str, OrgInvite] | None]):

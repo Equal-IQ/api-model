@@ -519,10 +519,10 @@ export type OrgInvite = {
   customRoleName?: string;
   customPermissions?: OrgPermission[];
   invitedBy: string;
+  invitedByProfile?: UserProfile;
   status: InviteStatus;
   createdDate: string;
   expiresDate?: string;
-  inviterProfile?: UserProfile;
 };
 
 export type OrgInviteMap = { [key: string]: OrgInvite };

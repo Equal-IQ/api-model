@@ -128,6 +128,7 @@ structure OrgInvite {
 
     @required
     invitedBy: UserId
+    invitedByProfile: UserProfile
 
     @required
     status: InviteStatus
@@ -136,7 +137,6 @@ structure OrgInvite {
     createdDate: ISODate
 
     expiresDate: ISODate
-    inviterProfile: UserProfile
 }
 
 structure CustomRole {
@@ -169,6 +169,7 @@ structure OrgTheme {
 
 // ==================== ORGANIZATION MANAGEMENT APIs ====================
 
+@idempotent
 @http(method: "POST", uri: "/orgs/create")
 operation CreateOrg {
     input: CreateOrgInput
@@ -232,6 +233,7 @@ structure UpdateOrgOutput {
     org: Org
 }
 
+@idempotent
 @http(method: "POST", uri: "/orgs/delete")
 operation DeleteOrg {
     input: DeleteOrgInput
@@ -289,6 +291,7 @@ structure UpdateOrgMemberOutput {
     member: OrgMember
 }
 
+@idempotent
 @http(method: "POST", uri: "/orgs/removeMember")
 operation RemoveOrgMember {
     input: RemoveOrgMemberInput
@@ -344,6 +347,7 @@ structure TransferOrgOwnershipOutput {
 
 // ==================== ROLE MANAGEMENT APIs ====================
 
+@idempotent
 @http(method: "POST", uri: "/orgs/roles/create")
 operation CreateCustomRole {
     input: CreateCustomRoleInput
@@ -431,6 +435,7 @@ structure UpdateCustomRoleOutput {
     customRole: CustomRole
 }
 
+@idempotent
 @http(method: "POST", uri: "/orgs/roles/delete")
 operation DeleteCustomRole {
     input: DeleteCustomRoleInput
@@ -458,7 +463,7 @@ structure DeleteCustomRoleOutput {
 
 // ==================== INVITATION MANAGEMENT APIs ====================
 
-
+@idempotent
 @http(method: "POST", uri: "/orgs/invites/create")
 operation CreateOrgInvite {
     input: CreateOrgInviteInput
