@@ -523,6 +523,7 @@ structure ListOrgInvitesOutput {
     invites: OrgInviteMap
 }
 
+@idempotent
 @http(method: "POST", uri: "/orgs/invites/cancel")
 operation CancelOrgInvite {
     input: CancelOrgInviteInput
