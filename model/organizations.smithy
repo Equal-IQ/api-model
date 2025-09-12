@@ -2,6 +2,17 @@ $version: "2"
 
 namespace equaliq
 
+use equaliq#UuidLikeMixin
+use equaliq#UserId
+use equaliq#UserProfile
+use equaliq#Url
+use equaliq#Email
+use equaliq#ISODate
+use equaliq#StringList
+use equaliq#EmailList
+use equaliq#HexColor
+use equaliq#PresignedPostData
+
 // Org structures and operations
 
 string OrgId with [UuidLikeMixin]
@@ -186,7 +197,7 @@ resource Organization {
     update: UpdateOrg
     delete: DeleteOrg
     list: ListUserOrganizations
-    resources: [OrganizationMember, OrganizationInvite, OrgCustomRoleResource]
+    resources: [OrganizationMember, OrganizationInvite, OrganizationCustomRole]
     operations: [
         UploadOrgPicture
         GetOrgPicture
@@ -215,7 +226,7 @@ resource OrganizationInvite {
     ]
 }
 
-resource OrgCustomRoleResource {
+resource OrganizationCustomRole {
     identifiers: { orgId: OrgId, customRoleId: OrgCustomRoleId }
     create: CreateOrgCustomRole
     list: ListOrgCustomRoles

@@ -9,6 +9,10 @@ use aws.protocols#restJson1
 @restJson1
 service EqualIQ {
   version: "2023-01-01"
+  resources: [
+    // Organization resources
+    Organization
+  ]
   operations: [
     // contracts.smithy
     GetContract
@@ -26,31 +30,6 @@ service EqualIQ {
     GetProfilePicture
     UploadProfilePicture
     UpdateProfile
-
-    // organizations.smithy
-    ListUserOrganizations
-    GetOrg
-    CreateOrg
-    UpdateOrg
-    DeleteOrg
-    ListOrgMembers
-    UpdateOrgMember
-    RemoveOrgMember
-    TransferOrgOwnership
-    CreateOrgCustomRole
-    ListOrgCustomRoles
-    UpdateOrgCustomRole
-    DeleteOrgCustomRole
-    ListOrgInvites
-    CreateOrgInvite
-    CancelOrgInvite
-    ResendOrgInvite
-    AcceptOrgInvite
-    DeclineOrgInvite
-    GetOrgPicture
-    UploadOrgPicture
-    GetOrgTheme
-    UpdateOrgTheme
 
     // Utility operations
     Ping
