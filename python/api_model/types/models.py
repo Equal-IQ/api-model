@@ -9,6 +9,11 @@ from typing import Any
 from pydantic import BaseModel, Field, RootModel
 
 
+class AcceptOrgInviteRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class AccountType(Enum):
     artist = 'artist'
     manager = 'manager'
@@ -80,6 +85,15 @@ class FailedEmail(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
+class DeclineOrgInviteRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class DeclineOrgInviteResponseContent(BaseModel):
+    success: bool
+
+
 class DeleteContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -88,12 +102,12 @@ class DeleteContractResponseContent(BaseModel):
     success: bool
 
 
-class DeleteCustomRoleRequestContent(BaseModel):
+class DeleteOrgCustomRoleRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
-class DeleteCustomRoleResponseContent(BaseModel):
+class DeleteOrgCustomRoleResponseContent(BaseModel):
     success: bool
 
 
@@ -192,6 +206,10 @@ class GetOrgPictureResponseContent(BaseModel):
     )
 
 
+class GetOrgRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class GetOrgThemeRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -249,9 +267,17 @@ class IqModeSectionKey(Enum):
     liabilitySafeguards = 'liabilitySafeguards'
 
 
+class ListOrgCustomRolesRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class ListOrgInvitesRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     status: InviteStatus | None
+
+
+class ListOrgMembersRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class OrgPermission(Enum):
@@ -395,7 +421,7 @@ class UpdateContractResponseContent(BaseModel):
     success: bool
 
 
-class UpdateCustomRoleRequestContent(BaseModel):
+class UpdateOrgCustomRoleRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str | None
@@ -530,7 +556,7 @@ class ContractVariableMap(RootModel[dict[str, ContractVariable] | None]):
     root: dict[str, ContractVariable] | None
 
 
-class CreateCustomRoleRequestContent(BaseModel):
+class CreateOrgCustomRoleRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     description: str | None
@@ -556,19 +582,6 @@ class CreateOrgRequestContent(BaseModel):
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
     billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class CustomRole(BaseModel):
-    customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    description: str | None
-    permissions: list[OrgPermission]
-    createdDate: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    createdBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class MONEYRECEIVED(BaseModel):
@@ -666,6 +679,10 @@ class Org(BaseModel):
         None,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
+    logoUrl: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
     billingEmail: str | None = Field(
         None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
     )
@@ -674,6 +691,28 @@ class Org(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     memberCount: float | None
+    userRole: OrgRole | None
+    contractCount: float | None
+    inviteCount: float | None
+    roleCount: float | None
+
+
+class OrgCustomRole(BaseModel):
+    customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    description: str | None
+    permissions: list[OrgPermission]
+    createdDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    memberCount: float | None
+
+
+class OrgCustomRoleMap(RootModel[dict[str, OrgCustomRole] | None]):
+    root: dict[str, OrgCustomRole] | None
 
 
 class OrgInvite(BaseModel):
@@ -715,6 +754,10 @@ class OrgMember(BaseModel):
     userProfile: UserProfile | None
 
 
+class OrgMemberMap(RootModel[dict[str, OrgMember] | None]):
+    root: dict[str, OrgMember] | None
+
+
 class ResendOrgInviteResponseContent(BaseModel):
     success: bool
     invite: OrgInvite
@@ -734,9 +777,9 @@ class TransferOrgOwnershipResponseContent(BaseModel):
     org: Org
 
 
-class UpdateCustomRoleResponseContent(BaseModel):
+class UpdateOrgCustomRoleResponseContent(BaseModel):
     success: bool
-    customRole: CustomRole
+    customRole: OrgCustomRole
 
 
 class UpdateOrgMemberResponseContent(BaseModel):
@@ -749,6 +792,12 @@ class UpdateOrgResponseContent(BaseModel):
     org: Org
 
 
+class AcceptOrgInviteResponseContent(BaseModel):
+    success: bool
+    organization: Org
+    member: OrgMember
+
+
 class ContractExtractionResult(BaseModel):
     extractedType: ContractType | None
     parties: list[str] | None
@@ -757,9 +806,9 @@ class ContractExtractionResult(BaseModel):
     contractTexts: ContractTexts | None
 
 
-class CreateCustomRoleResponseContent(BaseModel):
+class CreateOrgCustomRoleResponseContent(BaseModel):
     success: bool
-    customRole: CustomRole
+    customRole: OrgCustomRole
 
 
 class CreateOrgInviteResponseContent(BaseModel):
@@ -819,6 +868,10 @@ class EqModeData(BaseModel):
     cards: EqModeCardMap | None
 
 
+class GetOrgResponseContent(BaseModel):
+    org: Org
+
+
 class IqModePerspective(BaseModel):
     sections: IqModeSectionMap
 
@@ -827,8 +880,20 @@ class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
     root: dict[str, IqModePerspective] | None
 
 
+class ListOrgCustomRolesResponseContent(BaseModel):
+    roles: OrgCustomRoleMap
+
+
 class ListOrgInvitesResponseContent(BaseModel):
     invites: OrgInviteMap
+
+
+class ListOrgMembersResponseContent(BaseModel):
+    members: OrgMemberMap
+
+
+class ListUserOrganizationsResponseContent(BaseModel):
+    organizations: list[Org]
 
 
 class IqModeData(BaseModel):

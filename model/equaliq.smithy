@@ -28,19 +28,25 @@ service EqualIQ {
     UpdateProfile
 
     // organizations.smithy
+    ListUserOrganizations
+    GetOrg
     CreateOrg
     UpdateOrg
     DeleteOrg
+    ListOrgMembers
     UpdateOrgMember
     RemoveOrgMember
     TransferOrgOwnership
-    CreateCustomRole
-    UpdateCustomRole
-    DeleteCustomRole
+    CreateOrgCustomRole
+    ListOrgCustomRoles
+    UpdateOrgCustomRole
+    DeleteOrgCustomRole
     ListOrgInvites
     CreateOrgInvite
     CancelOrgInvite
     ResendOrgInvite
+    AcceptOrgInvite
+    DeclineOrgInvite
     GetOrgPicture
     UploadOrgPicture
     GetOrgTheme

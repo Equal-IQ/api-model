@@ -113,6 +113,17 @@ export enum OrgType {
 }
 
 // Unwrapped type definitions (no aliases)
+export type AcceptOrgInviteRequestContent = {
+  orgId: string;
+  inviteId: string;
+};
+
+export type AcceptOrgInviteResponseContent = {
+  success: boolean;
+  organization: Org;
+  member: OrgMember;
+};
+
 export type AuthenticationErrorResponseContent = {
   message: string;
 };
@@ -200,16 +211,16 @@ export type ContractVariable = {
 
 export type ContractVariableMap = { [key: string]: ContractVariable };
 
-export type CreateCustomRoleRequestContent = {
+export type CreateOrgCustomRoleRequestContent = {
   orgId: string;
   name: string;
   description?: string;
   permissions: OrgPermission[];
 };
 
-export type CreateCustomRoleResponseContent = {
+export type CreateOrgCustomRoleResponseContent = {
   success: boolean;
-  customRole: CustomRole;
+  customRole: OrgCustomRole;
 };
 
 export type CreateOrgInviteRequestContent = {
@@ -239,14 +250,13 @@ export type CreateOrgResponseContent = {
   org: Org;
 };
 
-export type CustomRole = {
-  customRoleId: string;
+export type DeclineOrgInviteRequestContent = {
   orgId: string;
-  name: string;
-  description?: string;
-  permissions: OrgPermission[];
-  createdDate: string;
-  createdBy: string;
+  inviteId: string;
+};
+
+export type DeclineOrgInviteResponseContent = {
+  success: boolean;
 };
 
 export type DeleteContractRequestContent = {
@@ -257,12 +267,12 @@ export type DeleteContractResponseContent = {
   success: boolean;
 };
 
-export type DeleteCustomRoleRequestContent = {
+export type DeleteOrgCustomRoleRequestContent = {
   orgId: string;
   customRoleId: string;
 };
 
-export type DeleteCustomRoleResponseContent = {
+export type DeleteOrgCustomRoleResponseContent = {
   success: boolean;
 };
 
@@ -402,6 +412,14 @@ export type GetOrgPictureResponseContent = {
   profilePictureURL: string;
 };
 
+export type GetOrgRequestContent = {
+  orgId: string;
+};
+
+export type GetOrgResponseContent = {
+  org: Org;
+};
+
 export type GetOrgThemeRequestContent = {
   orgId: string;
 };
@@ -484,6 +502,14 @@ export type ListContractsResponseContent = {
   contracts?: ContractMetadata[];
 };
 
+export type ListOrgCustomRolesRequestContent = {
+  orgId: string;
+};
+
+export type ListOrgCustomRolesResponseContent = {
+  roles: OrgCustomRoleMap;
+};
+
 export type ListOrgInvitesRequestContent = {
   orgId: string;
   status?: InviteStatus;
@@ -493,9 +519,21 @@ export type ListOrgInvitesResponseContent = {
   invites: OrgInviteMap;
 };
 
+export type ListOrgMembersRequestContent = {
+  orgId: string;
+};
+
+export type ListOrgMembersResponseContent = {
+  members: OrgMemberMap;
+};
+
 export type ListSpecialContractsResponseContent = {
   owned: ContractSummaryItem[];
   shared: ContractSummaryItem[];
+};
+
+export type ListUserOrganizationsResponseContent = {
+  organizations: Org[];
 };
 
 export type Org = {
@@ -505,10 +543,28 @@ export type Org = {
   primaryOwner: string;
   description?: string;
   website?: string;
+  logoUrl?: string;
   billingEmail?: string;
   createdDate: string;
   memberCount?: number;
+  userRole?: OrgRole;
+  contractCount?: number;
+  inviteCount?: number;
+  roleCount?: number;
 };
+
+export type OrgCustomRole = {
+  customRoleId: string;
+  orgId: string;
+  name: string;
+  description?: string;
+  permissions: OrgPermission[];
+  createdDate: string;
+  createdBy: string;
+  memberCount?: number;
+};
+
+export type OrgCustomRoleMap = { [key: string]: OrgCustomRole };
 
 export type OrgInvite = {
   inviteId: string;
@@ -537,6 +593,8 @@ export type OrgMember = {
   joinedDate: string;
   userProfile?: UserProfile;
 };
+
+export type OrgMemberMap = { [key: string]: OrgMember };
 
 export type OrgTheme = {
   primaryColor?: string;
@@ -635,7 +693,7 @@ export type UpdateContractResponseContent = {
   success: boolean;
 };
 
-export type UpdateCustomRoleRequestContent = {
+export type UpdateOrgCustomRoleRequestContent = {
   orgId: string;
   customRoleId: string;
   name?: string;
@@ -643,9 +701,9 @@ export type UpdateCustomRoleRequestContent = {
   permissions?: OrgPermission[];
 };
 
-export type UpdateCustomRoleResponseContent = {
+export type UpdateOrgCustomRoleResponseContent = {
   success: boolean;
-  customRole: CustomRole;
+  customRole: OrgCustomRole;
 };
 
 export type UpdateOrgMemberRequestContent = {

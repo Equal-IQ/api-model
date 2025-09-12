@@ -6,7 +6,7 @@ namespace equaliq
 
 string OrgId with [UuidLikeMixin]
 string InviteId with [UuidLikeMixin]
-string CustomRoleId with [UuidLikeMixin]
+string OrgCustomRoleId with [UuidLikeMixin]
 
 enum OrgType {
     LAW_FIRM = "law_firm"
@@ -60,9 +60,9 @@ map OrgInviteMap {
     value: OrgInvite
 }
 
-map CustomRoleMap {
-    key: CustomRoleId
-    value: CustomRole
+map OrgCustomRoleMap {
+    key: OrgCustomRoleId
+    value: OrgCustomRole
 }
 
 structure Org {
@@ -80,6 +80,7 @@ structure Org {
 
     description: String
     website: Url
+    logoUrl: Url
     
     billingEmail: Email
 
@@ -87,6 +88,12 @@ structure Org {
     createdDate: ISODate
 
     memberCount: Integer
+    
+    // Frontend-specific fields
+    userRole: OrgRole
+    contractCount: Integer
+    inviteCount: Integer
+    roleCount: Integer
 }
 
 structure OrgMember {
@@ -99,7 +106,7 @@ structure OrgMember {
     @required
     role: OrgRole
 
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
     customRoleName: String
     customPermissions: OrgPermissionList
 
@@ -122,7 +129,7 @@ structure OrgInvite {
     @required
     role: OrgRole
 
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
     customRoleName: String
     customPermissions: OrgPermissionList
 
@@ -139,9 +146,9 @@ structure OrgInvite {
     expiresDate: ISODate
 }
 
-structure CustomRole {
+structure OrgCustomRole {
     @required
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
 
     @required
     orgId: OrgId
@@ -159,6 +166,9 @@ structure CustomRole {
 
     @required
     createdBy: UserId
+    
+    // Frontend-specific field
+    memberCount: Integer
 }
 
 structure OrgTheme {
@@ -167,7 +177,101 @@ structure OrgTheme {
     accentColor: HexColor
 }
 
+// ==================== SMITHY RESOURCES ====================
+
+resource Organization {
+    identifiers: { orgId: OrgId }
+    create: CreateOrg
+    read: GetOrg
+    update: UpdateOrg
+    delete: DeleteOrg
+    list: ListUserOrganizations
+    resources: [OrganizationMember, OrganizationInvite, OrgCustomRoleResource]
+    operations: [
+        UploadOrgPicture
+        GetOrgPicture
+        UpdateOrgTheme
+        GetOrgTheme
+        TransferOrgOwnership
+    ]
+}
+
+resource OrganizationMember {
+    identifiers: { orgId: OrgId, userId: UserId }
+    list: ListOrgMembers
+    update: UpdateOrgMember
+    delete: RemoveOrgMember
+}
+
+resource OrganizationInvite {
+    identifiers: { orgId: OrgId, inviteId: InviteId }
+    create: CreateOrgInvite
+    list: ListOrgInvites
+    delete: CancelOrgInvite
+    operations: [
+        ResendOrgInvite
+        AcceptOrgInvite
+        DeclineOrgInvite
+    ]
+}
+
+resource OrgCustomRoleResource {
+    identifiers: { orgId: OrgId, customRoleId: OrgCustomRoleId }
+    create: CreateOrgCustomRole
+    list: ListOrgCustomRoles
+    update: UpdateOrgCustomRole
+    delete: DeleteOrgCustomRole
+}
+
 // ==================== ORGANIZATION MANAGEMENT APIs ====================
+
+@tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
+@readonly
+@http(method: "POST", uri: "/orgs/listUserOrganizations")
+operation ListUserOrganizations {
+    input: ListUserOrganizationsInput
+    output: ListUserOrganizationsOutput
+    errors: [
+        AuthenticationError
+        InternalServerError
+    ]
+}
+
+structure ListUserOrganizationsInput {
+    // No input parameters - uses current user from auth
+}
+
+structure ListUserOrganizationsOutput {
+    @required
+    organizations: OrgList
+}
+
+list OrgList {
+    member: Org
+}
+
+@tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
+@readonly
+@http(method: "POST", uri: "/orgs/get")
+operation GetOrg {
+    input: GetOrgInput
+    output: GetOrgOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure GetOrgInput {
+    @required
+    orgId: OrgId
+}
+
+structure GetOrgOutput {
+    @required
+    org: Org
+}
 
 @idempotent
 @http(method: "POST", uri: "/orgs/create")
@@ -258,6 +362,28 @@ structure DeleteOrgOutput {
 
 // ==================== MEMBER MANAGEMENT APIs ====================
 
+@tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
+@readonly
+@http(method: "POST", uri: "/orgs/members/list")
+operation ListOrgMembers {
+    input: ListOrgMembersInput
+    output: ListOrgMembersOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+structure ListOrgMembersInput {
+    @required
+    orgId: OrgId
+}
+
+structure ListOrgMembersOutput {
+    @required
+    members: OrgMemberMap
+}
 
 @http(method: "POST", uri: "/orgs/updateMember")
 operation UpdateOrgMember {
@@ -279,7 +405,7 @@ structure UpdateOrgMemberInput {
     userId: UserId
 
     role: OrgRole
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
     orgEmail: Email
 }
 
@@ -349,9 +475,9 @@ structure TransferOrgOwnershipOutput {
 
 @idempotent
 @http(method: "POST", uri: "/orgs/roles/create")
-operation CreateCustomRole {
-    input: CreateCustomRoleInput
-    output: CreateCustomRoleOutput
+operation CreateOrgCustomRole {
+    input: CreateOrgCustomRoleInput
+    output: CreateOrgCustomRoleOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -360,7 +486,7 @@ operation CreateCustomRole {
     ]
 }
 
-structure CreateCustomRoleInput {
+structure CreateOrgCustomRoleInput {
     @required
     orgId: OrgId
 
@@ -373,18 +499,19 @@ structure CreateCustomRoleInput {
     permissions: OrgPermissionList
 }
 
-structure CreateCustomRoleOutput {
+structure CreateOrgCustomRoleOutput {
     @required
     success: Boolean
 
     @required
-    customRole: CustomRole
+    customRole: OrgCustomRole
 }
 
+@readonly
 @http(method: "POST", uri: "/orgs/roles/list")
-operation ListCustomRoles {
-    input: ListCustomRolesInput
-    output: ListCustomRolesOutput
+operation ListOrgCustomRoles {
+    input: ListOrgCustomRolesInput
+    output: ListOrgCustomRolesOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -392,21 +519,21 @@ operation ListCustomRoles {
     ]
 }
 
-structure ListCustomRolesInput {
+structure ListOrgCustomRolesInput {
     @required
     orgId: OrgId
 }
 
-structure ListCustomRolesOutput {
+structure ListOrgCustomRolesOutput {
     @required
-    roles: CustomRoleMap
+    roles: OrgCustomRoleMap
 }
 
 
 @http(method: "POST", uri: "/orgs/roles/update")
-operation UpdateCustomRole {
-    input: UpdateCustomRoleInput
-    output: UpdateCustomRoleOutput
+operation UpdateOrgCustomRole {
+    input: UpdateOrgCustomRoleInput
+    output: UpdateOrgCustomRoleOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -415,31 +542,31 @@ operation UpdateCustomRole {
     ]
 }
 
-structure UpdateCustomRoleInput {
+structure UpdateOrgCustomRoleInput {
     @required
     orgId: OrgId
 
     @required
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
 
     name: String
     description: String
     permissions: OrgPermissionList
 }
 
-structure UpdateCustomRoleOutput {
+structure UpdateOrgCustomRoleOutput {
     @required
     success: Boolean
 
     @required
-    customRole: CustomRole
+    customRole: OrgCustomRole
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/roles/delete")
-operation DeleteCustomRole {
-    input: DeleteCustomRoleInput
-    output: DeleteCustomRoleOutput
+operation DeleteOrgCustomRole {
+    input: DeleteOrgCustomRoleInput
+    output: DeleteOrgCustomRoleOutput
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -448,15 +575,15 @@ operation DeleteCustomRole {
     ]
 }
 
-structure DeleteCustomRoleInput {
+structure DeleteOrgCustomRoleInput {
     @required
     orgId: OrgId
 
     @required
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
 }
 
-structure DeleteCustomRoleOutput {
+structure DeleteOrgCustomRoleOutput {
     @required
     success: Boolean
 }
@@ -486,7 +613,7 @@ structure CreateOrgInviteInput {
     @required
     role: OrgRole
 
-    customRoleId: CustomRoleId
+    customRoleId: OrgCustomRoleId
     orgEmail: Email
 }
 
@@ -500,6 +627,7 @@ structure CreateOrgInviteOutput {
     failedEmails: EmailList
 }
 
+@readonly
 @http(method: "POST", uri: "/orgs/invites/list")
 operation ListOrgInvites {
     input: ListOrgInvitesInput
@@ -578,6 +706,64 @@ structure ResendOrgInviteOutput {
 
     @required
     invite: OrgInvite
+}
+
+@tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
+@http(method: "POST", uri: "/orgs/invites/accept")
+operation AcceptOrgInvite {
+    input: AcceptOrgInviteInput
+    output: AcceptOrgInviteOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure AcceptOrgInviteInput {
+    @required
+    orgId: OrgId
+
+    @required
+    inviteId: InviteId
+}
+
+structure AcceptOrgInviteOutput {
+    @required
+    success: Boolean
+
+    @required
+    organization: Org
+
+    @required
+    member: OrgMember
+}
+
+@tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
+@http(method: "POST", uri: "/orgs/invites/decline")
+operation DeclineOrgInvite {
+    input: DeclineOrgInviteInput
+    output: DeclineOrgInviteOutput
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+structure DeclineOrgInviteInput {
+    @required
+    orgId: OrgId
+
+    @required
+    inviteId: InviteId
+}
+
+structure DeclineOrgInviteOutput {
+    @required
+    success: Boolean
 }
 
 // ==================== ORG PROFILE PICTURE APIs ====================

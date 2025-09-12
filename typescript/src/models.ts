@@ -180,6 +180,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orgs/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetOrg"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/getOrgPicture": {
         parameters: {
             query?: never;
@@ -206,6 +222,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetOrgTheme"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/invites/accept": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["AcceptOrgInvite"];
         delete?: never;
         options?: never;
         head?: never;
@@ -244,6 +276,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orgs/invites/decline": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeclineOrgInvite"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/invites/list": {
         parameters: {
             query?: never;
@@ -276,6 +324,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/orgs/listUserOrganizations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListUserOrganizations"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/members/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListOrgMembers"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/removeMember": {
         parameters: {
             query?: never;
@@ -301,7 +381,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CreateCustomRole"];
+        post: operations["CreateOrgCustomRole"];
         delete?: never;
         options?: never;
         head?: never;
@@ -317,7 +397,23 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["DeleteCustomRole"];
+        post: operations["DeleteOrgCustomRole"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/orgs/roles/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListOrgCustomRoles"];
         delete?: never;
         options?: never;
         head?: never;
@@ -333,7 +429,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["UpdateCustomRole"];
+        post: operations["UpdateOrgCustomRole"];
         delete?: never;
         options?: never;
         head?: never;
@@ -520,6 +616,15 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
+        AcceptOrgInviteRequestContent: {
+            orgId: string;
+            inviteId: string;
+        };
+        AcceptOrgInviteResponseContent: {
+            success: boolean;
+            organization: components["schemas"]["Org"];
+            member: components["schemas"]["OrgMember"];
+        };
         /** @enum {string} */
         AccountType: AccountType;
         AuthenticationErrorResponseContent: {
@@ -609,15 +714,15 @@ export interface components {
         };
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
-        CreateCustomRoleRequestContent: {
+        CreateOrgCustomRoleRequestContent: {
             orgId: string;
             name: string;
             description?: string;
             permissions: components["schemas"]["OrgPermission"][];
         };
-        CreateCustomRoleResponseContent: {
+        CreateOrgCustomRoleResponseContent: {
             success: boolean;
-            customRole: components["schemas"]["CustomRole"];
+            customRole: components["schemas"]["OrgCustomRole"];
         };
         CreateOrgInviteRequestContent: {
             orgId: string;
@@ -642,14 +747,12 @@ export interface components {
             success: boolean;
             org: components["schemas"]["Org"];
         };
-        CustomRole: {
-            customRoleId: string;
+        DeclineOrgInviteRequestContent: {
             orgId: string;
-            name: string;
-            description?: string;
-            permissions: components["schemas"]["OrgPermission"][];
-            createdDate: string;
-            createdBy: string;
+            inviteId: string;
+        };
+        DeclineOrgInviteResponseContent: {
+            success: boolean;
         };
         DeleteContractRequestContent: {
             contractId: string;
@@ -657,11 +760,11 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
-        DeleteCustomRoleRequestContent: {
+        DeleteOrgCustomRoleRequestContent: {
             orgId: string;
             customRoleId: string;
         };
-        DeleteCustomRoleResponseContent: {
+        DeleteOrgCustomRoleResponseContent: {
             success: boolean;
         };
         DeleteOrgRequestContent: {
@@ -792,6 +895,12 @@ export interface components {
         GetOrgPictureResponseContent: {
             profilePictureURL: string;
         };
+        GetOrgRequestContent: {
+            orgId: string;
+        };
+        GetOrgResponseContent: {
+            org: components["schemas"]["Org"];
+        };
         GetOrgThemeRequestContent: {
             orgId: string;
         };
@@ -867,6 +976,12 @@ export interface components {
             /** @description v1 */
             contracts?: components["schemas"]["ContractMetadata"][];
         };
+        ListOrgCustomRolesRequestContent: {
+            orgId: string;
+        };
+        ListOrgCustomRolesResponseContent: {
+            roles: components["schemas"]["OrgCustomRoleMap"];
+        };
         ListOrgInvitesRequestContent: {
             orgId: string;
             status?: components["schemas"]["InviteStatus"];
@@ -874,9 +989,18 @@ export interface components {
         ListOrgInvitesResponseContent: {
             invites: components["schemas"]["OrgInviteMap"];
         };
+        ListOrgMembersRequestContent: {
+            orgId: string;
+        };
+        ListOrgMembersResponseContent: {
+            members: components["schemas"]["OrgMemberMap"];
+        };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
+        };
+        ListUserOrganizationsResponseContent: {
+            organizations: components["schemas"]["Org"][];
         };
         Org: {
             orgId: string;
@@ -885,9 +1009,27 @@ export interface components {
             primaryOwner: string;
             description?: string;
             website?: string;
+            logoUrl?: string;
             billingEmail?: string;
             createdDate: string;
             memberCount?: number;
+            userRole?: components["schemas"]["OrgRole"];
+            contractCount?: number;
+            inviteCount?: number;
+            roleCount?: number;
+        };
+        OrgCustomRole: {
+            customRoleId: string;
+            orgId: string;
+            name: string;
+            description?: string;
+            permissions: components["schemas"]["OrgPermission"][];
+            createdDate: string;
+            createdBy: string;
+            memberCount?: number;
+        };
+        OrgCustomRoleMap: {
+            [key: string]: components["schemas"]["OrgCustomRole"];
         };
         OrgInvite: {
             inviteId: string;
@@ -915,6 +1057,9 @@ export interface components {
             customPermissions?: components["schemas"]["OrgPermission"][];
             joinedDate: string;
             userProfile?: components["schemas"]["UserProfile"];
+        };
+        OrgMemberMap: {
+            [key: string]: components["schemas"]["OrgMember"];
         };
         /** @enum {string} */
         OrgPermission: OrgPermission;
@@ -1001,16 +1146,16 @@ export interface components {
         UpdateContractResponseContent: {
             success: boolean;
         };
-        UpdateCustomRoleRequestContent: {
+        UpdateOrgCustomRoleRequestContent: {
             orgId: string;
             customRoleId: string;
             name?: string;
             description?: string;
             permissions?: components["schemas"]["OrgPermission"][];
         };
-        UpdateCustomRoleResponseContent: {
+        UpdateOrgCustomRoleResponseContent: {
             success: boolean;
-            customRole: components["schemas"]["CustomRole"];
+            customRole: components["schemas"]["OrgCustomRole"];
         };
         UpdateOrgMemberRequestContent: {
             orgId: string;
@@ -1518,6 +1663,48 @@ export interface operations {
             };
         };
     };
+    GetOrg: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetOrgRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetOrg 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetOrgResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     GetOrgPicture: {
         parameters: {
             query?: never;
@@ -1602,6 +1789,48 @@ export interface operations {
             };
         };
     };
+    AcceptOrgInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["AcceptOrgInviteRequestContent"];
+            };
+        };
+        responses: {
+            /** @description AcceptOrgInvite 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AcceptOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     CancelOrgInvite: {
         parameters: {
             query?: never;
@@ -1664,6 +1893,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["CreateOrgInviteResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeclineOrgInvite: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeclineOrgInviteRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeclineOrgInvite 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeclineOrgInviteResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1770,6 +2041,86 @@ export interface operations {
             };
         };
     };
+    ListUserOrganizations: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description ListUserOrganizations 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListUserOrganizationsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListOrgMembers: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListOrgMembersRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListOrgMembers 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListOrgMembersResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     RemoveOrgMember: {
         parameters: {
             query?: never;
@@ -1812,7 +2163,7 @@ export interface operations {
             };
         };
     };
-    CreateCustomRole: {
+    CreateOrgCustomRole: {
         parameters: {
             query?: never;
             header?: never;
@@ -1821,17 +2172,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateCustomRoleRequestContent"];
+                "application/json": components["schemas"]["CreateOrgCustomRoleRequestContent"];
             };
         };
         responses: {
-            /** @description CreateCustomRole 200 response */
+            /** @description CreateOrgCustomRole 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateCustomRoleResponseContent"];
+                    "application/json": components["schemas"]["CreateOrgCustomRoleResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1854,7 +2205,7 @@ export interface operations {
             };
         };
     };
-    DeleteCustomRole: {
+    DeleteOrgCustomRole: {
         parameters: {
             query?: never;
             header?: never;
@@ -1863,17 +2214,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DeleteCustomRoleRequestContent"];
+                "application/json": components["schemas"]["DeleteOrgCustomRoleRequestContent"];
             };
         };
         responses: {
-            /** @description DeleteCustomRole 200 response */
+            /** @description DeleteOrgCustomRole 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeleteCustomRoleResponseContent"];
+                    "application/json": components["schemas"]["DeleteOrgCustomRoleResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -1896,7 +2247,7 @@ export interface operations {
             };
         };
     };
-    UpdateCustomRole: {
+    ListOrgCustomRoles: {
         parameters: {
             query?: never;
             header?: never;
@@ -1905,17 +2256,59 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["UpdateCustomRoleRequestContent"];
+                "application/json": components["schemas"]["ListOrgCustomRolesRequestContent"];
             };
         };
         responses: {
-            /** @description UpdateCustomRole 200 response */
+            /** @description ListOrgCustomRoles 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["UpdateCustomRoleResponseContent"];
+                    "application/json": components["schemas"]["ListOrgCustomRolesResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateOrgCustomRole: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateOrgCustomRoleRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateOrgCustomRole 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateOrgCustomRoleResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
