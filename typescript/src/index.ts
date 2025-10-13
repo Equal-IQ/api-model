@@ -783,3 +783,7 @@ export type UserProfile = {
 export type ValidationErrorResponseContent = {
   message: string;
 };
+
+// Re-export XML utilities
+export * from './xml-types';
+export * from './xml-utils';
