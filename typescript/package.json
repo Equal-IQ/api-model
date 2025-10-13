@@ -4,6 +4,20 @@
   "description": "EqualIQ API TypeScript models generated from Smithy",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./xml": {
+      "types": "./dist/xml-utils.d.ts",
+      "default": "./dist/xml-utils.js"
+    },
+    "./xml-types": {
+      "types": "./dist/xml-types.d.ts",
+      "default": "./dist/xml-types.js"
+    }
+  },
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
