@@ -180,6 +180,13 @@ class FixedValueTermInference(BaseModel):
     subterms: list[FixedTermValue] | None
 
 
+class FlagSeverity(Enum):
+    red = 'red'
+    yellow = 'yellow'
+    orange = 'orange'
+    blue = 'blue'
+
+
 class GetContractReadURLRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -552,8 +559,8 @@ class ContractVariable(BaseModel):
     definitionCitation: str | None
 
 
-class ContractVariableMap(RootModel[dict[str, ContractVariable] | None]):
-    root: dict[str, ContractVariable] | None
+class ContractVariableMap(RootModel[dict[str, ContractVariable]]):
+    root: dict[str, ContractVariable]
 
 
 class CreateOrgCustomRoleRequestContent(BaseModel):
@@ -598,6 +605,12 @@ class EqDurationCard(BaseModel):
     durationDetails: list[SimpleTermDescription] | None
 
 
+class EqModeCardFlag(BaseModel):
+    severity: FlagSeverity
+    context: str
+    referenceKey: str
+
+
 class EqOwnershipCard(BaseModel):
     ownershipTerms: list[SimpleTermDescription]
 
@@ -618,8 +631,8 @@ class ExtractionTerm(BaseModel):
     originalValue: str | None
 
 
-class ExtractionTermMap(RootModel[dict[str, ExtractionTerm] | None]):
-    root: dict[str, ExtractionTerm] | None
+class ExtractionTermMap(RootModel[dict[str, ExtractionTerm]]):
+    root: dict[str, ExtractionTerm]
 
 
 class GetOrgThemeResponseContent(BaseModel):
@@ -650,8 +663,8 @@ class IqModeSection(BaseModel):
     questions: list[IqModeQuestion]
 
 
-class IqModeSectionMap(RootModel[dict[str, IqModeSection] | None]):
-    root: dict[str, IqModeSection] | None
+class IqModeSectionMap(RootModel[dict[str, IqModeSection]]):
+    root: dict[str, IqModeSection]
 
 
 class ListContractsResponseContent(BaseModel):
@@ -711,8 +724,8 @@ class OrgCustomRole(BaseModel):
     memberCount: float | None
 
 
-class OrgCustomRoleMap(RootModel[dict[str, OrgCustomRole] | None]):
-    root: dict[str, OrgCustomRole] | None
+class OrgCustomRoleMap(RootModel[dict[str, OrgCustomRole]]):
+    root: dict[str, OrgCustomRole]
 
 
 class OrgInvite(BaseModel):
@@ -736,8 +749,8 @@ class OrgInvite(BaseModel):
     )
 
 
-class OrgInviteMap(RootModel[dict[str, OrgInvite] | None]):
-    root: dict[str, OrgInvite] | None
+class OrgInviteMap(RootModel[dict[str, OrgInvite]]):
+    root: dict[str, OrgInvite]
 
 
 class OrgMember(BaseModel):
@@ -754,8 +767,8 @@ class OrgMember(BaseModel):
     userProfile: UserProfile | None
 
 
-class OrgMemberMap(RootModel[dict[str, OrgMember] | None]):
-    root: dict[str, OrgMember] | None
+class OrgMemberMap(RootModel[dict[str, OrgMember]]):
+    root: dict[str, OrgMember]
 
 
 class ResendOrgInviteResponseContent(BaseModel):
@@ -858,10 +871,11 @@ class EqModeCard(BaseModel):
         None,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
+    flags: list[EqModeCardFlag] | None
 
 
-class EqModeCardMap(RootModel[dict[str, EqModeCard] | None]):
-    root: dict[str, EqModeCard] | None
+class EqModeCardMap(RootModel[dict[str, EqModeCard]]):
+    root: dict[str, EqModeCard]
 
 
 class EqModeData(BaseModel):
@@ -876,8 +890,8 @@ class IqModePerspective(BaseModel):
     sections: IqModeSectionMap
 
 
-class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
-    root: dict[str, IqModePerspective] | None
+class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective]]):
+    root: dict[str, IqModePerspective]
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):

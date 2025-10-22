@@ -66,6 +66,13 @@ export enum EqCardType {
   B = "B"
 }
 
+export enum FlagSeverity {
+  red = "red",
+  yellow = "yellow",
+  orange = "orange",
+  blue = "blue"
+}
+
 export enum InviteStatus {
   pending = "pending",
   accepted = "accepted",
@@ -323,6 +330,13 @@ export type EqModeCard = {
   items?: EqModeItem[];
   audioSrc?: string;
   ttsSrcUrl?: string;
+  flags?: EqModeCardFlag[];
+};
+
+export type EqModeCardFlag = {
+  severity: FlagSeverity;
+  context: string;
+  referenceKey: string;
 };
 
 export type EqModeCardMap = { [key: string]: EqModeCard };

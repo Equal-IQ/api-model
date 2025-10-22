@@ -818,6 +818,12 @@ export interface components {
             /** @description Deprecated, use the ttsSrcUrl */
             audioSrc?: string;
             ttsSrcUrl?: string;
+            flags?: components["schemas"]["EqModeCardFlag"][];
+        };
+        EqModeCardFlag: {
+            severity: components["schemas"]["FlagSeverity"];
+            context: string;
+            referenceKey: string;
         };
         EqModeCardMap: {
             [key: string]: components["schemas"]["EqModeCard"];
@@ -869,6 +875,8 @@ export interface components {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
         };
+        /** @enum {string} */
+        FlagSeverity: FlagSeverity;
         GetContractReadURLRequestContent: {
             contractId: string;
         };
@@ -2818,6 +2826,12 @@ export enum EqCardKey {
 export enum EqCardType {
     A = "A",
     B = "B"
+}
+export enum FlagSeverity {
+    red = "red",
+    yellow = "yellow",
+    orange = "orange",
+    blue = "blue"
 }
 export enum InviteStatus {
     pending = "pending",
