@@ -118,6 +118,30 @@ structure EqModeCard {
   audioSrc: String
 
   ttsSrcUrl: Url
+
+  flags: EqModeCardFlagList
+}
+
+enum FlagSeverity {
+  RED = "red"
+  YELLOW = "yellow"
+  ORANGE = "orange"
+  BLUE = "blue"
+}
+
+structure EqModeCardFlag {
+  @required
+  severity: FlagSeverity
+
+  @required
+  context: String
+
+  @required
+  referenceKey: String
+}
+
+list EqModeCardFlagList {
+  member: EqModeCardFlag
 }
 
 @documentation("Deprecated")
