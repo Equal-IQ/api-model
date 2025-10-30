@@ -181,10 +181,10 @@ class FixedValueTermInference(BaseModel):
 
 
 class FlagSeverity(Enum):
-    red = 'red'
-    yellow = 'yellow'
-    orange = 'orange'
-    blue = 'blue'
+    critical = 'critical'
+    warn = 'warn'
+    info = 'info'
+    positive = 'positive'
 
 
 class GetContractReadURLRequestContent(BaseModel):
@@ -608,7 +608,10 @@ class EqDurationCard(BaseModel):
 class EqModeCardFlag(BaseModel):
     severity: FlagSeverity
     context: str
-    referenceKey: str
+
+
+class EqModeCardFlagMap(RootModel[dict[str, EqModeCardFlag]]):
+    root: dict[str, EqModeCardFlag]
 
 
 class EqOwnershipCard(BaseModel):
@@ -871,7 +874,7 @@ class EqModeCard(BaseModel):
         None,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
-    flags: list[EqModeCardFlag] | None
+    flags: EqModeCardFlagMap | None
 
 
 class EqModeCardMap(RootModel[dict[str, EqModeCard]]):

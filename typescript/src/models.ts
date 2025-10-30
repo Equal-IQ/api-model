@@ -818,12 +818,14 @@ export interface components {
             /** @description Deprecated, use the ttsSrcUrl */
             audioSrc?: string;
             ttsSrcUrl?: string;
-            flags?: components["schemas"]["EqModeCardFlag"][];
+            flags?: components["schemas"]["EqModeCardFlagMap"];
         };
         EqModeCardFlag: {
             severity: components["schemas"]["FlagSeverity"];
             context: string;
-            referenceKey: string;
+        };
+        EqModeCardFlagMap: {
+            [key: string]: components["schemas"]["EqModeCardFlag"];
         };
         EqModeCardMap: {
             [key: string]: components["schemas"]["EqModeCard"];
@@ -2828,10 +2830,10 @@ export enum EqCardType {
     B = "B"
 }
 export enum FlagSeverity {
-    red = "red",
-    yellow = "yellow",
-    orange = "orange",
-    blue = "blue"
+    critical = "critical",
+    warn = "warn",
+    info = "info",
+    positive = "positive"
 }
 export enum InviteStatus {
     pending = "pending",

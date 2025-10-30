@@ -119,14 +119,14 @@ structure EqModeCard {
 
   ttsSrcUrl: Url
 
-  flags: EqModeCardFlagList
+  flags: EqModeCardFlagMap
 }
 
 enum FlagSeverity {
-  RED = "red"
-  YELLOW = "yellow"
-  ORANGE = "orange"
-  BLUE = "blue"
+  CRITICAL = "critical"
+  WARN = "warn"
+  INFO = "info"
+  POSITIVE = "positive"
 }
 
 structure EqModeCardFlag {
@@ -135,13 +135,11 @@ structure EqModeCardFlag {
 
   @required
   context: String
-
-  @required
-  referenceKey: String
 }
 
-list EqModeCardFlagList {
-  member: EqModeCardFlag
+map EqModeCardFlagMap {
+  key: String
+  value: EqModeCardFlag
 }
 
 @documentation("Deprecated")
