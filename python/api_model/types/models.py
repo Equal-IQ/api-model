@@ -14,15 +14,6 @@ class AcceptOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
-class AccountType(Enum):
-    artist = 'artist'
-    manager = 'manager'
-    lawyer = 'lawyer'
-    producer = 'producer'
-    publisher = 'publisher'
-    executive = 'executive'
-
-
 class AuthenticationErrorResponseContent(BaseModel):
     message: str
 
@@ -83,6 +74,17 @@ class Email(RootModel[str]):
 
 class FailedEmail(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+
+
+class CreateOrgRequestContent(BaseModel):
+    name: str
+    type: str
+    description: str | None
+    website: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
 class DeclineOrgInviteRequestContent(BaseModel):
@@ -310,17 +312,6 @@ class OrgTheme(BaseModel):
     accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
-class OrgType(Enum):
-    law_firm = 'law_firm'
-    record_label = 'record_label'
-    management_company = 'management_company'
-    publishing_company = 'publishing_company'
-    production_company = 'production_company'
-    talent_agency = 'talent_agency'
-    distribution_company = 'distribution_company'
-    other = 'other'
-
-
 class PingResponseContent(BaseModel):
     message: str
 
@@ -466,7 +457,7 @@ class UpdateProfileRequestContent(BaseModel):
     firstName: str | None
     lastName: str | None
     displayName: str | None
-    accountType: AccountType | None
+    accountType: str | None
     bio: str | None
     isOver18: bool | None
 
@@ -496,7 +487,7 @@ class UserProfile(BaseModel):
     lastName: str | None
     displayName: str | None
     email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-    accountType: AccountType | None
+    accountType: str | None
     bio: str | None
 
 
@@ -552,8 +543,8 @@ class ContractVariable(BaseModel):
     definitionCitation: str | None
 
 
-class ContractVariableMap(RootModel[dict[str, ContractVariable] | None]):
-    root: dict[str, ContractVariable] | None
+class ContractVariableMap(RootModel[dict[str, ContractVariable]]):
+    root: dict[str, ContractVariable]
 
 
 class CreateOrgCustomRoleRequestContent(BaseModel):
@@ -571,17 +562,6 @@ class CreateOrgInviteRequestContent(BaseModel):
     orgEmail: str | None = Field(
         None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
     )
-
-
-class CreateOrgRequestContent(BaseModel):
-    name: str
-    type: OrgType
-    description: str | None
-    website: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-    billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
 class MONEYRECEIVED(BaseModel):
@@ -618,8 +598,8 @@ class ExtractionTerm(BaseModel):
     originalValue: str | None
 
 
-class ExtractionTermMap(RootModel[dict[str, ExtractionTerm] | None]):
-    root: dict[str, ExtractionTerm] | None
+class ExtractionTermMap(RootModel[dict[str, ExtractionTerm]]):
+    root: dict[str, ExtractionTerm]
 
 
 class GetOrgThemeResponseContent(BaseModel):
@@ -650,8 +630,8 @@ class IqModeSection(BaseModel):
     questions: list[IqModeQuestion]
 
 
-class IqModeSectionMap(RootModel[dict[str, IqModeSection] | None]):
-    root: dict[str, IqModeSection] | None
+class IqModeSectionMap(RootModel[dict[str, IqModeSection]]):
+    root: dict[str, IqModeSection]
 
 
 class ListContractsResponseContent(BaseModel):
@@ -672,7 +652,7 @@ class ListSpecialContractsResponseContent(BaseModel):
 class Org(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
-    type: OrgType
+    type: str
     primaryOwner: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     description: str | None
     website: str | None = Field(
@@ -711,8 +691,8 @@ class OrgCustomRole(BaseModel):
     memberCount: float | None
 
 
-class OrgCustomRoleMap(RootModel[dict[str, OrgCustomRole] | None]):
-    root: dict[str, OrgCustomRole] | None
+class OrgCustomRoleMap(RootModel[dict[str, OrgCustomRole]]):
+    root: dict[str, OrgCustomRole]
 
 
 class OrgInvite(BaseModel):
@@ -736,8 +716,8 @@ class OrgInvite(BaseModel):
     )
 
 
-class OrgInviteMap(RootModel[dict[str, OrgInvite] | None]):
-    root: dict[str, OrgInvite] | None
+class OrgInviteMap(RootModel[dict[str, OrgInvite]]):
+    root: dict[str, OrgInvite]
 
 
 class OrgMember(BaseModel):
@@ -754,8 +734,8 @@ class OrgMember(BaseModel):
     userProfile: UserProfile | None
 
 
-class OrgMemberMap(RootModel[dict[str, OrgMember] | None]):
-    root: dict[str, OrgMember] | None
+class OrgMemberMap(RootModel[dict[str, OrgMember]]):
+    root: dict[str, OrgMember]
 
 
 class ResendOrgInviteResponseContent(BaseModel):
@@ -860,8 +840,8 @@ class EqModeCard(BaseModel):
     )
 
 
-class EqModeCardMap(RootModel[dict[str, EqModeCard] | None]):
-    root: dict[str, EqModeCard] | None
+class EqModeCardMap(RootModel[dict[str, EqModeCard]]):
+    root: dict[str, EqModeCard]
 
 
 class EqModeData(BaseModel):
@@ -876,8 +856,8 @@ class IqModePerspective(BaseModel):
     sections: IqModeSectionMap
 
 
-class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective] | None]):
-    root: dict[str, IqModePerspective] | None
+class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective]]):
+    root: dict[str, IqModePerspective]
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):

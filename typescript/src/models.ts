@@ -625,8 +625,6 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
-        /** @enum {string} */
-        AccountType: AccountType;
         AuthenticationErrorResponseContent: {
             message: string;
         };
@@ -738,7 +736,7 @@ export interface components {
         };
         CreateOrgRequestContent: {
             name: string;
-            type: components["schemas"]["OrgType"];
+            type: string;
             description?: string;
             website?: string;
             billingEmail: string;
@@ -1005,7 +1003,7 @@ export interface components {
         Org: {
             orgId: string;
             name: string;
-            type: components["schemas"]["OrgType"];
+            type: string;
             primaryOwner: string;
             description?: string;
             website?: string;
@@ -1070,8 +1068,6 @@ export interface components {
             secondaryColor?: string;
             accentColor?: string;
         };
-        /** @enum {string} */
-        OrgType: OrgType;
         PingResponseContent: {
             message: string;
         };
@@ -1191,7 +1187,7 @@ export interface components {
             firstName?: string;
             lastName?: string;
             displayName?: string;
-            accountType?: components["schemas"]["AccountType"];
+            accountType?: string;
             bio?: string;
             isOver18?: boolean;
         };
@@ -1216,7 +1212,7 @@ export interface components {
             lastName?: string;
             displayName?: string;
             email?: string;
-            accountType?: components["schemas"]["AccountType"];
+            accountType?: string;
             bio?: string;
         };
         ValidationErrorResponseContent: {
@@ -2768,14 +2764,6 @@ export interface operations {
         };
     };
 }
-export enum AccountType {
-    artist = "artist",
-    manager = "manager",
-    lawyer = "lawyer",
-    producer = "producer",
-    publisher = "publisher",
-    executive = "executive"
-}
 export enum ContractStatus {
     processing = "processing",
     awaiting_upload = "awaiting_upload",
@@ -2849,14 +2837,4 @@ export enum OrgRole {
     member = "member",
     viewer = "viewer",
     custom = "custom"
-}
-export enum OrgType {
-    law_firm = "law_firm",
-    record_label = "record_label",
-    management_company = "management_company",
-    publishing_company = "publishing_company",
-    production_company = "production_company",
-    talent_agency = "talent_agency",
-    distribution_company = "distribution_company",
-    other = "other"
 }

@@ -9,15 +9,6 @@ list UserIdList {
     member: UserId
 }
 
-enum AccountType {
-    ARTIST = "artist"
-    MANAGER = "manager"
-    LAWYER = "lawyer"
-    PRODUCER = "producer"
-    PUBLISHER = "publisher"
-    EXECUTIVE = "executive"
-}
-
 // User Profile operations
 @http(method: "POST", uri: "/getProfile")
 operation GetProfile {
@@ -89,7 +80,7 @@ structure UserProfile {
     lastName: String
     displayName: String
     email: Email
-    accountType: AccountType
+    accountType: String
     bio: String
 }
 
@@ -109,7 +100,7 @@ structure UpdateProfileInput {
     firstName: String
     lastName: String
     displayName: String
-    accountType: AccountType
+    accountType: String
     bio: String
     isOver18: Boolean
 }

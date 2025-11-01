@@ -19,17 +19,6 @@ string OrgId with [UuidLikeMixin]
 string InviteId with [UuidLikeMixin]
 string OrgCustomRoleId with [UuidLikeMixin]
 
-enum OrgType {
-    LAW_FIRM = "law_firm"
-    RECORD_LABEL = "record_label" 
-    MANAGEMENT_COMPANY = "management_company"
-    PUBLISHING_COMPANY = "publishing_company"
-    PRODUCTION_COMPANY = "production_company"
-    TALENT_AGENCY = "talent_agency"
-    DISTRIBUTION_COMPANY = "distribution_company"
-    OTHER = "other"
-}
-
 enum OrgRole {
     PRIMARY_OWNER = "primary_owner"
     ADMIN = "admin"
@@ -84,7 +73,7 @@ structure Org {
     name: String
 
     @required
-    type: OrgType
+    type: String
 
     @required
     primaryOwner: UserId
@@ -301,7 +290,7 @@ structure CreateOrgInput {
     name: String
 
     @required
-    type: OrgType
+    type: String
 
     description: String
     website: Url

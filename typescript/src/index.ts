@@ -8,15 +8,6 @@ import { components } from './models';
 export type Schemas = components['schemas'];
 
 // Unwrapped enum definitions
-export enum AccountType {
-  artist = "artist",
-  manager = "manager",
-  lawyer = "lawyer",
-  producer = "producer",
-  publisher = "publisher",
-  executive = "executive"
-}
-
 export enum ContractStatus {
   processing = "processing",
   awaiting_upload = "awaiting_upload",
@@ -99,17 +90,6 @@ export enum OrgRole {
   member = "member",
   viewer = "viewer",
   custom = "custom"
-}
-
-export enum OrgType {
-  law_firm = "law_firm",
-  record_label = "record_label",
-  management_company = "management_company",
-  publishing_company = "publishing_company",
-  production_company = "production_company",
-  talent_agency = "talent_agency",
-  distribution_company = "distribution_company",
-  other = "other"
 }
 
 // Unwrapped type definitions (no aliases)
@@ -239,7 +219,7 @@ export type CreateOrgInviteResponseContent = {
 
 export type CreateOrgRequestContent = {
   name: string;
-  type: OrgType;
+  type: string;
   description?: string;
   website?: string;
   billingEmail: string;
@@ -539,7 +519,7 @@ export type ListUserOrganizationsResponseContent = {
 export type Org = {
   orgId: string;
   name: string;
-  type: OrgType;
+  type: string;
   primaryOwner: string;
   description?: string;
   website?: string;
@@ -746,7 +726,7 @@ export type UpdateProfileRequestContent = {
   firstName?: string;
   lastName?: string;
   displayName?: string;
-  accountType?: AccountType;
+  accountType?: string;
   bio?: string;
   isOver18?: boolean;
 };
@@ -776,7 +756,7 @@ export type UserProfile = {
   lastName?: string;
   displayName?: string;
   email?: string;
-  accountType?: AccountType;
+  accountType?: string;
   bio?: string;
 };
 
