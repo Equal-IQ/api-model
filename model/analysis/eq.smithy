@@ -131,7 +131,16 @@ enum FlagSeverity {
 
 structure EqModeCardFlag {
   @required
+  reasoning: String
+
+  @required
+  referenceKey: String
+
+  @required
   severity: FlagSeverity
+
+  @required
+  summary: String
 
   @required
   context: String

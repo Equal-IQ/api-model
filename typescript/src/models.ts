@@ -821,7 +821,10 @@ export interface components {
             flags?: components["schemas"]["EqModeCardFlagMap"];
         };
         EqModeCardFlag: {
+            reasoning: string;
+            referenceKey: string;
             severity: components["schemas"]["FlagSeverity"];
+            summary: string;
             context: string;
         };
         EqModeCardFlagMap: {

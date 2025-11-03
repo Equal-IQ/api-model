@@ -334,7 +334,10 @@ export type EqModeCard = {
 };
 
 export type EqModeCardFlag = {
+  reasoning: string;
+  referenceKey: string;
   severity: FlagSeverity;
+  summary: string;
   context: string;
 };
 

@@ -606,7 +606,10 @@ class EqDurationCard(BaseModel):
 
 
 class EqModeCardFlag(BaseModel):
+    reasoning: str
+    referenceKey: str
     severity: FlagSeverity
+    summary: str
     context: str
 
 
