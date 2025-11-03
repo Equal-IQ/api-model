@@ -52,13 +52,17 @@ class SharedEmail(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
-class ContractType(Enum):
-    recording = 'recording'
-    publishing = 'publishing'
-    management = 'management'
-    producer = 'producer'
-    services = 'services'
-    tbd = 'tbd'
+class ContractSummaryItem(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    uploadedOn: float
+    type: str
+    status: ContractStatus
+    isOwner: bool
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedWith: list[SharedWithItem] | None
+    sharedUsers: list[SharedUser] | None
+    sharedEmails: list[SharedEmail] | None
 
 
 class ContractVariableType(Enum):
@@ -238,7 +242,7 @@ class GetSpecialContractRequestContent(BaseModel):
 class GetSpecialContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
-    type: ContractType
+    type: str
     eqmode: Any
     sections: Any
     isOwner: bool
@@ -280,6 +284,11 @@ class ListOrgInvitesRequestContent(BaseModel):
 
 class ListOrgMembersRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class ListSpecialContractsResponseContent(BaseModel):
+    owned: list[ContractSummaryItem]
+    shared: list[ContractSummaryItem]
 
 
 class OrgPermission(Enum):
@@ -498,7 +507,7 @@ class ValidationErrorResponseContent(BaseModel):
 class ContractMetadata(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
-    type: ContractType
+    type: str
     status: ContractStatus
     uploadedOn: str = Field(
         ...,
@@ -509,19 +518,6 @@ class ContractMetadata(BaseModel):
     isOwner: bool | None
     hasTTS: bool | None
     isSpecial: bool | None
-
-
-class ContractSummaryItem(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    uploadedOn: float
-    type: ContractType
-    status: ContractStatus
-    isOwner: bool
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedWithItem] | None
-    sharedUsers: list[SharedUser] | None
-    sharedEmails: list[SharedEmail] | None
 
 
 class ContractTexts(BaseModel):
@@ -642,11 +638,6 @@ class ListContractsResponseContent(BaseModel):
         None, description='Deprecation path (v0.5)'
     )
     contracts: list[ContractMetadata] | None = Field(None, description='v1')
-
-
-class ListSpecialContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem]
-    shared: list[ContractSummaryItem]
 
 
 class Org(BaseModel):
@@ -779,7 +770,10 @@ class AcceptOrgInviteResponseContent(BaseModel):
 
 
 class ContractExtractionResult(BaseModel):
-    extractedType: ContractType | None
+    extractedType: str | None = Field(
+        None,
+        description='The contract type here is the one extracted by the model, not necessarily the one set by user',
+    )
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
@@ -883,7 +877,7 @@ class IqModeData(BaseModel):
 class ContractAnalysisRecord(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
-    type: ContractType
+    type: str
     status: ContractStatus
     uploadedOn: str = Field(
         ...,
@@ -892,7 +886,7 @@ class ContractAnalysisRecord(BaseModel):
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     eqCards: EqModeData | None
     iqData: IqModeData
-    extractedType: ContractType | None
+    extractedType: str | None
     parties: list[str] | None
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
@@ -910,7 +904,7 @@ class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
-    type: ContractType
+    type: str
     eqData: EqModeData | None
     iqData: IqModeData | None
     contractExtraction: ContractExtractionResult | None

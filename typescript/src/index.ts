@@ -21,15 +21,6 @@ export enum ContractStatus {
   error = "error"
 }
 
-export enum ContractType {
-  recording = "recording",
-  publishing = "publishing",
-  management = "management",
-  producer = "producer",
-  services = "services",
-  tbd = "tbd"
-}
-
 export enum ContractVariableType {
   eq_term = "eq_term",
   discovered_term = "discovered_term",
@@ -120,13 +111,13 @@ export type CancelOrgInviteResponseContent = {
 export type ContractAnalysisRecord = {
   contractId: string;
   name: string;
-  type: ContractType;
+  type: string;
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
   eqCards?: EqModeData;
   iqData: IqModeData;
-  extractedType?: ContractType;
+  extractedType?: string;
   parties?: string[];
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
@@ -137,7 +128,7 @@ export type ContractAnalysisRecord = {
 };
 
 export type ContractExtractionResult = {
-  extractedType?: ContractType;
+  extractedType?: string;
   parties?: string[];
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
@@ -147,7 +138,7 @@ export type ContractExtractionResult = {
 export type ContractMetadata = {
   contractId: string;
   name: string;
-  type: ContractType;
+  type: string;
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
@@ -161,7 +152,7 @@ export type ContractSummaryItem = {
   contractId: string;
   name: string;
   uploadedOn: number;
-  type: ContractType;
+  type: string;
   status: ContractStatus;
   isOwner: boolean;
   ownerId: string;
@@ -376,7 +367,7 @@ export type GetContractResponseContent = {
   contractId: string;
   ownerId: string;
   name: string;
-  type: ContractType;
+  type: string;
   eqData?: EqModeData;
   iqData?: IqModeData;
   contractExtraction?: ContractExtractionResult;
@@ -432,7 +423,7 @@ export type GetSpecialContractRequestContent = {
 export type GetSpecialContractResponseContent = {
   contractId: string;
   name: string;
-  type: ContractType;
+  type: string;
   eqmode: unknown;
   sections: unknown;
   isOwner: boolean;

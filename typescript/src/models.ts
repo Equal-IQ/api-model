@@ -638,13 +638,13 @@ export interface components {
         ContractAnalysisRecord: {
             contractId: string;
             name: string;
-            type: components["schemas"]["ContractType"];
+            type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
             eqCards?: components["schemas"]["EqModeData"];
             iqData: components["schemas"]["IqModeData"];
-            extractedType?: components["schemas"]["ContractType"];
+            extractedType?: string;
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
@@ -654,7 +654,8 @@ export interface components {
             isSpecial?: boolean;
         };
         ContractExtractionResult: {
-            extractedType?: components["schemas"]["ContractType"];
+            /** @description The contract type here is the one extracted by the model, not necessarily the one set by user */
+            extractedType?: string;
             parties?: string[];
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
@@ -663,7 +664,7 @@ export interface components {
         ContractMetadata: {
             contractId: string;
             name: string;
-            type: components["schemas"]["ContractType"];
+            type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
@@ -679,7 +680,7 @@ export interface components {
             name: string;
             /** Format: double */
             uploadedOn: number;
-            type: components["schemas"]["ContractType"];
+            type: string;
             status: components["schemas"]["ContractStatus"];
             isOwner: boolean;
             ownerId: string;
@@ -691,8 +692,6 @@ export interface components {
             originalText?: components["schemas"]["PlainText"];
             taggedText?: components["schemas"]["TaggedText"];
         };
-        /** @enum {string} */
-        ContractType: ContractType;
         ContractVariable: {
             name: string;
             type: components["schemas"]["ContractVariableType"];
@@ -880,7 +879,7 @@ export interface components {
             contractId: string;
             ownerId: string;
             name: string;
-            type: components["schemas"]["ContractType"];
+            type: string;
             eqData?: components["schemas"]["EqModeData"];
             iqData?: components["schemas"]["IqModeData"];
             contractExtraction?: components["schemas"]["ContractExtractionResult"];
@@ -924,7 +923,7 @@ export interface components {
         GetSpecialContractResponseContent: {
             contractId: string;
             name: string;
-            type: components["schemas"]["ContractType"];
+            type: string;
             eqmode: unknown;
             sections: unknown;
             isOwner: boolean;
@@ -2775,14 +2774,6 @@ export enum ContractStatus {
     tts_generation = "tts_generation",
     complete = "complete",
     error = "error"
-}
-export enum ContractType {
-    recording = "recording",
-    publishing = "publishing",
-    management = "management",
-    producer = "producer",
-    services = "services",
-    tbd = "tbd"
 }
 export enum ContractVariableType {
     eq_term = "eq_term",

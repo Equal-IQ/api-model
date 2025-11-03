@@ -4,14 +4,13 @@ $version: "2"
 namespace equaliq.extraction
 
 use equaliq#StringList
-use equaliq#ContractType
 use equaliq#ContractTexts
 
 // General Contract Extraction not directly tied to EQ or IQ analysis
 
 structure ContractExtractionResult {
   @documentation("The contract type here is the one extracted by the model, not necessarily the one set by user")
-  extractedType: ContractType
+  extractedType: String
 
   parties: StringList
 

@@ -27,15 +27,6 @@ enum ContractStatus {
   ERROR = "error"
 }
 
-enum ContractType {
-  RECORDING = "recording"
-  PUBLISHING = "publishing"
-  MANAGEMENT = "management"
-  PRODUCER = "producer"
-  SERVICES = "services"
-  TBD = "tbd"
-}
-
 // Contract operations
 @http(method: "POST", uri: "/getContract")
 operation GetContract {
@@ -65,7 +56,7 @@ structure GetContractOutput {
   name: String
 
   @required
-  type: ContractType
+  type: String
 
   @documentation("v1)")
   eqData: EqModeData
@@ -106,7 +97,7 @@ structure GetSpecialContractOutput {
   name: String
 
   @required
-  type: ContractType
+  type: String
 
   @required
   eqmode: Document
@@ -186,7 +177,7 @@ structure ContractSummaryItem {
   uploadedOn: Timestamp
 
   @required
-  type: ContractType
+  type: String
 
   @required
   status: ContractStatus
@@ -212,7 +203,7 @@ structure ContractMetadata {
   @required
   name: String
   @required
-  type: ContractType
+  type: String
   @required
   status: ContractStatus
   @required
@@ -462,7 +453,7 @@ structure ContractAnalysisRecord {
   @required
   name: String
   @required
-  type: ContractType
+  type: String
   @required
   status: ContractStatus
   @required
@@ -474,7 +465,7 @@ structure ContractAnalysisRecord {
   @required
   iqData: IqModeData
 
-  extractedType: ContractType
+  extractedType: String
 
   parties: StringList
 
