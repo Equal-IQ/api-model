@@ -45,3 +45,27 @@ structure PlainText {
   text: String
 }
 
+// Pagination structures for list operations
+structure PaginationInput {
+    offset: Integer
+    limit: Integer
+    sortBy: String
+    sortOrder: SortOrder
+}
+
+enum SortOrder {
+    ASC = "asc"
+    DESC = "desc"
+}
+
+structure PaginationMeta {
+    @required
+    totalCount: Integer
+
+    @required
+    offset: Integer
+
+    @required
+    limit: Integer
+}
+

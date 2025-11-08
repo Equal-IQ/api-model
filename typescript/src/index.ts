@@ -83,6 +83,11 @@ export enum OrgRole {
   custom = "custom"
 }
 
+export enum SortOrder {
+  asc = "asc",
+  desc = "desc"
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
@@ -492,10 +497,14 @@ export type ListOrgInvitesResponseContent = {
 
 export type ListOrgMembersRequestContent = {
   orgId: string;
+  role?: OrgRole;
+  includeInactive?: boolean;
+  pagination?: PaginationInput;
 };
 
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
+  paginationMeta?: PaginationMeta;
 };
 
 export type ListSpecialContractsResponseContent = {
@@ -503,8 +512,13 @@ export type ListSpecialContractsResponseContent = {
   shared: ContractSummaryItem[];
 };
 
+export type ListUserOrganizationsRequestContent = {
+  pagination?: PaginationInput;
+};
+
 export type ListUserOrganizationsResponseContent = {
   organizations: Org[];
+  paginationMeta?: PaginationMeta;
 };
 
 export type Org = {
@@ -571,6 +585,19 @@ export type OrgTheme = {
   primaryColor?: string;
   secondaryColor?: string;
   accentColor?: string;
+};
+
+export type PaginationInput = {
+  offset?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: SortOrder;
+};
+
+export type PaginationMeta = {
+  totalCount: number;
+  offset: number;
+  limit: number;
 };
 
 export type PingResponseContent = {

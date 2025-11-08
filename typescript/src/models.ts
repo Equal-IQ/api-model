@@ -988,16 +988,24 @@ export interface components {
         };
         ListOrgMembersRequestContent: {
             orgId: string;
+            role?: components["schemas"]["OrgRole"];
+            includeInactive?: boolean;
+            pagination?: components["schemas"]["PaginationInput"];
         };
         ListOrgMembersResponseContent: {
             members: components["schemas"]["OrgMemberMap"];
+            paginationMeta?: components["schemas"]["PaginationMeta"];
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
+        ListUserOrganizationsRequestContent: {
+            pagination?: components["schemas"]["PaginationInput"];
+        };
         ListUserOrganizationsResponseContent: {
             organizations: components["schemas"]["Org"][];
+            paginationMeta?: components["schemas"]["PaginationMeta"];
         };
         Org: {
             orgId: string;
@@ -1067,6 +1075,17 @@ export interface components {
             secondaryColor?: string;
             accentColor?: string;
         };
+        PaginationInput: {
+            offset?: number;
+            limit?: number;
+            sortBy?: string;
+            sortOrder?: components["schemas"]["SortOrder"];
+        };
+        PaginationMeta: {
+            totalCount: number;
+            offset: number;
+            limit: number;
+        };
         PingResponseContent: {
             message: string;
         };
@@ -1123,6 +1142,8 @@ export interface components {
             title: string;
             description: string;
         };
+        /** @enum {string} */
+        SortOrder: SortOrder;
         TaggedText: {
             text: string;
         };
@@ -2043,7 +2064,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListUserOrganizationsRequestContent"];
+            };
+        };
         responses: {
             /** @description ListUserOrganizations 200 response */
             200: {
@@ -2828,4 +2853,8 @@ export enum OrgRole {
     member = "member",
     viewer = "viewer",
     custom = "custom"
+}
+export enum SortOrder {
+    asc = "asc",
+    desc = "desc"
 }
