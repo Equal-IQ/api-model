@@ -12,6 +12,8 @@ use equaliq#StringList
 use equaliq#EmailList
 use equaliq#HexColor
 use equaliq#PresignedPostData
+use equaliq#PaginationInput
+use equaliq#PaginationMeta
 
 // Org structures and operations
 
@@ -238,12 +240,14 @@ operation ListUserOrganizations {
 }
 
 structure ListUserOrganizationsInput {
-    // No input parameters - uses current user from auth
+    pagination: PaginationInput  // Optional pagination parameters
 }
 
 structure ListUserOrganizationsOutput {
     @required
     organizations: OrgList
+
+    paginationMeta: PaginationMeta  // Optional pagination metadata
 }
 
 list OrgList {
@@ -378,11 +382,17 @@ operation ListOrgMembers {
 structure ListOrgMembersInput {
     @required
     orgId: OrgId
+
+    role: OrgRole           // Optional filter by role
+    includeInactive: Boolean  // Optional filter to include inactive members
+    pagination: PaginationInput  // Optional pagination parameters
 }
 
 structure ListOrgMembersOutput {
     @required
     members: OrgMemberMap
+
+    paginationMeta: PaginationMeta  // Optional pagination metadata
 }
 
 @http(method: "POST", uri: "/orgs/updateMember")

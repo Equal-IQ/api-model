@@ -282,10 +282,6 @@ class ListOrgInvitesRequestContent(BaseModel):
     status: InviteStatus | None
 
 
-class ListOrgMembersRequestContent(BaseModel):
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
 class ListSpecialContractsResponseContent(BaseModel):
     owned: list[ContractSummaryItem]
     shared: list[ContractSummaryItem]
@@ -319,6 +315,12 @@ class OrgTheme(BaseModel):
         None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$'
     )
     accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
+
+
+class PaginationMeta(BaseModel):
+    totalCount: float
+    offset: float
+    limit: float
 
 
 class PingResponseContent(BaseModel):
@@ -401,6 +403,11 @@ class SharedUserDetails(BaseModel):
 class SimpleTermDescription(BaseModel):
     title: str
     description: str
+
+
+class SortOrder(Enum):
+    asc = 'asc'
+    desc = 'desc'
 
 
 class TaggedText(BaseModel):
@@ -729,6 +736,13 @@ class OrgMemberMap(RootModel[dict[str, OrgMember]]):
     root: dict[str, OrgMember]
 
 
+class PaginationInput(BaseModel):
+    offset: float | None
+    limit: float | None
+    sortBy: str | None
+    sortOrder: SortOrder | None
+
+
 class ResendOrgInviteResponseContent(BaseModel):
     success: bool
     invite: OrgInvite
@@ -862,12 +876,25 @@ class ListOrgInvitesResponseContent(BaseModel):
     invites: OrgInviteMap
 
 
+class ListOrgMembersRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    role: OrgRole | None
+    includeInactive: bool | None
+    pagination: PaginationInput | None
+
+
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
+    paginationMeta: PaginationMeta | None
+
+
+class ListUserOrganizationsRequestContent(BaseModel):
+    pagination: PaginationInput | None
 
 
 class ListUserOrganizationsResponseContent(BaseModel):
     organizations: list[Org]
+    paginationMeta: PaginationMeta | None
 
 
 class IqModeData(BaseModel):
