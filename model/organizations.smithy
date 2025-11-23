@@ -21,6 +21,8 @@ string OrgId with [UuidLikeMixin]
 string InviteId with [UuidLikeMixin]
 string OrgCustomRoleId with [UuidLikeMixin]
 
+// This has been loosened to a string in the db-model, but remains
+// an enum here for the time being. Consider removing - Gwyn
 enum OrgRole {
     PRIMARY_OWNER = "primary_owner"
     ADMIN = "admin"
@@ -37,6 +39,8 @@ enum InviteStatus {
     EXPIRED = "expired"
 }
 
+// Another OrgPermission enum exists on the db-model; must be kept in sync.
+// Consider loosening one or both to strings for ease of maintenance - Gwyn
 enum OrgPermission {
     MANAGE_MEMBERS = "manage_members"
     MANAGE_BILLING = "manage_billing"
