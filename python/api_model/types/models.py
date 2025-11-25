@@ -186,6 +186,13 @@ class FixedValueTermInference(BaseModel):
     subterms: list[FixedTermValue] | None
 
 
+class FlagSeverity(Enum):
+    critical = 'critical'
+    warn = 'warn'
+    info = 'info'
+    positive = 'positive'
+
+
 class GetContractReadURLRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -574,6 +581,18 @@ class EqDurationCard(BaseModel):
     durationDetails: list[SimpleTermDescription] | None
 
 
+class EqModeCardFlag(BaseModel):
+    reasoning: str
+    referenceKey: str
+    severity: FlagSeverity
+    summary: str
+    context: str
+
+
+class EqModeCardFlagMap(RootModel[dict[str, EqModeCardFlag]]):
+    root: dict[str, EqModeCardFlag]
+
+
 class EqOwnershipCard(BaseModel):
     ownershipTerms: list[SimpleTermDescription]
 
@@ -832,6 +851,7 @@ class EqModeCard(BaseModel):
         None,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
+    flags: EqModeCardFlagMap | None
 
 
 class EqModeCardMap(RootModel[dict[str, EqModeCard]]):

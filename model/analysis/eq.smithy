@@ -118,6 +118,37 @@ structure EqModeCard {
   audioSrc: String
 
   ttsSrcUrl: Url
+
+  flags: EqModeCardFlagMap
+}
+
+enum FlagSeverity {
+  CRITICAL = "critical"
+  WARN = "warn"
+  INFO = "info"
+  POSITIVE = "positive"
+}
+
+structure EqModeCardFlag {
+  @required
+  reasoning: String
+
+  @required
+  referenceKey: String
+
+  @required
+  severity: FlagSeverity
+
+  @required
+  summary: String
+
+  @required
+  context: String
+}
+
+map EqModeCardFlagMap {
+  key: String
+  value: EqModeCardFlag
 }
 
 @documentation("Deprecated")
