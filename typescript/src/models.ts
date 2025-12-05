@@ -668,6 +668,7 @@ export interface components {
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
             ownerId: string;
+            ownerOrgId?: string;
             sharedUsers?: components["schemas"]["SharedUserDetails"][];
             isOwner?: boolean;
             hasTTS?: boolean;
@@ -878,6 +879,7 @@ export interface components {
         GetContractResponseContent: {
             contractId: string;
             ownerId: string;
+            ownerOrgId?: string;
             name: string;
             type: string;
             eqData?: components["schemas"]["EqModeData"];
@@ -964,6 +966,9 @@ export interface components {
         IqModeSectionKey: IqModeSectionKey;
         IqModeSectionMap: {
             [key: string]: components["schemas"]["IqModeSection"];
+        };
+        ListContractsRequestContent: {
+            orgId?: string;
         };
         ListContractsResponseContent: {
             /** @description Deprecation path (v0.5) */
@@ -1506,7 +1511,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListContractsRequestContent"];
+            };
+        };
         responses: {
             /** @description ListContracts 200 response */
             200: {

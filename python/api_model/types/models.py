@@ -3,7 +3,7 @@
 
 from __future__ import annotations
 
-from enum import Enum
+from enum import StrEnum
 from typing import Any
 
 from pydantic import BaseModel, Field, RootModel
@@ -27,7 +27,7 @@ class CancelOrgInviteResponseContent(BaseModel):
     success: bool
 
 
-class ContractStatus(Enum):
+class ContractStatus(StrEnum):
     processing = 'processing'
     awaiting_upload = 'awaiting_upload'
     extracting_text = 'extracting_text'
@@ -65,7 +65,7 @@ class ContractSummaryItem(BaseModel):
     sharedEmails: list[SharedEmail] | None
 
 
-class ContractVariableType(Enum):
+class ContractVariableType(StrEnum):
     eq_term = 'eq_term'
     discovered_term = 'discovered_term'
     external_term = 'external_term'
@@ -125,7 +125,7 @@ class DeleteOrgResponseContent(BaseModel):
     success: bool
 
 
-class DurationType(Enum):
+class DurationType(StrEnum):
     fixed = 'fixed'
     indefinite = 'indefinite'
     renewable = 'renewable'
@@ -136,7 +136,7 @@ class EmptyStructure(BaseModel):
     pass
 
 
-class EqCardKey(Enum):
+class EqCardKey(StrEnum):
     moneyYouReceive = 'moneyYouReceive'
     whatYouOwn = 'whatYouOwn'
     whatYoureResponsibleFor = 'whatYoureResponsibleFor'
@@ -144,7 +144,7 @@ class EqCardKey(Enum):
     risksCostsLegalStuff = 'risksCostsLegalStuff'
 
 
-class EqCardType(Enum):
+class EqCardType(StrEnum):
     A = 'A'
     B = 'B'
 
@@ -258,19 +258,23 @@ class InternalServerErrorResponseContent(BaseModel):
     message: str
 
 
-class InviteStatus(Enum):
+class InviteStatus(StrEnum):
     pending = 'pending'
     accepted = 'accepted'
     declined = 'declined'
     expired = 'expired'
 
 
-class IqModeSectionKey(Enum):
+class IqModeSectionKey(StrEnum):
     earnings = 'earnings'
     qualityOfRights = 'qualityOfRights'
     usageObligations = 'usageObligations'
     agreementLength = 'agreementLength'
     liabilitySafeguards = 'liabilitySafeguards'
+
+
+class ListContractsRequestContent(BaseModel):
+    orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class ListOrgCustomRolesRequestContent(BaseModel):
@@ -287,7 +291,7 @@ class ListSpecialContractsResponseContent(BaseModel):
     shared: list[ContractSummaryItem]
 
 
-class OrgPermission(Enum):
+class OrgPermission(StrEnum):
     manage_members = 'manage_members'
     manage_billing = 'manage_billing'
     manage_settings = 'manage_settings'
@@ -298,7 +302,7 @@ class OrgPermission(Enum):
     view_analytics = 'view_analytics'
 
 
-class OrgRole(Enum):
+class OrgRole(StrEnum):
     primary_owner = 'primary_owner'
     admin = 'admin'
     billing_admin = 'billing_admin'
@@ -405,7 +409,7 @@ class SimpleTermDescription(BaseModel):
     description: str
 
 
-class SortOrder(Enum):
+class SortOrder(StrEnum):
     asc = 'asc'
     desc = 'desc'
 
@@ -521,6 +525,7 @@ class ContractMetadata(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     sharedUsers: list[SharedUserDetails] | None
     isOwner: bool | None
     hasTTS: bool | None
@@ -930,6 +935,7 @@ class ExposeTypesResponseContent(BaseModel):
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     name: str
     type: str
     eqData: EqModeData | None

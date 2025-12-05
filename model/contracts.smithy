@@ -51,6 +51,8 @@ structure GetContractOutput {
 
   @required
   ownerId: UserId
+  
+  ownerOrgId: OrgId
 
   @required
   name: String
@@ -126,7 +128,7 @@ operation ListContracts {
 }
 
 structure ListContractsInput {
-  // Empty input - authentication handled via Bearer token
+  orgId: OrgId
 }
 
 structure ListContractsOutput {
@@ -210,7 +212,9 @@ structure ContractMetadata {
   uploadedOn: ISODate
   @required
   ownerId: UserId
-  
+
+  ownerOrgId: OrgId
+
   sharedUsers: SharedUserDetailsList
 
   isOwner: Boolean

@@ -147,6 +147,7 @@ export type ContractMetadata = {
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
+  ownerOrgId?: string;
   sharedUsers?: SharedUserDetails[];
   isOwner?: boolean;
   hasTTS?: boolean;
@@ -371,6 +372,7 @@ export type GetContractRequestContent = {
 export type GetContractResponseContent = {
   contractId: string;
   ownerId: string;
+  ownerOrgId?: string;
   name: string;
   type: string;
   eqData?: EqModeData;
@@ -471,6 +473,10 @@ export type IqModeSection = {
 };
 
 export type IqModeSectionMap = { [key: string]: IqModeSection };
+
+export type ListContractsRequestContent = {
+  orgId?: string;
+};
 
 export type ListContractsResponseContent = {
   owned?: ContractSummaryItem[];
@@ -781,7 +787,3 @@ export type UserProfile = {
 export type ValidationErrorResponseContent = {
   message: string;
 };
-
-// Re-export XML utilities
-export * from './xml-types';
-export * from './xml-utils';
