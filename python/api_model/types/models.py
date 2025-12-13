@@ -252,6 +252,7 @@ class GetSpecialContractResponseContent(BaseModel):
 
 class GetUploadURLRequestContent(BaseModel):
     name: str
+    orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class InternalServerErrorResponseContent(BaseModel):

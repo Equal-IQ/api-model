@@ -151,6 +151,10 @@ export { components } from './models';
 import { components } from './models';
 export type Schemas = components['schemas'];
 
+// Export XML utilities (manually maintained)
+export * from './xml-types';
+export * from './xml-utils';
+
 // Unwrapped enum definitions
 ${enumDefinitions}
 

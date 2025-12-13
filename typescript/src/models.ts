@@ -934,6 +934,7 @@ export interface components {
         };
         GetUploadURLRequestContent: {
             name: string;
+            orgId?: string;
         };
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];

@@ -240,6 +240,8 @@ operation GetUploadURL {
 structure GetUploadURLInput {
   @required
   name: String
+
+  orgId: OrgId
 }
 
 structure GetUploadURLOutput {
