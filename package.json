@@ -1,27 +1,11 @@
 {
   "name": "@equaliq/api-model",
-  "version": "0.1.0",
-  "description": "EqualIQ API TypeScript models generated from Smithy",
   "main": "typescript/dist/index.js",
   "types": "typescript/dist/index.d.ts",
   "scripts": {
-    "build": "cd typescript && npm install && npm run build",
-    "clean": "cd typescript && npm run clean",
-    "prepare": "npm run build"
-  },
-  "author": "EqualIQ Team",
-  "license": "MIT",
-  "devDependencies": {
-    "typescript": "^5.0.0"
+    "prepare": "cd typescript && npm install && npm run prepare"
   },
   "files": [
-    "typescript/dist",
-    "typescript/src",
-    "typescript/tsconfig.json",
-    "typescript/package.json"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Equal-IQ/api-model.git"
-  }
+    "typescript"
+  ]
 }
