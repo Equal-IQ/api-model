@@ -7,6 +7,10 @@ export { components } from './models';
 import { components } from './models';
 export type Schemas = components['schemas'];
 
+// Export XML utilities (manually maintained)
+export * from './xml-types';
+export * from './xml-utils';
+
 // Unwrapped enum definitions
 export enum ContractStatus {
   processing = "processing",
@@ -83,6 +87,11 @@ export enum OrgRole {
   custom = "custom"
 }
 
+export enum SortOrder {
+  asc = "asc",
+  desc = "desc"
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
@@ -142,6 +151,7 @@ export type ContractMetadata = {
   status: ContractStatus;
   uploadedOn: string;
   ownerId: string;
+  ownerOrgId?: string;
   sharedUsers?: SharedUserDetails[];
   isOwner?: boolean;
   hasTTS?: boolean;
@@ -366,6 +376,7 @@ export type GetContractRequestContent = {
 export type GetContractResponseContent = {
   contractId: string;
   ownerId: string;
+  ownerOrgId?: string;
   name: string;
   type: string;
   eqData?: EqModeData;
@@ -433,6 +444,7 @@ export type GetSpecialContractResponseContent = {
 
 export type GetUploadURLRequestContent = {
   name: string;
+  orgId?: string;
 };
 
 export type GetUploadURLResponseContent = {
@@ -467,6 +479,10 @@ export type IqModeSection = {
 
 export type IqModeSectionMap = { [key: string]: IqModeSection };
 
+export type ListContractsRequestContent = {
+  orgId?: string;
+};
+
 export type ListContractsResponseContent = {
   owned?: ContractSummaryItem[];
   shared?: ContractSummaryItem[];
@@ -492,10 +508,14 @@ export type ListOrgInvitesResponseContent = {
 
 export type ListOrgMembersRequestContent = {
   orgId: string;
+  role?: OrgRole;
+  includeInactive?: boolean;
+  pagination?: PaginationInput;
 };
 
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
+  paginationMeta?: PaginationMeta;
 };
 
 export type ListSpecialContractsResponseContent = {
@@ -503,8 +523,13 @@ export type ListSpecialContractsResponseContent = {
   shared: ContractSummaryItem[];
 };
 
+export type ListUserOrganizationsRequestContent = {
+  pagination?: PaginationInput;
+};
+
 export type ListUserOrganizationsResponseContent = {
   organizations: Org[];
+  paginationMeta?: PaginationMeta;
 };
 
 export type Org = {
@@ -571,6 +596,19 @@ export type OrgTheme = {
   primaryColor?: string;
   secondaryColor?: string;
   accentColor?: string;
+};
+
+export type PaginationInput = {
+  offset?: number;
+  limit?: number;
+  sortBy?: string;
+  sortOrder?: SortOrder;
+};
+
+export type PaginationMeta = {
+  totalCount: number;
+  offset: number;
+  limit: number;
 };
 
 export type PingResponseContent = {
@@ -754,7 +792,3 @@ export type UserProfile = {
 export type ValidationErrorResponseContent = {
   message: string;
 };
-
-// Re-export XML utilities
-export * from './xml-types';
-export * from './xml-utils';
