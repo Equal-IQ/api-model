@@ -115,8 +115,8 @@ This will:
 - Output the files to the specified directory
 
 ### Cut Release ###
-For Typescript (Frontend, LLM) use, we are version locking to commits using https://gitpkg.vercel.app/
-After a commit is pushed to github, you can update the commit in use in the package.json and install update
+For TypeScript (Frontend, LLM) use, install directly from GitHub using commit hashes or branches.
+After a commit is pushed to GitHub, you can update the reference in your package.json and run npm install.
 
 ### Manual Type Generation (Alternative)
 
@@ -221,14 +221,29 @@ yarn add ../api-model/typescript
 Add the package to your project using the GitHub repository:
 
 ```bash
-npm install --save github:Equal-IQ/api-model#main:typescript
+# Install from main branch
+npm install --save github:Equal-IQ/api-model
+
+# Install from specific commit (recommended for version locking)
+npm install --save github:Equal-IQ/api-model#abc123f
+
+# Install from specific branch
+npm install --save github:Equal-IQ/api-model#feature-branch
 ```
 
 Or in your package.json:
 
 ```json
 "dependencies": {
-  "@equaliq/api-model": "github:Equal-IQ/api-model#main:typescript"
+  "@equaliq/api-model": "github:Equal-IQ/api-model#main"
+}
+```
+
+For version locking to a specific commit:
+
+```json
+"dependencies": {
+  "@equaliq/api-model": "github:Equal-IQ/api-model#abc123f"
 }
 ```
 

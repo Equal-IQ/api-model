@@ -16,8 +16,7 @@
   "scripts": {
     "build": "tsc",
     "clean": "rm -rf dist",
-    "prepare": "npm run clean && npm run build",
-    "postinstall": "npm run build"
+    "prepare": "npm run clean && npm run build"
   },
   "author": "EqualIQ Team",
   "license": "MIT",
@@ -25,6 +24,7 @@
     "typescript": "^5.0.0"
   },
   "files": [
-    "dist"
+    "dist",
+    "src"
   ]
 }
