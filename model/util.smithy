@@ -69,3 +69,19 @@ structure PaginationMeta {
     limit: Integer
 }
 
+// File attachment structures
+structure FileAttachment {
+    @required
+    content: Blob
+    
+    @required
+    filename: String
+    
+    @required
+    contentType: String
+}
+
+list FileAttachmentList {
+    member: FileAttachment
+}
+
