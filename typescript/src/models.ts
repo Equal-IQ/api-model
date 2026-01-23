@@ -621,10 +621,10 @@ export interface components {
             inviteId: string;
         };
         AcceptOrgInviteResponseContent: {
-            success: boolean;
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        /** @description Common error structures used across all operations */
         AuthenticationErrorResponseContent: {
             message: string;
         };
@@ -632,15 +632,13 @@ export interface components {
             orgId: string;
             inviteId: string;
         };
-        CancelOrgInviteResponseContent: {
-            success: boolean;
-        };
         ContractAnalysisRecord: {
             contractId: string;
             name: string;
             type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
+            /** @description User resource and profile operations */
             ownerId: string;
             eqCards?: components["schemas"]["EqModeData"];
             iqData: components["schemas"]["IqModeData"];
@@ -667,6 +665,7 @@ export interface components {
             type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
+            /** @description User resource and profile operations */
             ownerId: string;
             ownerOrgId?: string;
             sharedUsers?: components["schemas"]["SharedUserDetails"][];
@@ -684,6 +683,7 @@ export interface components {
             type: string;
             status: components["schemas"]["ContractStatus"];
             isOwner: boolean;
+            /** @description User resource and profile operations */
             ownerId: string;
             sharedWith?: string[];
             sharedUsers?: string[];
@@ -719,7 +719,6 @@ export interface components {
             permissions: components["schemas"]["OrgPermission"][];
         };
         CreateOrgCustomRoleResponseContent: {
-            success: boolean;
             customRole: components["schemas"]["OrgCustomRole"];
         };
         CreateOrgInviteRequestContent: {
@@ -730,7 +729,6 @@ export interface components {
             orgEmail?: string;
         };
         CreateOrgInviteResponseContent: {
-            success: boolean;
             invites: components["schemas"]["OrgInviteMap"];
             failedEmails?: string[];
         };
@@ -742,15 +740,11 @@ export interface components {
             billingEmail: string;
         };
         CreateOrgResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
         };
         DeclineOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
-        };
-        DeclineOrgInviteResponseContent: {
-            success: boolean;
         };
         DeleteContractRequestContent: {
             contractId: string;
@@ -762,17 +756,12 @@ export interface components {
             orgId: string;
             customRoleId: string;
         };
-        DeleteOrgCustomRoleResponseContent: {
-            success: boolean;
-        };
         DeleteOrgRequestContent: {
             orgId: string;
         };
-        DeleteOrgResponseContent: {
-            success: boolean;
-        };
         /** @enum {string} */
         DurationType: DurationType;
+        /** @description Common types and structures shared across all operations */
         EmptyStructure: Record<string, never>;
         /** @enum {string} */
         EqCardKey: EqCardKey;
@@ -878,6 +867,7 @@ export interface components {
         };
         GetContractResponseContent: {
             contractId: string;
+            /** @description User resource and profile operations */
             ownerId: string;
             ownerOrgId?: string;
             name: string;
@@ -907,16 +897,17 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         GetProfilePictureRequestContent: {
-            userId?: string;
+            /** @description User resource and profile operations */
+            userId: string;
         };
         GetProfilePictureResponseContent: {
             profilePictureURL: string;
         };
         GetProfileRequestContent: {
-            userId?: string;
+            /** @description User resource and profile operations */
+            userId: string;
         };
         GetProfileResponseContent: {
-            userId: string;
             profile: components["schemas"]["UserProfile"];
         };
         GetSpecialContractRequestContent: {
@@ -929,6 +920,7 @@ export interface components {
             eqmode: unknown;
             sections: unknown;
             isOwner: boolean;
+            /** @description User resource and profile operations */
             ownerId: string;
             sharedWith: string[];
         };
@@ -981,42 +973,64 @@ export interface components {
         };
         ListOrgCustomRolesRequestContent: {
             orgId: string;
+            /** @description Pagination cursor (encoded roleId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgCustomRolesResponseContent: {
             roles: components["schemas"]["OrgCustomRoleMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListOrgInvitesRequestContent: {
             orgId: string;
             status?: components["schemas"]["InviteStatus"];
+            /** @description Pagination cursor (encoded inviteId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgInvitesResponseContent: {
             invites: components["schemas"]["OrgInviteMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListOrgMembersRequestContent: {
             orgId: string;
             role?: components["schemas"]["OrgRole"];
+            /** @description Include inactive members */
             includeInactive?: boolean;
-            pagination?: components["schemas"]["PaginationInput"];
+            /** @description Pagination cursor (encoded userId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgMembersResponseContent: {
             members: components["schemas"]["OrgMemberMap"];
-            paginationMeta?: components["schemas"]["PaginationMeta"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListSpecialContractsResponseContent: {
             owned: components["schemas"]["ContractSummaryItem"][];
             shared: components["schemas"]["ContractSummaryItem"][];
         };
         ListUserOrganizationsRequestContent: {
-            pagination?: components["schemas"]["PaginationInput"];
+            /** @description Pagination cursor (encoded orgId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListUserOrganizationsResponseContent: {
             organizations: components["schemas"]["Org"][];
-            paginationMeta?: components["schemas"]["PaginationMeta"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         Org: {
             orgId: string;
             name: string;
             type: string;
+            /** @description User resource and profile operations */
             primaryOwner: string;
             description?: string;
             website?: string;
@@ -1036,12 +1050,14 @@ export interface components {
             description?: string;
             permissions: components["schemas"]["OrgPermission"][];
             createdDate: string;
+            /** @description User resource and profile operations */
             createdBy: string;
             memberCount?: number;
         };
         OrgCustomRoleMap: {
             [key: string]: components["schemas"]["OrgCustomRole"];
         };
+        /** @description Organization invitation */
         OrgInvite: {
             inviteId: string;
             orgId: string;
@@ -1050,16 +1066,19 @@ export interface components {
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
+            /** @description User resource and profile operations */
             invitedBy: string;
             invitedByProfile?: components["schemas"]["UserProfile"];
-            status: components["schemas"]["InviteStatus"];
+            status: string;
             createdDate: string;
             expiresDate?: string;
         };
         OrgInviteMap: {
             [key: string]: components["schemas"]["OrgInvite"];
         };
+        /** @description Organization member */
         OrgMember: {
+            /** @description User resource and profile operations */
             userId: string;
             orgEmail: string;
             role: components["schemas"]["OrgRole"];
@@ -1072,25 +1091,20 @@ export interface components {
         OrgMemberMap: {
             [key: string]: components["schemas"]["OrgMember"];
         };
-        /** @enum {string} */
+        /**
+         * @description Organization permissions
+         * @enum {string}
+         */
         OrgPermission: OrgPermission;
-        /** @enum {string} */
+        /**
+         * @description Organization roles
+         * @enum {string}
+         */
         OrgRole: OrgRole;
         OrgTheme: {
             primaryColor?: string;
             secondaryColor?: string;
             accentColor?: string;
-        };
-        PaginationInput: {
-            offset?: number;
-            limit?: number;
-            sortBy?: string;
-            sortOrder?: components["schemas"]["SortOrder"];
-        };
-        PaginationMeta: {
-            totalCount: number;
-            offset: number;
-            limit: number;
         };
         PingResponseContent: {
             message: string;
@@ -1107,10 +1121,8 @@ export interface components {
         };
         RemoveOrgMemberRequestContent: {
             orgId: string;
+            /** @description User resource and profile operations */
             userId: string;
-        };
-        RemoveOrgMemberResponseContent: {
-            success: boolean;
         };
         ResendOrgInviteRequestContent: {
             orgId: string;
@@ -1118,7 +1130,6 @@ export interface components {
             expiresDate?: string;
         };
         ResendOrgInviteResponseContent: {
-            success: boolean;
             invite: components["schemas"]["OrgInvite"];
         };
         ResourceNotFoundErrorResponseContent: {
@@ -1138,7 +1149,9 @@ export interface components {
             invalidRemoves?: string[];
         };
         SharedUserDetails: {
+            /** @description User resource and profile operations */
             sharedWithUserId: string;
+            /** @description User resource and profile operations */
             sharedByUserId: string;
             sharedWithUserEmail: string;
             /** Format: double */
@@ -1148,17 +1161,15 @@ export interface components {
             title: string;
             description: string;
         };
-        /** @enum {string} */
-        SortOrder: SortOrder;
         TaggedText: {
             text: string;
         };
         TransferOrgOwnershipRequestContent: {
             orgId: string;
+            /** @description User resource and profile operations */
             newOwnerId: string;
         };
         TransferOrgOwnershipResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
         };
         UpdateContractRequestContent: {
@@ -1176,18 +1187,17 @@ export interface components {
             permissions?: components["schemas"]["OrgPermission"][];
         };
         UpdateOrgCustomRoleResponseContent: {
-            success: boolean;
             customRole: components["schemas"]["OrgCustomRole"];
         };
         UpdateOrgMemberRequestContent: {
             orgId: string;
+            /** @description User resource and profile operations */
             userId: string;
             role?: components["schemas"]["OrgRole"];
             customRoleId?: string;
             orgEmail?: string;
         };
         UpdateOrgMemberResponseContent: {
-            success: boolean;
             member: components["schemas"]["OrgMember"];
         };
         UpdateOrgRequestContent: {
@@ -1198,7 +1208,6 @@ export interface components {
             billingEmail?: string;
         };
         UpdateOrgResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
         };
         UpdateOrgThemeRequestContent: {
@@ -1206,10 +1215,11 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         UpdateOrgThemeResponseContent: {
-            success: boolean;
             theme: components["schemas"]["OrgTheme"];
         };
         UpdateProfileRequestContent: {
+            /** @description User resource and profile operations */
+            userId: string;
             firstName?: string;
             lastName?: string;
             displayName?: string;
@@ -1218,10 +1228,7 @@ export interface components {
             isOver18?: boolean;
         };
         UpdateProfileResponseContent: {
-            success: boolean;
-            message: string;
-            userId: string;
-            updatedFields?: string[];
+            profile: components["schemas"]["UserProfile"];
         };
         UploadOrgPictureRequestContent: {
             orgId: string;
@@ -1229,10 +1236,15 @@ export interface components {
         UploadOrgPictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
+        UploadProfilePictureRequestContent: {
+            /** @description User resource and profile operations */
+            userId: string;
+        };
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
+            /** @description User resource and profile operations */
             userId?: string;
             firstName?: string;
             lastName?: string;
@@ -1386,7 +1398,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GetProfileRequestContent"];
             };
@@ -1428,7 +1440,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GetProfilePictureRequestContent"];
             };
@@ -1665,9 +1677,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeleteOrgResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -1875,9 +1885,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -1959,9 +1967,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeclineOrgInviteResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -2169,9 +2175,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["RemoveOrgMemberResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -2253,9 +2257,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeleteOrgCustomRoleResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -2682,7 +2684,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["UpdateProfileRequestContent"];
             };
@@ -2724,7 +2726,11 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: never;
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UploadProfilePictureRequestContent"];
+            };
+        };
         responses: {
             /** @description UploadProfilePicture 200 response */
             200: {
@@ -2854,17 +2860,15 @@ export enum OrgPermission {
     manage_contracts = "manage_contracts",
     invite_users = "invite_users",
     manage_roles = "manage_roles",
-    view_analytics = "view_analytics"
+    view_analytics = "view_analytics",
+    view_audit_logs = "view_audit_logs"
 }
 export enum OrgRole {
     primary_owner = "primary_owner",
     admin = "admin",
     billing_admin = "billing_admin",
+    auditor = "auditor",
     member = "member",
     viewer = "viewer",
     custom = "custom"
-}
-export enum SortOrder {
-    asc = "asc",
-    desc = "desc"
 }

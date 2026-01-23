@@ -75,21 +75,18 @@ export enum OrgPermission {
   manage_contracts = "manage_contracts",
   invite_users = "invite_users",
   manage_roles = "manage_roles",
-  view_analytics = "view_analytics"
+  view_analytics = "view_analytics",
+  view_audit_logs = "view_audit_logs"
 }
 
 export enum OrgRole {
   primary_owner = "primary_owner",
   admin = "admin",
   billing_admin = "billing_admin",
+  auditor = "auditor",
   member = "member",
   viewer = "viewer",
   custom = "custom"
-}
-
-export enum SortOrder {
-  asc = "asc",
-  desc = "desc"
 }
 
 // Unwrapped type definitions (no aliases)
@@ -99,7 +96,6 @@ export type AcceptOrgInviteRequestContent = {
 };
 
 export type AcceptOrgInviteResponseContent = {
-  success: boolean;
   organization: Org;
   member: OrgMember;
 };
@@ -111,10 +107,6 @@ export type AuthenticationErrorResponseContent = {
 export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
-};
-
-export type CancelOrgInviteResponseContent = {
-  success: boolean;
 };
 
 export type ContractAnalysisRecord = {
@@ -200,7 +192,6 @@ export type CreateOrgCustomRoleRequestContent = {
 };
 
 export type CreateOrgCustomRoleResponseContent = {
-  success: boolean;
   customRole: OrgCustomRole;
 };
 
@@ -213,7 +204,6 @@ export type CreateOrgInviteRequestContent = {
 };
 
 export type CreateOrgInviteResponseContent = {
-  success: boolean;
   invites: OrgInviteMap;
   failedEmails?: string[];
 };
@@ -227,17 +217,12 @@ export type CreateOrgRequestContent = {
 };
 
 export type CreateOrgResponseContent = {
-  success: boolean;
   org: Org;
 };
 
 export type DeclineOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
-};
-
-export type DeclineOrgInviteResponseContent = {
-  success: boolean;
 };
 
 export type DeleteContractRequestContent = {
@@ -253,16 +238,8 @@ export type DeleteOrgCustomRoleRequestContent = {
   customRoleId: string;
 };
 
-export type DeleteOrgCustomRoleResponseContent = {
-  success: boolean;
-};
-
 export type DeleteOrgRequestContent = {
   orgId: string;
-};
-
-export type DeleteOrgResponseContent = {
-  success: boolean;
 };
 
 export type EmptyStructure = unknown;
@@ -411,7 +388,7 @@ export type GetOrgThemeResponseContent = {
 };
 
 export type GetProfilePictureRequestContent = {
-  userId?: string;
+  userId: string;
 };
 
 export type GetProfilePictureResponseContent = {
@@ -419,11 +396,10 @@ export type GetProfilePictureResponseContent = {
 };
 
 export type GetProfileRequestContent = {
-  userId?: string;
+  userId: string;
 };
 
 export type GetProfileResponseContent = {
-  userId: string;
   profile: UserProfile;
 };
 
@@ -491,31 +467,38 @@ export type ListContractsResponseContent = {
 
 export type ListOrgCustomRolesRequestContent = {
   orgId: string;
+  nextToken?: string;
+  limit?: number;
 };
 
 export type ListOrgCustomRolesResponseContent = {
   roles: OrgCustomRoleMap;
+  nextToken?: string;
 };
 
 export type ListOrgInvitesRequestContent = {
   orgId: string;
   status?: InviteStatus;
+  nextToken?: string;
+  limit?: number;
 };
 
 export type ListOrgInvitesResponseContent = {
   invites: OrgInviteMap;
+  nextToken?: string;
 };
 
 export type ListOrgMembersRequestContent = {
   orgId: string;
   role?: OrgRole;
   includeInactive?: boolean;
-  pagination?: PaginationInput;
+  nextToken?: string;
+  limit?: number;
 };
 
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
-  paginationMeta?: PaginationMeta;
+  nextToken?: string;
 };
 
 export type ListSpecialContractsResponseContent = {
@@ -524,12 +507,13 @@ export type ListSpecialContractsResponseContent = {
 };
 
 export type ListUserOrganizationsRequestContent = {
-  pagination?: PaginationInput;
+  nextToken?: string;
+  limit?: number;
 };
 
 export type ListUserOrganizationsResponseContent = {
   organizations: Org[];
-  paginationMeta?: PaginationMeta;
+  nextToken?: string;
 };
 
 export type Org = {
@@ -572,7 +556,7 @@ export type OrgInvite = {
   customPermissions?: OrgPermission[];
   invitedBy: string;
   invitedByProfile?: UserProfile;
-  status: InviteStatus;
+  status: string;
   createdDate: string;
   expiresDate?: string;
 };
@@ -598,19 +582,6 @@ export type OrgTheme = {
   accentColor?: string;
 };
 
-export type PaginationInput = {
-  offset?: number;
-  limit?: number;
-  sortBy?: string;
-  sortOrder?: SortOrder;
-};
-
-export type PaginationMeta = {
-  totalCount: number;
-  offset: number;
-  limit: number;
-};
-
 export type PingResponseContent = {
   message: string;
 };
@@ -633,10 +604,6 @@ export type RemoveOrgMemberRequestContent = {
   userId: string;
 };
 
-export type RemoveOrgMemberResponseContent = {
-  success: boolean;
-};
-
 export type ResendOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
@@ -644,7 +611,6 @@ export type ResendOrgInviteRequestContent = {
 };
 
 export type ResendOrgInviteResponseContent = {
-  success: boolean;
   invite: OrgInvite;
 };
 
@@ -689,7 +655,6 @@ export type TransferOrgOwnershipRequestContent = {
 };
 
 export type TransferOrgOwnershipResponseContent = {
-  success: boolean;
   org: Org;
 };
 
@@ -711,7 +676,6 @@ export type UpdateOrgCustomRoleRequestContent = {
 };
 
 export type UpdateOrgCustomRoleResponseContent = {
-  success: boolean;
   customRole: OrgCustomRole;
 };
 
@@ -724,7 +688,6 @@ export type UpdateOrgMemberRequestContent = {
 };
 
 export type UpdateOrgMemberResponseContent = {
-  success: boolean;
   member: OrgMember;
 };
 
@@ -737,7 +700,6 @@ export type UpdateOrgRequestContent = {
 };
 
 export type UpdateOrgResponseContent = {
-  success: boolean;
   org: Org;
 };
 
@@ -747,11 +709,11 @@ export type UpdateOrgThemeRequestContent = {
 };
 
 export type UpdateOrgThemeResponseContent = {
-  success: boolean;
   theme: OrgTheme;
 };
 
 export type UpdateProfileRequestContent = {
+  userId: string;
   firstName?: string;
   lastName?: string;
   displayName?: string;
@@ -761,10 +723,7 @@ export type UpdateProfileRequestContent = {
 };
 
 export type UpdateProfileResponseContent = {
-  success: boolean;
-  message: string;
-  userId: string;
-  updatedFields?: string[];
+  profile: UserProfile;
 };
 
 export type UploadOrgPictureRequestContent = {
@@ -773,6 +732,10 @@ export type UploadOrgPictureRequestContent = {
 
 export type UploadOrgPictureResponseContent = {
   url_info: PresignedPostData;
+};
+
+export type UploadProfilePictureRequestContent = {
+  userId: string;
 };
 
 export type UploadProfilePictureResponseContent = {

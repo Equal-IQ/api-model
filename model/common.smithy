@@ -2,13 +2,13 @@ $version: "2"
 
 namespace equaliq
 
-// Shared types used across operations - keep these in main file for reference
+/// Common types and structures shared across all operations
 
 structure EmptyStructure {
   // Empty structure - avoid using, but useful in data migrations or making union workable
 }
 
-// Common patterns
+// Common string patterns
 @mixin
 @pattern("^[A-Za-z0-9-]+$")
 string UuidLikeMixin
@@ -25,7 +25,7 @@ string Url // This pattern passes for any URLs we're currently using (S3 Presign
 @pattern("^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$")
 string HexColor
 
-// Generics
+// Generic list types
 list StringList {
   member: String
 }
@@ -34,7 +34,8 @@ list EmailList {
   member: Email
 }
 
-// We plan to extend this Tagged Text system to a more structured format 
+// Text structures
+// We plan to extend this Tagged Text system to a more structured format
 structure TaggedText {
   @required
   text: String
@@ -44,28 +45,3 @@ structure PlainText {
   @required
   text: String
 }
-
-// Pagination structures for list operations
-structure PaginationInput {
-    offset: Integer
-    limit: Integer
-    sortBy: String
-    sortOrder: SortOrder
-}
-
-enum SortOrder {
-    ASC = "asc"
-    DESC = "desc"
-}
-
-structure PaginationMeta {
-    @required
-    totalCount: Integer
-
-    @required
-    offset: Integer
-
-    @required
-    limit: Integer
-}
-
