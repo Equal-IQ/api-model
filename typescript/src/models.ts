@@ -638,7 +638,6 @@ export interface components {
             type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
-            /** @description User resource and profile operations */
             ownerId: string;
             eqCards?: components["schemas"]["EqModeData"];
             iqData: components["schemas"]["IqModeData"];
@@ -665,7 +664,6 @@ export interface components {
             type: string;
             status: components["schemas"]["ContractStatus"];
             uploadedOn: string;
-            /** @description User resource and profile operations */
             ownerId: string;
             ownerOrgId?: string;
             sharedUsers?: components["schemas"]["SharedUserDetails"][];
@@ -683,7 +681,6 @@ export interface components {
             type: string;
             status: components["schemas"]["ContractStatus"];
             isOwner: boolean;
-            /** @description User resource and profile operations */
             ownerId: string;
             sharedWith?: string[];
             sharedUsers?: string[];
@@ -867,7 +864,6 @@ export interface components {
         };
         GetContractResponseContent: {
             contractId: string;
-            /** @description User resource and profile operations */
             ownerId: string;
             ownerOrgId?: string;
             name: string;
@@ -897,14 +893,12 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         GetProfilePictureRequestContent: {
-            /** @description User resource and profile operations */
             userId: string;
         };
         GetProfilePictureResponseContent: {
             profilePictureURL: string;
         };
         GetProfileRequestContent: {
-            /** @description User resource and profile operations */
             userId: string;
         };
         GetProfileResponseContent: {
@@ -920,7 +914,6 @@ export interface components {
             eqmode: unknown;
             sections: unknown;
             isOwner: boolean;
-            /** @description User resource and profile operations */
             ownerId: string;
             sharedWith: string[];
         };
@@ -1030,7 +1023,6 @@ export interface components {
             orgId: string;
             name: string;
             type: string;
-            /** @description User resource and profile operations */
             primaryOwner: string;
             description?: string;
             website?: string;
@@ -1050,7 +1042,6 @@ export interface components {
             description?: string;
             permissions: components["schemas"]["OrgPermission"][];
             createdDate: string;
-            /** @description User resource and profile operations */
             createdBy: string;
             memberCount?: number;
         };
@@ -1066,7 +1057,6 @@ export interface components {
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
-            /** @description User resource and profile operations */
             invitedBy: string;
             invitedByProfile?: components["schemas"]["UserProfile"];
             status: string;
@@ -1078,7 +1068,6 @@ export interface components {
         };
         /** @description Organization member */
         OrgMember: {
-            /** @description User resource and profile operations */
             userId: string;
             orgEmail: string;
             role: components["schemas"]["OrgRole"];
@@ -1121,7 +1110,6 @@ export interface components {
         };
         RemoveOrgMemberRequestContent: {
             orgId: string;
-            /** @description User resource and profile operations */
             userId: string;
         };
         ResendOrgInviteRequestContent: {
@@ -1149,9 +1137,7 @@ export interface components {
             invalidRemoves?: string[];
         };
         SharedUserDetails: {
-            /** @description User resource and profile operations */
             sharedWithUserId: string;
-            /** @description User resource and profile operations */
             sharedByUserId: string;
             sharedWithUserEmail: string;
             /** Format: double */
@@ -1166,7 +1152,6 @@ export interface components {
         };
         TransferOrgOwnershipRequestContent: {
             orgId: string;
-            /** @description User resource and profile operations */
             newOwnerId: string;
         };
         TransferOrgOwnershipResponseContent: {
@@ -1191,7 +1176,6 @@ export interface components {
         };
         UpdateOrgMemberRequestContent: {
             orgId: string;
-            /** @description User resource and profile operations */
             userId: string;
             role?: components["schemas"]["OrgRole"];
             customRoleId?: string;
@@ -1218,7 +1202,6 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         UpdateProfileRequestContent: {
-            /** @description User resource and profile operations */
             userId: string;
             firstName?: string;
             lastName?: string;
@@ -1237,14 +1220,12 @@ export interface components {
             url_info: components["schemas"]["PresignedPostData"];
         };
         UploadProfilePictureRequestContent: {
-            /** @description User resource and profile operations */
             userId: string;
         };
         UploadProfilePictureResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
-            /** @description User resource and profile operations */
             userId?: string;
             firstName?: string;
             lastName?: string;

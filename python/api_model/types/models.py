@@ -41,19 +41,11 @@ class ContractStatus(StrEnum):
 
 
 class SharedWithItem(RootModel[str]):
-    root: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class SharedUser(RootModel[str]):
-    root: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class SharedEmail(RootModel[str]):
@@ -67,11 +59,7 @@ class ContractSummaryItem(BaseModel):
     type: str
     status: ContractStatus
     isOwner: bool
-    ownerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: list[SharedWithItem] | None
     sharedUsers: list[SharedUser] | None
     sharedEmails: list[SharedEmail] | None
@@ -223,11 +211,7 @@ class GetOrgThemeRequestContent(BaseModel):
 
 
 class GetProfilePictureRequestContent(BaseModel):
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetProfilePictureResponseContent(BaseModel):
@@ -238,11 +222,7 @@ class GetProfilePictureResponseContent(BaseModel):
 
 
 class GetProfileRequestContent(BaseModel):
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetSpecialContractRequestContent(BaseModel):
@@ -256,11 +236,7 @@ class GetSpecialContractResponseContent(BaseModel):
     eqmode: Any
     sections: Any
     isOwner: bool
-    ownerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWith: list[SharedWithItem]
 
 
@@ -381,11 +357,7 @@ class ProcessingIncompleteErrorResponseContent(BaseModel):
 
 class RemoveOrgMemberRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class ResendOrgInviteRequestContent(BaseModel):
@@ -428,16 +400,8 @@ class InvalidRemove(RootModel[str]):
 
 
 class SharedUserDetails(BaseModel):
-    sharedWithUserId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
-    sharedByUserId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    sharedWithUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sharedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     sharedWithUserEmail: str = Field(
         ..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
     )
@@ -455,11 +419,7 @@ class TaggedText(BaseModel):
 
 class TransferOrgOwnershipRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    newOwnerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    newOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class UpdateContractRequestContent(BaseModel):
@@ -481,11 +441,7 @@ class UpdateOrgCustomRoleRequestContent(BaseModel):
 
 class UpdateOrgMemberRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     role: OrgRole | None
     customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     orgEmail: str | None = Field(
@@ -516,11 +472,7 @@ class UpdateOrgThemeResponseContent(BaseModel):
 
 
 class UpdateProfileRequestContent(BaseModel):
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     firstName: str | None
     lastName: str | None
     displayName: str | None
@@ -538,11 +490,7 @@ class UploadOrgPictureResponseContent(BaseModel):
 
 
 class UploadProfilePictureRequestContent(BaseModel):
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class UploadProfilePictureResponseContent(BaseModel):
@@ -550,11 +498,7 @@ class UploadProfilePictureResponseContent(BaseModel):
 
 
 class UserProfile(BaseModel):
-    userId: str | None = Field(
-        None,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     firstName: str | None
     lastName: str | None
     displayName: str | None
@@ -576,11 +520,7 @@ class ContractMetadata(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    ownerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     sharedUsers: list[SharedUserDetails] | None
     isOwner: bool | None
@@ -721,11 +661,7 @@ class Org(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     type: str
-    primaryOwner: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    primaryOwner: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     description: str | None
     website: str | None = Field(
         None,
@@ -759,11 +695,7 @@ class OrgCustomRole(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    createdBy: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    createdBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     memberCount: float | None
 
 
@@ -783,11 +715,7 @@ class OrgInvite(BaseModel):
     customRoleId: str | None
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
-    invitedBy: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    invitedBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     invitedByProfile: UserProfile | None
     status: str
     createdDate: str = Field(
@@ -809,11 +737,7 @@ class OrgMember(BaseModel):
     Organization member
     """
 
-    userId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     orgEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     role: OrgRole
     customRoleId: str | None
@@ -983,11 +907,7 @@ class ContractAnalysisRecord(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    ownerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     eqCards: EqModeData | None
     iqData: IqModeData
     extractedType: str | None
@@ -1006,11 +926,7 @@ class ExposeTypesResponseContent(BaseModel):
 
 class GetContractResponseContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ownerId: str = Field(
-        ...,
-        description='User resource and profile operations',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     name: str
     type: str

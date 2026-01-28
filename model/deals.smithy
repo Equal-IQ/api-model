@@ -29,6 +29,21 @@ enum DeliverableStatus {
     BLOCKED = "BLOCKED"
 }
 
+/// Deliverable source (for tracking origin)
+enum DeliverableSource {
+    INFERRED = "INFERRED"
+    TEMPLATE = "TEMPLATE"
+    IMPORTED = "IMPORTED"
+}
+
+/// Deal approval status
+enum DealApprovalStatus {
+    PENDING = "PENDING"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    RESCINDED = "RESCINDED"
+}
+
 /// Main deal entity
 structure Deal {
     @required
@@ -93,8 +108,8 @@ structure Deliverable {
     @required
     description: String
 
-    /// Available in DRAFTING and NEGOTIATION stages
-    inferredFromAnalysis: Boolean
+    /// Source of deliverable (null = manual)
+    source: DeliverableSource
 
     /// Required in SIGNING, DELIVERY, COMPLETED stages
     dueDate: ISODate
@@ -107,6 +122,59 @@ structure Deliverable {
 
     createdAt: ISODate
     updatedAt: ISODate
+}
+
+/// Deal approval for stage transitions
+structure DealApproval {
+    @required
+    approvalId: String
+
+    @required
+    dealVersionId: String
+
+    @required
+    targetStage: DealStage
+
+    @required
+    approverUserId: String
+
+    @required
+    status: DealApprovalStatus
+
+    comments: String
+
+    @required
+    timestamp: ISODate
+}
+
+/// Deal revision metadata (references S3-stored content)
+structure DealRevision {
+    @required
+    revisionId: String
+
+    @required
+    dealVersionId: String
+
+    @required
+    s3Bucket: String
+
+    @required
+    s3Key: String
+
+    @required
+    contentType: String
+
+    @required
+    sizeBytes: Long
+
+    @required
+    createdBy: String
+
+    @required
+    createdAt: ISODate
+
+    /// Description of what changed
+    description: String
 }
 
 // Create Deal
@@ -374,8 +442,8 @@ operation CreateDeliverable {
         @required
         description: String
 
-        /// For draft stages
-        inferredFromAnalysis: Boolean
+        /// Source of deliverable
+        source: DeliverableSource
 
         /// For committed stages
         dueDate: ISODate
@@ -410,7 +478,7 @@ operation UpdateDeliverable {
         deliverableId: String
 
         description: String
-        inferredFromAnalysis: Boolean
+        source: DeliverableSource
         dueDate: ISODate
         assignedTo: String
         status: DeliverableStatus
@@ -479,6 +547,14 @@ list DealVersionList {
 
 list DeliverableList {
     member: Deliverable
+}
+
+list DealApprovalList {
+    member: DealApproval
+}
+
+list DealRevisionList {
+    member: DealRevision
 }
 
 // Import DealAccessList from rbac.smithy

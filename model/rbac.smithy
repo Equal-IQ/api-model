@@ -130,6 +130,9 @@ structure DealAccess {
     @required
     grantedToOrgId: String
 
+    /// Specific user within org (if omitted, entire org has access)
+    grantedToUserId: String
+
     @required
     grantedBy: String
 
@@ -147,6 +150,9 @@ structure DealAccess {
 
     /// Maximum permissions this party can grant to others
     maxGrantablePermissions: DealPermissionList
+
+    /// Explicit deny (overrides all grants)
+    isDeny: Boolean
 
     /// Revocation tracking
     revokedBy: String
@@ -168,6 +174,9 @@ structure FileAccess {
     @required
     grantedToOrgId: String
 
+    /// Specific user within org (if omitted, entire org has access)
+    grantedToUserId: String
+
     @required
     grantedBy: String
 
@@ -182,6 +191,9 @@ structure FileAccess {
 
     /// Maximum permissions this party can grant to others
     maxGrantablePermissions: FilePermissionList
+
+    /// Explicit deny (overrides all grants)
+    isDeny: Boolean
 
     /// Revocation tracking
     revokedBy: String
@@ -203,6 +215,9 @@ operation GrantDealAccess {
         @required
         grantToOrgId: String
 
+        /// Specific user within org (if omitted, entire org has access)
+        grantToUserId: String
+
         @required
         permissions: DealPermissionList
 
@@ -214,6 +229,9 @@ operation GrantDealAccess {
 
         /// Permissions they can grant to others
         maxGrantablePermissions: DealPermissionList
+
+        /// Explicit deny
+        isDeny: Boolean
     }
 
     output := {
@@ -309,6 +327,7 @@ operation UpdateDealAccess {
         maxGrantablePermissions: DealPermissionList
         partyRole: String
         expiresAt: ISODate
+        isDeny: Boolean
     }
 
     output := {
@@ -335,6 +354,9 @@ operation GrantFileAccess {
         @required
         grantToOrgId: String
 
+        /// Specific user within org (if omitted, entire org has access)
+        grantToUserId: String
+
         @required
         permissions: FilePermissionList
 
@@ -343,6 +365,9 @@ operation GrantFileAccess {
 
         /// Permissions they can grant to others
         maxGrantablePermissions: FilePermissionList
+
+        /// Explicit deny
+        isDeny: Boolean
     }
 
     output := {
