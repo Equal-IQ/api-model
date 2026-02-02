@@ -396,7 +396,7 @@ export type GetProfilePictureResponseContent = {
 };
 
 export type GetProfileRequestContent = {
-  userId: string;
+  userId?: string;
 };
 
 export type GetProfileResponseContent = {

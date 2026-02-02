@@ -899,7 +899,7 @@ export interface components {
             profilePictureURL: string;
         };
         GetProfileRequestContent: {
-            userId: string;
+            userId?: string;
         };
         GetProfileResponseContent: {
             profile: components["schemas"]["UserProfile"];
@@ -1379,7 +1379,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody: {
+        requestBody?: {
             content: {
                 "application/json": components["schemas"]["GetProfileRequestContent"];
             };

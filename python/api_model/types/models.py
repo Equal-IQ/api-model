@@ -222,7 +222,7 @@ class GetProfilePictureResponseContent(BaseModel):
 
 
 class GetProfileRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class GetSpecialContractRequestContent(BaseModel):

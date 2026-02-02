@@ -28,6 +28,9 @@ service EqualIQ {
     ShareContract
     GetContractReadURL
 
+    // users.smithy - GetProfile is standalone (not resource-bound) to support optional userId
+    GetProfile
+
     // Utility operations
     Ping
     ExposeTypes

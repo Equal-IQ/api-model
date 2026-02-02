@@ -37,7 +37,6 @@ list UserIdList {
 // User resource
 resource User {
     identifiers: { userId: UserId }
-    read: GetProfile
     update: UpdateProfile
     operations: [
         GetProfilePicture
@@ -91,7 +90,7 @@ structure QuickAccess {
 @http(method: "POST", uri: "/getProfile")
 operation GetProfile {
     input := {
-        @required
+        // Optional - if not provided, returns authenticated user's profile
         userId: UserId
     }
 
