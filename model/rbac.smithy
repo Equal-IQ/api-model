@@ -3,6 +3,9 @@ $version: "2"
 namespace equaliq
 
 use aws.protocols#restJson1
+use equaliq#UuidLikeMixin
+use equaliq#DealId
+use equaliq#FileId
 use equaliq#ISODate
 use equaliq#Email
 use equaliq#StringList
@@ -12,6 +15,9 @@ use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
 use equaliq#InternalServerError
+
+/// Access control identifier
+string AccessId with [UuidLikeMixin]
 
 /// Platform-level roles (system-wide, not organization-scoped)
 enum PlatformRole {
@@ -119,13 +125,22 @@ structure OrgInvite {
     expiresDate: ISODate
 }
 
+/// Deal access resource (sub-resource of Deal)
+resource DealAccessResource {
+    identifiers: { dealId: DealId, accessId: AccessId }
+    create: GrantDealAccess
+    update: UpdateDealAccess
+    delete: RevokeDealAccess
+    list: ListDealAccess
+}
+
 /// Deal access control
 structure DealAccess {
     @required
-    accessId: String
+    accessId: AccessId
 
     @required
-    dealId: String
+    dealId: DealId
 
     @required
     grantedToOrgId: String
@@ -163,13 +178,21 @@ structure DealAccess {
     isActive: Boolean
 }
 
+/// File access resource (sub-resource of File)
+resource FileAccessResource {
+    identifiers: { fileId: FileId, accessId: AccessId }
+    create: GrantFileAccess
+    delete: RevokeFileAccess
+    list: ListFileAccess
+}
+
 /// File access control
 structure FileAccess {
     @required
-    accessId: String
+    accessId: AccessId
 
     @required
-    fileId: String
+    fileId: FileId
 
     @required
     grantedToOrgId: String
@@ -210,7 +233,7 @@ operation GrantDealAccess {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         @required
         grantToOrgId: String
@@ -253,10 +276,10 @@ operation GrantDealAccess {
 operation RevokeDealAccess {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         @required
-        accessId: String
+        accessId: AccessId
 
         @required
         reason: String
@@ -272,12 +295,13 @@ operation RevokeDealAccess {
 }
 
 // List Deal Access
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "access", pageSize: "limit")
 @http(method: "POST", uri: "/deals/access/list")
 operation ListDealAccess {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         /// Filter by organization
         orgId: String
@@ -317,11 +341,11 @@ operation UpdateDealAccess {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         @required
         @httpLabel
-        accessId: String
+        accessId: AccessId
 
         permissions: DealPermissionList
         maxGrantablePermissions: DealPermissionList
@@ -349,7 +373,7 @@ operation GrantFileAccess {
     input := {
         @required
         @httpLabel
-        fileId: String
+        fileId: FileId
 
         @required
         grantToOrgId: String
@@ -389,10 +413,10 @@ operation GrantFileAccess {
 operation RevokeFileAccess {
     input := {
         @required
-        fileId: String
+        fileId: FileId
 
         @required
-        accessId: String
+        accessId: AccessId
 
         @required
         reason: String
@@ -408,12 +432,13 @@ operation RevokeFileAccess {
 }
 
 // List File Access
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "access", pageSize: "limit")
 @http(method: "POST", uri: "/files/access/list")
 operation ListFileAccess {
     input := {
         @required
-        fileId: String
+        fileId: FileId
 
         /// Filter by organization
         orgId: String

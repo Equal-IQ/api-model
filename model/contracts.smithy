@@ -27,8 +27,22 @@ enum ContractStatus {
   ERROR = "error"
 }
 
+resource Contract {
+  identifiers: { contractId: ContractId }
+  read: GetContract
+  update: UpdateContract
+  delete: DeleteContract
+  list: ListContracts
+  operations: [
+    GetSpecialContract
+    ShareContract
+    GetContractReadURL
+  ]
+}
+
 // Contract operations
 @http(method: "POST", uri: "/getContract")
+@readonly
 operation GetContract {
   input: GetContractInput
   output: GetContractOutput
@@ -118,6 +132,7 @@ structure GetSpecialContractOutput {
 }
 
 @http(method: "POST", uri: "/listContracts")
+@readonly
 operation ListContracts {
   input: ListContractsInput
   output: ListContractsOutput

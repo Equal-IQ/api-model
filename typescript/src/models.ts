@@ -4,6 +4,294 @@
  */
 
 export interface paths {
+    "/audit/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListAuditLogs"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit/logs/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAuditLog"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/audit/statistics": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetAuditStatistics"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/deliverables/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDeliverables"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDeals"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetDealVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDealVersions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateDeal"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GrantDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/access/{accessId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateDealAccess"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/deliverables/{deliverableId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateDeliverable"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/versions": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDealVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/versions/{versionId}/deliverables": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeliverable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -14,6 +302,166 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["DeleteContract"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{fileId}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["UpdateFile"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{fileId}/access": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GrantFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{fileId}/download-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GenerateDownloadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/{fileId}/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GenerateUploadUrl"];
         delete?: never;
         options?: never;
         head?: never;
@@ -624,6 +1072,65 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        /**
+         * @description Action types for audit logging
+         * @enum {string}
+         */
+        AuditAction: AuditAction;
+        /**
+         * @description Entity types for audit logging
+         * @enum {string}
+         */
+        AuditEntityType: AuditEntityType;
+        /** @description Audit log entry */
+        AuditLog: {
+            /** @description Audit log identifier */
+            logId: string;
+            entityType: components["schemas"]["AuditEntityType"];
+            entityId: string;
+            action: components["schemas"]["AuditAction"];
+            performedBy: string;
+            timestamp: string;
+            /** @description IP address of the user */
+            ipAddress?: string;
+            /** @description User agent string */
+            userAgent?: string;
+            success: boolean;
+            dataClassification?: components["schemas"]["DataClassification"];
+            sensitivityLevel?: components["schemas"]["SensitivityLevel"];
+            /** @description JSON object with change details */
+            changeDetails?: unknown;
+            /** @description Error reason if success is false */
+            errorReason?: string;
+            /** @description Whether PII was anonymized */
+            anonymized?: boolean;
+            /** @description Pseudonymized user identifier */
+            pseudonymId?: string;
+            /** @description Session identifier for correlation */
+            sessionId?: string;
+            /** @description Organization context */
+            orgId?: string;
+            /** @description Related entity references */
+            relatedEntities?: unknown;
+        };
+        /** @description Audit statistics */
+        AuditStatistics: {
+            totalEvents: number;
+            successfulEvents: number;
+            failedEvents: number;
+            /** @description Breakdown by entity type */
+            byEntityType?: unknown;
+            /** @description Breakdown by action */
+            byAction?: unknown;
+            /** @description Most active users */
+            topUsers?: unknown;
+            /** @description Most accessed entities */
+            topEntities?: unknown;
+            /** @description Security events count */
+            securityEvents?: number;
+            /** @description Compliance events count */
+            complianceEvents?: number;
+        };
         /** @description Common error structures used across all operations */
         AuthenticationErrorResponseContent: {
             message: string;
@@ -709,6 +1216,59 @@ export interface components {
         };
         /** @enum {string} */
         ContractVariableType: ContractVariableType;
+        CreateDealRequestContent: {
+            orgId: string;
+            title: string;
+            description?: string;
+            initialStage?: components["schemas"]["DealStage"];
+            /** @description Optional metadata for the initial version */
+            metadata?: unknown;
+        };
+        CreateDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            initialVersion: components["schemas"]["DealVersion"];
+        };
+        CreateDealVersionRequestContent: {
+            stage: components["schemas"]["DealStage"];
+            changeReason: string;
+            /** @description Optional metadata for version */
+            metadata?: unknown;
+        };
+        CreateDealVersionResponseContent: {
+            version: components["schemas"]["DealVersion"];
+        };
+        CreateDeliverableRequestContent: {
+            description: string;
+            source?: components["schemas"]["DeliverableSource"];
+            /** @description For committed stages */
+            dueDate?: string;
+            assignedTo?: string;
+            status?: components["schemas"]["DeliverableStatus"];
+        };
+        CreateDeliverableResponseContent: {
+            deliverable: components["schemas"]["Deliverable"];
+        };
+        CreateFileRequestContent: {
+            orgId: string;
+            fileName: string;
+            sizeBytes: number;
+            /** @description MIME type */
+            fileType?: string;
+            /** @description Virtual folder path */
+            folderPath?: string;
+            /** @description User-defined tags */
+            tags?: string[];
+            /** @description Associated deal if applicable */
+            dealId?: string;
+            /** @description Associated deal version if applicable */
+            dealVersionId?: string;
+            /** @description Request upload URL in response */
+            requestUploadUrl?: boolean;
+        };
+        CreateFileResponseContent: {
+            file: components["schemas"]["File"];
+            uploadUrl?: components["schemas"]["PresignedUrl"];
+        };
         CreateOrgCustomRoleRequestContent: {
             orgId: string;
             name: string;
@@ -739,6 +1299,71 @@ export interface components {
         CreateOrgResponseContent: {
             org: components["schemas"]["Org"];
         };
+        /**
+         * @description Data classification levels
+         * @enum {string}
+         */
+        DataClassification: DataClassification;
+        /** @description Main deal entity */
+        Deal: {
+            dealId: string;
+            orgId: string;
+            createdBy: string;
+            currentVersionNumber: number;
+            currentStage: components["schemas"]["DealStage"];
+            title?: string;
+            description?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @description Deal access control */
+        DealAccess: {
+            /** @description Access control identifier */
+            accessId: string;
+            dealId: string;
+            grantedToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantedToUserId?: string;
+            grantedBy: string;
+            grantedAt: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Party role (e.g., "buyer", "seller", "advisor") */
+            partyRole?: string;
+            permissions: components["schemas"]["DealPermission"][];
+            /** @description Maximum permissions this party can grant to others */
+            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            /** @description Explicit deny (overrides all grants) */
+            isDeny?: boolean;
+            /** @description Revocation tracking */
+            revokedBy?: string;
+            revokedAt?: string;
+            revocationReason?: string;
+            /** @description Computed field for active status */
+            isActive?: boolean;
+        };
+        /**
+         * @description Deal permissions
+         * @enum {string}
+         */
+        DealPermission: DealPermission;
+        /**
+         * @description Deal stage lifecycle
+         * @enum {string}
+         */
+        DealStage: DealStage;
+        /** @description Deal version for tracking changes through stages */
+        DealVersion: {
+            versionId: string;
+            dealId: string;
+            versionNumber: number;
+            stage: components["schemas"]["DealStage"];
+            createdBy: string;
+            createdAt: string;
+            changeReason?: string;
+            /** @description JSON metadata for version-specific data */
+            metadata?: unknown;
+        };
         DeclineOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
@@ -749,6 +1374,17 @@ export interface components {
         DeleteContractResponseContent: {
             success: boolean;
         };
+        DeleteDealRequestContent: {
+            dealId: string;
+            /** @description Soft delete by default */
+            hardDelete?: boolean;
+        };
+        DeleteFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Hard delete the file (default is soft delete) */
+            hardDelete?: boolean;
+        };
         DeleteOrgCustomRoleRequestContent: {
             orgId: string;
             customRoleId: string;
@@ -756,6 +1392,30 @@ export interface components {
         DeleteOrgRequestContent: {
             orgId: string;
         };
+        /** @description Deliverable with stage-conditional fields */
+        Deliverable: {
+            deliverableId: string;
+            dealVersionId: string;
+            description: string;
+            source?: components["schemas"]["DeliverableSource"];
+            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
+            dueDate?: string;
+            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
+            assignedTo?: string;
+            status?: components["schemas"]["DeliverableStatus"];
+            createdAt?: string;
+            updatedAt?: string;
+        };
+        /**
+         * @description Deliverable source (for tracking origin)
+         * @enum {string}
+         */
+        DeliverableSource: DeliverableSource;
+        /**
+         * @description Deliverable status for committed stages
+         * @enum {string}
+         */
+        DeliverableStatus: DeliverableStatus;
         /** @enum {string} */
         DurationType: DurationType;
         /** @description Common types and structures shared across all operations */
@@ -841,6 +1501,62 @@ export interface components {
         ExtractionTermMap: {
             [key: string]: components["schemas"]["ExtractionTerm"];
         };
+        /** @description File entity */
+        File: {
+            /** @description File identifier */
+            fileId: string;
+            orgId: string;
+            uploadedBy: string;
+            fileName: string;
+            s3Key: string;
+            s3Bucket: string;
+            sizeBytes: number;
+            /** @description MIME type */
+            fileType?: string;
+            /** @description Virtual folder path */
+            folderPath?: string;
+            /** @description User-defined tags */
+            tags?: string[];
+            /** @description Associated deal if applicable */
+            dealId?: string;
+            /** @description Associated deal version if applicable */
+            dealVersionId?: string;
+            createdAt: string;
+            updatedAt: string;
+            /** @description Soft delete tracking */
+            deletedAt?: string;
+            deletedBy?: string;
+        };
+        /** @description File access control */
+        FileAccess: {
+            /** @description Access control identifier */
+            accessId: string;
+            /** @description File identifier */
+            fileId: string;
+            grantedToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantedToUserId?: string;
+            grantedBy: string;
+            grantedAt: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            permissions: components["schemas"]["FilePermission"][];
+            /** @description Maximum permissions this party can grant to others */
+            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            /** @description Explicit deny (overrides all grants) */
+            isDeny?: boolean;
+            /** @description Revocation tracking */
+            revokedBy?: string;
+            revokedAt?: string;
+            revocationReason?: string;
+            /** @description Computed field for active status */
+            isActive?: boolean;
+        };
+        /**
+         * @description File permissions
+         * @enum {string}
+         */
+        FilePermission: FilePermission;
         FixedTermValue: {
             unit: string;
             value: string;
@@ -852,6 +1568,46 @@ export interface components {
         FixedValueTermInference: {
             primary: components["schemas"]["FixedTermValue"];
             subterms?: components["schemas"]["FixedTermValue"][];
+        };
+        GenerateDownloadUrlRequestContent: {
+            /** @description Expiration time in seconds (default 3600) */
+            expirationSeconds?: number;
+            /** @description Content disposition (inline or attachment) */
+            disposition?: string;
+            /** @description Override filename in download */
+            downloadFileName?: string;
+        };
+        GenerateDownloadUrlResponseContent: {
+            downloadUrl: components["schemas"]["PresignedUrl"];
+        };
+        GenerateUploadUrlRequestContent: {
+            /** @description Content type for the upload */
+            contentType?: string;
+            /** @description Expiration time in seconds (default 3600) */
+            expirationSeconds?: number;
+        };
+        GenerateUploadUrlResponseContent: {
+            uploadUrl: components["schemas"]["PresignedUrl"];
+        };
+        GetAuditLogRequestContent: {
+            /** @description Audit log identifier */
+            logId: string;
+        };
+        GetAuditLogResponseContent: {
+            auditLog: components["schemas"]["AuditLog"];
+        };
+        GetAuditStatisticsRequestContent: {
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Date range for statistics */
+            startDate: string;
+            endDate: string;
+            groupBy?: components["schemas"]["StatisticGrouping"];
+        };
+        GetAuditStatisticsResponseContent: {
+            statistics: components["schemas"]["AuditStatistics"];
+            /** @description Time series data if groupBy is specified */
+            timeSeries?: components["schemas"]["TimeSeriesPoint"][];
         };
         GetContractReadURLRequestContent: {
             contractId: string;
@@ -873,6 +1629,43 @@ export interface components {
             contractExtraction?: components["schemas"]["ContractExtractionResult"];
             sharedWith?: string[];
             isOwner?: boolean;
+        };
+        GetDealRequestContent: {
+            dealId: string;
+            /** @description Include related data */
+            includeVersions?: boolean;
+            includeDeliverables?: boolean;
+            includeAccess?: boolean;
+        };
+        GetDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            versions?: components["schemas"]["DealVersion"][];
+            deliverables?: components["schemas"]["Deliverable"][];
+            access?: components["schemas"]["DealAccess"][];
+        };
+        GetDealVersionRequestContent: {
+            dealId: string;
+            versionId: string;
+            /** @description Include deliverables for this version */
+            includeDeliverables?: boolean;
+        };
+        GetDealVersionResponseContent: {
+            version: components["schemas"]["DealVersion"];
+            deliverables?: components["schemas"]["Deliverable"][];
+        };
+        GetFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Include access information */
+            includeAccess?: boolean;
+            /** @description Request download URL in response */
+            requestDownloadUrl?: boolean;
+        };
+        GetFileResponseContent: {
+            file: components["schemas"]["File"];
+            /** @description Access information if requested */
+            access?: components["schemas"]["FileAccess"][];
+            downloadUrl?: components["schemas"]["PresignedUrl"];
         };
         GetOrgPictureRequestContent: {
             orgId: string;
@@ -924,6 +1717,38 @@ export interface components {
         GetUploadURLResponseContent: {
             url_info: components["schemas"]["PresignedPostData"];
         };
+        GrantDealAccessRequestContent: {
+            grantToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantToUserId?: string;
+            permissions: components["schemas"]["DealPermission"][];
+            /** @description Optional party role */
+            partyRole?: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Permissions they can grant to others */
+            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            /** @description Explicit deny */
+            isDeny?: boolean;
+        };
+        GrantDealAccessResponseContent: {
+            access: components["schemas"]["DealAccess"];
+        };
+        GrantFileAccessRequestContent: {
+            grantToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantToUserId?: string;
+            permissions: components["schemas"]["FilePermission"][];
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Permissions they can grant to others */
+            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            /** @description Explicit deny */
+            isDeny?: boolean;
+        };
+        GrantFileAccessResponseContent: {
+            access: components["schemas"]["FileAccess"];
+        };
         InternalServerErrorResponseContent: {
             message: string;
         };
@@ -953,6 +1778,27 @@ export interface components {
         IqModeSectionMap: {
             [key: string]: components["schemas"]["IqModeSection"];
         };
+        ListAuditLogsRequestContent: {
+            entityType?: components["schemas"]["AuditEntityType"];
+            entityId?: string;
+            performedBy?: string;
+            orgId?: string;
+            action?: components["schemas"]["AuditAction"];
+            success?: boolean;
+            startDate?: string;
+            endDate?: string;
+            minSensitivityLevel?: components["schemas"]["SensitivityLevel"];
+            dataClassification?: components["schemas"]["DataClassification"];
+            sessionId?: string;
+            nextToken?: string;
+            limit?: number;
+        };
+        ListAuditLogsResponseContent: {
+            logs: components["schemas"]["AuditLog"][];
+            /** @description Token for next page */
+            nextToken?: string;
+            statistics?: components["schemas"]["AuditStatistics"];
+        };
         ListContractsRequestContent: {
             orgId?: string;
         };
@@ -963,6 +1809,116 @@ export interface components {
             shared?: components["schemas"]["ContractSummaryItem"][];
             /** @description v1 */
             contracts?: components["schemas"]["ContractMetadata"][];
+        };
+        ListDealAccessRequestContent: {
+            dealId: string;
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Include revoked access */
+            includeRevoked?: boolean;
+            /** @description Include expired access */
+            includeExpired?: boolean;
+            /** @description Pagination cursor (encoded accessId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDealAccessResponseContent: {
+            access: components["schemas"]["DealAccess"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListDealVersionsRequestContent: {
+            dealId: string;
+            stage?: components["schemas"]["DealStage"];
+            /** @description Pagination cursor (encoded versionId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDealVersionsResponseContent: {
+            versions: components["schemas"]["DealVersion"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListDealsRequestContent: {
+            /** @description Filter by organization */
+            orgId?: string;
+            stage?: components["schemas"]["DealStage"];
+            /** @description Filter by creator */
+            createdBy?: string;
+            /** @description Pagination cursor (encoded dealId) */
+            nextToken?: string;
+            /** @description Page size (default 20, max 100) */
+            limit?: number;
+        };
+        ListDealsResponseContent: {
+            deals: components["schemas"]["Deal"][];
+            /** @description Token for next page (null if no more results) */
+            nextToken?: string;
+        };
+        ListDeliverablesRequestContent: {
+            dealId: string;
+            /** @description Filter by version */
+            versionId?: string;
+            status?: components["schemas"]["DeliverableStatus"];
+            /** @description Filter by assignee */
+            assignedTo?: string;
+            /** @description Pagination cursor (encoded deliverableId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDeliverablesResponseContent: {
+            deliverables: components["schemas"]["Deliverable"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Include revoked access */
+            includeRevoked?: boolean;
+            /** @description Include expired access */
+            includeExpired?: boolean;
+            /** @description Pagination cursor (encoded accessId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListFileAccessResponseContent: {
+            access: components["schemas"]["FileAccess"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListFilesRequestContent: {
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Filter by deal */
+            dealId?: string;
+            /** @description Filter by deal version */
+            dealVersionId?: string;
+            /** @description Filter by folder path */
+            folderPath?: string;
+            /** @description Filter by tags (any match) */
+            tags?: string[];
+            /** @description Filter by uploader */
+            uploadedBy?: string;
+            /** @description Include deleted files */
+            includeDeleted?: boolean;
+            /** @description Pagination cursor (encoded fileId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListFilesResponseContent: {
+            files: components["schemas"]["File"][];
+            /** @description Token for next page */
+            nextToken?: string;
+            /** @description Total size of files in current page */
+            totalSizeBytes?: number;
         };
         ListOrgCustomRolesRequestContent: {
             orgId: string;
@@ -1105,6 +2061,15 @@ export interface components {
             url: string;
             fields: unknown;
         };
+        /** @description Presigned URL response */
+        PresignedUrl: {
+            url: string;
+            expiresAt: string;
+            /** @description HTTP method for the URL */
+            method?: string;
+            /** @description Required headers for the request */
+            headers?: unknown;
+        };
         ProcessingIncompleteErrorResponseContent: {
             message: string;
         };
@@ -1123,6 +2088,24 @@ export interface components {
         ResourceNotFoundErrorResponseContent: {
             message: string;
         };
+        RevokeDealAccessRequestContent: {
+            dealId: string;
+            /** @description Access control identifier */
+            accessId: string;
+            reason: string;
+        };
+        RevokeFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Access control identifier */
+            accessId: string;
+            reason: string;
+        };
+        /**
+         * @description Sensitivity levels
+         * @enum {string}
+         */
+        SensitivityLevel: SensitivityLevel;
         ShareContractRequestContent: {
             contractId: string;
             emailsToAdd?: string[];
@@ -1147,8 +2130,20 @@ export interface components {
             title: string;
             description: string;
         };
+        /**
+         * @description Statistic grouping periods
+         * @enum {string}
+         */
+        StatisticGrouping: StatisticGrouping;
         TaggedText: {
             text: string;
+        };
+        /** @description Time series data point */
+        TimeSeriesPoint: {
+            timestamp: string;
+            count: number;
+            /** @description Additional metrics */
+            metrics?: unknown;
         };
         TransferOrgOwnershipRequestContent: {
             orgId: string;
@@ -1163,6 +2158,49 @@ export interface components {
         };
         UpdateContractResponseContent: {
             success: boolean;
+        };
+        UpdateDealAccessRequestContent: {
+            permissions?: components["schemas"]["DealPermission"][];
+            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            partyRole?: string;
+            expiresAt?: string;
+            isDeny?: boolean;
+        };
+        UpdateDealAccessResponseContent: {
+            access: components["schemas"]["DealAccess"];
+        };
+        UpdateDealRequestContent: {
+            title?: string;
+            description?: string;
+            newStage?: components["schemas"]["DealStage"];
+            /** @description Required when changing stage */
+            changeReason?: string;
+            /** @description Optional metadata for new version */
+            metadata?: unknown;
+        };
+        UpdateDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            newVersion?: components["schemas"]["DealVersion"];
+        };
+        UpdateDeliverableRequestContent: {
+            description?: string;
+            source?: components["schemas"]["DeliverableSource"];
+            dueDate?: string;
+            assignedTo?: string;
+            status?: components["schemas"]["DeliverableStatus"];
+        };
+        UpdateDeliverableResponseContent: {
+            deliverable: components["schemas"]["Deliverable"];
+        };
+        UpdateFileRequestContent: {
+            fileName?: string;
+            folderPath?: string;
+            tags?: string[];
+            dealId?: string;
+            dealVersionId?: string;
+        };
+        UpdateFileResponseContent: {
+            file: components["schemas"]["File"];
         };
         UpdateOrgCustomRoleRequestContent: {
             orgId: string;
@@ -1246,6 +2284,774 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    ListAuditLogs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListAuditLogsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListAuditLogs 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAuditLogsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetAuditLog: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetAuditLogRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetAuditLog 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAuditLogResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetAuditStatistics: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetAuditStatisticsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetAuditStatistics 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetAuditStatisticsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealAccessResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RevokeDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RevokeDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDeliverables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDeliverablesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDeliverables 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDeliverablesResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetDealResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDeals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListDealsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDeals 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetDealVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetDealVersionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetDealVersion 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetDealVersionResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealVersions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDealVersionsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealVersions 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealVersionsResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GrantDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GrantDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrantDealAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+                /** @description Access control identifier */
+                accessId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+                deliverableId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDeliverableResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDealVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealVersionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDealVersion 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealVersionResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+                versionId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDeliverableResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     DeleteContract: {
         parameters: {
             query?: never;
@@ -1275,6 +3081,434 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateFileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListFileAccessResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RevokeFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RevokeFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetFileResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListFilesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListFiles 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListFilesResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File identifier */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateFileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GrantFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File identifier */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GrantFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrantFileAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GenerateDownloadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File identifier */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GenerateDownloadUrlRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GenerateDownloadUrl 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateDownloadUrlResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GenerateUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                /** @description File identifier */
+                fileId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["GenerateUploadUrlRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GenerateUploadUrl 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateUploadUrlResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2785,6 +5019,33 @@ export interface operations {
         };
     };
 }
+export enum AuditAction {
+    CREATE = "CREATE",
+    UPDATE = "UPDATE",
+    DELETE = "DELETE",
+    VIEW = "VIEW",
+    DOWNLOAD = "DOWNLOAD",
+    UPLOAD = "UPLOAD",
+    SHARE = "SHARE",
+    REVOKE = "REVOKE",
+    LOGIN = "LOGIN",
+    LOGOUT = "LOGOUT",
+    EXPORT = "EXPORT",
+    IMPORT = "IMPORT",
+    SIGN = "SIGN",
+    APPROVE = "APPROVE",
+    REJECT = "REJECT"
+}
+export enum AuditEntityType {
+    USER = "USER",
+    ORGANIZATION = "ORGANIZATION",
+    DEAL = "DEAL",
+    FILE = "FILE",
+    PERMISSION = "PERMISSION",
+    INTEGRATION = "INTEGRATION",
+    BILLING = "BILLING",
+    SYSTEM = "SYSTEM"
+}
 export enum ContractStatus {
     processing = "processing",
     awaiting_upload = "awaiting_upload",
@@ -2803,6 +5064,39 @@ export enum ContractVariableType {
     external_term = "external_term",
     internal_citation = "internal_citation"
 }
+export enum DataClassification {
+    PUBLIC = "PUBLIC",
+    INTERNAL = "INTERNAL",
+    CONFIDENTIAL = "CONFIDENTIAL",
+    RESTRICTED = "RESTRICTED"
+}
+export enum DealPermission {
+    VIEW = "VIEW",
+    EDIT_DRAFT = "EDIT_DRAFT",
+    COMMENT = "COMMENT",
+    SIGN = "SIGN",
+    SHARE = "SHARE",
+    MANAGE = "MANAGE"
+}
+export enum DealStage {
+    DRAFTING = "DRAFTING",
+    NEGOTIATION = "NEGOTIATION",
+    SIGNING = "SIGNING",
+    DELIVERY = "DELIVERY",
+    COMPLETED = "COMPLETED",
+    CANCELLED = "CANCELLED"
+}
+export enum DeliverableSource {
+    INFERRED = "INFERRED",
+    TEMPLATE = "TEMPLATE",
+    IMPORTED = "IMPORTED"
+}
+export enum DeliverableStatus {
+    PENDING = "PENDING",
+    IN_PROGRESS = "IN_PROGRESS",
+    COMPLETED = "COMPLETED",
+    BLOCKED = "BLOCKED"
+}
 export enum DurationType {
     fixed = "fixed",
     indefinite = "indefinite",
@@ -2819,6 +5113,13 @@ export enum EqCardKey {
 export enum EqCardType {
     A = "A",
     B = "B"
+}
+export enum FilePermission {
+    VIEW = "VIEW",
+    DOWNLOAD = "DOWNLOAD",
+    EDIT = "EDIT",
+    DELETE = "DELETE",
+    SHARE = "SHARE"
 }
 export enum InviteStatus {
     pending = "pending",
@@ -2852,4 +5153,16 @@ export enum OrgRole {
     member = "member",
     viewer = "viewer",
     custom = "custom"
+}
+export enum SensitivityLevel {
+    LOW = "LOW",
+    MEDIUM = "MEDIUM",
+    HIGH = "HIGH",
+    CRITICAL = "CRITICAL"
+}
+export enum StatisticGrouping {
+    HOUR = "HOUR",
+    DAY = "DAY",
+    WEEK = "WEEK",
+    MONTH = "MONTH"
 }

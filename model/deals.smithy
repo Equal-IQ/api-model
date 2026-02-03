@@ -44,10 +44,31 @@ enum DealApprovalStatus {
     RESCINDED = "RESCINDED"
 }
 
+string DealId with [UuidLikeMixin]
+
+/// Deal resource with sub-resources for versions, deliverables, and access control
+resource DealResource {
+    identifiers: { dealId: DealId }
+    create: CreateDeal
+    read: GetDeal
+    update: UpdateDeal
+    delete: DeleteDeal
+    list: ListDeals
+    resources: [DealAccessResource]
+    operations: [
+        CreateDealVersion
+        GetDealVersion
+        ListDealVersions
+        CreateDeliverable
+        UpdateDeliverable
+        ListDeliverables
+    ]
+}
+
 /// Main deal entity
 structure Deal {
     @required
-    dealId: String
+    dealId: DealId
 
     @required
     orgId: String
@@ -212,11 +233,12 @@ operation CreateDeal {
 }
 
 // Get Deal
+@readonly
 @http(method: "POST", uri: "/deals/get")
 operation GetDeal {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         /// Include related data
         includeVersions: Boolean
@@ -247,7 +269,7 @@ operation UpdateDeal {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         title: String
         description: String
@@ -284,7 +306,7 @@ operation UpdateDeal {
 operation DeleteDeal {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         /// Soft delete by default
         hardDelete: Boolean
@@ -300,6 +322,7 @@ operation DeleteDeal {
 }
 
 // List Deals
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "deals", pageSize: "limit")
 @http(method: "POST", uri: "/deals/list")
 operation ListDeals {
@@ -341,7 +364,7 @@ operation CreateDealVersion {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         @required
         stage: DealStage
@@ -371,7 +394,7 @@ operation CreateDealVersion {
 operation GetDealVersion {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         @required
         versionId: String
@@ -400,7 +423,7 @@ operation GetDealVersion {
 operation ListDealVersions {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         /// Filter by stage
         stage: DealStage
@@ -433,7 +456,7 @@ operation CreateDeliverable {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         @required
         @httpLabel
@@ -471,7 +494,7 @@ operation UpdateDeliverable {
     input := {
         @required
         @httpLabel
-        dealId: String
+        dealId: DealId
 
         @required
         @httpLabel
@@ -503,7 +526,7 @@ operation UpdateDeliverable {
 operation ListDeliverables {
     input := {
         @required
-        dealId: String
+        dealId: DealId
 
         /// Filter by version
         versionId: String

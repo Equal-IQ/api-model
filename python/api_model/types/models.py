@@ -14,6 +14,59 @@ class AcceptOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class AuditAction(StrEnum):
+    """
+    Action types for audit logging
+    """
+
+    CREATE = 'CREATE'
+    UPDATE = 'UPDATE'
+    DELETE = 'DELETE'
+    VIEW = 'VIEW'
+    DOWNLOAD = 'DOWNLOAD'
+    UPLOAD = 'UPLOAD'
+    SHARE = 'SHARE'
+    REVOKE = 'REVOKE'
+    LOGIN = 'LOGIN'
+    LOGOUT = 'LOGOUT'
+    EXPORT = 'EXPORT'
+    IMPORT = 'IMPORT'
+    SIGN = 'SIGN'
+    APPROVE = 'APPROVE'
+    REJECT = 'REJECT'
+
+
+class AuditEntityType(StrEnum):
+    """
+    Entity types for audit logging
+    """
+
+    USER = 'USER'
+    ORGANIZATION = 'ORGANIZATION'
+    DEAL = 'DEAL'
+    FILE = 'FILE'
+    PERMISSION = 'PERMISSION'
+    INTEGRATION = 'INTEGRATION'
+    BILLING = 'BILLING'
+    SYSTEM = 'SYSTEM'
+
+
+class AuditStatistics(BaseModel):
+    """
+    Audit statistics
+    """
+
+    totalEvents: float
+    successfulEvents: float
+    failedEvents: float
+    byEntityType: Any | None = Field(None, description='Breakdown by entity type')
+    byAction: Any | None = Field(None, description='Breakdown by action')
+    topUsers: Any | None = Field(None, description='Most active users')
+    topEntities: Any | None = Field(None, description='Most accessed entities')
+    securityEvents: float | None = Field(None, description='Security events count')
+    complianceEvents: float | None = Field(None, description='Compliance events count')
+
+
 class AuthenticationErrorResponseContent(BaseModel):
     """
     Common error structures used across all operations
@@ -72,6 +125,22 @@ class ContractVariableType(StrEnum):
     internal_citation = 'internal_citation'
 
 
+class CreateFileRequestContent(BaseModel):
+    orgId: str
+    fileName: str
+    sizeBytes: float
+    fileType: str | None = Field(None, description='MIME type')
+    folderPath: str | None = Field(None, description='Virtual folder path')
+    tags: list[str] | None = Field(None, description='User-defined tags')
+    dealId: str | None = Field(None, description='Associated deal if applicable')
+    dealVersionId: str | None = Field(
+        None, description='Associated deal version if applicable'
+    )
+    requestUploadUrl: bool | None = Field(
+        None, description='Request upload URL in response'
+    )
+
+
 class Email(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
@@ -91,6 +160,63 @@ class CreateOrgRequestContent(BaseModel):
     billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
+class DataClassification(StrEnum):
+    """
+    Data classification levels
+    """
+
+    PUBLIC = 'PUBLIC'
+    INTERNAL = 'INTERNAL'
+    CONFIDENTIAL = 'CONFIDENTIAL'
+    RESTRICTED = 'RESTRICTED'
+
+
+class DealPermission(StrEnum):
+    """
+    Deal permissions
+    """
+
+    VIEW = 'VIEW'
+    EDIT_DRAFT = 'EDIT_DRAFT'
+    COMMENT = 'COMMENT'
+    SIGN = 'SIGN'
+    SHARE = 'SHARE'
+    MANAGE = 'MANAGE'
+
+
+class DealStage(StrEnum):
+    """
+    Deal stage lifecycle
+    """
+
+    DRAFTING = 'DRAFTING'
+    NEGOTIATION = 'NEGOTIATION'
+    SIGNING = 'SIGNING'
+    DELIVERY = 'DELIVERY'
+    COMPLETED = 'COMPLETED'
+    CANCELLED = 'CANCELLED'
+
+
+class DealVersion(BaseModel):
+    """
+    Deal version for tracking changes through stages
+    """
+
+    versionId: str
+    dealId: str
+    versionNumber: float
+    stage: DealStage
+    createdBy: str
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    changeReason: str | None
+    metadata: Any | None = Field(
+        None, description='JSON metadata for version-specific data'
+    )
+
+
 class DeclineOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -104,6 +230,18 @@ class DeleteContractResponseContent(BaseModel):
     success: bool
 
 
+class DeleteDealRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    hardDelete: bool | None = Field(None, description='Soft delete by default')
+
+
+class DeleteFileRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    hardDelete: bool | None = Field(
+        None, description='Hard delete the file (default is soft delete)'
+    )
+
+
 class DeleteOrgCustomRoleRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -111,6 +249,27 @@ class DeleteOrgCustomRoleRequestContent(BaseModel):
 
 class DeleteOrgRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class DeliverableSource(StrEnum):
+    """
+    Deliverable source (for tracking origin)
+    """
+
+    INFERRED = 'INFERRED'
+    TEMPLATE = 'TEMPLATE'
+    IMPORTED = 'IMPORTED'
+
+
+class DeliverableStatus(StrEnum):
+    """
+    Deliverable status for committed stages
+    """
+
+    PENDING = 'PENDING'
+    IN_PROGRESS = 'IN_PROGRESS'
+    COMPLETED = 'COMPLETED'
+    BLOCKED = 'BLOCKED'
 
 
 class DurationType(StrEnum):
@@ -163,6 +322,53 @@ class EqMoneyCard(BaseModel):
     paidAfterList: list[str]
 
 
+class File(BaseModel):
+    """
+    File entity
+    """
+
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    orgId: str
+    uploadedBy: str
+    fileName: str
+    s3Key: str
+    s3Bucket: str
+    sizeBytes: float
+    fileType: str | None = Field(None, description='MIME type')
+    folderPath: str | None = Field(None, description='Virtual folder path')
+    tags: list[str] | None = Field(None, description='User-defined tags')
+    dealId: str | None = Field(None, description='Associated deal if applicable')
+    dealVersionId: str | None = Field(
+        None, description='Associated deal version if applicable'
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    deletedAt: str | None = Field(
+        None,
+        description='Soft delete tracking',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    deletedBy: str | None
+
+
+class FilePermission(StrEnum):
+    """
+    File permissions
+    """
+
+    VIEW = 'VIEW'
+    DOWNLOAD = 'DOWNLOAD'
+    EDIT = 'EDIT'
+    DELETE = 'DELETE'
+    SHARE = 'SHARE'
+
+
 class FixedTermValue(BaseModel):
     unit: str
     value: str
@@ -174,6 +380,31 @@ class FixedTermValue(BaseModel):
 class FixedValueTermInference(BaseModel):
     primary: FixedTermValue
     subterms: list[FixedTermValue] | None
+
+
+class GenerateDownloadUrlRequestContent(BaseModel):
+    expirationSeconds: float | None = Field(
+        None, description='Expiration time in seconds (default 3600)'
+    )
+    disposition: str | None = Field(
+        None, description='Content disposition (inline or attachment)'
+    )
+    downloadFileName: str | None = Field(
+        None, description='Override filename in download'
+    )
+
+
+class GenerateUploadUrlRequestContent(BaseModel):
+    contentType: str | None = Field(None, description='Content type for the upload')
+    expirationSeconds: float | None = Field(
+        None, description='Expiration time in seconds (default 3600)'
+    )
+
+
+class GetAuditLogRequestContent(BaseModel):
+    logId: str = Field(
+        ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
+    )
 
 
 class GetContractReadURLRequestContent(BaseModel):
@@ -189,6 +420,29 @@ class GetContractReadURLResponseContent(BaseModel):
 
 class GetContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class GetDealRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    includeVersions: bool | None = Field(None, description='Include related data')
+    includeDeliverables: bool | None
+    includeAccess: bool | None
+
+
+class GetDealVersionRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    versionId: str
+    includeDeliverables: bool | None = Field(
+        None, description='Include deliverables for this version'
+    )
+
+
+class GetFileRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    includeAccess: bool | None = Field(None, description='Include access information')
+    requestDownloadUrl: bool | None = Field(
+        None, description='Request download URL in response'
+    )
 
 
 class GetOrgPictureRequestContent(BaseModel):
@@ -245,6 +499,41 @@ class GetUploadURLRequestContent(BaseModel):
     orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
+class GrantDealAccessRequestContent(BaseModel):
+    grantToOrgId: str
+    grantToUserId: str | None = Field(
+        None, description='Specific user within org (if omitted, entire org has access)'
+    )
+    permissions: list[DealPermission]
+    partyRole: str | None = Field(None, description='Optional party role')
+    expiresAt: str | None = Field(
+        None,
+        description='Optional expiration',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    maxGrantablePermissions: list[DealPermission] | None = Field(
+        None, description='Permissions they can grant to others'
+    )
+    isDeny: bool | None = Field(None, description='Explicit deny')
+
+
+class GrantFileAccessRequestContent(BaseModel):
+    grantToOrgId: str
+    grantToUserId: str | None = Field(
+        None, description='Specific user within org (if omitted, entire org has access)'
+    )
+    permissions: list[FilePermission]
+    expiresAt: str | None = Field(
+        None,
+        description='Optional expiration',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    maxGrantablePermissions: list[FilePermission] | None = Field(
+        None, description='Permissions they can grant to others'
+    )
+    isDeny: bool | None = Field(None, description='Explicit deny')
+
+
 class InternalServerErrorResponseContent(BaseModel):
     message: str
 
@@ -266,6 +555,85 @@ class IqModeSectionKey(StrEnum):
 
 class ListContractsRequestContent(BaseModel):
     orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+
+
+class ListDealAccessRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str | None = Field(None, description='Filter by organization')
+    includeRevoked: bool | None = Field(None, description='Include revoked access')
+    includeExpired: bool | None = Field(None, description='Include expired access')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded accessId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
+class ListDealVersionsRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    stage: DealStage | None
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded versionId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
+class ListDealVersionsResponseContent(BaseModel):
+    versions: list[DealVersion]
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListDealsRequestContent(BaseModel):
+    orgId: str | None = Field(None, description='Filter by organization')
+    stage: DealStage | None
+    createdBy: str | None = Field(None, description='Filter by creator')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded dealId)'
+    )
+    limit: float | None = Field(None, description='Page size (default 20, max 100)')
+
+
+class ListDeliverablesRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    versionId: str | None = Field(None, description='Filter by version')
+    status: DeliverableStatus | None
+    assignedTo: str | None = Field(None, description='Filter by assignee')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded deliverableId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
+class ListFileAccessRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    orgId: str | None = Field(None, description='Filter by organization')
+    includeRevoked: bool | None = Field(None, description='Include revoked access')
+    includeExpired: bool | None = Field(None, description='Include expired access')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded accessId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
+class ListFilesRequestContent(BaseModel):
+    orgId: str | None = Field(None, description='Filter by organization')
+    dealId: str | None = Field(None, description='Filter by deal')
+    dealVersionId: str | None = Field(None, description='Filter by deal version')
+    folderPath: str | None = Field(None, description='Filter by folder path')
+    tags: list[str] | None = Field(None, description='Filter by tags (any match)')
+    uploadedBy: str | None = Field(None, description='Filter by uploader')
+    includeDeleted: bool | None = Field(None, description='Include deleted files')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded fileId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
+class ListFilesResponseContent(BaseModel):
+    files: list[File]
+    nextToken: str | None = Field(None, description='Token for next page')
+    totalSizeBytes: float | None = Field(
+        None, description='Total size of files in current page'
+    )
 
 
 class ListOrgCustomRolesRequestContent(BaseModel):
@@ -351,6 +719,23 @@ class PresignedPostData(BaseModel):
     fields: Any
 
 
+class PresignedUrl(BaseModel):
+    """
+    Presigned URL response
+    """
+
+    url: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    expiresAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    method: str | None = Field(None, description='HTTP method for the URL')
+    headers: Any | None = Field(None, description='Required headers for the request')
+
+
 class ProcessingIncompleteErrorResponseContent(BaseModel):
     message: str
 
@@ -371,6 +756,33 @@ class ResendOrgInviteRequestContent(BaseModel):
 
 class ResourceNotFoundErrorResponseContent(BaseModel):
     message: str
+
+
+class RevokeDealAccessRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    reason: str
+
+
+class RevokeFileAccessRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    reason: str
+
+
+class SensitivityLevel(StrEnum):
+    """
+    Sensitivity levels
+    """
+
+    LOW = 'LOW'
+    MEDIUM = 'MEDIUM'
+    HIGH = 'HIGH'
+    CRITICAL = 'CRITICAL'
 
 
 class EmailsToAddItem(RootModel[str]):
@@ -413,8 +825,32 @@ class SimpleTermDescription(BaseModel):
     description: str
 
 
+class StatisticGrouping(StrEnum):
+    """
+    Statistic grouping periods
+    """
+
+    HOUR = 'HOUR'
+    DAY = 'DAY'
+    WEEK = 'WEEK'
+    MONTH = 'MONTH'
+
+
 class TaggedText(BaseModel):
     text: str
+
+
+class TimeSeriesPoint(BaseModel):
+    """
+    Time series data point
+    """
+
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    count: float
+    metrics: Any | None = Field(None, description='Additional metrics')
 
 
 class TransferOrgOwnershipRequestContent(BaseModel):
@@ -429,6 +865,48 @@ class UpdateContractRequestContent(BaseModel):
 
 class UpdateContractResponseContent(BaseModel):
     success: bool
+
+
+class UpdateDealAccessRequestContent(BaseModel):
+    permissions: list[DealPermission] | None
+    maxGrantablePermissions: list[DealPermission] | None
+    partyRole: str | None
+    expiresAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    isDeny: bool | None
+
+
+class UpdateDealRequestContent(BaseModel):
+    title: str | None
+    description: str | None
+    newStage: DealStage | None
+    changeReason: str | None = Field(None, description='Required when changing stage')
+    metadata: Any | None = Field(None, description='Optional metadata for new version')
+
+
+class UpdateDeliverableRequestContent(BaseModel):
+    description: str | None
+    source: DeliverableSource | None
+    dueDate: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    assignedTo: str | None
+    status: DeliverableStatus | None
+
+
+class UpdateFileRequestContent(BaseModel):
+    fileName: str | None
+    folderPath: str | None
+    tags: list[str] | None
+    dealId: str | None
+    dealVersionId: str | None
+
+
+class UpdateFileResponseContent(BaseModel):
+    file: File
 
 
 class UpdateOrgCustomRoleRequestContent(BaseModel):
@@ -511,6 +989,42 @@ class ValidationErrorResponseContent(BaseModel):
     message: str
 
 
+class AuditLog(BaseModel):
+    """
+    Audit log entry
+    """
+
+    logId: str = Field(
+        ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    entityType: AuditEntityType
+    entityId: str
+    action: AuditAction
+    performedBy: str
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    ipAddress: str | None = Field(None, description='IP address of the user')
+    userAgent: str | None = Field(None, description='User agent string')
+    success: bool
+    dataClassification: DataClassification | None
+    sensitivityLevel: SensitivityLevel | None
+    changeDetails: Any | None = Field(
+        None, description='JSON object with change details'
+    )
+    errorReason: str | None = Field(
+        None, description='Error reason if success is false'
+    )
+    anonymized: bool | None = Field(None, description='Whether PII was anonymized')
+    pseudonymId: str | None = Field(None, description='Pseudonymized user identifier')
+    sessionId: str | None = Field(
+        None, description='Session identifier for correlation'
+    )
+    orgId: str | None = Field(None, description='Organization context')
+    relatedEntities: Any | None = Field(None, description='Related entity references')
+
+
 class ContractMetadata(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -551,6 +1065,43 @@ class ContractVariableMap(RootModel[dict[str, ContractVariable]]):
     root: dict[str, ContractVariable]
 
 
+class CreateDealRequestContent(BaseModel):
+    orgId: str
+    title: str
+    description: str | None
+    initialStage: DealStage | None
+    metadata: Any | None = Field(
+        None, description='Optional metadata for the initial version'
+    )
+
+
+class CreateDealVersionRequestContent(BaseModel):
+    stage: DealStage
+    changeReason: str
+    metadata: Any | None = Field(None, description='Optional metadata for version')
+
+
+class CreateDealVersionResponseContent(BaseModel):
+    version: DealVersion
+
+
+class CreateDeliverableRequestContent(BaseModel):
+    description: str
+    source: DeliverableSource | None
+    dueDate: str | None = Field(
+        None,
+        description='For committed stages',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    assignedTo: str | None
+    status: DeliverableStatus | None
+
+
+class CreateFileResponseContent(BaseModel):
+    file: File
+    uploadUrl: PresignedUrl | None
+
+
 class CreateOrgCustomRoleRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -565,6 +1116,98 @@ class CreateOrgInviteRequestContent(BaseModel):
     customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     orgEmail: str | None = Field(
         None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+
+
+class Deal(BaseModel):
+    """
+    Main deal entity
+    """
+
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str
+    createdBy: str
+    currentVersionNumber: float
+    currentStage: DealStage
+    title: str | None
+    description: str | None
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class DealAccess(BaseModel):
+    """
+    Deal access control
+    """
+
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    grantedToOrgId: str
+    grantedToUserId: str | None = Field(
+        None, description='Specific user within org (if omitted, entire org has access)'
+    )
+    grantedBy: str
+    grantedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    expiresAt: str | None = Field(
+        None,
+        description='Optional expiration',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    partyRole: str | None = Field(
+        None, description='Party role (e.g., "buyer", "seller", "advisor")'
+    )
+    permissions: list[DealPermission]
+    maxGrantablePermissions: list[DealPermission] | None = Field(
+        None, description='Maximum permissions this party can grant to others'
+    )
+    isDeny: bool | None = Field(
+        None, description='Explicit deny (overrides all grants)'
+    )
+    revokedBy: str | None = Field(None, description='Revocation tracking')
+    revokedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    revocationReason: str | None
+    isActive: bool | None = Field(None, description='Computed field for active status')
+
+
+class Deliverable(BaseModel):
+    """
+    Deliverable with stage-conditional fields
+    """
+
+    deliverableId: str
+    dealVersionId: str
+    description: str
+    source: DeliverableSource | None
+    dueDate: str | None = Field(
+        None,
+        description='Required in SIGNING, DELIVERY, COMPLETED stages',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    assignedTo: str | None = Field(
+        None, description='Required in SIGNING, DELIVERY, COMPLETED stages'
+    )
+    status: DeliverableStatus | None
+    createdAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
 
 
@@ -606,6 +1249,98 @@ class ExtractionTermMap(RootModel[dict[str, ExtractionTerm]]):
     root: dict[str, ExtractionTerm]
 
 
+class FileAccess(BaseModel):
+    """
+    File access control
+    """
+
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    grantedToOrgId: str
+    grantedToUserId: str | None = Field(
+        None, description='Specific user within org (if omitted, entire org has access)'
+    )
+    grantedBy: str
+    grantedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    expiresAt: str | None = Field(
+        None,
+        description='Optional expiration',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    permissions: list[FilePermission]
+    maxGrantablePermissions: list[FilePermission] | None = Field(
+        None, description='Maximum permissions this party can grant to others'
+    )
+    isDeny: bool | None = Field(
+        None, description='Explicit deny (overrides all grants)'
+    )
+    revokedBy: str | None = Field(None, description='Revocation tracking')
+    revokedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    revocationReason: str | None
+    isActive: bool | None = Field(None, description='Computed field for active status')
+
+
+class GenerateDownloadUrlResponseContent(BaseModel):
+    downloadUrl: PresignedUrl
+
+
+class GenerateUploadUrlResponseContent(BaseModel):
+    uploadUrl: PresignedUrl
+
+
+class GetAuditLogResponseContent(BaseModel):
+    auditLog: AuditLog
+
+
+class GetAuditStatisticsRequestContent(BaseModel):
+    orgId: str | None = Field(None, description='Filter by organization')
+    startDate: str = Field(
+        ...,
+        description='Date range for statistics',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endDate: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    groupBy: StatisticGrouping | None
+
+
+class GetAuditStatisticsResponseContent(BaseModel):
+    statistics: AuditStatistics
+    timeSeries: list[TimeSeriesPoint] | None = Field(
+        None, description='Time series data if groupBy is specified'
+    )
+
+
+class GetDealResponseContent(BaseModel):
+    deal: Deal
+    versions: list[DealVersion] | None
+    deliverables: list[Deliverable] | None
+    access: list[DealAccess] | None
+
+
+class GetDealVersionResponseContent(BaseModel):
+    version: DealVersion
+    deliverables: list[Deliverable] | None
+
+
+class GetFileResponseContent(BaseModel):
+    file: File
+    access: list[FileAccess] | None = Field(
+        None, description='Access information if requested'
+    )
+    downloadUrl: PresignedUrl | None
+
+
 class GetOrgThemeResponseContent(BaseModel):
     theme: OrgTheme
 
@@ -616,6 +1351,14 @@ class GetProfileResponseContent(BaseModel):
 
 class GetUploadURLResponseContent(BaseModel):
     url_info: PresignedPostData
+
+
+class GrantDealAccessResponseContent(BaseModel):
+    access: DealAccess
+
+
+class GrantFileAccessResponseContent(BaseModel):
+    access: FileAccess
 
 
 class IqModeQuestion(BaseModel):
@@ -637,6 +1380,34 @@ class IqModeSectionMap(RootModel[dict[str, IqModeSection]]):
     root: dict[str, IqModeSection]
 
 
+class ListAuditLogsRequestContent(BaseModel):
+    entityType: AuditEntityType | None
+    entityId: str | None
+    performedBy: str | None
+    orgId: str | None
+    action: AuditAction | None
+    success: bool | None
+    startDate: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endDate: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    minSensitivityLevel: SensitivityLevel | None
+    dataClassification: DataClassification | None
+    sessionId: str | None
+    nextToken: str | None
+    limit: float | None
+
+
+class ListAuditLogsResponseContent(BaseModel):
+    logs: list[AuditLog]
+    nextToken: str | None = Field(None, description='Token for next page')
+    statistics: AuditStatistics | None
+
+
 class ListContractsResponseContent(BaseModel):
     owned: list[ContractSummaryItem] | None = Field(
         None, description='Deprecation path (v0.5)'
@@ -645,6 +1416,28 @@ class ListContractsResponseContent(BaseModel):
         None, description='Deprecation path (v0.5)'
     )
     contracts: list[ContractMetadata] | None = Field(None, description='v1')
+
+
+class ListDealAccessResponseContent(BaseModel):
+    access: list[DealAccess]
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListDealsResponseContent(BaseModel):
+    deals: list[Deal]
+    nextToken: str | None = Field(
+        None, description='Token for next page (null if no more results)'
+    )
+
+
+class ListDeliverablesResponseContent(BaseModel):
+    deliverables: list[Deliverable]
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListFileAccessResponseContent(BaseModel):
+    access: list[FileAccess]
+    nextToken: str | None = Field(None, description='Token for next page')
 
 
 class ListOrgMembersRequestContent(BaseModel):
@@ -771,6 +1564,19 @@ class TransferOrgOwnershipResponseContent(BaseModel):
     org: Org
 
 
+class UpdateDealAccessResponseContent(BaseModel):
+    access: DealAccess
+
+
+class UpdateDealResponseContent(BaseModel):
+    deal: Deal
+    newVersion: DealVersion | None
+
+
+class UpdateDeliverableResponseContent(BaseModel):
+    deliverable: Deliverable
+
+
 class UpdateOrgCustomRoleResponseContent(BaseModel):
     customRole: OrgCustomRole
 
@@ -801,6 +1607,15 @@ class ContractExtractionResult(BaseModel):
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
     contractTexts: ContractTexts | None
+
+
+class CreateDealResponseContent(BaseModel):
+    deal: Deal
+    initialVersion: DealVersion
+
+
+class CreateDeliverableResponseContent(BaseModel):
+    deliverable: Deliverable
 
 
 class CreateOrgCustomRoleResponseContent(BaseModel):

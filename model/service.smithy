@@ -10,26 +10,24 @@ use aws.protocols#restJson1
 service EqualIQ {
   version: "2023-01-01"
   resources: [
-    // Organization resources
     Organization
-
-    // User profile resources
     User
+    Contract // -- DEPRECATED
+    DealResource
+    FileResource
+    AuditLogResource
   ]
   operations: [
     // contracts.smithy
-    GetContract
-    ListContracts
-    GetSpecialContract
     ListSpecialContracts
     GetUploadURL
-    UpdateContract
-    DeleteContract
-    ShareContract
-    GetContractReadURL
+    
 
     // users.smithy - GetProfile is standalone (not resource-bound) to support optional userId
     GetProfile
+
+    // audit.smithy - GetAuditStatistics is cross-cutting (aggregates all logs, not bound to single log)
+    GetAuditStatistics
 
     // Utility operations
     Ping

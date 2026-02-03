@@ -3,12 +3,16 @@ $version: "2"
 namespace equaliq
 
 use aws.protocols#restJson1
+use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#StringList
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
 use equaliq#InternalServerError
+
+/// Audit log identifier
+string AuditLogId with [UuidLikeMixin]
 
 /// Entity types for audit logging
 enum AuditEntityType {
@@ -57,10 +61,18 @@ enum SensitivityLevel {
     CRITICAL = "CRITICAL"
 }
 
+/// Audit log resource
+resource AuditLogResource {
+    identifiers: { logId: AuditLogId }
+    read: GetAuditLog
+    list: ListAuditLogs
+    operations: []
+}
+
 /// Audit log entry
 structure AuditLog {
     @required
-    logId: String
+    logId: AuditLogId
 
     @required
     entityType: AuditEntityType
@@ -114,10 +126,11 @@ structure AuditLog {
     relatedEntities: Document
 }
 
-// Query Audit Logs
+// List Audit Logs
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "logs", pageSize: "limit")
-@http(method: "POST", uri: "/audit/query")
-operation QueryAuditLogs {
+@http(method: "POST", uri: "/audit/list")
+operation ListAuditLogs {
     input := {
         // Filters
         entityType: AuditEntityType
@@ -156,11 +169,12 @@ operation QueryAuditLogs {
 }
 
 // Get Audit Log
+@readonly
 @http(method: "POST", uri: "/audit/logs/get")
 operation GetAuditLog {
     input := {
         @required
-        logId: String
+        logId: AuditLogId
     }
 
     output := {

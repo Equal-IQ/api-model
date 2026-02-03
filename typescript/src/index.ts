@@ -12,6 +12,35 @@ export * from './xml-types';
 export * from './xml-utils';
 
 // Unwrapped enum definitions
+export enum AuditAction {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+  DELETE = "DELETE",
+  VIEW = "VIEW",
+  DOWNLOAD = "DOWNLOAD",
+  UPLOAD = "UPLOAD",
+  SHARE = "SHARE",
+  REVOKE = "REVOKE",
+  LOGIN = "LOGIN",
+  LOGOUT = "LOGOUT",
+  EXPORT = "EXPORT",
+  IMPORT = "IMPORT",
+  SIGN = "SIGN",
+  APPROVE = "APPROVE",
+  REJECT = "REJECT"
+}
+
+export enum AuditEntityType {
+  USER = "USER",
+  ORGANIZATION = "ORGANIZATION",
+  DEAL = "DEAL",
+  FILE = "FILE",
+  PERMISSION = "PERMISSION",
+  INTEGRATION = "INTEGRATION",
+  BILLING = "BILLING",
+  SYSTEM = "SYSTEM"
+}
+
 export enum ContractStatus {
   processing = "processing",
   awaiting_upload = "awaiting_upload",
@@ -32,6 +61,44 @@ export enum ContractVariableType {
   internal_citation = "internal_citation"
 }
 
+export enum DataClassification {
+  PUBLIC = "PUBLIC",
+  INTERNAL = "INTERNAL",
+  CONFIDENTIAL = "CONFIDENTIAL",
+  RESTRICTED = "RESTRICTED"
+}
+
+export enum DealPermission {
+  VIEW = "VIEW",
+  EDIT_DRAFT = "EDIT_DRAFT",
+  COMMENT = "COMMENT",
+  SIGN = "SIGN",
+  SHARE = "SHARE",
+  MANAGE = "MANAGE"
+}
+
+export enum DealStage {
+  DRAFTING = "DRAFTING",
+  NEGOTIATION = "NEGOTIATION",
+  SIGNING = "SIGNING",
+  DELIVERY = "DELIVERY",
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED"
+}
+
+export enum DeliverableSource {
+  INFERRED = "INFERRED",
+  TEMPLATE = "TEMPLATE",
+  IMPORTED = "IMPORTED"
+}
+
+export enum DeliverableStatus {
+  PENDING = "PENDING",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  BLOCKED = "BLOCKED"
+}
+
 export enum DurationType {
   fixed = "fixed",
   indefinite = "indefinite",
@@ -50,6 +117,14 @@ export enum EqCardKey {
 export enum EqCardType {
   A = "A",
   B = "B"
+}
+
+export enum FilePermission {
+  VIEW = "VIEW",
+  DOWNLOAD = "DOWNLOAD",
+  EDIT = "EDIT",
+  DELETE = "DELETE",
+  SHARE = "SHARE"
 }
 
 export enum InviteStatus {
@@ -89,6 +164,20 @@ export enum OrgRole {
   custom = "custom"
 }
 
+export enum SensitivityLevel {
+  LOW = "LOW",
+  MEDIUM = "MEDIUM",
+  HIGH = "HIGH",
+  CRITICAL = "CRITICAL"
+}
+
+export enum StatisticGrouping {
+  HOUR = "HOUR",
+  DAY = "DAY",
+  WEEK = "WEEK",
+  MONTH = "MONTH"
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
@@ -98,6 +187,39 @@ export type AcceptOrgInviteRequestContent = {
 export type AcceptOrgInviteResponseContent = {
   organization: Org;
   member: OrgMember;
+};
+
+export type AuditLog = {
+  logId: string;
+  entityType: AuditEntityType;
+  entityId: string;
+  action: AuditAction;
+  performedBy: string;
+  timestamp: string;
+  ipAddress?: string;
+  userAgent?: string;
+  success: boolean;
+  dataClassification?: DataClassification;
+  sensitivityLevel?: SensitivityLevel;
+  changeDetails?: unknown;
+  errorReason?: string;
+  anonymized?: boolean;
+  pseudonymId?: string;
+  sessionId?: string;
+  orgId?: string;
+  relatedEntities?: unknown;
+};
+
+export type AuditStatistics = {
+  totalEvents: number;
+  successfulEvents: number;
+  failedEvents: number;
+  byEntityType?: unknown;
+  byAction?: unknown;
+  topUsers?: unknown;
+  topEntities?: unknown;
+  securityEvents?: number;
+  complianceEvents?: number;
 };
 
 export type AuthenticationErrorResponseContent = {
@@ -184,6 +306,58 @@ export type ContractVariable = {
 
 export type ContractVariableMap = { [key: string]: ContractVariable };
 
+export type CreateDealRequestContent = {
+  orgId: string;
+  title: string;
+  description?: string;
+  initialStage?: DealStage;
+  metadata?: unknown;
+};
+
+export type CreateDealResponseContent = {
+  deal: Deal;
+  initialVersion: DealVersion;
+};
+
+export type CreateDealVersionRequestContent = {
+  stage: DealStage;
+  changeReason: string;
+  metadata?: unknown;
+};
+
+export type CreateDealVersionResponseContent = {
+  version: DealVersion;
+};
+
+export type CreateDeliverableRequestContent = {
+  description: string;
+  source?: DeliverableSource;
+  dueDate?: string;
+  assignedTo?: string;
+  status?: DeliverableStatus;
+};
+
+export type CreateDeliverableResponseContent = {
+  deliverable: Deliverable;
+};
+
+export type CreateFileRequestContent = {
+  orgId: string;
+  fileName: string;
+  sizeBytes: number;
+  fileType?: string;
+  folderPath?: string;
+  tags?: string[];
+  dealId?: string;
+  dealVersionId?: string;
+  requestUploadUrl?: boolean;
+};
+
+export type CreateFileResponseContent = {
+  file: File;
+  uploadUrl?: PresignedUrl;
+};
+
 export type CreateOrgCustomRoleRequestContent = {
   orgId: string;
   name: string;
@@ -220,6 +394,47 @@ export type CreateOrgResponseContent = {
   org: Org;
 };
 
+export type Deal = {
+  dealId: string;
+  orgId: string;
+  createdBy: string;
+  currentVersionNumber: number;
+  currentStage: DealStage;
+  title?: string;
+  description?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DealAccess = {
+  accessId: string;
+  dealId: string;
+  grantedToOrgId: string;
+  grantedToUserId?: string;
+  grantedBy: string;
+  grantedAt: string;
+  expiresAt?: string;
+  partyRole?: string;
+  permissions: DealPermission[];
+  maxGrantablePermissions?: DealPermission[];
+  isDeny?: boolean;
+  revokedBy?: string;
+  revokedAt?: string;
+  revocationReason?: string;
+  isActive?: boolean;
+};
+
+export type DealVersion = {
+  versionId: string;
+  dealId: string;
+  versionNumber: number;
+  stage: DealStage;
+  createdBy: string;
+  createdAt: string;
+  changeReason?: string;
+  metadata?: unknown;
+};
+
 export type DeclineOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
@@ -233,6 +448,16 @@ export type DeleteContractResponseContent = {
   success: boolean;
 };
 
+export type DeleteDealRequestContent = {
+  dealId: string;
+  hardDelete?: boolean;
+};
+
+export type DeleteFileRequestContent = {
+  fileId: string;
+  hardDelete?: boolean;
+};
+
 export type DeleteOrgCustomRoleRequestContent = {
   orgId: string;
   customRoleId: string;
@@ -240,6 +465,18 @@ export type DeleteOrgCustomRoleRequestContent = {
 
 export type DeleteOrgRequestContent = {
   orgId: string;
+};
+
+export type Deliverable = {
+  deliverableId: string;
+  dealVersionId: string;
+  description: string;
+  source?: DeliverableSource;
+  dueDate?: string;
+  assignedTo?: string;
+  status?: DeliverableStatus;
+  createdAt?: string;
+  updatedAt?: string;
 };
 
 export type EmptyStructure = unknown;
@@ -325,6 +562,42 @@ export type ExtractionTerm = {
 
 export type ExtractionTermMap = { [key: string]: ExtractionTerm };
 
+export type File = {
+  fileId: string;
+  orgId: string;
+  uploadedBy: string;
+  fileName: string;
+  s3Key: string;
+  s3Bucket: string;
+  sizeBytes: number;
+  fileType?: string;
+  folderPath?: string;
+  tags?: string[];
+  dealId?: string;
+  dealVersionId?: string;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string;
+  deletedBy?: string;
+};
+
+export type FileAccess = {
+  accessId: string;
+  fileId: string;
+  grantedToOrgId: string;
+  grantedToUserId?: string;
+  grantedBy: string;
+  grantedAt: string;
+  expiresAt?: string;
+  permissions: FilePermission[];
+  maxGrantablePermissions?: FilePermission[];
+  isDeny?: boolean;
+  revokedBy?: string;
+  revokedAt?: string;
+  revocationReason?: string;
+  isActive?: boolean;
+};
+
 export type FixedTermValue = {
   unit: string;
   value: string;
@@ -336,6 +609,45 @@ export type FixedTermValue = {
 export type FixedValueTermInference = {
   primary: FixedTermValue;
   subterms?: FixedTermValue[];
+};
+
+export type GenerateDownloadUrlRequestContent = {
+  expirationSeconds?: number;
+  disposition?: string;
+  downloadFileName?: string;
+};
+
+export type GenerateDownloadUrlResponseContent = {
+  downloadUrl: PresignedUrl;
+};
+
+export type GenerateUploadUrlRequestContent = {
+  contentType?: string;
+  expirationSeconds?: number;
+};
+
+export type GenerateUploadUrlResponseContent = {
+  uploadUrl: PresignedUrl;
+};
+
+export type GetAuditLogRequestContent = {
+  logId: string;
+};
+
+export type GetAuditLogResponseContent = {
+  auditLog: AuditLog;
+};
+
+export type GetAuditStatisticsRequestContent = {
+  orgId?: string;
+  startDate: string;
+  endDate: string;
+  groupBy?: StatisticGrouping;
+};
+
+export type GetAuditStatisticsResponseContent = {
+  statistics: AuditStatistics;
+  timeSeries?: TimeSeriesPoint[];
 };
 
 export type GetContractReadURLRequestContent = {
@@ -361,6 +673,43 @@ export type GetContractResponseContent = {
   contractExtraction?: ContractExtractionResult;
   sharedWith?: string[];
   isOwner?: boolean;
+};
+
+export type GetDealRequestContent = {
+  dealId: string;
+  includeVersions?: boolean;
+  includeDeliverables?: boolean;
+  includeAccess?: boolean;
+};
+
+export type GetDealResponseContent = {
+  deal: Deal;
+  versions?: DealVersion[];
+  deliverables?: Deliverable[];
+  access?: DealAccess[];
+};
+
+export type GetDealVersionRequestContent = {
+  dealId: string;
+  versionId: string;
+  includeDeliverables?: boolean;
+};
+
+export type GetDealVersionResponseContent = {
+  version: DealVersion;
+  deliverables?: Deliverable[];
+};
+
+export type GetFileRequestContent = {
+  fileId: string;
+  includeAccess?: boolean;
+  requestDownloadUrl?: boolean;
+};
+
+export type GetFileResponseContent = {
+  file: File;
+  access?: FileAccess[];
+  downloadUrl?: PresignedUrl;
 };
 
 export type GetOrgPictureRequestContent = {
@@ -427,6 +776,33 @@ export type GetUploadURLResponseContent = {
   url_info: PresignedPostData;
 };
 
+export type GrantDealAccessRequestContent = {
+  grantToOrgId: string;
+  grantToUserId?: string;
+  permissions: DealPermission[];
+  partyRole?: string;
+  expiresAt?: string;
+  maxGrantablePermissions?: DealPermission[];
+  isDeny?: boolean;
+};
+
+export type GrantDealAccessResponseContent = {
+  access: DealAccess;
+};
+
+export type GrantFileAccessRequestContent = {
+  grantToOrgId: string;
+  grantToUserId?: string;
+  permissions: FilePermission[];
+  expiresAt?: string;
+  maxGrantablePermissions?: FilePermission[];
+  isDeny?: boolean;
+};
+
+export type GrantFileAccessResponseContent = {
+  access: FileAccess;
+};
+
 export type InternalServerErrorResponseContent = {
   message: string;
 };
@@ -455,6 +831,28 @@ export type IqModeSection = {
 
 export type IqModeSectionMap = { [key: string]: IqModeSection };
 
+export type ListAuditLogsRequestContent = {
+  entityType?: AuditEntityType;
+  entityId?: string;
+  performedBy?: string;
+  orgId?: string;
+  action?: AuditAction;
+  success?: boolean;
+  startDate?: string;
+  endDate?: string;
+  minSensitivityLevel?: SensitivityLevel;
+  dataClassification?: DataClassification;
+  sessionId?: string;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListAuditLogsResponseContent = {
+  logs: AuditLog[];
+  nextToken?: string;
+  statistics?: AuditStatistics;
+};
+
 export type ListContractsRequestContent = {
   orgId?: string;
 };
@@ -463,6 +861,91 @@ export type ListContractsResponseContent = {
   owned?: ContractSummaryItem[];
   shared?: ContractSummaryItem[];
   contracts?: ContractMetadata[];
+};
+
+export type ListDealAccessRequestContent = {
+  dealId: string;
+  orgId?: string;
+  includeRevoked?: boolean;
+  includeExpired?: boolean;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDealAccessResponseContent = {
+  access: DealAccess[];
+  nextToken?: string;
+};
+
+export type ListDealVersionsRequestContent = {
+  dealId: string;
+  stage?: DealStage;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDealVersionsResponseContent = {
+  versions: DealVersion[];
+  nextToken?: string;
+};
+
+export type ListDealsRequestContent = {
+  orgId?: string;
+  stage?: DealStage;
+  createdBy?: string;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDealsResponseContent = {
+  deals: Deal[];
+  nextToken?: string;
+};
+
+export type ListDeliverablesRequestContent = {
+  dealId: string;
+  versionId?: string;
+  status?: DeliverableStatus;
+  assignedTo?: string;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDeliverablesResponseContent = {
+  deliverables: Deliverable[];
+  nextToken?: string;
+};
+
+export type ListFileAccessRequestContent = {
+  fileId: string;
+  orgId?: string;
+  includeRevoked?: boolean;
+  includeExpired?: boolean;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListFileAccessResponseContent = {
+  access: FileAccess[];
+  nextToken?: string;
+};
+
+export type ListFilesRequestContent = {
+  orgId?: string;
+  dealId?: string;
+  dealVersionId?: string;
+  folderPath?: string;
+  tags?: string[];
+  uploadedBy?: string;
+  includeDeleted?: boolean;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListFilesResponseContent = {
+  files: File[];
+  nextToken?: string;
+  totalSizeBytes?: number;
 };
 
 export type ListOrgCustomRolesRequestContent = {
@@ -595,6 +1078,13 @@ export type PresignedPostData = {
   fields: unknown;
 };
 
+export type PresignedUrl = {
+  url: string;
+  expiresAt: string;
+  method?: string;
+  headers?: unknown;
+};
+
 export type ProcessingIncompleteErrorResponseContent = {
   message: string;
 };
@@ -616,6 +1106,18 @@ export type ResendOrgInviteResponseContent = {
 
 export type ResourceNotFoundErrorResponseContent = {
   message: string;
+};
+
+export type RevokeDealAccessRequestContent = {
+  dealId: string;
+  accessId: string;
+  reason: string;
+};
+
+export type RevokeFileAccessRequestContent = {
+  fileId: string;
+  accessId: string;
+  reason: string;
 };
 
 export type ShareContractRequestContent = {
@@ -649,6 +1151,12 @@ export type TaggedText = {
   text: string;
 };
 
+export type TimeSeriesPoint = {
+  timestamp: string;
+  count: number;
+  metrics?: unknown;
+};
+
 export type TransferOrgOwnershipRequestContent = {
   orgId: string;
   newOwnerId: string;
@@ -665,6 +1173,55 @@ export type UpdateContractRequestContent = {
 
 export type UpdateContractResponseContent = {
   success: boolean;
+};
+
+export type UpdateDealAccessRequestContent = {
+  permissions?: DealPermission[];
+  maxGrantablePermissions?: DealPermission[];
+  partyRole?: string;
+  expiresAt?: string;
+  isDeny?: boolean;
+};
+
+export type UpdateDealAccessResponseContent = {
+  access: DealAccess;
+};
+
+export type UpdateDealRequestContent = {
+  title?: string;
+  description?: string;
+  newStage?: DealStage;
+  changeReason?: string;
+  metadata?: unknown;
+};
+
+export type UpdateDealResponseContent = {
+  deal: Deal;
+  newVersion?: DealVersion;
+};
+
+export type UpdateDeliverableRequestContent = {
+  description?: string;
+  source?: DeliverableSource;
+  dueDate?: string;
+  assignedTo?: string;
+  status?: DeliverableStatus;
+};
+
+export type UpdateDeliverableResponseContent = {
+  deliverable: Deliverable;
+};
+
+export type UpdateFileRequestContent = {
+  fileName?: string;
+  folderPath?: string;
+  tags?: string[];
+  dealId?: string;
+  dealVersionId?: string;
+};
+
+export type UpdateFileResponseContent = {
+  file: File;
 };
 
 export type UpdateOrgCustomRoleRequestContent = {

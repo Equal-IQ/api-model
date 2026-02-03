@@ -3,6 +3,7 @@ $version: "2"
 namespace equaliq
 
 use aws.protocols#restJson1
+use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#Url
 use equaliq#StringList
@@ -11,10 +12,28 @@ use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
 use equaliq#InternalServerError
 
+/// File identifier
+string FileId with [UuidLikeMixin]
+
+/// File resource with sub-resources for access control
+resource FileResource {
+    identifiers: { fileId: FileId }
+    create: CreateFile
+    read: GetFile
+    update: UpdateFile
+    delete: DeleteFile
+    list: ListFiles
+    resources: [FileAccessResource]
+    operations: [
+        GenerateUploadUrl
+        GenerateDownloadUrl
+    ]
+}
+
 /// File entity
 structure File {
     @required
-    fileId: String
+    fileId: FileId
 
     @required
     orgId: String
@@ -123,11 +142,12 @@ operation CreateFile {
 }
 
 // Get File
+@readonly
 @http(method: "POST", uri: "/files/get")
 operation GetFile {
     input := {
         @required
-        fileId: String
+        fileId: FileId
 
         /// Include access information
         includeAccess: Boolean
@@ -161,7 +181,7 @@ operation UpdateFile {
     input := {
         @required
         @httpLabel
-        fileId: String
+        fileId: FileId
 
         fileName: String
         folderPath: String
@@ -189,7 +209,7 @@ operation UpdateFile {
 operation DeleteFile {
     input := {
         @required
-        fileId: String
+        fileId: FileId
 
         /// Hard delete the file (default is soft delete)
         hardDelete: Boolean
@@ -205,6 +225,7 @@ operation DeleteFile {
 }
 
 // List Files
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
 @http(method: "POST", uri: "/files/list")
 operation ListFiles {
@@ -261,7 +282,7 @@ operation GenerateUploadUrl {
     input := {
         @required
         @httpLabel
-        fileId: String
+        fileId: FileId
 
         /// Content type for the upload
         contentType: String
@@ -289,7 +310,7 @@ operation GenerateDownloadUrl {
     input := {
         @required
         @httpLabel
-        fileId: String
+        fileId: FileId
 
         /// Expiration time in seconds (default 3600)
         expirationSeconds: Integer
@@ -314,61 +335,6 @@ operation GenerateDownloadUrl {
     ]
 }
 
-// Batch File Operations
-@http(method: "POST", uri: "/files/batch")
-operation BatchFileOperation {
-    input := {
-        @required
-        operation: BatchOperation
-
-        @required
-        fileIds: StringList
-
-        /// For move operation
-        targetFolderPath: String
-
-        /// For tag operations
-        tags: StringList
-
-        /// For delete operation
-        hardDelete: Boolean
-    }
-
-    output := {
-        @required
-        successCount: Integer
-
-        @required
-        failureCount: Integer
-
-        /// Details of failed operations
-        failures: BatchFailureList
-    }
-
-    errors: [
-        AuthenticationError
-        ValidationError
-        InternalServerError
-    ]
-}
-
-/// Batch operation types
-enum BatchOperation {
-    MOVE = "MOVE"
-    ADD_TAGS = "ADD_TAGS"
-    REMOVE_TAGS = "REMOVE_TAGS"
-    DELETE = "DELETE"
-}
-
-/// Batch operation failure
-structure BatchFailure {
-    @required
-    fileId: String
-
-    @required
-    reason: String
-}
-
 // Helper list types
 list FileList {
     member: File
@@ -376,8 +342,4 @@ list FileList {
 
 list FileAccessList {
     member: FileAccess
-}
-
-list BatchFailureList {
-    member: BatchFailure
 }
