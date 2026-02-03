@@ -95,7 +95,7 @@ structure PresignedUrl {
 }
 
 // Create File
-@http(method: "POST", uri: "/files")
+@http(method: "POST", uri: "/files/create")
 operation CreateFile {
     input := {
         @required
@@ -176,11 +176,10 @@ operation GetFile {
 
 // Update File
 @idempotent
-@http(method: "PUT", uri: "/files/{fileId}")
+@http(method: "POST", uri: "/files/update")
 operation UpdateFile {
     input := {
         @required
-        @httpLabel
         fileId: FileId
 
         fileName: String
@@ -277,11 +276,10 @@ operation ListFiles {
 }
 
 // Generate Upload URL
-@http(method: "POST", uri: "/files/{fileId}/upload-url")
+@http(method: "POST", uri: "/files/upload-url")
 operation GenerateUploadUrl {
     input := {
         @required
-        @httpLabel
         fileId: FileId
 
         /// Content type for the upload
@@ -305,11 +303,10 @@ operation GenerateUploadUrl {
 }
 
 // Generate Download URL
-@http(method: "POST", uri: "/files/{fileId}/download-url")
+@http(method: "POST", uri: "/files/download-url")
 operation GenerateDownloadUrl {
     input := {
         @required
-        @httpLabel
         fileId: FileId
 
         /// Expiration time in seconds (default 3600)

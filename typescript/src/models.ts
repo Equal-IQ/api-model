@@ -52,7 +52,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/deals": {
+    "/deals/access/grant": {
         parameters: {
             query?: never;
             header?: never;
@@ -61,7 +61,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CreateDeal"];
+        post: operations["GrantDealAccess"];
         delete?: never;
         options?: never;
         head?: never;
@@ -100,6 +100,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/access/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deals/delete": {
         parameters: {
             query?: never;
@@ -126,6 +158,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["ListDeliverables"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/deliverables/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDeliverable"];
         delete?: never;
         options?: never;
         head?: never;
@@ -164,6 +212,54 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDealVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/deliverables/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeliverable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/deals/versions/get": {
         parameters: {
             query?: never;
@@ -196,102 +292,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/deals/{dealId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateDeal"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals/{dealId}/access": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GrantDealAccess"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals/{dealId}/access/{accessId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateDealAccess"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals/{dealId}/deliverables/{deliverableId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateDeliverable"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals/{dealId}/versions": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateDealVersion"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/deals/{dealId}/versions/{versionId}/deliverables": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateDeliverable"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/deleteContract": {
         parameters: {
             query?: never;
@@ -308,7 +308,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/files": {
+    "/files/access/grant": {
         parameters: {
             query?: never;
             header?: never;
@@ -317,7 +317,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["CreateFile"];
+        post: operations["GrantFileAccess"];
         delete?: never;
         options?: never;
         head?: never;
@@ -356,6 +356,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/files/access/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/files/delete": {
         parameters: {
             query?: never;
@@ -366,6 +398,22 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["DeleteFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/download-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GenerateDownloadUrl"];
         delete?: never;
         options?: never;
         head?: never;
@@ -404,23 +452,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/files/{fileId}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put: operations["UpdateFile"];
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/files/{fileId}/access": {
+    "/files/update": {
         parameters: {
             query?: never;
             header?: never;
@@ -429,30 +461,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["GrantFileAccess"];
+        post: operations["UpdateFile"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/files/{fileId}/download-url": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GenerateDownloadUrl"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/files/{fileId}/upload-url": {
+    "/files/upload-url": {
         parameters: {
             query?: never;
             header?: never;
@@ -1229,6 +1245,7 @@ export interface components {
             initialVersion: components["schemas"]["DealVersion"];
         };
         CreateDealVersionRequestContent: {
+            dealId: string;
             stage: components["schemas"]["DealStage"];
             changeReason: string;
             /** @description Optional metadata for version */
@@ -1238,6 +1255,8 @@ export interface components {
             version: components["schemas"]["DealVersion"];
         };
         CreateDeliverableRequestContent: {
+            dealId: string;
+            versionId: string;
             description: string;
             source?: components["schemas"]["DeliverableSource"];
             /** @description For committed stages */
@@ -1570,6 +1589,8 @@ export interface components {
             subterms?: components["schemas"]["FixedTermValue"][];
         };
         GenerateDownloadUrlRequestContent: {
+            /** @description File identifier */
+            fileId: string;
             /** @description Expiration time in seconds (default 3600) */
             expirationSeconds?: number;
             /** @description Content disposition (inline or attachment) */
@@ -1581,6 +1602,8 @@ export interface components {
             downloadUrl: components["schemas"]["PresignedUrl"];
         };
         GenerateUploadUrlRequestContent: {
+            /** @description File identifier */
+            fileId: string;
             /** @description Content type for the upload */
             contentType?: string;
             /** @description Expiration time in seconds (default 3600) */
@@ -1718,6 +1741,7 @@ export interface components {
             url_info: components["schemas"]["PresignedPostData"];
         };
         GrantDealAccessRequestContent: {
+            dealId: string;
             grantToOrgId: string;
             /** @description Specific user within org (if omitted, entire org has access) */
             grantToUserId?: string;
@@ -1735,6 +1759,8 @@ export interface components {
             access: components["schemas"]["DealAccess"];
         };
         GrantFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
             grantToOrgId: string;
             /** @description Specific user within org (if omitted, entire org has access) */
             grantToUserId?: string;
@@ -2160,6 +2186,9 @@ export interface components {
             success: boolean;
         };
         UpdateDealAccessRequestContent: {
+            dealId: string;
+            /** @description Access control identifier */
+            accessId: string;
             permissions?: components["schemas"]["DealPermission"][];
             maxGrantablePermissions?: components["schemas"]["DealPermission"][];
             partyRole?: string;
@@ -2170,6 +2199,7 @@ export interface components {
             access: components["schemas"]["DealAccess"];
         };
         UpdateDealRequestContent: {
+            dealId: string;
             title?: string;
             description?: string;
             newStage?: components["schemas"]["DealStage"];
@@ -2183,6 +2213,8 @@ export interface components {
             newVersion?: components["schemas"]["DealVersion"];
         };
         UpdateDeliverableRequestContent: {
+            dealId: string;
+            deliverableId: string;
             description?: string;
             source?: components["schemas"]["DeliverableSource"];
             dueDate?: string;
@@ -2192,7 +2224,23 @@ export interface components {
         UpdateDeliverableResponseContent: {
             deliverable: components["schemas"]["Deliverable"];
         };
+        UpdateFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Access control identifier */
+            accessId: string;
+            permissions?: components["schemas"]["FilePermission"][];
+            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            partyRole?: string;
+            expiresAt?: string;
+            isDeny?: boolean;
+        };
+        UpdateFileAccessResponseContent: {
+            access: components["schemas"]["FileAccess"];
+        };
         UpdateFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
             fileName?: string;
             folderPath?: string;
             tags?: string[];
@@ -2410,7 +2458,7 @@ export interface operations {
             };
         };
     };
-    CreateDeal: {
+    GrantDealAccess: {
         parameters: {
             query?: never;
             header?: never;
@@ -2419,17 +2467,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateDealRequestContent"];
+                "application/json": components["schemas"]["GrantDealAccessRequestContent"];
             };
         };
         responses: {
-            /** @description CreateDeal 200 response */
+            /** @description GrantDealAccess 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateDealResponseContent"];
+                    "application/json": components["schemas"]["GrantDealAccessResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -2534,6 +2582,90 @@ export interface operations {
             };
         };
     };
+    UpdateDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     DeleteDeal: {
         parameters: {
             query?: never;
@@ -2616,6 +2748,48 @@ export interface operations {
             };
         };
     };
+    UpdateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDeliverableResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     GetDeal: {
         parameters: {
             query?: never;
@@ -2678,6 +2852,132 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListDealsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDealVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealVersionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDealVersion 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealVersionResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDeliverableResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -2784,274 +3084,6 @@ export interface operations {
             };
         };
     };
-    UpdateDeal: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["UpdateDealRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateDeal 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateDealResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GrantDealAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GrantDealAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GrantDealAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GrantDealAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateDealAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-                /** @description Access control identifier */
-                accessId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["UpdateDealAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateDealAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateDealAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateDeliverable: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-                deliverableId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["UpdateDeliverableRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateDeliverable 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateDeliverableResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    CreateDealVersion: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateDealVersionRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateDealVersion 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateDealVersionResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    CreateDeliverable: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                dealId: string;
-                versionId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateDeliverableRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateDeliverable 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateDeliverableResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     DeleteContract: {
         parameters: {
             query?: never;
@@ -3094,7 +3126,7 @@ export interface operations {
             };
         };
     };
-    CreateFile: {
+    GrantFileAccess: {
         parameters: {
             query?: never;
             header?: never;
@@ -3103,17 +3135,17 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["CreateFileRequestContent"];
+                "application/json": components["schemas"]["GrantFileAccessRequestContent"];
             };
         };
         responses: {
-            /** @description CreateFile 200 response */
+            /** @description GrantFileAccess 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["CreateFileResponseContent"];
+                    "application/json": components["schemas"]["GrantFileAccessResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */
@@ -3218,6 +3250,90 @@ export interface operations {
             };
         };
     };
+    UpdateFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateFileAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateFileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     DeleteFile: {
         parameters: {
             query?: never;
@@ -3245,6 +3361,48 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GenerateDownloadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateDownloadUrlRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GenerateDownloadUrl 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateDownloadUrlResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -3346,13 +3504,10 @@ export interface operations {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description File identifier */
-                fileId: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["UpdateFileRequestContent"];
             };
@@ -3387,107 +3542,14 @@ export interface operations {
             };
         };
     };
-    GrantFileAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description File identifier */
-                fileId: string;
-            };
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GrantFileAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GrantFileAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GrantFileAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GenerateDownloadUrl: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path: {
-                /** @description File identifier */
-                fileId: string;
-            };
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["GenerateDownloadUrlRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GenerateDownloadUrl 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GenerateDownloadUrlResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     GenerateUploadUrl: {
         parameters: {
             query?: never;
             header?: never;
-            path: {
-                /** @description File identifier */
-                fileId: string;
-            };
+            path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GenerateUploadUrlRequestContent"];
             };

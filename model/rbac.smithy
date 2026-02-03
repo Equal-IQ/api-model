@@ -182,6 +182,7 @@ structure DealAccess {
 resource FileAccessResource {
     identifiers: { fileId: FileId, accessId: AccessId }
     create: GrantFileAccess
+    update: UpdateFileAccess
     delete: RevokeFileAccess
     list: ListFileAccess
 }
@@ -228,11 +229,10 @@ structure FileAccess {
 }
 
 // Grant Deal Access
-@http(method: "POST", uri: "/deals/{dealId}/access")
+@http(method: "POST", uri: "/deals/access/grant")
 operation GrantDealAccess {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
@@ -336,15 +336,13 @@ operation ListDealAccess {
 
 // Update Deal Access
 @idempotent
-@http(method: "PUT", uri: "/deals/{dealId}/access/{accessId}")
+@http(method: "POST", uri: "/deals/access/update")
 operation UpdateDealAccess {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
-        @httpLabel
         accessId: AccessId
 
         permissions: DealPermissionList
@@ -368,11 +366,10 @@ operation UpdateDealAccess {
 }
 
 // Grant File Access
-@http(method: "POST", uri: "/files/{fileId}/access")
+@http(method: "POST", uri: "/files/access/grant")
 operation GrantFileAccess {
     input := {
         @required
-        @httpLabel
         fileId: FileId
 
         @required
@@ -467,6 +464,37 @@ operation ListFileAccess {
     errors: [
         AuthenticationError
         ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+// Update File Access
+@idempotent
+@http(method: "POST", uri: "/files/access/update")
+operation UpdateFileAccess {
+    input := {
+        @required
+        fileId: FileId
+
+        @required
+        accessId: AccessId
+
+        permissions: FilePermissionList
+        maxGrantablePermissions: FilePermissionList
+        partyRole: String
+        expiresAt: ISODate
+        isDeny: Boolean
+    }
+
+    output := {
+        @required
+        access: FileAccess
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
         InternalServerError
     ]
 }

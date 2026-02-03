@@ -199,7 +199,7 @@ structure DealRevision {
 }
 
 // Create Deal
-@http(method: "POST", uri: "/deals")
+@http(method: "POST", uri: "/deals/create")
 operation CreateDeal {
     input := {
         @required
@@ -264,11 +264,10 @@ operation GetDeal {
 
 // Update Deal
 @idempotent
-@http(method: "PUT", uri: "/deals/{dealId}")
+@http(method: "POST", uri: "/deals/update")
 operation UpdateDeal {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         title: String
@@ -359,11 +358,10 @@ operation ListDeals {
 }
 
 // Create Deal Version
-@http(method: "POST", uri: "/deals/{dealId}/versions")
+@http(method: "POST", uri: "/deals/versions/create")
 operation CreateDealVersion {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
@@ -451,15 +449,13 @@ operation ListDealVersions {
 }
 
 // Create Deliverable
-@http(method: "POST", uri: "/deals/{dealId}/versions/{versionId}/deliverables")
+@http(method: "POST", uri: "/deals/versions/deliverables/create")
 operation CreateDeliverable {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
-        @httpLabel
         versionId: String
 
         @required
@@ -489,15 +485,13 @@ operation CreateDeliverable {
 
 // Update Deliverable
 @idempotent
-@http(method: "PUT", uri: "/deals/{dealId}/deliverables/{deliverableId}")
+@http(method: "POST", uri: "/deals/deliverables/update")
 operation UpdateDeliverable {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
-        @httpLabel
         deliverableId: String
 
         description: String

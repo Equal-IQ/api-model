@@ -173,7 +173,7 @@ operation UpdateProfile {
 }
 
 // Create Quick Access
-@http(method: "POST", uri: "/quick-access")
+@http(method: "POST", uri: "/quick-access/create")
 operation CreateQuickAccess {
     input := {
         @required
@@ -204,11 +204,10 @@ operation CreateQuickAccess {
 
 // Update Quick Access
 @idempotent
-@http(method: "PUT", uri: "/quick-access/{quickAccessId}")
+@http(method: "POST", uri: "/quick-access/update")
 operation UpdateQuickAccess {
     input := {
         @required
-        @httpLabel
         quickAccessId: String
 
         entryName: String

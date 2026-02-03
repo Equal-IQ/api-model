@@ -320,6 +320,7 @@ export type CreateDealResponseContent = {
 };
 
 export type CreateDealVersionRequestContent = {
+  dealId: string;
   stage: DealStage;
   changeReason: string;
   metadata?: unknown;
@@ -330,6 +331,8 @@ export type CreateDealVersionResponseContent = {
 };
 
 export type CreateDeliverableRequestContent = {
+  dealId: string;
+  versionId: string;
   description: string;
   source?: DeliverableSource;
   dueDate?: string;
@@ -612,6 +615,7 @@ export type FixedValueTermInference = {
 };
 
 export type GenerateDownloadUrlRequestContent = {
+  fileId: string;
   expirationSeconds?: number;
   disposition?: string;
   downloadFileName?: string;
@@ -622,6 +626,7 @@ export type GenerateDownloadUrlResponseContent = {
 };
 
 export type GenerateUploadUrlRequestContent = {
+  fileId: string;
   contentType?: string;
   expirationSeconds?: number;
 };
@@ -777,6 +782,7 @@ export type GetUploadURLResponseContent = {
 };
 
 export type GrantDealAccessRequestContent = {
+  dealId: string;
   grantToOrgId: string;
   grantToUserId?: string;
   permissions: DealPermission[];
@@ -791,6 +797,7 @@ export type GrantDealAccessResponseContent = {
 };
 
 export type GrantFileAccessRequestContent = {
+  fileId: string;
   grantToOrgId: string;
   grantToUserId?: string;
   permissions: FilePermission[];
@@ -1176,6 +1183,8 @@ export type UpdateContractResponseContent = {
 };
 
 export type UpdateDealAccessRequestContent = {
+  dealId: string;
+  accessId: string;
   permissions?: DealPermission[];
   maxGrantablePermissions?: DealPermission[];
   partyRole?: string;
@@ -1188,6 +1197,7 @@ export type UpdateDealAccessResponseContent = {
 };
 
 export type UpdateDealRequestContent = {
+  dealId: string;
   title?: string;
   description?: string;
   newStage?: DealStage;
@@ -1201,6 +1211,8 @@ export type UpdateDealResponseContent = {
 };
 
 export type UpdateDeliverableRequestContent = {
+  dealId: string;
+  deliverableId: string;
   description?: string;
   source?: DeliverableSource;
   dueDate?: string;
@@ -1212,7 +1224,22 @@ export type UpdateDeliverableResponseContent = {
   deliverable: Deliverable;
 };
 
+export type UpdateFileAccessRequestContent = {
+  fileId: string;
+  accessId: string;
+  permissions?: FilePermission[];
+  maxGrantablePermissions?: FilePermission[];
+  partyRole?: string;
+  expiresAt?: string;
+  isDeny?: boolean;
+};
+
+export type UpdateFileAccessResponseContent = {
+  access: FileAccess;
+};
+
 export type UpdateFileRequestContent = {
+  fileId: string;
   fileName?: string;
   folderPath?: string;
   tags?: string[];

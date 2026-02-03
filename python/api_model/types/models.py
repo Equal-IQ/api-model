@@ -383,6 +383,7 @@ class FixedValueTermInference(BaseModel):
 
 
 class GenerateDownloadUrlRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     expirationSeconds: float | None = Field(
         None, description='Expiration time in seconds (default 3600)'
     )
@@ -395,6 +396,7 @@ class GenerateDownloadUrlRequestContent(BaseModel):
 
 
 class GenerateUploadUrlRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     contentType: str | None = Field(None, description='Content type for the upload')
     expirationSeconds: float | None = Field(
         None, description='Expiration time in seconds (default 3600)'
@@ -500,6 +502,7 @@ class GetUploadURLRequestContent(BaseModel):
 
 
 class GrantDealAccessRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToOrgId: str
     grantToUserId: str | None = Field(
         None, description='Specific user within org (if omitted, entire org has access)'
@@ -518,6 +521,7 @@ class GrantDealAccessRequestContent(BaseModel):
 
 
 class GrantFileAccessRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     grantToOrgId: str
     grantToUserId: str | None = Field(
         None, description='Specific user within org (if omitted, entire org has access)'
@@ -868,6 +872,10 @@ class UpdateContractResponseContent(BaseModel):
 
 
 class UpdateDealAccessRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
     permissions: list[DealPermission] | None
     maxGrantablePermissions: list[DealPermission] | None
     partyRole: str | None
@@ -879,6 +887,7 @@ class UpdateDealAccessRequestContent(BaseModel):
 
 
 class UpdateDealRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     title: str | None
     description: str | None
     newStage: DealStage | None
@@ -887,6 +896,8 @@ class UpdateDealRequestContent(BaseModel):
 
 
 class UpdateDeliverableRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    deliverableId: str
     description: str | None
     source: DeliverableSource | None
     dueDate: str | None = Field(
@@ -897,7 +908,23 @@ class UpdateDeliverableRequestContent(BaseModel):
     status: DeliverableStatus | None
 
 
+class UpdateFileAccessRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+    accessId: str = Field(
+        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
+    )
+    permissions: list[FilePermission] | None
+    maxGrantablePermissions: list[FilePermission] | None
+    partyRole: str | None
+    expiresAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    isDeny: bool | None
+
+
 class UpdateFileRequestContent(BaseModel):
+    fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     fileName: str | None
     folderPath: str | None
     tags: list[str] | None
@@ -1076,6 +1103,7 @@ class CreateDealRequestContent(BaseModel):
 
 
 class CreateDealVersionRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     stage: DealStage
     changeReason: str
     metadata: Any | None = Field(None, description='Optional metadata for version')
@@ -1086,6 +1114,8 @@ class CreateDealVersionResponseContent(BaseModel):
 
 
 class CreateDeliverableRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    versionId: str
     description: str
     source: DeliverableSource | None
     dueDate: str | None = Field(
@@ -1575,6 +1605,10 @@ class UpdateDealResponseContent(BaseModel):
 
 class UpdateDeliverableResponseContent(BaseModel):
     deliverable: Deliverable
+
+
+class UpdateFileAccessResponseContent(BaseModel):
+    access: FileAccess
 
 
 class UpdateOrgCustomRoleResponseContent(BaseModel):
