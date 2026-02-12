@@ -11,6 +11,7 @@ service EqualIQ {
   version: "2023-01-01"
   resources: [
     Organization
+    Contract
     User
     DealResource
     FileResource
