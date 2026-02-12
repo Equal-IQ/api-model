@@ -26,6 +26,12 @@ service EqualIQ {
 
     // Utility operations
     Ping
+    ExposeTypes
+
+    // Deprecated Contract operations
+    ListSpecialContracts
+    GetUploadURL
+    
   ]
 }
 
@@ -38,5 +44,13 @@ operation Ping {
     output := {
         @required
         message: String
+    }
+}
+
+// This API is used simply to expose types
+@http(method: "POST", uri: "/notARealEndpoint")
+operation ExposeTypes {
+    output := {
+        contractAnalysisRecord: ContractAnalysisRecord
     }
 }

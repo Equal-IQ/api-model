@@ -201,6 +201,25 @@ export type CancelOrgInviteRequestContent = {
   inviteId: string;
 };
 
+export type ContractAnalysisRecord = {
+  contractId: string;
+  name: string;
+  type: string;
+  status: ContractStatus;
+  uploadedOn: string;
+  ownerId: string;
+  eqCards?: EqModeData;
+  iqData: IqModeData;
+  extractedType?: string;
+  parties?: string[];
+  terms?: ExtractionTermMap;
+  variables?: ContractVariableMap;
+  contractTexts?: ContractTexts;
+  sharedUsers?: SharedUserDetails[];
+  hasTTS?: boolean;
+  isSpecial?: boolean;
+};
+
 export type ContractExtractionResult = {
   extractedType?: string;
   parties?: string[];
@@ -507,6 +526,10 @@ export type EqResponsibilitiesCard = {
   responsibilities: SimpleTermDescription[];
 };
 
+export type ExposeTypesResponseContent = {
+  contractAnalysisRecord?: ContractAnalysisRecord;
+};
+
 export type ExtractionTerm = {
   name: string;
   definition: string;
@@ -730,6 +753,15 @@ export type GetSpecialContractResponseContent = {
   sharedWith: string[];
 };
 
+export type GetUploadURLRequestContent = {
+  name: string;
+  orgId?: string;
+};
+
+export type GetUploadURLResponseContent = {
+  url_info: PresignedPostData;
+};
+
 export type GrantDealAccessRequestContent = {
   dealId: string;
   grantToOrgId: string;
@@ -933,6 +965,11 @@ export type ListOrgMembersRequestContent = {
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
   nextToken?: string;
+};
+
+export type ListSpecialContractsResponseContent = {
+  owned: ContractSummaryItem[];
+  shared: ContractSummaryItem[];
 };
 
 export type ListUserOrganizationsRequestContent = {

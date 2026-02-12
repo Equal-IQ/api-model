@@ -502,6 +502,11 @@ class GetSpecialContractResponseContent(BaseModel):
     sharedWith: list[SharedWithItem]
 
 
+class GetUploadURLRequestContent(BaseModel):
+    name: str
+    orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+
+
 class GrantDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToOrgId: str
@@ -663,6 +668,11 @@ class ListOrgInvitesRequestContent(BaseModel):
         None, description='Pagination cursor (encoded inviteId)'
     )
     limit: float | None = Field(None, description='Page size')
+
+
+class ListSpecialContractsResponseContent(BaseModel):
+    owned: list[ContractSummaryItem]
+    shared: list[ContractSummaryItem]
 
 
 class ListUserOrganizationsRequestContent(BaseModel):
@@ -1390,6 +1400,10 @@ class GetProfileResponseContent(BaseModel):
     profile: UserProfile
 
 
+class GetUploadURLResponseContent(BaseModel):
+    url_info: PresignedPostData
+
+
 class GrantDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1746,6 +1760,32 @@ class ListUserOrganizationsResponseContent(BaseModel):
 
 class IqModeData(BaseModel):
     iqModeData: IqModePerspectiveMap | None
+
+
+class ContractAnalysisRecord(BaseModel):
+    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: str
+    status: ContractStatus
+    uploadedOn: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    eqCards: EqModeData | None
+    iqData: IqModeData
+    extractedType: str | None
+    parties: list[str] | None
+    terms: ExtractionTermMap | None
+    variables: ContractVariableMap | None
+    contractTexts: ContractTexts | None
+    sharedUsers: list[SharedUserDetails] | None
+    hasTTS: bool | None
+    isSpecial: bool | None
+
+
+class ExposeTypesResponseContent(BaseModel):
+    contractAnalysisRecord: ContractAnalysisRecord | None
 
 
 class GetContractResponseContent(BaseModel):
