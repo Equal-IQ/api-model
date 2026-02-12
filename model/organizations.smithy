@@ -60,7 +60,7 @@ structure Org {
     type: String
 
     @required
-    primaryOwner: UserId
+    primaryOwnerId: UserId
 
     description: String
     website: Url
@@ -68,12 +68,18 @@ structure Org {
 
     billingEmail: Email
 
+    /// Additional metadata (UI preferences, etc.)
+    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    metadata: Document
+
     @required
-    createdDate: ISODate
+    createdAt: ISODate
 
+    @required
+    updatedAt: ISODate
+
+    // Computed/context fields
     memberCount: Integer
-
-    // Frontend-specific fields
     userRole: OrgRole
     contractCount: Integer
     inviteCount: Integer

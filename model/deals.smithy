@@ -71,19 +71,21 @@ structure Deal {
     dealId: DealId
 
     @required
-    orgId: String
+    ownerUserId: String
 
-    @required
-    createdBy: String
+    /// Organization context (nullable for personal deals)
+    ownerOrgId: String
 
     @required
     currentVersionNumber: Integer
 
-    @required
-    currentStage: DealStage
+    /// Parent deal for hierarchies (master agreements, amendments)
+    parentDealId: String
 
-    title: String
-    description: String
+    @required
+    createdByUserId: String
+
+    updatedByUserId: String
 
     @required
     createdAt: ISODate
@@ -95,7 +97,7 @@ structure Deal {
 /// Deal version for tracking changes through stages
 structure DealVersion {
     @required
-    versionId: String
+    dealVersionId: String
 
     @required
     dealId: String
@@ -106,16 +108,29 @@ structure DealVersion {
     @required
     stage: DealStage
 
+    /// User-friendly version label (e.g., "Q1 2024 Amendment")
+    versionLabel: String
+
+    /// Main deal content (name, description, terms, financial details)
     @required
-    createdBy: String
+    content: Document
+
+    changeReason: String
+
+    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    metadata: Document
+
+    @required
+    createdByUserId: String
+
+    /// Approval workflow tracking
+    approvedByUserId: String
 
     @required
     createdAt: ISODate
 
-    changeReason: String
-
-    /// JSON metadata for version-specific data
-    metadata: Document
+    /// When this version was approved
+    approvedAt: ISODate
 }
 
 /// Deliverable with stage-conditional fields
@@ -127,75 +142,106 @@ structure Deliverable {
     dealVersionId: String
 
     @required
+    name: String
+
     description: String
 
     /// Source of deliverable (null = manual)
     source: DeliverableSource
 
-    /// Required in SIGNING, DELIVERY, COMPLETED stages
-    dueDate: ISODate
-
-    /// Required in SIGNING, DELIVERY, COMPLETED stages
-    assignedTo: String
+    type: String
 
     /// Required in SIGNING, DELIVERY, COMPLETED stages
     status: DeliverableStatus
 
+    /// Required in SIGNING, DELIVERY, COMPLETED stages
+    assignedToUserId: String
+
+    responsibleOrgId: String
+
+    /// Required in SIGNING, DELIVERY, COMPLETED stages
+    dueDate: ISODate
+
+    completedDate: ISODate
+
+    attachments: Document
+
+    metadata: Document
+
+    @required
+    createdByUserId: String
+
+    updatedByUserId: String
+
+    @required
     createdAt: ISODate
+
+    @required
     updatedAt: ISODate
 }
 
 /// Deal approval for stage transitions
 structure DealApproval {
     @required
-    approvalId: String
+    dealApprovalId: String
 
     @required
+    dealId: String
+
     dealVersionId: String
-
-    @required
-    targetStage: DealStage
 
     @required
     approverUserId: String
 
     @required
-    status: DealApprovalStatus
+    approvalStatus: DealApprovalStatus
+
+    approvalLevel: Integer
 
     comments: String
 
-    @required
-    timestamp: ISODate
-}
+    conditions: Document
 
-/// Deal revision metadata (references S3-stored content)
-structure DealRevision {
-    @required
-    revisionId: String
+    respondedAt: ISODate
+
+    expiresAt: ISODate
 
     @required
-    dealVersionId: String
+    createdByUserId: String
 
-    @required
-    s3Bucket: String
-
-    @required
-    s3Key: String
-
-    @required
-    contentType: String
-
-    @required
-    sizeBytes: Long
-
-    @required
-    createdBy: String
+    updatedByUserId: String
 
     @required
     createdAt: ISODate
 
-    /// Description of what changed
+    @required
+    updatedAt: ISODate
+}
+
+structure DealRevision {
+    @required
+    dealRevisionId: String
+
+    @required
+    dealId: String
+
+    @required
+    dealVersionId: String
+
+    /// Link to CRDT pipeline or external revision tracking system
+    externalRevisionId: String
+
+    @required
     description: String
+
+    /// Additional metadata about the change
+    changeMetadata: Document
+
+    @required
+    createdByUserId: String
+
+    @required
+    createdAt: ISODate
 }
 
 // Create Deal

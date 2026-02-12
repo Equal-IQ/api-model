@@ -36,10 +36,10 @@ structure File {
     fileId: FileId
 
     @required
-    orgId: String
+    ownerOrgId: String
 
     @required
-    uploadedBy: String
+    createdByUserId: String
 
     @required
     fileName: String
@@ -53,11 +53,14 @@ structure File {
     @required
     sizeBytes: Long
 
-    /// MIME type
+    @required
     fileType: String
 
     /// Virtual folder path
     folderPath: String
+
+    /// File description
+    description: String
 
     /// User-defined tags
     tags: StringList
@@ -68,15 +71,14 @@ structure File {
     /// Associated deal version if applicable
     dealVersionId: String
 
+    /// Additional metadata as JSON
+    metadata: Document
+
     @required
     createdAt: ISODate
 
     @required
     updatedAt: ISODate
-
-    /// Soft delete tracking
-    deletedAt: ISODate
-    deletedBy: String
 }
 
 /// Presigned URL response

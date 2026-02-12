@@ -69,12 +69,19 @@ export enum DataClassification {
 }
 
 export enum DealPermission {
-  VIEW = "VIEW",
-  EDIT_DRAFT = "EDIT_DRAFT",
-  COMMENT = "COMMENT",
-  SIGN = "SIGN",
-  SHARE = "SHARE",
-  MANAGE = "MANAGE"
+  view_deal = "view_deal",
+  edit_deal = "edit_deal",
+  delete_deal = "delete_deal",
+  manage_access = "manage_access",
+  approve_deal = "approve_deal",
+  create_version = "create_version",
+  view_ai_analysis = "view_ai_analysis",
+  view_revision_history = "view_revision_history",
+  export_deal = "export_deal",
+  manage_deliverables = "manage_deliverables",
+  comment_deal = "comment_deal",
+  view_financial = "view_financial",
+  edit_financial = "edit_financial"
 }
 
 export enum DealStage {
@@ -120,11 +127,14 @@ export enum EqCardType {
 }
 
 export enum FilePermission {
-  VIEW = "VIEW",
-  DOWNLOAD = "DOWNLOAD",
-  EDIT = "EDIT",
-  DELETE = "DELETE",
-  SHARE = "SHARE"
+  view_file = "view_file",
+  edit_file = "edit_file",
+  delete_file = "delete_file",
+  share_file = "share_file",
+  manage_access = "manage_access",
+  comment_file = "comment_file",
+  export_file = "export_file",
+  rename_file = "rename_file"
 }
 
 export enum InviteStatus {
@@ -146,8 +156,6 @@ export enum OrgPermission {
   manage_members = "manage_members",
   manage_billing = "manage_billing",
   manage_settings = "manage_settings",
-  view_all_contracts = "view_all_contracts",
-  manage_contracts = "manage_contracts",
   invite_users = "invite_users",
   manage_roles = "manage_roles",
   view_analytics = "view_analytics",
@@ -399,43 +407,49 @@ export type CreateOrgResponseContent = {
 
 export type Deal = {
   dealId: string;
-  orgId: string;
-  createdBy: string;
+  ownerUserId: string;
+  ownerOrgId?: string;
   currentVersionNumber: number;
-  currentStage: DealStage;
-  title?: string;
-  description?: string;
+  parentDealId?: string;
+  createdByUserId: string;
+  updatedByUserId?: string;
   createdAt: string;
   updatedAt: string;
 };
 
 export type DealAccess = {
-  accessId: string;
+  dealAccessId: string;
   dealId: string;
   grantedToOrgId: string;
   grantedToUserId?: string;
-  grantedBy: string;
+  grantedByUserId: string;
   grantedAt: string;
   expiresAt?: string;
   partyRole?: string;
   permissions: DealPermission[];
-  maxGrantablePermissions?: DealPermission[];
+  grantablePermissions?: DealPermission[];
   isDeny?: boolean;
-  revokedBy?: string;
+  revokedByUserId?: string;
   revokedAt?: string;
   revocationReason?: string;
-  isActive?: boolean;
+  metadata?: unknown;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type DealVersion = {
-  versionId: string;
+  dealVersionId: string;
   dealId: string;
   versionNumber: number;
   stage: DealStage;
-  createdBy: string;
-  createdAt: string;
+  versionLabel?: string;
+  content: unknown;
   changeReason?: string;
   metadata?: unknown;
+  createdByUserId: string;
+  approvedByUserId?: string;
+  createdAt: string;
+  approvedAt?: string;
 };
 
 export type DeclineOrgInviteRequestContent = {
@@ -473,13 +487,21 @@ export type DeleteOrgRequestContent = {
 export type Deliverable = {
   deliverableId: string;
   dealVersionId: string;
-  description: string;
+  name: string;
+  description?: string;
   source?: DeliverableSource;
-  dueDate?: string;
-  assignedTo?: string;
+  type?: string;
   status?: DeliverableStatus;
-  createdAt?: string;
-  updatedAt?: string;
+  assignedToUserId?: string;
+  responsibleOrgId?: string;
+  dueDate?: string;
+  completedDate?: string;
+  attachments?: unknown;
+  metadata?: unknown;
+  createdByUserId: string;
+  updatedByUserId?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type EmptyStructure = unknown;
@@ -567,38 +589,40 @@ export type ExtractionTermMap = { [key: string]: ExtractionTerm };
 
 export type File = {
   fileId: string;
-  orgId: string;
-  uploadedBy: string;
+  ownerOrgId: string;
+  createdByUserId: string;
   fileName: string;
   s3Key: string;
   s3Bucket: string;
   sizeBytes: number;
-  fileType?: string;
+  fileType: string;
   folderPath?: string;
+  description?: string;
   tags?: string[];
   dealId?: string;
   dealVersionId?: string;
+  metadata?: unknown;
   createdAt: string;
   updatedAt: string;
-  deletedAt?: string;
-  deletedBy?: string;
 };
 
 export type FileAccess = {
-  accessId: string;
+  fileAccessId: string;
   fileId: string;
   grantedToOrgId: string;
   grantedToUserId?: string;
-  grantedBy: string;
+  grantedByUserId: string;
   grantedAt: string;
   expiresAt?: string;
   permissions: FilePermission[];
-  maxGrantablePermissions?: FilePermission[];
+  grantablePermissions?: FilePermission[];
   isDeny?: boolean;
-  revokedBy?: string;
+  revokedByUserId?: string;
   revokedAt?: string;
   revocationReason?: string;
-  isActive?: boolean;
+  metadata?: unknown;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type FixedTermValue = {
@@ -788,7 +812,7 @@ export type GrantDealAccessRequestContent = {
   permissions: DealPermission[];
   partyRole?: string;
   expiresAt?: string;
-  maxGrantablePermissions?: DealPermission[];
+  grantablePermissions?: DealPermission[];
   isDeny?: boolean;
 };
 
@@ -802,7 +826,7 @@ export type GrantFileAccessRequestContent = {
   grantToUserId?: string;
   permissions: FilePermission[];
   expiresAt?: string;
-  maxGrantablePermissions?: FilePermission[];
+  grantablePermissions?: FilePermission[];
   isDeny?: boolean;
 };
 
@@ -1010,12 +1034,14 @@ export type Org = {
   orgId: string;
   name: string;
   type: string;
-  primaryOwner: string;
+  primaryOwnerId: string;
   description?: string;
   website?: string;
   logoUrl?: string;
   billingEmail?: string;
-  createdDate: string;
+  metadata?: unknown;
+  createdAt: string;
+  updatedAt: string;
   memberCount?: number;
   userRole?: OrgRole;
   contractCount?: number;
@@ -1037,18 +1063,20 @@ export type OrgCustomRole = {
 export type OrgCustomRoleMap = { [key: string]: OrgCustomRole };
 
 export type OrgInvite = {
-  inviteId: string;
+  orgInviteId: string;
   orgId: string;
   invitedEmail: string;
   role: OrgRole;
   customRoleId?: string;
   customRoleName?: string;
   customPermissions?: OrgPermission[];
-  invitedBy: string;
+  invitedByUserId: string;
   invitedByProfile?: UserProfile;
-  status: string;
-  createdDate: string;
-  expiresDate?: string;
+  status: InviteStatus;
+  createdAt: string;
+  updatedAt: string;
+  expiresAt?: string;
+  acceptedAt?: string;
 };
 
 export type OrgInviteMap = { [key: string]: OrgInvite };
@@ -1186,7 +1214,7 @@ export type UpdateDealAccessRequestContent = {
   dealId: string;
   accessId: string;
   permissions?: DealPermission[];
-  maxGrantablePermissions?: DealPermission[];
+  grantablePermissions?: DealPermission[];
   partyRole?: string;
   expiresAt?: string;
   isDeny?: boolean;
@@ -1228,7 +1256,7 @@ export type UpdateFileAccessRequestContent = {
   fileId: string;
   accessId: string;
   permissions?: FilePermission[];
-  maxGrantablePermissions?: FilePermission[];
+  grantablePermissions?: FilePermission[];
   partyRole?: string;
   expiresAt?: string;
   isDeny?: boolean;

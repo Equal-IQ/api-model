@@ -42,8 +42,6 @@ enum OrgPermission {
     MANAGE_MEMBERS = "manage_members"
     MANAGE_BILLING = "manage_billing"
     MANAGE_SETTINGS = "manage_settings"
-    VIEW_ALL_CONTRACTS = "view_all_contracts"
-    MANAGE_CONTRACTS = "manage_contracts"
     INVITE_USERS = "invite_users"
     MANAGE_ROLES = "manage_roles"
     VIEW_ANALYTICS = "view_analytics"
@@ -52,21 +50,31 @@ enum OrgPermission {
 
 /// Deal permissions
 enum DealPermission {
-    VIEW = "VIEW"
-    EDIT_DRAFT = "EDIT_DRAFT"
-    COMMENT = "COMMENT"
-    SIGN = "SIGN"
-    SHARE = "SHARE"
-    MANAGE = "MANAGE"
+    VIEW_DEAL = "view_deal"
+    EDIT_DEAL = "edit_deal"
+    DELETE_DEAL = "delete_deal"
+    MANAGE_ACCESS = "manage_access"
+    APPROVE_DEAL = "approve_deal"
+    CREATE_VERSION = "create_version"
+    VIEW_AI_ANALYSIS = "view_ai_analysis"
+    VIEW_REVISION_HISTORY = "view_revision_history"
+    EXPORT_DEAL = "export_deal"
+    MANAGE_DELIVERABLES = "manage_deliverables"
+    COMMENT_DEAL = "comment_deal"
+    VIEW_FINANCIAL = "view_financial"
+    EDIT_FINANCIAL = "edit_financial"
 }
 
 /// File permissions
 enum FilePermission {
-    VIEW = "VIEW"
-    DOWNLOAD = "DOWNLOAD"
-    EDIT = "EDIT"
-    DELETE = "DELETE"
-    SHARE = "SHARE"
+    VIEW_FILE = "view_file"
+    EDIT_FILE = "edit_file"
+    DELETE_FILE = "delete_file"
+    SHARE_FILE = "share_file"
+    MANAGE_ACCESS = "manage_access"
+    COMMENT_FILE = "comment_file"
+    EXPORT_FILE = "export_file"
+    RENAME_FILE = "rename_file"
 }
 
 list OrgPermissionList {
@@ -97,7 +105,7 @@ structure OrgMember {
 /// Organization invitation
 structure OrgInvite {
     @required
-    inviteId: String
+    orgInviteId: String
 
     @required
     orgId: String
@@ -113,16 +121,21 @@ structure OrgInvite {
     customPermissions: OrgPermissionList
 
     @required
-    invitedBy: UserId
+    invitedByUserId: UserId
     invitedByProfile: UserProfile
 
     @required
-    status: String
+    status: InviteStatus
 
     @required
-    createdDate: ISODate
+    createdAt: ISODate
 
-    expiresDate: ISODate
+    @required
+    updatedAt: ISODate
+
+    expiresAt: ISODate
+
+    acceptedAt: ISODate
 }
 
 /// Deal access resource (sub-resource of Deal)
@@ -137,7 +150,7 @@ resource DealAccessResource {
 /// Deal access control
 structure DealAccess {
     @required
-    accessId: AccessId
+    dealAccessId: AccessId
 
     @required
     dealId: DealId
@@ -149,7 +162,7 @@ structure DealAccess {
     grantedToUserId: String
 
     @required
-    grantedBy: String
+    grantedByUserId: String
 
     @required
     grantedAt: ISODate
@@ -164,18 +177,25 @@ structure DealAccess {
     permissions: DealPermissionList
 
     /// Maximum permissions this party can grant to others
-    maxGrantablePermissions: DealPermissionList
+    grantablePermissions: DealPermissionList
 
     /// Explicit deny (overrides all grants)
     isDeny: Boolean
 
     /// Revocation tracking
-    revokedBy: String
+    revokedByUserId: String
     revokedAt: ISODate
     revocationReason: String
 
-    /// Computed field for active status
-    isActive: Boolean
+    /// Additional metadata as JSON
+    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    metadata: Document
+
+    @required
+    createdAt: ISODate
+
+    @required
+    updatedAt: ISODate
 }
 
 /// File access resource (sub-resource of File)
@@ -190,7 +210,7 @@ resource FileAccessResource {
 /// File access control
 structure FileAccess {
     @required
-    accessId: AccessId
+    fileAccessId: AccessId
 
     @required
     fileId: FileId
@@ -202,7 +222,7 @@ structure FileAccess {
     grantedToUserId: String
 
     @required
-    grantedBy: String
+    grantedByUserId: String
 
     @required
     grantedAt: ISODate
@@ -214,18 +234,25 @@ structure FileAccess {
     permissions: FilePermissionList
 
     /// Maximum permissions this party can grant to others
-    maxGrantablePermissions: FilePermissionList
+    grantablePermissions: FilePermissionList
 
     /// Explicit deny (overrides all grants)
     isDeny: Boolean
 
     /// Revocation tracking
-    revokedBy: String
+    revokedByUserId: String
     revokedAt: ISODate
     revocationReason: String
 
-    /// Computed field for active status
-    isActive: Boolean
+    /// Additional metadata as JSON
+    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    metadata: Document
+
+    @required
+    createdAt: ISODate
+
+    @required
+    updatedAt: ISODate
 }
 
 // Grant Deal Access
@@ -251,7 +278,7 @@ operation GrantDealAccess {
         expiresAt: ISODate
 
         /// Permissions they can grant to others
-        maxGrantablePermissions: DealPermissionList
+        grantablePermissions: DealPermissionList
 
         /// Explicit deny
         isDeny: Boolean
@@ -346,7 +373,7 @@ operation UpdateDealAccess {
         accessId: AccessId
 
         permissions: DealPermissionList
-        maxGrantablePermissions: DealPermissionList
+        grantablePermissions: DealPermissionList
         partyRole: String
         expiresAt: ISODate
         isDeny: Boolean
@@ -385,7 +412,7 @@ operation GrantFileAccess {
         expiresAt: ISODate
 
         /// Permissions they can grant to others
-        maxGrantablePermissions: FilePermissionList
+        grantablePermissions: FilePermissionList
 
         /// Explicit deny
         isDeny: Boolean
@@ -480,7 +507,7 @@ operation UpdateFileAccess {
         accessId: AccessId
 
         permissions: FilePermissionList
-        maxGrantablePermissions: FilePermissionList
+        grantablePermissions: FilePermissionList
         partyRole: String
         expiresAt: ISODate
         isDeny: Boolean

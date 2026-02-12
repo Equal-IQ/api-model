@@ -1326,24 +1326,26 @@ export interface components {
         /** @description Main deal entity */
         Deal: {
             dealId: string;
-            orgId: string;
-            createdBy: string;
+            ownerUserId: string;
+            /** @description Organization context (nullable for personal deals) */
+            ownerOrgId?: string;
             currentVersionNumber: number;
-            currentStage: components["schemas"]["DealStage"];
-            title?: string;
-            description?: string;
+            /** @description Parent deal for hierarchies (master agreements, amendments) */
+            parentDealId?: string;
+            createdByUserId: string;
+            updatedByUserId?: string;
             createdAt: string;
             updatedAt: string;
         };
         /** @description Deal access control */
         DealAccess: {
             /** @description Access control identifier */
-            accessId: string;
+            dealAccessId: string;
             dealId: string;
             grantedToOrgId: string;
             /** @description Specific user within org (if omitted, entire org has access) */
             grantedToUserId?: string;
-            grantedBy: string;
+            grantedByUserId: string;
             grantedAt: string;
             /** @description Optional expiration */
             expiresAt?: string;
@@ -1351,15 +1353,18 @@ export interface components {
             partyRole?: string;
             permissions: components["schemas"]["DealPermission"][];
             /** @description Maximum permissions this party can grant to others */
-            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            grantablePermissions?: components["schemas"]["DealPermission"][];
             /** @description Explicit deny (overrides all grants) */
             isDeny?: boolean;
             /** @description Revocation tracking */
-            revokedBy?: string;
+            revokedByUserId?: string;
             revokedAt?: string;
             revocationReason?: string;
-            /** @description Computed field for active status */
-            isActive?: boolean;
+            /** @description Additional metadata as JSON
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
         };
         /**
          * @description Deal permissions
@@ -1373,15 +1378,23 @@ export interface components {
         DealStage: DealStage;
         /** @description Deal version for tracking changes through stages */
         DealVersion: {
-            versionId: string;
+            dealVersionId: string;
             dealId: string;
             versionNumber: number;
             stage: components["schemas"]["DealStage"];
-            createdBy: string;
-            createdAt: string;
+            /** @description User-friendly version label (e.g., "Q1 2024 Amendment") */
+            versionLabel?: string;
+            /** @description Main deal content (name, description, terms, financial details) */
+            content: unknown;
             changeReason?: string;
-            /** @description JSON metadata for version-specific data */
+            /** @description TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
             metadata?: unknown;
+            createdByUserId: string;
+            /** @description Approval workflow tracking */
+            approvedByUserId?: string;
+            createdAt: string;
+            /** @description When this version was approved */
+            approvedAt?: string;
         };
         DeclineOrgInviteRequestContent: {
             orgId: string;
@@ -1415,15 +1428,23 @@ export interface components {
         Deliverable: {
             deliverableId: string;
             dealVersionId: string;
-            description: string;
+            name: string;
+            description?: string;
             source?: components["schemas"]["DeliverableSource"];
+            type?: string;
+            status?: components["schemas"]["DeliverableStatus"];
+            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
+            assignedToUserId?: string;
+            responsibleOrgId?: string;
             /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
             dueDate?: string;
-            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
-            assignedTo?: string;
-            status?: components["schemas"]["DeliverableStatus"];
-            createdAt?: string;
-            updatedAt?: string;
+            completedDate?: string;
+            attachments?: unknown;
+            metadata?: unknown;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
         };
         /**
          * @description Deliverable source (for tracking origin)
@@ -1524,52 +1545,55 @@ export interface components {
         File: {
             /** @description File identifier */
             fileId: string;
-            orgId: string;
-            uploadedBy: string;
+            ownerOrgId: string;
+            createdByUserId: string;
             fileName: string;
             s3Key: string;
             s3Bucket: string;
             sizeBytes: number;
-            /** @description MIME type */
-            fileType?: string;
+            fileType: string;
             /** @description Virtual folder path */
             folderPath?: string;
+            /** @description File description */
+            description?: string;
             /** @description User-defined tags */
             tags?: string[];
             /** @description Associated deal if applicable */
             dealId?: string;
             /** @description Associated deal version if applicable */
             dealVersionId?: string;
+            /** @description Additional metadata as JSON */
+            metadata?: unknown;
             createdAt: string;
             updatedAt: string;
-            /** @description Soft delete tracking */
-            deletedAt?: string;
-            deletedBy?: string;
         };
         /** @description File access control */
         FileAccess: {
             /** @description Access control identifier */
-            accessId: string;
+            fileAccessId: string;
             /** @description File identifier */
             fileId: string;
             grantedToOrgId: string;
             /** @description Specific user within org (if omitted, entire org has access) */
             grantedToUserId?: string;
-            grantedBy: string;
+            grantedByUserId: string;
             grantedAt: string;
             /** @description Optional expiration */
             expiresAt?: string;
             permissions: components["schemas"]["FilePermission"][];
             /** @description Maximum permissions this party can grant to others */
-            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            grantablePermissions?: components["schemas"]["FilePermission"][];
             /** @description Explicit deny (overrides all grants) */
             isDeny?: boolean;
             /** @description Revocation tracking */
-            revokedBy?: string;
+            revokedByUserId?: string;
             revokedAt?: string;
             revocationReason?: string;
-            /** @description Computed field for active status */
-            isActive?: boolean;
+            /** @description Additional metadata as JSON
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
         };
         /**
          * @description File permissions
@@ -1751,7 +1775,7 @@ export interface components {
             /** @description Optional expiration */
             expiresAt?: string;
             /** @description Permissions they can grant to others */
-            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            grantablePermissions?: components["schemas"]["DealPermission"][];
             /** @description Explicit deny */
             isDeny?: boolean;
         };
@@ -1768,7 +1792,7 @@ export interface components {
             /** @description Optional expiration */
             expiresAt?: string;
             /** @description Permissions they can grant to others */
-            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            grantablePermissions?: components["schemas"]["FilePermission"][];
             /** @description Explicit deny */
             isDeny?: boolean;
         };
@@ -2005,12 +2029,16 @@ export interface components {
             orgId: string;
             name: string;
             type: string;
-            primaryOwner: string;
+            primaryOwnerId: string;
             description?: string;
             website?: string;
             logoUrl?: string;
             billingEmail?: string;
-            createdDate: string;
+            /** @description Additional metadata (UI preferences, etc.)
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
             memberCount?: number;
             userRole?: components["schemas"]["OrgRole"];
             contractCount?: number;
@@ -2032,18 +2060,20 @@ export interface components {
         };
         /** @description Organization invitation */
         OrgInvite: {
-            inviteId: string;
+            orgInviteId: string;
             orgId: string;
             invitedEmail: string;
             role: components["schemas"]["OrgRole"];
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
-            invitedBy: string;
+            invitedByUserId: string;
             invitedByProfile?: components["schemas"]["UserProfile"];
-            status: string;
-            createdDate: string;
-            expiresDate?: string;
+            status: components["schemas"]["InviteStatus"];
+            createdAt: string;
+            updatedAt: string;
+            expiresAt?: string;
+            acceptedAt?: string;
         };
         OrgInviteMap: {
             [key: string]: components["schemas"]["OrgInvite"];
@@ -2190,7 +2220,7 @@ export interface components {
             /** @description Access control identifier */
             accessId: string;
             permissions?: components["schemas"]["DealPermission"][];
-            maxGrantablePermissions?: components["schemas"]["DealPermission"][];
+            grantablePermissions?: components["schemas"]["DealPermission"][];
             partyRole?: string;
             expiresAt?: string;
             isDeny?: boolean;
@@ -2230,7 +2260,7 @@ export interface components {
             /** @description Access control identifier */
             accessId: string;
             permissions?: components["schemas"]["FilePermission"][];
-            maxGrantablePermissions?: components["schemas"]["FilePermission"][];
+            grantablePermissions?: components["schemas"]["FilePermission"][];
             partyRole?: string;
             expiresAt?: string;
             isDeny?: boolean;
@@ -5133,12 +5163,19 @@ export enum DataClassification {
     RESTRICTED = "RESTRICTED"
 }
 export enum DealPermission {
-    VIEW = "VIEW",
-    EDIT_DRAFT = "EDIT_DRAFT",
-    COMMENT = "COMMENT",
-    SIGN = "SIGN",
-    SHARE = "SHARE",
-    MANAGE = "MANAGE"
+    view_deal = "view_deal",
+    edit_deal = "edit_deal",
+    delete_deal = "delete_deal",
+    manage_access = "manage_access",
+    approve_deal = "approve_deal",
+    create_version = "create_version",
+    view_ai_analysis = "view_ai_analysis",
+    view_revision_history = "view_revision_history",
+    export_deal = "export_deal",
+    manage_deliverables = "manage_deliverables",
+    comment_deal = "comment_deal",
+    view_financial = "view_financial",
+    edit_financial = "edit_financial"
 }
 export enum DealStage {
     DRAFTING = "DRAFTING",
@@ -5177,11 +5214,14 @@ export enum EqCardType {
     B = "B"
 }
 export enum FilePermission {
-    VIEW = "VIEW",
-    DOWNLOAD = "DOWNLOAD",
-    EDIT = "EDIT",
-    DELETE = "DELETE",
-    SHARE = "SHARE"
+    view_file = "view_file",
+    edit_file = "edit_file",
+    delete_file = "delete_file",
+    share_file = "share_file",
+    manage_access = "manage_access",
+    comment_file = "comment_file",
+    export_file = "export_file",
+    rename_file = "rename_file"
 }
 export enum InviteStatus {
     pending = "pending",
@@ -5200,8 +5240,6 @@ export enum OrgPermission {
     manage_members = "manage_members",
     manage_billing = "manage_billing",
     manage_settings = "manage_settings",
-    view_all_contracts = "view_all_contracts",
-    manage_contracts = "manage_contracts",
     invite_users = "invite_users",
     manage_roles = "manage_roles",
     view_analytics = "view_analytics",

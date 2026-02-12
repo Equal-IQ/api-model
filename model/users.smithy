@@ -69,10 +69,7 @@ structure QuickAccess {
     @required
     referenceId: String
 
-    /// Custom display name (optional, falls back to entity name)
-    entryName: String
-
-    /// Pin type (null = unpinned, just recently accessed)
+    @required
     pinType: PinType
 
     @required
@@ -81,8 +78,11 @@ structure QuickAccess {
     @required
     createdAt: ISODate
 
-    /// Track for "recently viewed"
+    @required
     lastAccessedAt: ISODate
+
+    /// Additional metadata for extensibility
+    metadata: Document
 }
 
 // User operations
@@ -185,8 +185,10 @@ operation CreateQuickAccess {
         @required
         referenceId: String
 
-        entryName: String
+        @required
         pinType: PinType
+
+        @required
         sortOrder: Integer
     }
 
@@ -210,7 +212,6 @@ operation UpdateQuickAccess {
         @required
         quickAccessId: String
 
-        entryName: String
         pinType: PinType
         sortOrder: Integer
     }
