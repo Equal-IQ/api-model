@@ -12,60 +12,13 @@ export * from './xml-types';
 export * from './xml-utils';
 
 // Unwrapped enum definitions
-export enum AuditAction {
-  CREATE = "CREATE",
+export enum AuditOperation {
+  INSERT = "INSERT",
   UPDATE = "UPDATE",
   DELETE = "DELETE",
-  VIEW = "VIEW",
-  DOWNLOAD = "DOWNLOAD",
-  UPLOAD = "UPLOAD",
-  SHARE = "SHARE",
-  REVOKE = "REVOKE",
-  LOGIN = "LOGIN",
-  LOGOUT = "LOGOUT",
+  ACCESS = "ACCESS",
   EXPORT = "EXPORT",
-  IMPORT = "IMPORT",
-  SIGN = "SIGN",
-  APPROVE = "APPROVE",
-  REJECT = "REJECT"
-}
-
-export enum AuditEntityType {
-  USER = "USER",
-  ORGANIZATION = "ORGANIZATION",
-  DEAL = "DEAL",
-  FILE = "FILE",
-  PERMISSION = "PERMISSION",
-  INTEGRATION = "INTEGRATION",
-  BILLING = "BILLING",
-  SYSTEM = "SYSTEM"
-}
-
-export enum ContractStatus {
-  processing = "processing",
-  awaiting_upload = "awaiting_upload",
-  extracting_text = "extracting_text",
-  eq_generation = "eq_generation",
-  iq_generation = "iq_generation",
-  variable_extraction = "variable_extraction",
-  contract_markup = "contract_markup",
-  tts_generation = "tts_generation",
-  complete = "complete",
-  error = "error"
-}
-
-export enum ContractVariableType {
-  eq_term = "eq_term",
-  discovered_term = "discovered_term",
-  external_term = "external_term",
-  internal_citation = "internal_citation"
-}
-
-export enum DataClassification {
-  PUBLIC = "PUBLIC",
-  INTERNAL = "INTERNAL",
-  CONFIDENTIAL = "CONFIDENTIAL",
-  RESTRICTED = "RESTRICTED"
+  SHARE = "SHARE"
 }
 
 export enum DealPermission {
@@ -106,26 +59,6 @@ export enum DeliverableStatus {
   BLOCKED = "BLOCKED"
 }
 
-export enum DurationType {
-  fixed = "fixed",
-  indefinite = "indefinite",
-  renewable = "renewable",
-  other = "other"
-}
-
-export enum EqCardKey {
-  moneyYouReceive = "moneyYouReceive",
-  whatYouOwn = "whatYouOwn",
-  whatYoureResponsibleFor = "whatYoureResponsibleFor",
-  howLongThisDealLasts = "howLongThisDealLasts",
-  risksCostsLegalStuff = "risksCostsLegalStuff"
-}
-
-export enum EqCardType {
-  A = "A",
-  B = "B"
-}
-
 export enum FilePermission {
   view_file = "view_file",
   edit_file = "edit_file",
@@ -142,14 +75,6 @@ export enum InviteStatus {
   accepted = "accepted",
   declined = "declined",
   expired = "expired"
-}
-
-export enum IqModeSectionKey {
-  earnings = "earnings",
-  qualityOfRights = "qualityOfRights",
-  usageObligations = "usageObligations",
-  agreementLength = "agreementLength",
-  liabilitySafeguards = "liabilitySafeguards"
 }
 
 export enum OrgPermission {
@@ -172,11 +97,13 @@ export enum OrgRole {
   custom = "custom"
 }
 
-export enum SensitivityLevel {
-  LOW = "LOW",
-  MEDIUM = "MEDIUM",
-  HIGH = "HIGH",
-  CRITICAL = "CRITICAL"
+export enum RecordType {
+  NORMAL = "NORMAL",
+  META_AUDIT = "META_AUDIT",
+  UNKNOWN = "UNKNOWN",
+  CLEANUP = "CLEANUP",
+  EXPORT = "EXPORT",
+  SYSTEM = "SYSTEM"
 }
 
 export enum StatisticGrouping {
@@ -198,36 +125,23 @@ export type AcceptOrgInviteResponseContent = {
 };
 
 export type AuditLog = {
-  logId: string;
-  entityType: AuditEntityType;
-  entityId: string;
-  action: AuditAction;
-  performedBy: string;
-  timestamp: string;
-  ipAddress?: string;
-  userAgent?: string;
-  success: boolean;
-  dataClassification?: DataClassification;
-  sensitivityLevel?: SensitivityLevel;
-  changeDetails?: unknown;
-  errorReason?: string;
-  anonymized?: boolean;
-  pseudonymId?: string;
-  sessionId?: string;
-  orgId?: string;
-  relatedEntities?: unknown;
+  auditLogId: string;
+  tableName: string;
+  recordType: RecordType;
+  operation: AuditOperation;
+  fieldName?: string;
+  oldValue?: unknown;
+  newValue?: unknown;
+  changedBy: string;
+  changedAt: string;
+  metadata?: unknown;
 };
 
 export type AuditStatistics = {
   totalEvents: number;
-  successfulEvents: number;
-  failedEvents: number;
-  byEntityType?: unknown;
-  byAction?: unknown;
+  byTable?: unknown;
+  byOperation?: unknown;
   topUsers?: unknown;
-  topEntities?: unknown;
-  securityEvents?: number;
-  complianceEvents?: number;
 };
 
 export type AuthenticationErrorResponseContent = {
@@ -238,81 +152,6 @@ export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
 };
-
-export type ContractAnalysisRecord = {
-  contractId: string;
-  name: string;
-  type: string;
-  status: ContractStatus;
-  uploadedOn: string;
-  ownerId: string;
-  eqCards?: EqModeData;
-  iqData: IqModeData;
-  extractedType?: string;
-  parties?: string[];
-  terms?: ExtractionTermMap;
-  variables?: ContractVariableMap;
-  contractTexts?: ContractTexts;
-  sharedUsers?: SharedUserDetails[];
-  hasTTS?: boolean;
-  isSpecial?: boolean;
-};
-
-export type ContractExtractionResult = {
-  extractedType?: string;
-  parties?: string[];
-  terms?: ExtractionTermMap;
-  variables?: ContractVariableMap;
-  contractTexts?: ContractTexts;
-};
-
-export type ContractMetadata = {
-  contractId: string;
-  name: string;
-  type: string;
-  status: ContractStatus;
-  uploadedOn: string;
-  ownerId: string;
-  ownerOrgId?: string;
-  sharedUsers?: SharedUserDetails[];
-  isOwner?: boolean;
-  hasTTS?: boolean;
-  isSpecial?: boolean;
-};
-
-export type ContractSummaryItem = {
-  contractId: string;
-  name: string;
-  uploadedOn: number;
-  type: string;
-  status: ContractStatus;
-  isOwner: boolean;
-  ownerId: string;
-  sharedWith?: string[];
-  sharedUsers?: string[];
-  sharedEmails?: string[];
-};
-
-export type ContractTexts = {
-  originalText?: PlainText;
-  taggedText?: TaggedText;
-};
-
-export type ContractVariable = {
-  name: string;
-  type: ContractVariableType;
-  id: string;
-  value?: string;
-  level?: number;
-  confidence?: number;
-  firstOccurrence?: number;
-  context?: string;
-  variations?: string[];
-  referencedSection?: string;
-  definitionCitation?: string;
-};
-
-export type ContractVariableMap = { [key: string]: ContractVariable };
 
 export type CreateDealRequestContent = {
   orgId: string;
@@ -409,7 +248,6 @@ export type Deal = {
   dealId: string;
   ownerUserId: string;
   ownerOrgId?: string;
-  currentVersionNumber: number;
   parentDealId?: string;
   createdByUserId: string;
   updatedByUserId?: string;
@@ -442,9 +280,7 @@ export type DealVersion = {
   dealId: string;
   versionNumber: number;
   stage: DealStage;
-  versionLabel?: string;
   content: unknown;
-  changeReason?: string;
   metadata?: unknown;
   createdByUserId: string;
   approvedByUserId?: string;
@@ -455,14 +291,6 @@ export type DealVersion = {
 export type DeclineOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
-};
-
-export type DeleteContractRequestContent = {
-  contractId: string;
-};
-
-export type DeleteContractResponseContent = {
-  success: boolean;
 };
 
 export type DeleteDealRequestContent = {
@@ -490,13 +318,11 @@ export type Deliverable = {
   name: string;
   description?: string;
   source?: DeliverableSource;
-  type?: string;
-  status?: DeliverableStatus;
+  status?: string;
   assignedToUserId?: string;
   responsibleOrgId?: string;
   dueDate?: string;
   completedDate?: string;
-  attachments?: unknown;
   metadata?: unknown;
   createdByUserId: string;
   updatedByUserId?: string;
@@ -504,104 +330,21 @@ export type Deliverable = {
   updatedAt: string;
 };
 
-export type EmptyStructure = unknown;
-
-export type EqCardUniqueData = {
-  MONEY_RECEIVED: EqMoneyCard;
-} | {
-  OWNERSHIP: EqOwnershipCard;
-} | {
-  RESPONSIBILITIES: EqResponsibilitiesCard;
-} | {
-  DURATION: EqDurationCard;
-} | {
-  LEGAL: EqLegalCard;
-} | {
-  EMPTY: EmptyStructure;
-};
-
-export type EqDurationCard = {
-  durationType: DurationType;
-  durationText: string;
-  durationDetails?: SimpleTermDescription[];
-};
-
-export type EqLegalCard = {
-  risks: string;
-  costs: string;
-  legal: string;
-};
-
-export type EqModeCard = {
-  id: EqCardKey;
-  title: string;
-  type: EqCardType;
-  cardUniqueData: EqCardUniqueData;
-  eqTitle?: string;
-  subTitle?: string;
-  totalAdvance?: string;
-  items?: EqModeItem[];
-  audioSrc?: string;
-  ttsSrcUrl?: string;
-};
-
-export type EqModeCardMap = { [key: string]: EqModeCard };
-
-export type EqModeData = {
-  cards?: EqModeCardMap;
-};
-
-export type EqModeItem = {
-  title?: string;
-  value?: string;
-};
-
-export type EqMoneyCard = {
-  majorNumber: string;
-  paidAfterList: string[];
-};
-
-export type EqOwnershipCard = {
-  ownershipTerms: SimpleTermDescription[];
-};
-
-export type EqResponsibilitiesCard = {
-  responsibilities: SimpleTermDescription[];
-};
-
-export type ExposeTypesResponseContent = {
-  contractAnalysisRecord?: ContractAnalysisRecord;
-};
-
-export type ExtractionTerm = {
-  name: string;
-  definition: string;
-  unitType: string;
-  explanation: string;
-  notes: string;
-  citation: string;
-  fixedValues?: FixedValueTermInference;
-  fixedValueGuideline?: string;
-  originalValue?: string;
-};
-
-export type ExtractionTermMap = { [key: string]: ExtractionTerm };
-
 export type File = {
   fileId: string;
-  ownerOrgId: string;
+  ownerUserId: string;
+  ownerOrgId?: string;
   createdByUserId: string;
   fileName: string;
   s3Key: string;
   s3Bucket: string;
   sizeBytes: number;
   fileType: string;
-  folderPath?: string;
   description?: string;
-  tags?: string[];
   dealId?: string;
   dealVersionId?: string;
   metadata?: unknown;
+  updatedByUserId?: string;
   createdAt: string;
   updatedAt: string;
 };
@@ -623,19 +366,6 @@ export type FileAccess = {
   metadata?: unknown;
   createdAt: string;
   updatedAt: string;
-};
-
-export type FixedTermValue = {
-  unit: string;
-  value: string;
-  name?: string;
-  numericValue?: number;
-  condition?: string;
-};
-
-export type FixedValueTermInference = {
-  primary: FixedTermValue;
-  subterms?: FixedTermValue[];
 };
 
 export type GenerateDownloadUrlRequestContent = {
@@ -668,7 +398,7 @@ export type GetAuditLogResponseContent = {
 };
 
 export type GetAuditStatisticsRequestContent = {
-  orgId?: string;
+  tableName?: string;
   startDate: string;
   endDate: string;
   groupBy?: StatisticGrouping;
@@ -677,31 +407,6 @@ export type GetAuditStatisticsRequestContent = {
 export type GetAuditStatisticsResponseContent = {
   statistics: AuditStatistics;
   timeSeries?: TimeSeriesPoint[];
-};
-
-export type GetContractReadURLRequestContent = {
-  contractId: string;
-};
-
-export type GetContractReadURLResponseContent = {
-  url: string;
-};
-
-export type GetContractRequestContent = {
-  contractId: string;
-};
-
-export type GetContractResponseContent = {
-  contractId: string;
-  ownerId: string;
-  ownerOrgId?: string;
-  name: string;
-  type: string;
-  eqData?: EqModeData;
-  iqData?: IqModeData;
-  contractExtraction?: ContractExtractionResult;
-  sharedWith?: string[];
-  isOwner?: boolean;
 };
 
 export type GetDealRequestContent = {
@@ -781,30 +486,6 @@ export type GetProfileResponseContent = {
   profile: UserProfile;
 };
 
-export type GetSpecialContractRequestContent = {
-  contractId: string;
-};
-
-export type GetSpecialContractResponseContent = {
-  contractId: string;
-  name: string;
-  type: string;
-  eqmode: unknown;
-  sections: unknown;
-  isOwner: boolean;
-  ownerId: string;
-  sharedWith: string[];
-};
-
-export type GetUploadURLRequestContent = {
-  name: string;
-  orgId?: string;
-};
-
-export type GetUploadURLResponseContent = {
-  url_info: PresignedPostData;
-};
-
 export type GrantDealAccessRequestContent = {
   dealId: string;
   grantToOrgId: string;
@@ -838,42 +519,14 @@ export type InternalServerErrorResponseContent = {
   message: string;
 };
 
-export type IqModeData = {
-  iqModeData?: IqModePerspectiveMap;
-};
-
-export type IqModePerspective = {
-  sections: IqModeSectionMap;
-};
-
-export type IqModePerspectiveMap = { [key: string]: IqModePerspective };
-
-export type IqModeQuestion = {
-  question: TaggedText;
-  answer: TaggedText;
-  ttsSrcUrl?: string;
-};
-
-export type IqModeSection = {
-  id: IqModeSectionKey;
-  sectionTitle: string;
-  questions: IqModeQuestion[];
-};
-
-export type IqModeSectionMap = { [key: string]: IqModeSection };
-
 export type ListAuditLogsRequestContent = {
-  entityType?: AuditEntityType;
-  entityId?: string;
-  performedBy?: string;
-  orgId?: string;
-  action?: AuditAction;
-  success?: boolean;
+  tableName?: string;
+  recordType?: RecordType;
+  operation?: AuditOperation;
+  changedBy?: string;
   startDate?: string;
   endDate?: string;
-  minSensitivityLevel?: SensitivityLevel;
-  dataClassification?: DataClassification;
-  sessionId?: string;
+  fieldName?: string;
   nextToken?: string;
   limit?: number;
 };
@@ -881,17 +534,6 @@ export type ListAuditLogsRequestContent = {
 export type ListAuditLogsResponseContent = {
   logs: AuditLog[];
   nextToken?: string;
-  statistics?: AuditStatistics;
-};
-
-export type ListContractsRequestContent = {
-  orgId?: string;
-};
-
-export type ListContractsResponseContent = {
-  owned?: ContractSummaryItem[];
-  shared?: ContractSummaryItem[];
-  contracts?: ContractMetadata[];
 };
 
 export type ListDealAccessRequestContent = {
@@ -1015,11 +657,6 @@ export type ListOrgMembersResponseContent = {
   nextToken?: string;
 };
 
-export type ListSpecialContractsResponseContent = {
-  owned: ContractSummaryItem[];
-  shared: ContractSummaryItem[];
-};
-
 export type ListUserOrganizationsRequestContent = {
   nextToken?: string;
   limit?: number;
@@ -1104,10 +741,6 @@ export type PingResponseContent = {
   message: string;
 };
 
-export type PlainText = {
-  text: string;
-};
-
 export type PresignedPostData = {
   url: string;
   fields: unknown;
@@ -1118,10 +751,6 @@ export type PresignedUrl = {
   expiresAt: string;
   method?: string;
   headers?: unknown;
-};
-
-export type ProcessingIncompleteErrorResponseContent = {
-  message: string;
 };
 
 export type RemoveOrgMemberRequestContent = {
@@ -1155,37 +784,6 @@ export type RevokeFileAccessRequestContent = {
   reason: string;
 };
 
-export type ShareContractRequestContent = {
-  contractId: string;
-  emailsToAdd?: string[];
-  emailsToRemove?: string[];
-};
-
-export type ShareContractResponseContent = {
-  success: boolean;
-  contractId: string;
-  sharedWith: SharedUserDetails[];
-  added?: string[];
-  removed?: string[];
-  invalidRemoves?: string[];
-};
-
-export type SharedUserDetails = {
-  sharedWithUserId: string;
-  sharedByUserId: string;
-  sharedWithUserEmail: string;
-  sharedTime: number;
-};
-
-export type SimpleTermDescription = {
-  title: string;
-  description: string;
-};
-
-export type TaggedText = {
-  text: string;
-};
-
 export type TimeSeriesPoint = {
   timestamp: string;
   count: number;
@@ -1199,15 +797,6 @@ export type TransferOrgOwnershipRequestContent = {
 
 export type TransferOrgOwnershipResponseContent = {
   org: Org;
-};
-
-export type UpdateContractRequestContent = {
-  contractId: string;
-  name: string;
-};
-
-export type UpdateContractResponseContent = {
-  success: boolean;
 };
 
 export type UpdateDealAccessRequestContent = {

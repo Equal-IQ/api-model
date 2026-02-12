@@ -14,51 +14,24 @@ use equaliq#InternalServerError
 /// Audit log identifier
 string AuditLogId with [UuidLikeMixin]
 
-/// Entity types for audit logging
-enum AuditEntityType {
-    USER = "USER"
-    ORGANIZATION = "ORGANIZATION"
-    DEAL = "DEAL"
-    FILE = "FILE"
-    PERMISSION = "PERMISSION"
-    INTEGRATION = "INTEGRATION"
-    BILLING = "BILLING"
+/// Record types for audit log entries
+enum RecordType {
+    NORMAL = "NORMAL"
+    META_AUDIT = "META_AUDIT"
+    UNKNOWN = "UNKNOWN"
+    CLEANUP = "CLEANUP"
+    EXPORT = "EXPORT"
     SYSTEM = "SYSTEM"
 }
 
-/// Action types for audit logging
-enum AuditAction {
-    CREATE = "CREATE"
+/// Database operations for audit tracking
+enum AuditOperation {
+    INSERT = "INSERT"
     UPDATE = "UPDATE"
     DELETE = "DELETE"
-    VIEW = "VIEW"
-    DOWNLOAD = "DOWNLOAD"
-    UPLOAD = "UPLOAD"
-    SHARE = "SHARE"
-    REVOKE = "REVOKE"
-    LOGIN = "LOGIN"
-    LOGOUT = "LOGOUT"
+    ACCESS = "ACCESS"
     EXPORT = "EXPORT"
-    IMPORT = "IMPORT"
-    SIGN = "SIGN"
-    APPROVE = "APPROVE"
-    REJECT = "REJECT"
-}
-
-/// Data classification levels
-enum DataClassification {
-    PUBLIC = "PUBLIC"
-    INTERNAL = "INTERNAL"
-    CONFIDENTIAL = "CONFIDENTIAL"
-    RESTRICTED = "RESTRICTED"
-}
-
-/// Sensitivity levels
-enum SensitivityLevel {
-    LOW = "LOW"
-    MEDIUM = "MEDIUM"
-    HIGH = "HIGH"
-    CRITICAL = "CRITICAL"
+    SHARE = "SHARE"
 }
 
 /// Audit log resource
@@ -69,61 +42,37 @@ resource AuditLogResource {
     operations: []
 }
 
-/// Audit log entry
+/// Audit log entry for field-level change tracking
 structure AuditLog {
     @required
-    logId: AuditLogId
+    auditLogId: AuditLogId
 
     @required
-    entityType: AuditEntityType
+    tableName: String
 
     @required
-    entityId: String
+    recordType: RecordType
 
     @required
-    action: AuditAction
+    operation: AuditOperation
+
+    /// Specific field that changed (for UPDATE operations)
+    fieldName: String
+
+    /// Previous value (JSON)
+    oldValue: Document
+
+    /// New value (JSON)
+    newValue: Document
 
     @required
-    performedBy: String
+    changedBy: String
 
     @required
-    timestamp: ISODate
+    changedAt: ISODate
 
-    /// IP address of the user
-    ipAddress: String
-
-    /// User agent string
-    userAgent: String
-
-    @required
-    success: Boolean
-
-    /// Data classification of the affected resource
-    dataClassification: DataClassification
-
-    /// Sensitivity level of the operation
-    sensitivityLevel: SensitivityLevel
-
-    /// JSON object with change details
-    changeDetails: Document
-
-    /// Error reason if success is false
-    errorReason: String
-
-    /// Whether PII was anonymized
-    anonymized: Boolean
-
-    /// Pseudonymized user identifier
-    pseudonymId: String
-
-    /// Session identifier for correlation
-    sessionId: String
-
-    /// Organization context
-    orgId: String
-
-    /// Related entity references
-    relatedEntities: Document
+    /// Additional metadata for extensibility
+    metadata: Document
 }
 
 // List Audit Logs
@@ -133,17 +82,13 @@ structure AuditLog {
 operation ListAuditLogs {
     input := {
         // Filters
-        entityType: AuditEntityType
-        entityId: String
-        performedBy: String
-        orgId: String
-        action: AuditAction
-        success: Boolean
+        tableName: String
+        recordType: RecordType
+        operation: AuditOperation
+        changedBy: String
         startDate: ISODate
         endDate: ISODate
-        minSensitivityLevel: SensitivityLevel
-        dataClassification: DataClassification
-        sessionId: String
+        fieldName: String
 
         // Pagination
         nextToken: String
@@ -156,9 +101,6 @@ operation ListAuditLogs {
 
         /// Token for next page
         nextToken: String
-
-        /// Aggregated statistics
-        statistics: AuditStatistics
     }
 
     errors: [
@@ -193,8 +135,8 @@ operation GetAuditLog {
 @http(method: "POST", uri: "/audit/statistics")
 operation GetAuditStatistics {
     input := {
-        /// Filter by organization
-        orgId: String
+        /// Filter by table
+        tableName: String
 
         /// Date range for statistics
         @required
@@ -235,29 +177,14 @@ structure AuditStatistics {
     @required
     totalEvents: Long
 
-    @required
-    successfulEvents: Long
+    /// Breakdown by table name
+    byTable: Document
 
-    @required
-    failedEvents: Long
-
-    /// Breakdown by entity type
-    byEntityType: Document
-
-    /// Breakdown by action
-    byAction: Document
+    /// Breakdown by operation
+    byOperation: Document
 
     /// Most active users
     topUsers: Document
-
-    /// Most accessed entities
-    topEntities: Document
-
-    /// Security events count
-    securityEvents: Long
-
-    /// Compliance events count
-    complianceEvents: Long
 }
 
 /// Time series data point

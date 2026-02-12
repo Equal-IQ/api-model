@@ -292,22 +292,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/deleteContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/files/access/grant": {
         parameters: {
             query?: never;
@@ -484,38 +468,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/getContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getContractReadURL": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetContractReadURL"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/getProfile": {
         parameters: {
             query?: never;
@@ -542,70 +494,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetProfilePicture"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getSpecialContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetSpecialContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/listContracts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListContracts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/listSpecialContracts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListSpecialContracts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/notARealEndpoint": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ExposeTypes"];
         delete?: never;
         options?: never;
         head?: never;
@@ -996,38 +884,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/shareContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ShareContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/updateContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/updateProfile": {
         parameters: {
             query?: never;
@@ -1060,22 +916,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/uploadURL": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetUploadURL"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1088,64 +928,38 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
-        /**
-         * @description Action types for audit logging
-         * @enum {string}
-         */
-        AuditAction: AuditAction;
-        /**
-         * @description Entity types for audit logging
-         * @enum {string}
-         */
-        AuditEntityType: AuditEntityType;
-        /** @description Audit log entry */
+        /** @description Audit log entry for field-level change tracking */
         AuditLog: {
             /** @description Audit log identifier */
-            logId: string;
-            entityType: components["schemas"]["AuditEntityType"];
-            entityId: string;
-            action: components["schemas"]["AuditAction"];
-            performedBy: string;
-            timestamp: string;
-            /** @description IP address of the user */
-            ipAddress?: string;
-            /** @description User agent string */
-            userAgent?: string;
-            success: boolean;
-            dataClassification?: components["schemas"]["DataClassification"];
-            sensitivityLevel?: components["schemas"]["SensitivityLevel"];
-            /** @description JSON object with change details */
-            changeDetails?: unknown;
-            /** @description Error reason if success is false */
-            errorReason?: string;
-            /** @description Whether PII was anonymized */
-            anonymized?: boolean;
-            /** @description Pseudonymized user identifier */
-            pseudonymId?: string;
-            /** @description Session identifier for correlation */
-            sessionId?: string;
-            /** @description Organization context */
-            orgId?: string;
-            /** @description Related entity references */
-            relatedEntities?: unknown;
+            auditLogId: string;
+            tableName: string;
+            recordType: components["schemas"]["RecordType"];
+            operation: components["schemas"]["AuditOperation"];
+            /** @description Specific field that changed (for UPDATE operations) */
+            fieldName?: string;
+            /** @description Previous value (JSON) */
+            oldValue?: unknown;
+            /** @description New value (JSON) */
+            newValue?: unknown;
+            changedBy: string;
+            changedAt: string;
+            /** @description Additional metadata for extensibility */
+            metadata?: unknown;
         };
+        /**
+         * @description Database operations for audit tracking
+         * @enum {string}
+         */
+        AuditOperation: AuditOperation;
         /** @description Audit statistics */
         AuditStatistics: {
             totalEvents: number;
-            successfulEvents: number;
-            failedEvents: number;
-            /** @description Breakdown by entity type */
-            byEntityType?: unknown;
-            /** @description Breakdown by action */
-            byAction?: unknown;
+            /** @description Breakdown by table name */
+            byTable?: unknown;
+            /** @description Breakdown by operation */
+            byOperation?: unknown;
             /** @description Most active users */
             topUsers?: unknown;
-            /** @description Most accessed entities */
-            topEntities?: unknown;
-            /** @description Security events count */
-            securityEvents?: number;
-            /** @description Compliance events count */
-            complianceEvents?: number;
         };
         /** @description Common error structures used across all operations */
         AuthenticationErrorResponseContent: {
@@ -1155,83 +969,6 @@ export interface components {
             orgId: string;
             inviteId: string;
         };
-        ContractAnalysisRecord: {
-            contractId: string;
-            name: string;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            uploadedOn: string;
-            ownerId: string;
-            eqCards?: components["schemas"]["EqModeData"];
-            iqData: components["schemas"]["IqModeData"];
-            extractedType?: string;
-            parties?: string[];
-            terms?: components["schemas"]["ExtractionTermMap"];
-            variables?: components["schemas"]["ContractVariableMap"];
-            contractTexts?: components["schemas"]["ContractTexts"];
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
-            hasTTS?: boolean;
-            isSpecial?: boolean;
-        };
-        ContractExtractionResult: {
-            /** @description The contract type here is the one extracted by the model, not necessarily the one set by user */
-            extractedType?: string;
-            parties?: string[];
-            terms?: components["schemas"]["ExtractionTermMap"];
-            variables?: components["schemas"]["ContractVariableMap"];
-            contractTexts?: components["schemas"]["ContractTexts"];
-        };
-        ContractMetadata: {
-            contractId: string;
-            name: string;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            uploadedOn: string;
-            ownerId: string;
-            ownerOrgId?: string;
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
-            isOwner?: boolean;
-            hasTTS?: boolean;
-            isSpecial?: boolean;
-        };
-        /** @enum {string} */
-        ContractStatus: ContractStatus;
-        ContractSummaryItem: {
-            contractId: string;
-            name: string;
-            /** Format: double */
-            uploadedOn: number;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith?: string[];
-            sharedUsers?: string[];
-            sharedEmails?: string[];
-        };
-        ContractTexts: {
-            originalText?: components["schemas"]["PlainText"];
-            taggedText?: components["schemas"]["TaggedText"];
-        };
-        ContractVariable: {
-            name: string;
-            type: components["schemas"]["ContractVariableType"];
-            id: string;
-            value?: string;
-            level?: number;
-            /** Format: float */
-            confidence?: number;
-            firstOccurrence?: number;
-            context?: string;
-            variations?: string[];
-            referencedSection?: string;
-            definitionCitation?: string;
-        };
-        ContractVariableMap: {
-            [key: string]: components["schemas"]["ContractVariable"];
-        };
-        /** @enum {string} */
-        ContractVariableType: ContractVariableType;
         CreateDealRequestContent: {
             orgId: string;
             title: string;
@@ -1318,18 +1055,12 @@ export interface components {
         CreateOrgResponseContent: {
             org: components["schemas"]["Org"];
         };
-        /**
-         * @description Data classification levels
-         * @enum {string}
-         */
-        DataClassification: DataClassification;
         /** @description Main deal entity */
         Deal: {
             dealId: string;
             ownerUserId: string;
             /** @description Organization context (nullable for personal deals) */
             ownerOrgId?: string;
-            currentVersionNumber: number;
             /** @description Parent deal for hierarchies (master agreements, amendments) */
             parentDealId?: string;
             createdByUserId: string;
@@ -1382,12 +1113,9 @@ export interface components {
             dealId: string;
             versionNumber: number;
             stage: components["schemas"]["DealStage"];
-            /** @description User-friendly version label (e.g., "Q1 2024 Amendment") */
-            versionLabel?: string;
             /** @description Main deal content (name, description, terms, financial details) */
             content: unknown;
-            changeReason?: string;
-            /** @description TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            /** @description Metadata for extensibility during beta */
             metadata?: unknown;
             createdByUserId: string;
             /** @description Approval workflow tracking */
@@ -1399,12 +1127,6 @@ export interface components {
         DeclineOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
-        };
-        DeleteContractRequestContent: {
-            contractId: string;
-        };
-        DeleteContractResponseContent: {
-            success: boolean;
         };
         DeleteDealRequestContent: {
             dealId: string;
@@ -1431,15 +1153,12 @@ export interface components {
             name: string;
             description?: string;
             source?: components["schemas"]["DeliverableSource"];
-            type?: string;
-            status?: components["schemas"]["DeliverableStatus"];
-            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
+            /** @description Status as free-form string for flexibility */
+            status?: string;
             assignedToUserId?: string;
             responsibleOrgId?: string;
-            /** @description Required in SIGNING, DELIVERY, COMPLETED stages */
             dueDate?: string;
             completedDate?: string;
-            attachments?: unknown;
             metadata?: unknown;
             createdByUserId: string;
             updatedByUserId?: string;
@@ -1456,114 +1175,28 @@ export interface components {
          * @enum {string}
          */
         DeliverableStatus: DeliverableStatus;
-        /** @enum {string} */
-        DurationType: DurationType;
-        /** @description Common types and structures shared across all operations */
-        EmptyStructure: Record<string, never>;
-        /** @enum {string} */
-        EqCardKey: EqCardKey;
-        /** @enum {string} */
-        EqCardType: EqCardType;
-        EqCardUniqueData: {
-            MONEY_RECEIVED: components["schemas"]["EqMoneyCard"];
-        } | {
-            OWNERSHIP: components["schemas"]["EqOwnershipCard"];
-        } | {
-            RESPONSIBILITIES: components["schemas"]["EqResponsibilitiesCard"];
-        } | {
-            DURATION: components["schemas"]["EqDurationCard"];
-        } | {
-            LEGAL: components["schemas"]["EqLegalCard"];
-        } | {
-            EMPTY: components["schemas"]["EmptyStructure"];
-        };
-        EqDurationCard: {
-            durationType: components["schemas"]["DurationType"];
-            durationText: string;
-            durationDetails?: components["schemas"]["SimpleTermDescription"][];
-        };
-        EqLegalCard: {
-            risks: string;
-            costs: string;
-            legal: string;
-        };
-        EqModeCard: {
-            id: components["schemas"]["EqCardKey"];
-            title: string;
-            type: components["schemas"]["EqCardType"];
-            cardUniqueData: components["schemas"]["EqCardUniqueData"];
-            /** @description Deprecated, use subTitle Instead */
-            eqTitle?: string;
-            subTitle?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            totalAdvance?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            items?: components["schemas"]["EqModeItem"][];
-            /** @description Deprecated, use the ttsSrcUrl */
-            audioSrc?: string;
-            ttsSrcUrl?: string;
-        };
-        EqModeCardMap: {
-            [key: string]: components["schemas"]["EqModeCard"];
-        };
-        EqModeData: {
-            cards?: components["schemas"]["EqModeCardMap"];
-        };
-        /** @description Deprecated */
-        EqModeItem: {
-            title?: string;
-            value?: string;
-        };
-        EqMoneyCard: {
-            majorNumber: string;
-            paidAfterList: string[];
-        };
-        EqOwnershipCard: {
-            ownershipTerms: components["schemas"]["SimpleTermDescription"][];
-        };
-        EqResponsibilitiesCard: {
-            responsibilities: components["schemas"]["SimpleTermDescription"][];
-        };
-        ExposeTypesResponseContent: {
-            contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
-        };
-        ExtractionTerm: {
-            name: string;
-            definition: string;
-            unitType: string;
-            explanation: string;
-            notes: string;
-            citation: string;
-            fixedValues?: components["schemas"]["FixedValueTermInference"];
-            fixedValueGuideline?: string;
-            originalValue?: string;
-        };
-        ExtractionTermMap: {
-            [key: string]: components["schemas"]["ExtractionTerm"];
-        };
-        /** @description File entity */
+        /** @description File entity with dual-ownership pattern */
         File: {
             /** @description File identifier */
             fileId: string;
-            ownerOrgId: string;
+            ownerUserId: string;
+            /** @description Organization context (nullable for personal files) */
+            ownerOrgId?: string;
             createdByUserId: string;
             fileName: string;
             s3Key: string;
             s3Bucket: string;
             sizeBytes: number;
             fileType: string;
-            /** @description Virtual folder path */
-            folderPath?: string;
             /** @description File description */
             description?: string;
-            /** @description User-defined tags */
-            tags?: string[];
-            /** @description Associated deal if applicable */
+            /** @description Associated deal if applicable (mutually exclusive with dealVersionId) */
             dealId?: string;
-            /** @description Associated deal version if applicable */
+            /** @description Associated deal version if applicable (mutually exclusive with dealId) */
             dealVersionId?: string;
             /** @description Additional metadata as JSON */
             metadata?: unknown;
+            updatedByUserId?: string;
             createdAt: string;
             updatedAt: string;
         };
@@ -1600,18 +1233,6 @@ export interface components {
          * @enum {string}
          */
         FilePermission: FilePermission;
-        FixedTermValue: {
-            unit: string;
-            value: string;
-            name?: string;
-            /** Format: float */
-            numericValue?: number;
-            condition?: string;
-        };
-        FixedValueTermInference: {
-            primary: components["schemas"]["FixedTermValue"];
-            subterms?: components["schemas"]["FixedTermValue"][];
-        };
         GenerateDownloadUrlRequestContent: {
             /** @description File identifier */
             fileId: string;
@@ -1644,8 +1265,8 @@ export interface components {
             auditLog: components["schemas"]["AuditLog"];
         };
         GetAuditStatisticsRequestContent: {
-            /** @description Filter by organization */
-            orgId?: string;
+            /** @description Filter by table */
+            tableName?: string;
             /** @description Date range for statistics */
             startDate: string;
             endDate: string;
@@ -1655,27 +1276,6 @@ export interface components {
             statistics: components["schemas"]["AuditStatistics"];
             /** @description Time series data if groupBy is specified */
             timeSeries?: components["schemas"]["TimeSeriesPoint"][];
-        };
-        GetContractReadURLRequestContent: {
-            contractId: string;
-        };
-        GetContractReadURLResponseContent: {
-            url: string;
-        };
-        GetContractRequestContent: {
-            contractId: string;
-        };
-        GetContractResponseContent: {
-            contractId: string;
-            ownerId: string;
-            ownerOrgId?: string;
-            name: string;
-            type: string;
-            eqData?: components["schemas"]["EqModeData"];
-            iqData?: components["schemas"]["IqModeData"];
-            contractExtraction?: components["schemas"]["ContractExtractionResult"];
-            sharedWith?: string[];
-            isOwner?: boolean;
         };
         GetDealRequestContent: {
             dealId: string;
@@ -1744,26 +1344,6 @@ export interface components {
         GetProfileResponseContent: {
             profile: components["schemas"]["UserProfile"];
         };
-        GetSpecialContractRequestContent: {
-            contractId: string;
-        };
-        GetSpecialContractResponseContent: {
-            contractId: string;
-            name: string;
-            type: string;
-            eqmode: unknown;
-            sections: unknown;
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith: string[];
-        };
-        GetUploadURLRequestContent: {
-            name: string;
-            orgId?: string;
-        };
-        GetUploadURLResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
-        };
         GrantDealAccessRequestContent: {
             dealId: string;
             grantToOrgId: string;
@@ -1804,42 +1384,14 @@ export interface components {
         };
         /** @enum {string} */
         InviteStatus: InviteStatus;
-        IqModeData: {
-            iqModeData?: components["schemas"]["IqModePerspectiveMap"];
-        };
-        IqModePerspective: {
-            sections: components["schemas"]["IqModeSectionMap"];
-        };
-        IqModePerspectiveMap: {
-            [key: string]: components["schemas"]["IqModePerspective"];
-        };
-        IqModeQuestion: {
-            question: components["schemas"]["TaggedText"];
-            answer: components["schemas"]["TaggedText"];
-            ttsSrcUrl?: string;
-        };
-        IqModeSection: {
-            id: components["schemas"]["IqModeSectionKey"];
-            sectionTitle: string;
-            questions: components["schemas"]["IqModeQuestion"][];
-        };
-        /** @enum {string} */
-        IqModeSectionKey: IqModeSectionKey;
-        IqModeSectionMap: {
-            [key: string]: components["schemas"]["IqModeSection"];
-        };
         ListAuditLogsRequestContent: {
-            entityType?: components["schemas"]["AuditEntityType"];
-            entityId?: string;
-            performedBy?: string;
-            orgId?: string;
-            action?: components["schemas"]["AuditAction"];
-            success?: boolean;
+            tableName?: string;
+            recordType?: components["schemas"]["RecordType"];
+            operation?: components["schemas"]["AuditOperation"];
+            changedBy?: string;
             startDate?: string;
             endDate?: string;
-            minSensitivityLevel?: components["schemas"]["SensitivityLevel"];
-            dataClassification?: components["schemas"]["DataClassification"];
-            sessionId?: string;
+            fieldName?: string;
             nextToken?: string;
             limit?: number;
         };
@@ -1847,18 +1399,6 @@ export interface components {
             logs: components["schemas"]["AuditLog"][];
             /** @description Token for next page */
             nextToken?: string;
-            statistics?: components["schemas"]["AuditStatistics"];
-        };
-        ListContractsRequestContent: {
-            orgId?: string;
-        };
-        ListContractsResponseContent: {
-            /** @description Deprecation path (v0.5) */
-            owned?: components["schemas"]["ContractSummaryItem"][];
-            /** @description Deprecation path (v0.5) */
-            shared?: components["schemas"]["ContractSummaryItem"][];
-            /** @description v1 */
-            contracts?: components["schemas"]["ContractMetadata"][];
         };
         ListDealAccessRequestContent: {
             dealId: string;
@@ -2010,10 +1550,6 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
-        ListSpecialContractsResponseContent: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
-        };
         ListUserOrganizationsRequestContent: {
             /** @description Pagination cursor (encoded orgId) */
             nextToken?: string;
@@ -2110,9 +1646,6 @@ export interface components {
         PingResponseContent: {
             message: string;
         };
-        PlainText: {
-            text: string;
-        };
         PresignedPostData: {
             url: string;
             fields: unknown;
@@ -2126,9 +1659,11 @@ export interface components {
             /** @description Required headers for the request */
             headers?: unknown;
         };
-        ProcessingIncompleteErrorResponseContent: {
-            message: string;
-        };
+        /**
+         * @description Record types for audit log entries
+         * @enum {string}
+         */
+        RecordType: RecordType;
         RemoveOrgMemberRequestContent: {
             orgId: string;
             userId: string;
@@ -2158,42 +1693,10 @@ export interface components {
             reason: string;
         };
         /**
-         * @description Sensitivity levels
-         * @enum {string}
-         */
-        SensitivityLevel: SensitivityLevel;
-        ShareContractRequestContent: {
-            contractId: string;
-            emailsToAdd?: string[];
-            emailsToRemove?: string[];
-        };
-        ShareContractResponseContent: {
-            success: boolean;
-            contractId: string;
-            sharedWith: components["schemas"]["SharedUserDetails"][];
-            added?: string[];
-            removed?: string[];
-            invalidRemoves?: string[];
-        };
-        SharedUserDetails: {
-            sharedWithUserId: string;
-            sharedByUserId: string;
-            sharedWithUserEmail: string;
-            /** Format: double */
-            sharedTime: number;
-        };
-        SimpleTermDescription: {
-            title: string;
-            description: string;
-        };
-        /**
          * @description Statistic grouping periods
          * @enum {string}
          */
         StatisticGrouping: StatisticGrouping;
-        TaggedText: {
-            text: string;
-        };
         /** @description Time series data point */
         TimeSeriesPoint: {
             timestamp: string;
@@ -2207,13 +1710,6 @@ export interface components {
         };
         TransferOrgOwnershipResponseContent: {
             org: components["schemas"]["Org"];
-        };
-        UpdateContractRequestContent: {
-            contractId: string;
-            name: string;
-        };
-        UpdateContractResponseContent: {
-            success: boolean;
         };
         UpdateDealAccessRequestContent: {
             dealId: string;
@@ -3114,48 +2610,6 @@ export interface operations {
             };
         };
     };
-    DeleteContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["DeleteContractResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     GrantFileAccess: {
         parameters: {
             query?: never;
@@ -3614,90 +3068,6 @@ export interface operations {
             };
         };
     };
-    GetContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractResponseContent"];
-                };
-            };
-            /** @description ProcessingIncompleteError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetContractReadURL: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetContractReadURLRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetContractReadURL 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetContractReadURLResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     GetProfile: {
         parameters: {
             query?: never;
@@ -3778,148 +3148,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetSpecialContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetSpecialContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetSpecialContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetSpecialContractResponseContent"];
-                };
-            };
-            /** @description ProcessingIncompleteError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListContracts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ListContractsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ListContracts 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListContractsResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListSpecialContracts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ListSpecialContracts 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListSpecialContractsResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ExposeTypes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ExposeTypes 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
                 };
             };
         };
@@ -4900,90 +4128,6 @@ export interface operations {
             };
         };
     };
-    ShareContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ShareContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ShareContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ShareContractResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateContractResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     UpdateProfile: {
         parameters: {
             query?: never;
@@ -5068,99 +4212,14 @@ export interface operations {
             };
         };
     };
-    GetUploadURL: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetUploadURLRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetUploadURL 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetUploadURLResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
 }
-export enum AuditAction {
-    CREATE = "CREATE",
+export enum AuditOperation {
+    INSERT = "INSERT",
     UPDATE = "UPDATE",
     DELETE = "DELETE",
-    VIEW = "VIEW",
-    DOWNLOAD = "DOWNLOAD",
-    UPLOAD = "UPLOAD",
-    SHARE = "SHARE",
-    REVOKE = "REVOKE",
-    LOGIN = "LOGIN",
-    LOGOUT = "LOGOUT",
+    ACCESS = "ACCESS",
     EXPORT = "EXPORT",
-    IMPORT = "IMPORT",
-    SIGN = "SIGN",
-    APPROVE = "APPROVE",
-    REJECT = "REJECT"
-}
-export enum AuditEntityType {
-    USER = "USER",
-    ORGANIZATION = "ORGANIZATION",
-    DEAL = "DEAL",
-    FILE = "FILE",
-    PERMISSION = "PERMISSION",
-    INTEGRATION = "INTEGRATION",
-    BILLING = "BILLING",
-    SYSTEM = "SYSTEM"
-}
-export enum ContractStatus {
-    processing = "processing",
-    awaiting_upload = "awaiting_upload",
-    extracting_text = "extracting_text",
-    eq_generation = "eq_generation",
-    iq_generation = "iq_generation",
-    variable_extraction = "variable_extraction",
-    contract_markup = "contract_markup",
-    tts_generation = "tts_generation",
-    complete = "complete",
-    error = "error"
-}
-export enum ContractVariableType {
-    eq_term = "eq_term",
-    discovered_term = "discovered_term",
-    external_term = "external_term",
-    internal_citation = "internal_citation"
-}
-export enum DataClassification {
-    PUBLIC = "PUBLIC",
-    INTERNAL = "INTERNAL",
-    CONFIDENTIAL = "CONFIDENTIAL",
-    RESTRICTED = "RESTRICTED"
+    SHARE = "SHARE"
 }
 export enum DealPermission {
     view_deal = "view_deal",
@@ -5196,23 +4255,6 @@ export enum DeliverableStatus {
     COMPLETED = "COMPLETED",
     BLOCKED = "BLOCKED"
 }
-export enum DurationType {
-    fixed = "fixed",
-    indefinite = "indefinite",
-    renewable = "renewable",
-    other = "other"
-}
-export enum EqCardKey {
-    moneyYouReceive = "moneyYouReceive",
-    whatYouOwn = "whatYouOwn",
-    whatYoureResponsibleFor = "whatYoureResponsibleFor",
-    howLongThisDealLasts = "howLongThisDealLasts",
-    risksCostsLegalStuff = "risksCostsLegalStuff"
-}
-export enum EqCardType {
-    A = "A",
-    B = "B"
-}
 export enum FilePermission {
     view_file = "view_file",
     edit_file = "edit_file",
@@ -5228,13 +4270,6 @@ export enum InviteStatus {
     accepted = "accepted",
     declined = "declined",
     expired = "expired"
-}
-export enum IqModeSectionKey {
-    earnings = "earnings",
-    qualityOfRights = "qualityOfRights",
-    usageObligations = "usageObligations",
-    agreementLength = "agreementLength",
-    liabilitySafeguards = "liabilitySafeguards"
 }
 export enum OrgPermission {
     manage_members = "manage_members",
@@ -5254,11 +4289,13 @@ export enum OrgRole {
     viewer = "viewer",
     custom = "custom"
 }
-export enum SensitivityLevel {
-    LOW = "LOW",
-    MEDIUM = "MEDIUM",
-    HIGH = "HIGH",
-    CRITICAL = "CRITICAL"
+export enum RecordType {
+    NORMAL = "NORMAL",
+    META_AUDIT = "META_AUDIT",
+    UNKNOWN = "UNKNOWN",
+    CLEANUP = "CLEANUP",
+    EXPORT = "EXPORT",
+    SYSTEM = "SYSTEM"
 }
 export enum StatisticGrouping {
     HOUR = "HOUR",

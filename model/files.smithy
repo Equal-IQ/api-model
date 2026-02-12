@@ -30,12 +30,15 @@ resource FileResource {
     ]
 }
 
-/// File entity
+/// File entity with dual-ownership pattern
 structure File {
     @required
     fileId: FileId
 
     @required
+    ownerUserId: String
+
+    /// Organization context (nullable for personal files)
     ownerOrgId: String
 
     @required
@@ -56,23 +59,19 @@ structure File {
     @required
     fileType: String
 
-    /// Virtual folder path
-    folderPath: String
-
     /// File description
     description: String
 
-    /// User-defined tags
-    tags: StringList
-
-    /// Associated deal if applicable
+    /// Associated deal if applicable (mutually exclusive with dealVersionId)
     dealId: String
 
-    /// Associated deal version if applicable
+    /// Associated deal version if applicable (mutually exclusive with dealId)
     dealVersionId: String
 
     /// Additional metadata as JSON
     metadata: Document
+
+    updatedByUserId: String
 
     @required
     createdAt: ISODate

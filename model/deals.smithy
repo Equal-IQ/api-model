@@ -76,9 +76,6 @@ structure Deal {
     /// Organization context (nullable for personal deals)
     ownerOrgId: String
 
-    @required
-    currentVersionNumber: Integer
-
     /// Parent deal for hierarchies (master agreements, amendments)
     parentDealId: String
 
@@ -108,16 +105,11 @@ structure DealVersion {
     @required
     stage: DealStage
 
-    /// User-friendly version label (e.g., "Q1 2024 Amendment")
-    versionLabel: String
-
     /// Main deal content (name, description, terms, financial details)
     @required
     content: Document
 
-    changeReason: String
-
-    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    /// Metadata for extensibility during beta
     metadata: Document
 
     @required
@@ -149,22 +141,16 @@ structure Deliverable {
     /// Source of deliverable (null = manual)
     source: DeliverableSource
 
-    type: String
+    /// Status as free-form string for flexibility
+    status: String
 
-    /// Required in SIGNING, DELIVERY, COMPLETED stages
-    status: DeliverableStatus
-
-    /// Required in SIGNING, DELIVERY, COMPLETED stages
     assignedToUserId: String
 
     responsibleOrgId: String
 
-    /// Required in SIGNING, DELIVERY, COMPLETED stages
     dueDate: ISODate
 
     completedDate: ISODate
-
-    attachments: Document
 
     metadata: Document
 
@@ -193,18 +179,15 @@ structure DealApproval {
     @required
     approverUserId: String
 
+    /// Approval status as free-form string for flexibility
     @required
-    approvalStatus: DealApprovalStatus
-
-    approvalLevel: Integer
+    approvalStatus: String
 
     comments: String
 
-    conditions: Document
-
     respondedAt: ISODate
 
-    expiresAt: ISODate
+    metadata: Document
 
     @required
     createdByUserId: String
@@ -231,13 +214,32 @@ structure DealRevision {
     /// Link to CRDT pipeline or external revision tracking system
     externalRevisionId: String
 
-    @required
+    /// Description of what changed
     description: String
 
     /// Additional metadata about the change
     changeMetadata: Document
 
     @required
+    createdByUserId: String
+
+    @required
+    createdAt: ISODate
+}
+
+/// AI-powered deal analysis (clause extraction, risk assessment, etc.)
+structure DealAnalysis {
+    @required
+    dealAnalysisId: String
+
+    @required
+    dealId: String
+
+    /// Analysis output (clauses, risks, financial terms, etc.)
+    @required
+    analysisData: Document
+
+    /// System-generated if null, user-triggered if set
     createdByUserId: String
 
     @required

@@ -14,41 +14,17 @@ class AcceptOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
-class AuditAction(StrEnum):
+class AuditOperation(StrEnum):
     """
-    Action types for audit logging
+    Database operations for audit tracking
     """
 
-    CREATE = 'CREATE'
+    INSERT = 'INSERT'
     UPDATE = 'UPDATE'
     DELETE = 'DELETE'
-    VIEW = 'VIEW'
-    DOWNLOAD = 'DOWNLOAD'
-    UPLOAD = 'UPLOAD'
-    SHARE = 'SHARE'
-    REVOKE = 'REVOKE'
-    LOGIN = 'LOGIN'
-    LOGOUT = 'LOGOUT'
+    ACCESS = 'ACCESS'
     EXPORT = 'EXPORT'
-    IMPORT = 'IMPORT'
-    SIGN = 'SIGN'
-    APPROVE = 'APPROVE'
-    REJECT = 'REJECT'
-
-
-class AuditEntityType(StrEnum):
-    """
-    Entity types for audit logging
-    """
-
-    USER = 'USER'
-    ORGANIZATION = 'ORGANIZATION'
-    DEAL = 'DEAL'
-    FILE = 'FILE'
-    PERMISSION = 'PERMISSION'
-    INTEGRATION = 'INTEGRATION'
-    BILLING = 'BILLING'
-    SYSTEM = 'SYSTEM'
+    SHARE = 'SHARE'
 
 
 class AuditStatistics(BaseModel):
@@ -57,14 +33,9 @@ class AuditStatistics(BaseModel):
     """
 
     totalEvents: float
-    successfulEvents: float
-    failedEvents: float
-    byEntityType: Any | None = Field(None, description='Breakdown by entity type')
-    byAction: Any | None = Field(None, description='Breakdown by action')
+    byTable: Any | None = Field(None, description='Breakdown by table name')
+    byOperation: Any | None = Field(None, description='Breakdown by operation')
     topUsers: Any | None = Field(None, description='Most active users')
-    topEntities: Any | None = Field(None, description='Most accessed entities')
-    securityEvents: float | None = Field(None, description='Security events count')
-    complianceEvents: float | None = Field(None, description='Compliance events count')
 
 
 class AuthenticationErrorResponseContent(BaseModel):
@@ -78,51 +49,6 @@ class AuthenticationErrorResponseContent(BaseModel):
 class CancelOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class ContractStatus(StrEnum):
-    processing = 'processing'
-    awaiting_upload = 'awaiting_upload'
-    extracting_text = 'extracting_text'
-    eq_generation = 'eq_generation'
-    iq_generation = 'iq_generation'
-    variable_extraction = 'variable_extraction'
-    contract_markup = 'contract_markup'
-    tts_generation = 'tts_generation'
-    complete = 'complete'
-    error = 'error'
-
-
-class SharedWithItem(RootModel[str]):
-    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class SharedUser(RootModel[str]):
-    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class SharedEmail(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class ContractSummaryItem(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    uploadedOn: float
-    type: str
-    status: ContractStatus
-    isOwner: bool
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedWithItem] | None
-    sharedUsers: list[SharedUser] | None
-    sharedEmails: list[SharedEmail] | None
-
-
-class ContractVariableType(StrEnum):
-    eq_term = 'eq_term'
-    discovered_term = 'discovered_term'
-    external_term = 'external_term'
-    internal_citation = 'internal_citation'
 
 
 class CreateFileRequestContent(BaseModel):
@@ -160,17 +86,6 @@ class CreateOrgRequestContent(BaseModel):
     billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
-class DataClassification(StrEnum):
-    """
-    Data classification levels
-    """
-
-    PUBLIC = 'PUBLIC'
-    INTERNAL = 'INTERNAL'
-    CONFIDENTIAL = 'CONFIDENTIAL'
-    RESTRICTED = 'RESTRICTED'
-
-
 class Deal(BaseModel):
     """
     Main deal entity
@@ -181,7 +96,6 @@ class Deal(BaseModel):
     ownerOrgId: str | None = Field(
         None, description='Organization context (nullable for personal deals)'
     )
-    currentVersionNumber: float
     parentDealId: str | None = Field(
         None, description='Parent deal for hierarchies (master agreements, amendments)'
     )
@@ -239,17 +153,12 @@ class DealVersion(BaseModel):
     dealId: str
     versionNumber: float
     stage: DealStage
-    versionLabel: str | None = Field(
-        None, description='User-friendly version label (e.g., "Q1 2024 Amendment")'
-    )
     content: Any = Field(
         ...,
         description='Main deal content (name, description, terms, financial details)',
     )
-    changeReason: str | None
     metadata: Any | None = Field(
-        None,
-        description='TODO: Post-beta - Consider removing if unused or replace with explicit typed fields',
+        None, description='Metadata for extensibility during beta'
     )
     createdByUserId: str
     approvedByUserId: str | None = Field(None, description='Approval workflow tracking')
@@ -267,14 +176,6 @@ class DealVersion(BaseModel):
 class DeclineOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class DeleteContractRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class DeleteContractResponseContent(BaseModel):
-    success: bool
 
 
 class DeleteDealRequestContent(BaseModel):
@@ -319,77 +220,33 @@ class DeliverableStatus(StrEnum):
     BLOCKED = 'BLOCKED'
 
 
-class DurationType(StrEnum):
-    fixed = 'fixed'
-    indefinite = 'indefinite'
-    renewable = 'renewable'
-    other = 'other'
-
-
-class EmptyStructure(BaseModel):
-    """
-    Common types and structures shared across all operations
-    """
-
-
-class EqCardKey(StrEnum):
-    moneyYouReceive = 'moneyYouReceive'
-    whatYouOwn = 'whatYouOwn'
-    whatYoureResponsibleFor = 'whatYoureResponsibleFor'
-    howLongThisDealLasts = 'howLongThisDealLasts'
-    risksCostsLegalStuff = 'risksCostsLegalStuff'
-
-
-class EqCardType(StrEnum):
-    A = 'A'
-    B = 'B'
-
-
-class EMPTY(BaseModel):
-    EMPTY: EmptyStructure
-
-
-class EqLegalCard(BaseModel):
-    risks: str
-    costs: str
-    legal: str
-
-
-class EqModeItem(BaseModel):
-    """
-    Deprecated
-    """
-
-    title: str | None
-    value: str | None
-
-
-class EqMoneyCard(BaseModel):
-    majorNumber: str
-    paidAfterList: list[str]
-
-
 class File(BaseModel):
     """
-    File entity
+    File entity with dual-ownership pattern
     """
 
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    ownerOrgId: str
+    ownerUserId: str
+    ownerOrgId: str | None = Field(
+        None, description='Organization context (nullable for personal files)'
+    )
     createdByUserId: str
     fileName: str
     s3Key: str
     s3Bucket: str
     sizeBytes: float
     fileType: str
-    folderPath: str | None = Field(None, description='Virtual folder path')
     description: str | None = Field(None, description='File description')
-    tags: list[str] | None = Field(None, description='User-defined tags')
-    dealId: str | None = Field(None, description='Associated deal if applicable')
+    dealId: str | None = Field(
+        None,
+        description='Associated deal if applicable (mutually exclusive with dealVersionId)',
+    )
     dealVersionId: str | None = Field(
-        None, description='Associated deal version if applicable'
+        None,
+        description='Associated deal version if applicable (mutually exclusive with dealId)',
     )
     metadata: Any | None = Field(None, description='Additional metadata as JSON')
+    updatedByUserId: str | None
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -413,19 +270,6 @@ class FilePermission(StrEnum):
     comment_file = 'comment_file'
     export_file = 'export_file'
     rename_file = 'rename_file'
-
-
-class FixedTermValue(BaseModel):
-    unit: str
-    value: str
-    name: str | None
-    numericValue: float | None
-    condition: str | None
-
-
-class FixedValueTermInference(BaseModel):
-    primary: FixedTermValue
-    subterms: list[FixedTermValue] | None
 
 
 class GenerateDownloadUrlRequestContent(BaseModel):
@@ -453,21 +297,6 @@ class GetAuditLogRequestContent(BaseModel):
     logId: str = Field(
         ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
     )
-
-
-class GetContractReadURLRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class GetContractReadURLResponseContent(BaseModel):
-    url: str = Field(
-        ...,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-
-
-class GetContractRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetDealRequestContent(BaseModel):
@@ -527,26 +356,6 @@ class GetProfileRequestContent(BaseModel):
     userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
-class GetSpecialContractRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class GetSpecialContractResponseContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: str
-    eqmode: Any
-    sections: Any
-    isOwner: bool
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedWithItem]
-
-
-class GetUploadURLRequestContent(BaseModel):
-    name: str
-    orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-
-
 class GrantDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToOrgId: str
@@ -593,18 +402,6 @@ class InviteStatus(StrEnum):
     accepted = 'accepted'
     declined = 'declined'
     expired = 'expired'
-
-
-class IqModeSectionKey(StrEnum):
-    earnings = 'earnings'
-    qualityOfRights = 'qualityOfRights'
-    usageObligations = 'usageObligations'
-    agreementLength = 'agreementLength'
-    liabilitySafeguards = 'liabilitySafeguards'
-
-
-class ListContractsRequestContent(BaseModel):
-    orgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class ListDealAccessRequestContent(BaseModel):
@@ -710,11 +507,6 @@ class ListOrgInvitesRequestContent(BaseModel):
     limit: float | None = Field(None, description='Page size')
 
 
-class ListSpecialContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem]
-    shared: list[ContractSummaryItem]
-
-
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size')
@@ -762,10 +554,6 @@ class PingResponseContent(BaseModel):
     message: str
 
 
-class PlainText(BaseModel):
-    text: str
-
-
 class PresignedPostData(BaseModel):
     url: str = Field(
         ...,
@@ -791,8 +579,17 @@ class PresignedUrl(BaseModel):
     headers: Any | None = Field(None, description='Required headers for the request')
 
 
-class ProcessingIncompleteErrorResponseContent(BaseModel):
-    message: str
+class RecordType(StrEnum):
+    """
+    Record types for audit log entries
+    """
+
+    NORMAL = 'NORMAL'
+    META_AUDIT = 'META_AUDIT'
+    UNKNOWN = 'UNKNOWN'
+    CLEANUP = 'CLEANUP'
+    EXPORT = 'EXPORT'
+    SYSTEM = 'SYSTEM'
 
 
 class RemoveOrgMemberRequestContent(BaseModel):
@@ -829,57 +626,6 @@ class RevokeFileAccessRequestContent(BaseModel):
     reason: str
 
 
-class SensitivityLevel(StrEnum):
-    """
-    Sensitivity levels
-    """
-
-    LOW = 'LOW'
-    MEDIUM = 'MEDIUM'
-    HIGH = 'HIGH'
-    CRITICAL = 'CRITICAL'
-
-
-class EmailsToAddItem(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class EmailsToRemoveItem(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class ShareContractRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    emailsToAdd: list[EmailsToAddItem] | None
-    emailsToRemove: list[EmailsToRemoveItem] | None
-
-
-class AddedItem(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class RemovedItem(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class InvalidRemove(RootModel[str]):
-    root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-
-
-class SharedUserDetails(BaseModel):
-    sharedWithUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWithUserEmail: str = Field(
-        ..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
-    )
-    sharedTime: float
-
-
-class SimpleTermDescription(BaseModel):
-    title: str
-    description: str
-
-
 class StatisticGrouping(StrEnum):
     """
     Statistic grouping periods
@@ -889,10 +635,6 @@ class StatisticGrouping(StrEnum):
     DAY = 'DAY'
     WEEK = 'WEEK'
     MONTH = 'MONTH'
-
-
-class TaggedText(BaseModel):
-    text: str
 
 
 class TimeSeriesPoint(BaseModel):
@@ -911,15 +653,6 @@ class TimeSeriesPoint(BaseModel):
 class TransferOrgOwnershipRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     newOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class UpdateContractRequestContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-
-
-class UpdateContractResponseContent(BaseModel):
-    success: bool
 
 
 class UpdateDealAccessRequestContent(BaseModel):
@@ -1074,78 +807,28 @@ class ValidationErrorResponseContent(BaseModel):
 
 class AuditLog(BaseModel):
     """
-    Audit log entry
+    Audit log entry for field-level change tracking
     """
 
-    logId: str = Field(
+    auditLogId: str = Field(
         ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
     )
-    entityType: AuditEntityType
-    entityId: str
-    action: AuditAction
-    performedBy: str
-    timestamp: str = Field(
+    tableName: str
+    recordType: RecordType
+    operation: AuditOperation
+    fieldName: str | None = Field(
+        None, description='Specific field that changed (for UPDATE operations)'
+    )
+    oldValue: Any | None = Field(None, description='Previous value (JSON)')
+    newValue: Any | None = Field(None, description='New value (JSON)')
+    changedBy: str
+    changedAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    ipAddress: str | None = Field(None, description='IP address of the user')
-    userAgent: str | None = Field(None, description='User agent string')
-    success: bool
-    dataClassification: DataClassification | None
-    sensitivityLevel: SensitivityLevel | None
-    changeDetails: Any | None = Field(
-        None, description='JSON object with change details'
+    metadata: Any | None = Field(
+        None, description='Additional metadata for extensibility'
     )
-    errorReason: str | None = Field(
-        None, description='Error reason if success is false'
-    )
-    anonymized: bool | None = Field(None, description='Whether PII was anonymized')
-    pseudonymId: str | None = Field(None, description='Pseudonymized user identifier')
-    sessionId: str | None = Field(
-        None, description='Session identifier for correlation'
-    )
-    orgId: str | None = Field(None, description='Organization context')
-    relatedEntities: Any | None = Field(None, description='Related entity references')
-
-
-class ContractMetadata(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: str
-    status: ContractStatus
-    uploadedOn: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    sharedUsers: list[SharedUserDetails] | None
-    isOwner: bool | None
-    hasTTS: bool | None
-    isSpecial: bool | None
-
-
-class ContractTexts(BaseModel):
-    originalText: PlainText | None
-    taggedText: TaggedText | None
-
-
-class ContractVariable(BaseModel):
-    name: str
-    type: ContractVariableType
-    id: str
-    value: str | None
-    level: float | None
-    confidence: float | None
-    firstOccurrence: float | None
-    context: str | None
-    variations: list[str] | None
-    referencedSection: str | None
-    definitionCitation: str | None
-
-
-class ContractVariableMap(RootModel[dict[str, ContractVariable]]):
-    root: dict[str, ContractVariable]
 
 
 class CreateDealRequestContent(BaseModel):
@@ -1273,22 +956,19 @@ class Deliverable(BaseModel):
     name: str
     description: str | None
     source: DeliverableSource | None
-    type: str | None
-    status: DeliverableStatus | None
-    assignedToUserId: str | None = Field(
-        None, description='Required in SIGNING, DELIVERY, COMPLETED stages'
+    status: str | None = Field(
+        None, description='Status as free-form string for flexibility'
     )
+    assignedToUserId: str | None
     responsibleOrgId: str | None
     dueDate: str | None = Field(
         None,
-        description='Required in SIGNING, DELIVERY, COMPLETED stages',
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     completedDate: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    attachments: Any | None
     metadata: Any | None
     createdByUserId: str
     updatedByUserId: str | None
@@ -1300,44 +980,6 @@ class Deliverable(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-
-
-class MONEYRECEIVED(BaseModel):
-    MONEY_RECEIVED: EqMoneyCard
-
-
-class LEGAL(BaseModel):
-    LEGAL: EqLegalCard
-
-
-class EqDurationCard(BaseModel):
-    durationType: DurationType
-    durationText: str
-    durationDetails: list[SimpleTermDescription] | None
-
-
-class EqOwnershipCard(BaseModel):
-    ownershipTerms: list[SimpleTermDescription]
-
-
-class EqResponsibilitiesCard(BaseModel):
-    responsibilities: list[SimpleTermDescription]
-
-
-class ExtractionTerm(BaseModel):
-    name: str
-    definition: str
-    unitType: str
-    explanation: str
-    notes: str
-    citation: str
-    fixedValues: FixedValueTermInference | None
-    fixedValueGuideline: str | None
-    originalValue: str | None
-
-
-class ExtractionTermMap(RootModel[dict[str, ExtractionTerm]]):
-    root: dict[str, ExtractionTerm]
 
 
 class FileAccess(BaseModel):
@@ -1403,7 +1045,7 @@ class GetAuditLogResponseContent(BaseModel):
 
 
 class GetAuditStatisticsRequestContent(BaseModel):
-    orgId: str | None = Field(None, description='Filter by organization')
+    tableName: str | None = Field(None, description='Filter by table')
     startDate: str = Field(
         ...,
         description='Date range for statistics',
@@ -1451,10 +1093,6 @@ class GetProfileResponseContent(BaseModel):
     profile: UserProfile
 
 
-class GetUploadURLResponseContent(BaseModel):
-    url_info: PresignedPostData
-
-
 class GrantDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1463,32 +1101,11 @@ class GrantFileAccessResponseContent(BaseModel):
     access: FileAccess
 
 
-class IqModeQuestion(BaseModel):
-    question: TaggedText
-    answer: TaggedText
-    ttsSrcUrl: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-
-
-class IqModeSection(BaseModel):
-    id: IqModeSectionKey
-    sectionTitle: str
-    questions: list[IqModeQuestion]
-
-
-class IqModeSectionMap(RootModel[dict[str, IqModeSection]]):
-    root: dict[str, IqModeSection]
-
-
 class ListAuditLogsRequestContent(BaseModel):
-    entityType: AuditEntityType | None
-    entityId: str | None
-    performedBy: str | None
-    orgId: str | None
-    action: AuditAction | None
-    success: bool | None
+    tableName: str | None
+    recordType: RecordType | None
+    operation: AuditOperation | None
+    changedBy: str | None
     startDate: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1497,9 +1114,7 @@ class ListAuditLogsRequestContent(BaseModel):
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    minSensitivityLevel: SensitivityLevel | None
-    dataClassification: DataClassification | None
-    sessionId: str | None
+    fieldName: str | None
     nextToken: str | None
     limit: float | None
 
@@ -1507,17 +1122,6 @@ class ListAuditLogsRequestContent(BaseModel):
 class ListAuditLogsResponseContent(BaseModel):
     logs: list[AuditLog]
     nextToken: str | None = Field(None, description='Token for next page')
-    statistics: AuditStatistics | None
-
-
-class ListContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem] | None = Field(
-        None, description='Deprecation path (v0.5)'
-    )
-    shared: list[ContractSummaryItem] | None = Field(
-        None, description='Deprecation path (v0.5)'
-    )
-    contracts: list[ContractMetadata] | None = Field(None, description='v1')
 
 
 class ListDealAccessResponseContent(BaseModel):
@@ -1662,15 +1266,6 @@ class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
 
-class ShareContractResponseContent(BaseModel):
-    success: bool
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedUserDetails]
-    added: list[AddedItem] | None
-    removed: list[RemovedItem] | None
-    invalidRemoves: list[InvalidRemove] | None
-
-
 class TransferOrgOwnershipResponseContent(BaseModel):
     org: Org
 
@@ -1708,17 +1303,6 @@ class AcceptOrgInviteResponseContent(BaseModel):
     member: OrgMember
 
 
-class ContractExtractionResult(BaseModel):
-    extractedType: str | None = Field(
-        None,
-        description='The contract type here is the one extracted by the model, not necessarily the one set by user',
-    )
-    parties: list[str] | None
-    terms: ExtractionTermMap | None
-    variables: ContractVariableMap | None
-    contractTexts: ContractTexts | None
-
-
 class CreateDeliverableResponseContent(BaseModel):
     deliverable: Deliverable
 
@@ -1736,62 +1320,8 @@ class CreateOrgResponseContent(BaseModel):
     org: Org
 
 
-class OWNERSHIP(BaseModel):
-    OWNERSHIP: EqOwnershipCard
-
-
-class RESPONSIBILITIES(BaseModel):
-    RESPONSIBILITIES: EqResponsibilitiesCard
-
-
-class DURATION(BaseModel):
-    DURATION: EqDurationCard
-
-
-class EqCardUniqueData(
-    RootModel[MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY]
-):
-    root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY
-
-
-class EqModeCard(BaseModel):
-    id: EqCardKey
-    title: str
-    type: EqCardType
-    cardUniqueData: EqCardUniqueData
-    eqTitle: str | None = Field(None, description='Deprecated, use subTitle Instead')
-    subTitle: str | None
-    totalAdvance: str | None = Field(
-        None, description='Deprecated, this should be in the in a custom subtype'
-    )
-    items: list[EqModeItem] | None = Field(
-        None, description='Deprecated, this should be in the in a custom subtype'
-    )
-    audioSrc: str | None = Field(None, description='Deprecated, use the ttsSrcUrl')
-    ttsSrcUrl: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-
-
-class EqModeCardMap(RootModel[dict[str, EqModeCard]]):
-    root: dict[str, EqModeCard]
-
-
-class EqModeData(BaseModel):
-    cards: EqModeCardMap | None
-
-
 class GetOrgResponseContent(BaseModel):
     org: Org
-
-
-class IqModePerspective(BaseModel):
-    sections: IqModeSectionMap
-
-
-class IqModePerspectiveMap(RootModel[dict[str, IqModePerspective]]):
-    root: dict[str, IqModePerspective]
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):
@@ -1812,46 +1342,3 @@ class ListOrgMembersResponseContent(BaseModel):
 class ListUserOrganizationsResponseContent(BaseModel):
     organizations: list[Org]
     nextToken: str | None = Field(None, description='Token for next page')
-
-
-class IqModeData(BaseModel):
-    iqModeData: IqModePerspectiveMap | None
-
-
-class ContractAnalysisRecord(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: str
-    status: ContractStatus
-    uploadedOn: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    eqCards: EqModeData | None
-    iqData: IqModeData
-    extractedType: str | None
-    parties: list[str] | None
-    terms: ExtractionTermMap | None
-    variables: ContractVariableMap | None
-    contractTexts: ContractTexts | None
-    sharedUsers: list[SharedUserDetails] | None
-    hasTTS: bool | None
-    isSpecial: bool | None
-
-
-class ExposeTypesResponseContent(BaseModel):
-    contractAnalysisRecord: ContractAnalysisRecord | None
-
-
-class GetContractResponseContent(BaseModel):
-    contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: str
-    eqData: EqModeData | None
-    iqData: IqModeData | None
-    contractExtraction: ContractExtractionResult | None
-    sharedWith: list[SharedWithItem] | None
-    isOwner: bool | None
