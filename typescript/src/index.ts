@@ -113,6 +113,33 @@ export enum StatisticGrouping {
   MONTH = "MONTH"
 }
 
+// Contract analysis types (from extraction.smithy - not in main service)
+export enum ContractVariableType {
+  EQ_TERM = "eq_term",
+  DISCOVERED_TERM = "discovered_term",
+  EXTERNAL_TERM = "external_term",
+  INTERNAL_CITATION = "internal_citation"
+}
+
+export interface ContractVariable {
+  name: string;
+  type: ContractVariableType;
+  id: string;
+  value?: string;
+  level?: number;
+  confidence?: number;
+  firstOccurrence?: number;
+  context?: string;
+  variations?: string[];
+  referencedSection?: string;
+}
+
+export interface ContractTexts {
+  raw?: string;
+  plainText?: string;
+  taggedText?: string;
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
