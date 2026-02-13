@@ -69,14 +69,8 @@ export enum DealStage {
 export enum DeliverableSource {
   INFERRED = "INFERRED",
   TEMPLATE = "TEMPLATE",
-  IMPORTED = "IMPORTED"
-}
-
-export enum DeliverableStatus {
-  PENDING = "PENDING",
-  IN_PROGRESS = "IN_PROGRESS",
-  COMPLETED = "COMPLETED",
-  BLOCKED = "BLOCKED"
+  IMPORTED = "IMPORTED",
+  MANUAL = "MANUAL"
 }
 
 export enum DurationType {
@@ -184,6 +178,8 @@ export type AuditLog = {
   changedAt: string;
   metadata?: unknown;
 };
+
+export type AuditLogMap = { [key: string]: AuditLog };
 
 export type AuditStatistics = {
   totalEvents: number;
@@ -307,7 +303,7 @@ export type CreateDeliverableRequestContent = {
   source?: DeliverableSource;
   dueDate?: string;
   assignedTo?: string;
-  status?: DeliverableStatus;
+  status?: string;
 };
 
 export type CreateDeliverableResponseContent = {
@@ -398,6 +394,8 @@ export type DealAccess = {
   updatedAt: string;
 };
 
+export type DealMap = { [key: string]: Deal };
+
 export type DealVersion = {
   dealVersionId: string;
   dealId: string;
@@ -410,6 +408,8 @@ export type DealVersion = {
   createdAt: string;
   approvedAt?: string;
 };
+
+export type DealVersionMap = { [key: string]: DealVersion };
 
 export type DeclineOrgInviteRequestContent = {
   orgId: string;
@@ -460,6 +460,8 @@ export type Deliverable = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type DeliverableMap = { [key: string]: Deliverable };
 
 export type EmptyStructure = unknown;
 
@@ -550,8 +552,6 @@ export type File = {
   ownerOrgId?: string;
   createdByUserId: string;
   fileName: string;
-  s3Key: string;
-  s3Bucket: string;
   sizeBytes: number;
   fileType: string;
   description?: string;
@@ -581,6 +581,8 @@ export type FileAccess = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type FileMap = { [key: string]: File };
 
 export type FixedTermValue = {
   unit: string;
@@ -670,8 +672,8 @@ export type GetDealRequestContent = {
 
 export type GetDealResponseContent = {
   deal: Deal;
-  versions?: DealVersion[];
-  deliverables?: Deliverable[];
+  versions?: DealVersionMap;
+  deliverables?: DeliverableMap;
   access?: DealAccess[];
 };
 
@@ -683,7 +685,7 @@ export type GetDealVersionRequestContent = {
 
 export type GetDealVersionResponseContent = {
   version: DealVersion;
-  deliverables?: Deliverable[];
+  deliverables?: DeliverableMap;
 };
 
 export type GetFileRequestContent = {
@@ -832,7 +834,7 @@ export type ListAuditLogsRequestContent = {
 };
 
 export type ListAuditLogsResponseContent = {
-  logs: AuditLog[];
+  logs: AuditLogMap;
   nextToken?: string;
 };
 
@@ -868,7 +870,7 @@ export type ListDealVersionsRequestContent = {
 };
 
 export type ListDealVersionsResponseContent = {
-  versions: DealVersion[];
+  versions: DealVersionMap;
   nextToken?: string;
 };
 
@@ -881,21 +883,21 @@ export type ListDealsRequestContent = {
 };
 
 export type ListDealsResponseContent = {
-  deals: Deal[];
+  deals: DealMap;
   nextToken?: string;
 };
 
 export type ListDeliverablesRequestContent = {
   dealId: string;
   versionId?: string;
-  status?: DeliverableStatus;
+  status?: string;
   assignedTo?: string;
   nextToken?: string;
   limit?: number;
 };
 
 export type ListDeliverablesResponseContent = {
-  deliverables: Deliverable[];
+  deliverables: DeliverableMap;
   nextToken?: string;
 };
 
@@ -926,7 +928,7 @@ export type ListFilesRequestContent = {
 };
 
 export type ListFilesResponseContent = {
-  files: File[];
+  files: FileMap;
   nextToken?: string;
   totalSizeBytes?: number;
 };
@@ -996,7 +998,7 @@ export type Org = {
   updatedAt: string;
   memberCount?: number;
   userRole?: OrgRole;
-  contractCount?: number;
+  dealCount?: number;
   inviteCount?: number;
   roleCount?: number;
 };
@@ -1197,7 +1199,7 @@ export type UpdateDeliverableRequestContent = {
   source?: DeliverableSource;
   dueDate?: string;
   assignedTo?: string;
-  status?: DeliverableStatus;
+  status?: string;
 };
 
 export type UpdateDeliverableResponseContent = {
@@ -1209,7 +1211,6 @@ export type UpdateFileAccessRequestContent = {
   accessId: string;
   permissions?: FilePermission[];
   grantablePermissions?: FilePermission[];
-  partyRole?: string;
   expiresAt?: string;
   isDeny?: boolean;
 };
@@ -1295,7 +1296,7 @@ export type UploadOrgPictureRequestContent = {
 };
 
 export type UploadOrgPictureResponseContent = {
-  url_info: PresignedPostData;
+  urlInfo: PresignedPostData;
 };
 
 export type UploadProfilePictureRequestContent = {
@@ -1303,15 +1304,15 @@ export type UploadProfilePictureRequestContent = {
 };
 
 export type UploadProfilePictureResponseContent = {
-  url_info: PresignedPostData;
+  urlInfo: PresignedPostData;
 };
 
 export type UserProfile = {
-  userId?: string;
-  firstName?: string;
-  lastName?: string;
+  userId: string;
+  firstName: string;
+  lastName: string;
   displayName?: string;
-  email?: string;
+  email: string;
   accountType?: string;
   bio?: string;
 };

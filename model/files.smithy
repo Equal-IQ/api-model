@@ -7,6 +7,7 @@ use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#Url
 use equaliq#StringList
+use equaliq#FileAccessList
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -46,12 +47,6 @@ structure File {
 
     @required
     fileName: String
-
-    @required
-    s3Key: String
-
-    @required
-    s3Bucket: String
 
     @required
     sizeBytes: Long
@@ -260,7 +255,7 @@ operation ListFiles {
 
     output := {
         @required
-        files: FileList
+        files: FileMap
 
         /// Token for next page
         nextToken: String
@@ -333,11 +328,8 @@ operation GenerateDownloadUrl {
     ]
 }
 
-// Helper list types
-list FileList {
-    member: File
-}
-
-list FileAccessList {
-    member: FileAccess
+// Helper map types
+map FileMap {
+    key: FileId
+    value: File
 }

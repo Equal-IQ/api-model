@@ -156,6 +156,10 @@ class Deal(BaseModel):
     )
 
 
+class DealMap(RootModel[dict[str, Deal]]):
+    root: dict[str, Deal]
+
+
 class DealPermission(StrEnum):
     """
     Deal permissions
@@ -218,6 +222,10 @@ class DealVersion(BaseModel):
     )
 
 
+class DealVersionMap(RootModel[dict[str, DealVersion]]):
+    root: dict[str, DealVersion]
+
+
 class DeclineOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -260,17 +268,7 @@ class DeliverableSource(StrEnum):
     INFERRED = 'INFERRED'
     TEMPLATE = 'TEMPLATE'
     IMPORTED = 'IMPORTED'
-
-
-class DeliverableStatus(StrEnum):
-    """
-    Deliverable status for committed stages
-    """
-
-    PENDING = 'PENDING'
-    IN_PROGRESS = 'IN_PROGRESS'
-    COMPLETED = 'COMPLETED'
-    BLOCKED = 'BLOCKED'
+    MANUAL = 'MANUAL'
 
 
 class DurationType(StrEnum):
@@ -335,8 +333,6 @@ class File(BaseModel):
     )
     createdByUserId: str
     fileName: str
-    s3Key: str
-    s3Bucket: str
     sizeBytes: float
     fileType: str
     description: str | None = Field(None, description='File description')
@@ -358,6 +354,10 @@ class File(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
+
+
+class FileMap(RootModel[dict[str, File]]):
+    root: dict[str, File]
 
 
 class FilePermission(StrEnum):
@@ -588,7 +588,7 @@ class ListDealVersionsRequestContent(BaseModel):
 
 
 class ListDealVersionsResponseContent(BaseModel):
-    versions: list[DealVersion]
+    versions: DealVersionMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -603,7 +603,7 @@ class ListDealsRequestContent(BaseModel):
 
 
 class ListDealsResponseContent(BaseModel):
-    deals: list[Deal]
+    deals: DealMap
     nextToken: str | None = Field(
         None, description='Token for next page (null if no more results)'
     )
@@ -612,7 +612,7 @@ class ListDealsResponseContent(BaseModel):
 class ListDeliverablesRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     versionId: str | None = Field(None, description='Filter by version')
-    status: DeliverableStatus | None
+    status: str | None = Field(None, description='Filter by status')
     assignedTo: str | None = Field(None, description='Filter by assignee')
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded deliverableId)'
@@ -646,7 +646,7 @@ class ListFilesRequestContent(BaseModel):
 
 
 class ListFilesResponseContent(BaseModel):
-    files: list[File]
+    files: FileMap
     nextToken: str | None = Field(None, description='Token for next page')
     totalSizeBytes: float | None = Field(
         None, description='Total size of files in current page'
@@ -923,7 +923,7 @@ class UpdateDeliverableRequestContent(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     assignedTo: str | None
-    status: DeliverableStatus | None
+    status: str | None
 
 
 class UpdateFileAccessRequestContent(BaseModel):
@@ -933,7 +933,6 @@ class UpdateFileAccessRequestContent(BaseModel):
     )
     permissions: list[FilePermission] | None
     grantablePermissions: list[FilePermission] | None
-    partyRole: str | None
     expiresAt: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1009,7 +1008,7 @@ class UploadOrgPictureRequestContent(BaseModel):
 
 
 class UploadOrgPictureResponseContent(BaseModel):
-    url_info: PresignedPostData
+    urlInfo: PresignedPostData
 
 
 class UploadProfilePictureRequestContent(BaseModel):
@@ -1017,15 +1016,15 @@ class UploadProfilePictureRequestContent(BaseModel):
 
 
 class UploadProfilePictureResponseContent(BaseModel):
-    url_info: PresignedPostData
+    urlInfo: PresignedPostData
 
 
 class UserProfile(BaseModel):
-    userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    firstName: str | None
-    lastName: str | None
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    firstName: str
+    lastName: str
     displayName: str | None
-    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     accountType: str | None
     bio: str | None
 
@@ -1058,6 +1057,10 @@ class AuditLog(BaseModel):
     metadata: Any | None = Field(
         None, description='Additional metadata for extensibility'
     )
+
+
+class AuditLogMap(RootModel[dict[str, AuditLog]]):
+    root: dict[str, AuditLog]
 
 
 class ContractMetadata(BaseModel):
@@ -1137,7 +1140,7 @@ class CreateDeliverableRequestContent(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     assignedTo: str | None
-    status: DeliverableStatus | None
+    status: str | None
 
 
 class CreateFileResponseContent(BaseModel):
@@ -1249,6 +1252,10 @@ class Deliverable(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
+
+
+class DeliverableMap(RootModel[dict[str, Deliverable]]):
+    root: dict[str, Deliverable]
 
 
 class MONEYRECEIVED(BaseModel):
@@ -1374,14 +1381,14 @@ class GetAuditStatisticsResponseContent(BaseModel):
 
 class GetDealResponseContent(BaseModel):
     deal: Deal
-    versions: list[DealVersion] | None
-    deliverables: list[Deliverable] | None
+    versions: DealVersionMap | None
+    deliverables: DeliverableMap | None
     access: list[DealAccess] | None
 
 
 class GetDealVersionResponseContent(BaseModel):
     version: DealVersion
-    deliverables: list[Deliverable] | None
+    deliverables: DeliverableMap | None
 
 
 class GetFileResponseContent(BaseModel):
@@ -1450,7 +1457,7 @@ class ListAuditLogsRequestContent(BaseModel):
 
 
 class ListAuditLogsResponseContent(BaseModel):
-    logs: list[AuditLog]
+    logs: AuditLogMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1470,7 +1477,7 @@ class ListDealAccessResponseContent(BaseModel):
 
 
 class ListDeliverablesResponseContent(BaseModel):
-    deliverables: list[Deliverable]
+    deliverables: DeliverableMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1520,7 +1527,7 @@ class Org(BaseModel):
     )
     memberCount: float | None
     userRole: OrgRole | None
-    contractCount: float | None
+    dealCount: float | None
     inviteCount: float | None
     roleCount: float | None
 

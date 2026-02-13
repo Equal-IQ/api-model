@@ -5,6 +5,7 @@ namespace equaliq
 use aws.protocols#restJson1
 use equaliq#ISODate
 use equaliq#StringList
+use equaliq#DealAccessList
 use equaliq#DealAccess
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
@@ -21,27 +22,12 @@ enum DealStage {
     CANCELLED = "CANCELLED"
 }
 
-/// Deliverable status for committed stages
-enum DeliverableStatus {
-    PENDING = "PENDING"
-    IN_PROGRESS = "IN_PROGRESS"
-    COMPLETED = "COMPLETED"
-    BLOCKED = "BLOCKED"
-}
-
 /// Deliverable source (for tracking origin)
 enum DeliverableSource {
     INFERRED = "INFERRED"
     TEMPLATE = "TEMPLATE"
     IMPORTED = "IMPORTED"
-}
-
-/// Deal approval status
-enum DealApprovalStatus {
-    PENDING = "PENDING"
-    APPROVED = "APPROVED"
-    REJECTED = "REJECTED"
-    RESCINDED = "RESCINDED"
+    MANUAL = "MANUAL"
 }
 
 string DealId with [UuidLikeMixin]
@@ -298,8 +284,8 @@ operation GetDeal {
         @required
         deal: Deal
 
-        versions: DealVersionList
-        deliverables: DeliverableList
+        versions: DealVersionMap
+        deliverables: DeliverableMap
         access: DealAccessList
     }
 
@@ -392,7 +378,7 @@ operation ListDeals {
 
     output := {
         @required
-        deals: DealList
+        deals: DealMap
 
         /// Token for next page (null if no more results)
         nextToken: String
@@ -436,6 +422,7 @@ operation CreateDealVersion {
 }
 
 // Get Deal Version
+@readonly
 @http(method: "POST", uri: "/deals/versions/get")
 operation GetDealVersion {
     input := {
@@ -453,7 +440,7 @@ operation GetDealVersion {
         @required
         version: DealVersion
 
-        deliverables: DeliverableList
+        deliverables: DeliverableMap
     }
 
     errors: [
@@ -464,6 +451,7 @@ operation GetDealVersion {
 }
 
 // List Deal Versions
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "versions", pageSize: "limit")
 @http(method: "POST", uri: "/deals/versions/list")
 operation ListDealVersions {
@@ -483,7 +471,7 @@ operation ListDealVersions {
 
     output := {
         @required
-        versions: DealVersionList
+        versions: DealVersionMap
 
         /// Token for next page
         nextToken: String
@@ -515,7 +503,7 @@ operation CreateDeliverable {
         /// For committed stages
         dueDate: ISODate
         assignedTo: String
-        status: DeliverableStatus
+        status: String
     }
 
     output := {
@@ -546,7 +534,7 @@ operation UpdateDeliverable {
         source: DeliverableSource
         dueDate: ISODate
         assignedTo: String
-        status: DeliverableStatus
+        status: String
     }
 
     output := {
@@ -574,7 +562,7 @@ operation ListDeliverables {
         versionId: String
 
         /// Filter by status
-        status: DeliverableStatus
+        status: String
 
         /// Filter by assignee
         assignedTo: String
@@ -588,7 +576,7 @@ operation ListDeliverables {
 
     output := {
         @required
-        deliverables: DeliverableList
+        deliverables: DeliverableMap
 
         /// Token for next page
         nextToken: String
@@ -601,28 +589,28 @@ operation ListDeliverables {
     ]
 }
 
-// Helper list types
-list DealList {
-    member: Deal
+// Helper map types
+map DealMap {
+    key: DealId
+    value: Deal
 }
 
-list DealVersionList {
-    member: DealVersion
+map DealVersionMap {
+    key: String  // dealVersionId
+    value: DealVersion
 }
 
-list DeliverableList {
-    member: Deliverable
+map DeliverableMap {
+    key: String  // deliverableId
+    value: Deliverable
 }
 
-list DealApprovalList {
-    member: DealApproval
+map DealApprovalMap {
+    key: String  // dealApprovalId
+    value: DealApproval
 }
 
-list DealRevisionList {
-    member: DealRevision
-}
-
-// Import DealAccessList from rbac.smithy
-list DealAccessList {
-    member: DealAccess
+map DealRevisionMap {
+    key: String  // dealRevisionId
+    value: DealRevision
 }

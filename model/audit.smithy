@@ -97,7 +97,7 @@ operation ListAuditLogs {
 
     output := {
         @required
-        logs: AuditLogList
+        logs: AuditLogMap
 
         /// Token for next page
         nextToken: String
@@ -132,6 +132,7 @@ operation GetAuditLog {
 }
 
 // Get Audit Statistics
+@readonly
 @http(method: "POST", uri: "/audit/statistics")
 operation GetAuditStatistics {
     input := {
@@ -199,9 +200,10 @@ structure TimeSeriesPoint {
     metrics: Document
 }
 
-// Helper list types
-list AuditLogList {
-    member: AuditLog
+// Helper types
+map AuditLogMap {
+    key: AuditLogId
+    value: AuditLog
 }
 
 list TimeSeriesList {

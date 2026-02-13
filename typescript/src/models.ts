@@ -1106,6 +1106,9 @@ export interface components {
             /** @description Additional metadata for extensibility */
             metadata?: unknown;
         };
+        AuditLogMap: {
+            [key: string]: components["schemas"]["AuditLog"];
+        };
         /**
          * @description Database operations for audit tracking
          * @enum {string}
@@ -1236,7 +1239,7 @@ export interface components {
             /** @description For committed stages */
             dueDate?: string;
             assignedTo?: string;
-            status?: components["schemas"]["DeliverableStatus"];
+            status?: string;
         };
         CreateDeliverableResponseContent: {
             deliverable: components["schemas"]["Deliverable"];
@@ -1334,6 +1337,9 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        DealMap: {
+            [key: string]: components["schemas"]["Deal"];
+        };
         /**
          * @description Deal permissions
          * @enum {string}
@@ -1360,6 +1366,9 @@ export interface components {
             createdAt: string;
             /** @description When this version was approved */
             approvedAt?: string;
+        };
+        DealVersionMap: {
+            [key: string]: components["schemas"]["DealVersion"];
         };
         DeclineOrgInviteRequestContent: {
             orgId: string;
@@ -1408,16 +1417,14 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        DeliverableMap: {
+            [key: string]: components["schemas"]["Deliverable"];
+        };
         /**
          * @description Deliverable source (for tracking origin)
          * @enum {string}
          */
         DeliverableSource: DeliverableSource;
-        /**
-         * @description Deliverable status for committed stages
-         * @enum {string}
-         */
-        DeliverableStatus: DeliverableStatus;
         /** @enum {string} */
         DurationType: DurationType;
         /** @description Common types and structures shared across all operations */
@@ -1512,8 +1519,6 @@ export interface components {
             ownerOrgId?: string;
             createdByUserId: string;
             fileName: string;
-            s3Key: string;
-            s3Bucket: string;
             sizeBytes: number;
             fileType: string;
             /** @description File description */
@@ -1555,6 +1560,9 @@ export interface components {
             metadata?: unknown;
             createdAt: string;
             updatedAt: string;
+        };
+        FileMap: {
+            [key: string]: components["schemas"]["File"];
         };
         /**
          * @description File permissions
@@ -1647,8 +1655,8 @@ export interface components {
         };
         GetDealResponseContent: {
             deal: components["schemas"]["Deal"];
-            versions?: components["schemas"]["DealVersion"][];
-            deliverables?: components["schemas"]["Deliverable"][];
+            versions?: components["schemas"]["DealVersionMap"];
+            deliverables?: components["schemas"]["DeliverableMap"];
             access?: components["schemas"]["DealAccess"][];
         };
         GetDealVersionRequestContent: {
@@ -1659,7 +1667,7 @@ export interface components {
         };
         GetDealVersionResponseContent: {
             version: components["schemas"]["DealVersion"];
-            deliverables?: components["schemas"]["Deliverable"][];
+            deliverables?: components["schemas"]["DeliverableMap"];
         };
         GetFileRequestContent: {
             /** @description File identifier */
@@ -1801,7 +1809,7 @@ export interface components {
             limit?: number;
         };
         ListAuditLogsResponseContent: {
-            logs: components["schemas"]["AuditLog"][];
+            logs: components["schemas"]["AuditLogMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -1843,7 +1851,7 @@ export interface components {
             limit?: number;
         };
         ListDealVersionsResponseContent: {
-            versions: components["schemas"]["DealVersion"][];
+            versions: components["schemas"]["DealVersionMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -1859,7 +1867,7 @@ export interface components {
             limit?: number;
         };
         ListDealsResponseContent: {
-            deals: components["schemas"]["Deal"][];
+            deals: components["schemas"]["DealMap"];
             /** @description Token for next page (null if no more results) */
             nextToken?: string;
         };
@@ -1867,7 +1875,8 @@ export interface components {
             dealId: string;
             /** @description Filter by version */
             versionId?: string;
-            status?: components["schemas"]["DeliverableStatus"];
+            /** @description Filter by status */
+            status?: string;
             /** @description Filter by assignee */
             assignedTo?: string;
             /** @description Pagination cursor (encoded deliverableId) */
@@ -1876,7 +1885,7 @@ export interface components {
             limit?: number;
         };
         ListDeliverablesResponseContent: {
-            deliverables: components["schemas"]["Deliverable"][];
+            deliverables: components["schemas"]["DeliverableMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -1920,7 +1929,7 @@ export interface components {
             limit?: number;
         };
         ListFilesResponseContent: {
-            files: components["schemas"]["File"][];
+            files: components["schemas"]["FileMap"];
             /** @description Token for next page */
             nextToken?: string;
             /** @description Total size of files in current page */
@@ -1997,7 +2006,7 @@ export interface components {
             updatedAt: string;
             memberCount?: number;
             userRole?: components["schemas"]["OrgRole"];
-            contractCount?: number;
+            dealCount?: number;
             inviteCount?: number;
             roleCount?: number;
         };
@@ -2205,7 +2214,7 @@ export interface components {
             source?: components["schemas"]["DeliverableSource"];
             dueDate?: string;
             assignedTo?: string;
-            status?: components["schemas"]["DeliverableStatus"];
+            status?: string;
         };
         UpdateDeliverableResponseContent: {
             deliverable: components["schemas"]["Deliverable"];
@@ -2217,7 +2226,6 @@ export interface components {
             accessId: string;
             permissions?: components["schemas"]["FilePermission"][];
             grantablePermissions?: components["schemas"]["FilePermission"][];
-            partyRole?: string;
             expiresAt?: string;
             isDeny?: boolean;
         };
@@ -2289,20 +2297,20 @@ export interface components {
             orgId: string;
         };
         UploadOrgPictureResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
+            urlInfo: components["schemas"]["PresignedPostData"];
         };
         UploadProfilePictureRequestContent: {
             userId: string;
         };
         UploadProfilePictureResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
+            urlInfo: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
-            userId?: string;
-            firstName?: string;
-            lastName?: string;
+            userId: string;
+            firstName: string;
+            lastName: string;
             displayName?: string;
-            email?: string;
+            email: string;
             accountType?: string;
             bio?: string;
         };
@@ -2349,6 +2357,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2382,8 +2399,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetAuditLogResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2433,6 +2459,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2475,6 +2510,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2508,8 +2561,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListDealAccessResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2548,8 +2610,17 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2599,6 +2670,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2641,6 +2730,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2672,8 +2770,17 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2714,8 +2821,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListDeliverablesResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2765,6 +2881,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2798,8 +2932,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetDealResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2849,6 +2992,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2889,6 +3041,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2933,6 +3103,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2975,6 +3163,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3008,8 +3214,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetDealVersionResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3050,8 +3265,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListDealVersionsResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3092,8 +3316,17 @@ export interface operations {
                     "application/json": components["schemas"]["DeleteContractResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3143,6 +3376,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3176,8 +3427,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListFileAccessResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3216,8 +3476,17 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3267,6 +3536,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3309,6 +3596,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3340,8 +3636,17 @@ export interface operations {
                 };
                 content?: never;
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3391,6 +3696,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3424,8 +3747,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetFileResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3475,6 +3807,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3515,6 +3856,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -3559,6 +3918,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3592,8 +3969,26 @@ export interface operations {
                     "application/json": components["schemas"]["GetContractResponseContent"];
                 };
             };
-            /** @description ProcessingIncompleteError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ProcessingIncompleteError 409 response */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3634,8 +4029,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetContractReadURLResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3676,8 +4080,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetProfileResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3718,8 +4131,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetProfilePictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3760,8 +4182,26 @@ export interface operations {
                     "application/json": components["schemas"]["GetSpecialContractResponseContent"];
                 };
             };
-            /** @description ProcessingIncompleteError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ProcessingIncompleteError 409 response */
+            409: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3802,8 +4242,8 @@ export interface operations {
                     "application/json": components["schemas"]["ListContractsResponseContent"];
                 };
             };
-            /** @description AuthenticationError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3840,8 +4280,8 @@ export interface operations {
                     "application/json": components["schemas"]["ListSpecialContractsResponseContent"];
                 };
             };
-            /** @description AuthenticationError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3911,6 +4351,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3951,6 +4400,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -3984,8 +4451,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4026,8 +4502,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgPictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4068,8 +4553,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgThemeResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4119,6 +4613,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4157,6 +4669,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -4201,6 +4731,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4241,6 +4789,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4274,8 +4840,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4325,6 +4900,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4358,8 +4951,8 @@ export interface operations {
                     "application/json": components["schemas"]["ListUserOrganizationsResponseContent"];
                 };
             };
-            /** @description AuthenticationError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4400,8 +4993,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgMembersResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4449,6 +5051,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4491,6 +5111,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4531,6 +5169,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4564,8 +5220,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgCustomRolesResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4615,6 +5280,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4655,6 +5338,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -4699,6 +5400,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4739,6 +5458,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -4783,6 +5520,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4816,8 +5571,17 @@ export interface operations {
                     "application/json": components["schemas"]["UploadOrgPictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4887,6 +5651,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -4927,6 +5709,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -4971,6 +5771,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -5004,8 +5822,17 @@ export interface operations {
                     "application/json": components["schemas"]["UploadProfilePictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -5053,6 +5880,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -5119,13 +5955,8 @@ export enum DealStage {
 export enum DeliverableSource {
     INFERRED = "INFERRED",
     TEMPLATE = "TEMPLATE",
-    IMPORTED = "IMPORTED"
-}
-export enum DeliverableStatus {
-    PENDING = "PENDING",
-    IN_PROGRESS = "IN_PROGRESS",
-    COMPLETED = "COMPLETED",
-    BLOCKED = "BLOCKED"
+    IMPORTED = "IMPORTED",
+    MANUAL = "MANUAL"
 }
 export enum DurationType {
     fixed = "fixed",

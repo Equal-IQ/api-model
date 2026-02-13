@@ -81,7 +81,7 @@ structure Org {
     // Computed/context fields
     memberCount: Integer
     userRole: OrgRole
-    contractCount: Integer
+    dealCount: Integer
     inviteCount: Integer
     roleCount: Integer
 }
@@ -700,7 +700,7 @@ operation UploadOrgPicture {
 
     output := {
         @required
-        url_info: PresignedPostData
+        urlInfo: PresignedPostData
     }
 
     errors: [

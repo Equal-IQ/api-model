@@ -46,10 +46,14 @@ resource User {
 
 // User structures
 structure UserProfile {
+    @required
     userId: UserId
+    @required
     firstName: String
+    @required
     lastName: String
     displayName: String
+    @required
     email: Email
     accountType: String
     bio: String
@@ -135,7 +139,7 @@ operation UploadProfilePicture {
 
     output := {
         @required
-        url_info: PresignedPostData
+        urlInfo: PresignedPostData
     }
 
     errors: [
@@ -168,6 +172,7 @@ operation UpdateProfile {
     errors: [
         AuthenticationError
         ValidationError
+        ResourceNotFoundError
         InternalServerError
     ]
 }
@@ -270,7 +275,7 @@ operation ListQuickAccess {
 
     output := {
         @required
-        items: QuickAccessList
+        items: QuickAccessMap
 
         /// Token for next page
         nextToken: String
@@ -283,7 +288,8 @@ operation ListQuickAccess {
     ]
 }
 
-// Helper list types
-list QuickAccessList {
-    member: QuickAccess
+// Helper map types
+map QuickAccessMap {
+    key: String  // quickAccessId
+    value: QuickAccess
 }

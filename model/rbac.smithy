@@ -508,7 +508,6 @@ operation UpdateFileAccess {
 
         permissions: FilePermissionList
         grantablePermissions: FilePermissionList
-        partyRole: String
         expiresAt: ISODate
         isDeny: Boolean
     }
