@@ -1,5 +1,11 @@
-
 $version: "2"
+
+metadata suppressions = [
+  {
+    id: "EnumShape",
+    namespace: "equaliq.extraction"
+  }
+]
 
 namespace equaliq.extraction
 

@@ -1,5 +1,12 @@
 $version: "2"
 
+metadata suppressions = [
+  {
+    id: "EnumShape",
+    namespace: "equaliq.eq"
+  }
+]
+
 namespace equaliq.eq
 
 use equaliq#StringList

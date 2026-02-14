@@ -1,5 +1,12 @@
 $version: "2"
 
+metadata suppressions = [
+  {
+    id: "EnumShape",
+    namespace: "equaliq"
+  }
+]
+
 namespace equaliq
 
 /// Common types and structures shared across all operations

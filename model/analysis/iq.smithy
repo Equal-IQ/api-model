@@ -1,5 +1,12 @@
 $version: "2"
 
+metadata suppressions = [
+  {
+    id: "EnumShape",
+    namespace: "equaliq.iq"
+  }
+]
+
 namespace equaliq.iq
 
 use equaliq#Url
