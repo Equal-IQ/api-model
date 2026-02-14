@@ -21,60 +21,60 @@ string AccessId with [UuidLikeMixin]
 
 /// Platform-level roles (system-wide, not organization-scoped)
 enum PlatformRole {
-    USER = "user"
-    DEVELOPER = "developer"
-    AUDITOR = "auditor"
+    user = "user"
+    developer = "developer"
+    auditor = "auditor"
 }
 
 /// Organization roles
 enum OrgRole {
-    PRIMARY_OWNER = "primary_owner"
-    ADMIN = "admin"
-    BILLING_ADMIN = "billing_admin"
-    AUDITOR = "auditor"
-    MEMBER = "member"
-    VIEWER = "viewer"
-    CUSTOM = "custom"
+    primary_owner = "primary_owner"
+    admin = "admin"
+    billing_admin = "billing_admin"
+    auditor = "auditor"
+    member = "member"
+    viewer = "viewer"
+    custom = "custom"
 }
 
 /// Organization permissions
 enum OrgPermission {
-    MANAGE_MEMBERS = "manage_members"
-    MANAGE_BILLING = "manage_billing"
-    MANAGE_SETTINGS = "manage_settings"
-    INVITE_USERS = "invite_users"
-    MANAGE_ROLES = "manage_roles"
-    VIEW_ANALYTICS = "view_analytics"
-    VIEW_AUDIT_LOGS = "view_audit_logs"
+    manage_members = "manage_members"
+    manage_billing = "manage_billing"
+    manage_settings = "manage_settings"
+    invite_users = "invite_users"
+    manage_roles = "manage_roles"
+    view_analytics = "view_analytics"
+    view_audit_logs = "view_audit_logs"
 }
 
 /// Deal permissions
 enum DealPermission {
-    VIEW_DEAL = "view_deal"
-    EDIT_DEAL = "edit_deal"
-    DELETE_DEAL = "delete_deal"
-    MANAGE_ACCESS = "manage_access"
-    APPROVE_DEAL = "approve_deal"
-    CREATE_VERSION = "create_version"
-    VIEW_AI_ANALYSIS = "view_ai_analysis"
-    VIEW_REVISION_HISTORY = "view_revision_history"
-    EXPORT_DEAL = "export_deal"
-    MANAGE_DELIVERABLES = "manage_deliverables"
-    COMMENT_DEAL = "comment_deal"
-    VIEW_FINANCIAL = "view_financial"
-    EDIT_FINANCIAL = "edit_financial"
+    view_deal = "view_deal"
+    edit_deal = "edit_deal"
+    delete_deal = "delete_deal"
+    manage_access = "manage_access"
+    approve_deal = "approve_deal"
+    create_version = "create_version"
+    view_ai_analysis = "view_ai_analysis"
+    view_revision_history = "view_revision_history"
+    export_deal = "export_deal"
+    manage_deliverables = "manage_deliverables"
+    comment_deal = "comment_deal"
+    view_financial = "view_financial"
+    edit_financial = "edit_financial"
 }
 
 /// File permissions
 enum FilePermission {
-    VIEW_FILE = "view_file"
-    EDIT_FILE = "edit_file"
-    DELETE_FILE = "delete_file"
-    SHARE_FILE = "share_file"
-    MANAGE_ACCESS = "manage_access"
-    COMMENT_FILE = "comment_file"
-    EXPORT_FILE = "export_file"
-    RENAME_FILE = "rename_file"
+    view_file = "view_file"
+    edit_file = "edit_file"
+    delete_file = "delete_file"
+    share_file = "share_file"
+    manage_access = "manage_access"
+    comment_file = "comment_file"
+    export_file = "export_file"
+    rename_file = "rename_file"
 }
 
 list OrgPermissionList {
@@ -348,7 +348,7 @@ operation ListDealAccess {
 
     output := {
         @required
-        access: DealAccessList
+        access: DealAccessMap
 
         /// Token for next page
         nextToken: String
@@ -482,7 +482,7 @@ operation ListFileAccess {
 
     output := {
         @required
-        access: FileAccessList
+        access: FileAccessMap
 
         /// Token for next page
         nextToken: String
@@ -534,12 +534,14 @@ list FilePermissionList {
     member: FilePermission
 }
 
-list DealAccessList {
-    member: DealAccess
+map DealAccessMap {
+    key: AccessId
+    value: DealAccess
 }
 
-list FileAccessList {
-    member: FileAccess
+map FileAccessMap {
+    key: AccessId
+    value: FileAccess
 }
 
 list OrgMemberList {

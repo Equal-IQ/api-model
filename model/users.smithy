@@ -15,16 +15,16 @@ use equaliq#InternalServerError
 
 /// Pin type for quick access items
 enum PinType {
-    USER_PINNED = "USER_PINNED"
-    AUTO_PINNED = "AUTO_PINNED"
+    user_pinned = "user_pinned"
+    auto_pinned = "auto_pinned"
 }
 
 /// Reference type for quick access
 enum ReferenceType {
-    DEAL = "DEAL"
-    FILE = "FILE"
-    ORG = "ORG"
-    USER = "USER"
+    deal = "deal"
+    file = "file"
+    org = "org"
+    user = "user"
 }
 
 // User identifier

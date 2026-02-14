@@ -80,10 +80,10 @@ structure FixedTermValue {
 
 
 enum ContractVariableType {
-  EQ_TERM = "eq_term"
-  DISCOVERED_TERM = "discovered_term"
-  EXTERNAL_TERM = "external_term"
-  INTERNAL_CITATION = "internal_citation"
+  eq_term = "eq_term"
+  discovered_term = "discovered_term"
+  external_term = "external_term"
+  internal_citation = "internal_citation"
 }
 
 

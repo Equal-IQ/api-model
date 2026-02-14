@@ -16,22 +16,22 @@ string AuditLogId with [UuidLikeMixin]
 
 /// Record types for audit log entries
 enum RecordType {
-    NORMAL = "NORMAL"
-    META_AUDIT = "META_AUDIT"
-    UNKNOWN = "UNKNOWN"
-    CLEANUP = "CLEANUP"
-    EXPORT = "EXPORT"
-    SYSTEM = "SYSTEM"
+    normal = "normal"
+    meta_audit = "meta_audit"
+    unknown = "unknown"
+    cleanup = "cleanup"
+    export = "export"
+    system = "system"
 }
 
 /// Database operations for audit tracking
 enum AuditOperation {
-    INSERT = "INSERT"
-    UPDATE = "UPDATE"
-    DELETE = "DELETE"
-    ACCESS = "ACCESS"
-    EXPORT = "EXPORT"
-    SHARE = "SHARE"
+    insert = "insert"
+    update = "update"
+    delete = "delete"
+    access = "access"
+    export = "export"
+    share = "share"
 }
 
 /// Audit log resource
@@ -167,10 +167,10 @@ operation GetAuditStatistics {
 
 /// Statistic grouping periods
 enum StatisticGrouping {
-    HOUR = "HOUR"
-    DAY = "DAY"
-    WEEK = "WEEK"
-    MONTH = "MONTH"
+    hour = "hour"
+    day = "day"
+    week = "week"
+    month = "month"
 }
 
 /// Audit statistics

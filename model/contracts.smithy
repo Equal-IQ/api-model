@@ -15,16 +15,16 @@ use equaliq#PlainText
 string ContractId with [UuidLikeMixin]
 
 enum ContractStatus {
-  PROCESSING = "processing"
-  AWAITING_UPLOAD = "awaiting_upload"
-  EXTRACTING_TEXT = "extracting_text"
-  EQ_GENERATION = "eq_generation"
-  IQ_GENERATION = "iq_generation"
-  VARIABLE_EXTRACTION = "variable_extraction"
-  CONTRACT_MARKUP = "contract_markup"
-  TTS_GENERATION = "tts_generation"
-  COMPLETE = "complete"
-  ERROR = "error"
+  processing = "processing"
+  awaiting_upload = "awaiting_upload"
+  extracting_text = "extracting_text"
+  eq_generation = "eq_generation"
+  iq_generation = "iq_generation"
+  variable_extraction = "variable_extraction"
+  contract_markup = "contract_markup"
+  tts_generation = "tts_generation"
+  complete = "complete"
+  error = "error"
 }
 
 resource Contract {
@@ -148,13 +148,13 @@ structure ListContractsInput {
 
 structure ListContractsOutput {
   @documentation("Deprecation path (v0.5)")
-  owned: ContractSummaryList
+  owned: ContractSummaryMap
 
   @documentation("Deprecation path (v0.5)")
-  shared: ContractSummaryList
+  shared: ContractSummaryMap
 
   @documentation("v1")
-  contracts: ContractMetadataList
+  contracts: ContractMetadataMap
 }
 
 @http(method: "POST", uri: "/listSpecialContracts")
@@ -173,14 +173,15 @@ structure ListSpecialContractsInput {
 
 structure ListSpecialContractsOutput {
   @required
-  owned: ContractSummaryList
+  owned: ContractSummaryMap
 
   @required
-  shared: ContractSummaryList
+  shared: ContractSummaryMap
 }
 
-list ContractSummaryList {
-  member: ContractSummaryItem
+map ContractSummaryMap {
+  key: ContractId
+  value: ContractSummaryItem
 }
 
 structure ContractSummaryItem {
@@ -210,8 +211,9 @@ structure ContractSummaryItem {
   sharedEmails: EmailList
 }
 
-list ContractMetadataList {
-  member: ContractMetadata
+map ContractMetadataMap {
+  key: ContractId
+  value: ContractMetadata
 }
 
 structure ContractMetadata {
@@ -230,7 +232,7 @@ structure ContractMetadata {
 
   ownerOrgId: OrgId
 
-  sharedUsers: SharedUserDetailsList
+  sharedUsers: SharedUserDetailsMap
 
   isOwner: Boolean
   hasTTS: Boolean
@@ -350,7 +352,7 @@ structure ShareContractOutput {
   contractId: ContractId
 
   @required
-  sharedWith: SharedUserDetailsList
+  sharedWith: SharedUserDetailsMap
 
   added: EmailList
 
@@ -359,8 +361,9 @@ structure ShareContractOutput {
   invalidRemoves: EmailList
 }
 
-list SharedUserDetailsList {
-  member: SharedUserDetails
+map SharedUserDetailsMap {
+  key: UserId
+  value: SharedUserDetails
 }
 
 structure SharedUserDetails {
@@ -496,7 +499,7 @@ structure ContractAnalysisRecord {
 
   contractTexts: ContractTexts
 
-  sharedUsers: SharedUserDetailsList
+  sharedUsers: SharedUserDetailsMap
   hasTTS: Boolean
   isSpecial: Boolean
 }

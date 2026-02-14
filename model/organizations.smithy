@@ -28,10 +28,10 @@ string InviteId with [UuidLikeMixin]
 string OrgCustomRoleId with [UuidLikeMixin]
 
 enum InviteStatus {
-    PENDING = "pending"
-    ACCEPTED = "accepted"
-    DECLINED = "declined"
-    EXPIRED = "expired"
+    pending = "pending"
+    accepted = "accepted"
+    declined = "declined"
+    expired = "expired"
 }
 
 map OrgMemberMap {
@@ -180,7 +180,7 @@ operation ListUserOrganizations {
 
     output := {
         @required
-        organizations: OrgList
+        organizations: OrgMap
 
         /// Token for next page
         nextToken: String
@@ -192,8 +192,9 @@ operation ListUserOrganizations {
     ]
 }
 
-list OrgList {
-    member: Org
+map OrgMap {
+    key: OrgId
+    value: Org
 }
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])

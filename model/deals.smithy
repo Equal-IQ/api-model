@@ -5,7 +5,7 @@ namespace equaliq
 use aws.protocols#restJson1
 use equaliq#ISODate
 use equaliq#StringList
-use equaliq#DealAccessList
+use equaliq#DealAccessMap
 use equaliq#DealAccess
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
@@ -14,20 +14,20 @@ use equaliq#InternalServerError
 
 /// Deal stage lifecycle
 enum DealStage {
-    DRAFTING = "DRAFTING"
-    NEGOTIATION = "NEGOTIATION"
-    SIGNING = "SIGNING"
-    DELIVERY = "DELIVERY"
-    COMPLETED = "COMPLETED"
-    CANCELLED = "CANCELLED"
+    drafting = "drafting"
+    negotiation = "negotiation"
+    signing = "signing"
+    delivery = "delivery"
+    completed = "completed"
+    cancelled = "cancelled"
 }
 
 /// Deliverable source (for tracking origin)
 enum DeliverableSource {
-    INFERRED = "INFERRED"
-    TEMPLATE = "TEMPLATE"
-    IMPORTED = "IMPORTED"
-    MANUAL = "MANUAL"
+    inferred = "inferred"
+    template = "template"
+    imported = "imported"
+    manual = "manual"
 }
 
 string DealId with [UuidLikeMixin]
@@ -286,7 +286,7 @@ operation GetDeal {
 
         versions: DealVersionMap
         deliverables: DeliverableMap
-        access: DealAccessList
+        access: DealAccessMap
     }
 
     errors: [

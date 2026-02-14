@@ -10,11 +10,11 @@ structure IqModeData {
 }
 
 enum IqModeSectionKey {
-  EARNINGS = "earnings"
-  QUALITY = "qualityOfRights"
-  USAGE = "usageObligations"
-  AGREEMENT = "agreementLength"
-  LIABILITY = "liabilitySafeguards"
+  earnings = "earnings"
+  qualityOfRights = "qualityOfRights"
+  usageObligations = "usageObligations"
+  agreementLength = "agreementLength"
+  liabilitySafeguards = "liabilitySafeguards"
 }
 
 map IqModePerspectiveMap {

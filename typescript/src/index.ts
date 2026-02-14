@@ -13,12 +13,12 @@ export * from './xml-utils';
 
 // Unwrapped enum definitions
 export enum AuditOperation {
-  INSERT = "INSERT",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
-  ACCESS = "ACCESS",
-  EXPORT = "EXPORT",
-  SHARE = "SHARE"
+  insert = "insert",
+  update = "update",
+  delete = "delete",
+  access = "access",
+  export = "export",
+  share = "share"
 }
 
 export enum ContractStatus {
@@ -58,19 +58,19 @@ export enum DealPermission {
 }
 
 export enum DealStage {
-  DRAFTING = "DRAFTING",
-  NEGOTIATION = "NEGOTIATION",
-  SIGNING = "SIGNING",
-  DELIVERY = "DELIVERY",
-  COMPLETED = "COMPLETED",
-  CANCELLED = "CANCELLED"
+  drafting = "drafting",
+  negotiation = "negotiation",
+  signing = "signing",
+  delivery = "delivery",
+  completed = "completed",
+  cancelled = "cancelled"
 }
 
 export enum DeliverableSource {
-  INFERRED = "INFERRED",
-  TEMPLATE = "TEMPLATE",
-  IMPORTED = "IMPORTED",
-  MANUAL = "MANUAL"
+  inferred = "inferred",
+  template = "template",
+  imported = "imported",
+  manual = "manual"
 }
 
 export enum DurationType {
@@ -89,8 +89,8 @@ export enum EqCardKey {
 }
 
 export enum EqCardType {
-  A = "A",
-  B = "B"
+  a = "a",
+  b = "b"
 }
 
 export enum FilePermission {
@@ -140,19 +140,19 @@ export enum OrgRole {
 }
 
 export enum RecordType {
-  NORMAL = "NORMAL",
-  META_AUDIT = "META_AUDIT",
-  UNKNOWN = "UNKNOWN",
-  CLEANUP = "CLEANUP",
-  EXPORT = "EXPORT",
-  SYSTEM = "SYSTEM"
+  normal = "normal",
+  meta_audit = "meta_audit",
+  unknown = "unknown",
+  cleanup = "cleanup",
+  export = "export",
+  system = "system"
 }
 
 export enum StatisticGrouping {
-  HOUR = "HOUR",
-  DAY = "DAY",
-  WEEK = "WEEK",
-  MONTH = "MONTH"
+  hour = "hour",
+  day = "day",
+  week = "week",
+  month = "month"
 }
 
 // Unwrapped type definitions (no aliases)
@@ -211,7 +211,7 @@ export type ContractAnalysisRecord = {
   terms?: ExtractionTermMap;
   variables?: ContractVariableMap;
   contractTexts?: ContractTexts;
-  sharedUsers?: SharedUserDetails[];
+  sharedUsers?: SharedUserDetailsMap;
   hasTTS?: boolean;
   isSpecial?: boolean;
 };
@@ -232,11 +232,13 @@ export type ContractMetadata = {
   uploadedOn: string;
   ownerId: string;
   ownerOrgId?: string;
-  sharedUsers?: SharedUserDetails[];
+  sharedUsers?: SharedUserDetailsMap;
   isOwner?: boolean;
   hasTTS?: boolean;
   isSpecial?: boolean;
 };
+
+export type ContractMetadataMap = { [key: string]: ContractMetadata };
 
 export type ContractSummaryItem = {
   contractId: string;
@@ -250,6 +252,8 @@ export type ContractSummaryItem = {
   sharedUsers?: string[];
   sharedEmails?: string[];
 };
+
+export type ContractSummaryMap = { [key: string]: ContractSummaryItem };
 
 export type ContractTexts = {
   originalText?: PlainText;
@@ -394,6 +398,8 @@ export type DealAccess = {
   updatedAt: string;
 };
 
+export type DealAccessMap = { [key: string]: DealAccess };
+
 export type DealMap = { [key: string]: Deal };
 
 export type DealVersion = {
@@ -466,17 +472,17 @@ export type DeliverableMap = { [key: string]: Deliverable };
 export type EmptyStructure = unknown;
 
 export type EqCardUniqueData = {
-  MONEY_RECEIVED: EqMoneyCard;
+  moneyYouReceive: EqMoneyCard;
 } | {
-  OWNERSHIP: EqOwnershipCard;
+  whatYouOwn: EqOwnershipCard;
 } | {
-  RESPONSIBILITIES: EqResponsibilitiesCard;
+  whatYoureResponsibleFor: EqResponsibilitiesCard;
 } | {
-  DURATION: EqDurationCard;
+  howLongThisDealLasts: EqDurationCard;
 } | {
-  LEGAL: EqLegalCard;
+  risksCostsLegalStuff: EqLegalCard;
 } | {
-  EMPTY: EmptyStructure;
+  empty: EmptyStructure;
 };
 
 export type EqDurationCard = {
@@ -582,6 +588,8 @@ export type FileAccess = {
   updatedAt: string;
 };
 
+export type FileAccessMap = { [key: string]: FileAccess };
+
 export type FileMap = { [key: string]: File };
 
 export type FixedTermValue = {
@@ -674,7 +682,7 @@ export type GetDealResponseContent = {
   deal: Deal;
   versions?: DealVersionMap;
   deliverables?: DeliverableMap;
-  access?: DealAccess[];
+  access?: DealAccessMap;
 };
 
 export type GetDealVersionRequestContent = {
@@ -696,7 +704,7 @@ export type GetFileRequestContent = {
 
 export type GetFileResponseContent = {
   file: File;
-  access?: FileAccess[];
+  access?: FileAccessMap;
   downloadUrl?: PresignedUrl;
 };
 
@@ -843,9 +851,9 @@ export type ListContractsRequestContent = {
 };
 
 export type ListContractsResponseContent = {
-  owned?: ContractSummaryItem[];
-  shared?: ContractSummaryItem[];
-  contracts?: ContractMetadata[];
+  owned?: ContractSummaryMap;
+  shared?: ContractSummaryMap;
+  contracts?: ContractMetadataMap;
 };
 
 export type ListDealAccessRequestContent = {
@@ -858,7 +866,7 @@ export type ListDealAccessRequestContent = {
 };
 
 export type ListDealAccessResponseContent = {
-  access: DealAccess[];
+  access: DealAccessMap;
   nextToken?: string;
 };
 
@@ -911,7 +919,7 @@ export type ListFileAccessRequestContent = {
 };
 
 export type ListFileAccessResponseContent = {
-  access: FileAccess[];
+  access: FileAccessMap;
   nextToken?: string;
 };
 
@@ -970,8 +978,8 @@ export type ListOrgMembersResponseContent = {
 };
 
 export type ListSpecialContractsResponseContent = {
-  owned: ContractSummaryItem[];
-  shared: ContractSummaryItem[];
+  owned: ContractSummaryMap;
+  shared: ContractSummaryMap;
 };
 
 export type ListUserOrganizationsRequestContent = {
@@ -980,7 +988,7 @@ export type ListUserOrganizationsRequestContent = {
 };
 
 export type ListUserOrganizationsResponseContent = {
-  organizations: Org[];
+  organizations: OrgMap;
   nextToken?: string;
 };
 
@@ -1034,6 +1042,8 @@ export type OrgInvite = {
 };
 
 export type OrgInviteMap = { [key: string]: OrgInvite };
+
+export type OrgMap = { [key: string]: Org };
 
 export type OrgMember = {
   userId: string;
@@ -1118,7 +1128,7 @@ export type ShareContractRequestContent = {
 export type ShareContractResponseContent = {
   success: boolean;
   contractId: string;
-  sharedWith: SharedUserDetails[];
+  sharedWith: SharedUserDetailsMap;
   added?: string[];
   removed?: string[];
   invalidRemoves?: string[];
@@ -1130,6 +1140,8 @@ export type SharedUserDetails = {
   sharedWithUserEmail: string;
   sharedTime: number;
 };
+
+export type SharedUserDetailsMap = { [key: string]: SharedUserDetails };
 
 export type SimpleTermDescription = {
   title: string;

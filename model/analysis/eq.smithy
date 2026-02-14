@@ -14,11 +14,11 @@ structure EqModeData {
 
 // Special Contract Structures (only the stable ones)
 enum EqCardKey {
-  MONEY_RECEIVED = "moneyYouReceive"
-  OWNERSHIP = "whatYouOwn"
-  RESPONSIBILITIES = "whatYoureResponsibleFor"
-  DURATION = "howLongThisDealLasts"
-  LEGAL = "risksCostsLegalStuff"
+  moneyYouReceive = "moneyYouReceive"
+  whatYouOwn = "whatYouOwn"
+  whatYoureResponsibleFor = "whatYoureResponsibleFor"
+  howLongThisDealLasts = "howLongThisDealLasts"
+  risksCostsLegalStuff = "risksCostsLegalStuff"
 }
 
 structure EqMoneyCard {
@@ -40,10 +40,10 @@ structure EqResponsibilitiesCard {
 }
 
 enum DurationType {
-  FIXED = "fixed"
-  INDEFINITE = "indefinite"
-  RENEWABLE = "renewable"
-  OTHER = "other"
+  fixed = "fixed"
+  indefinite = "indefinite"
+  renewable = "renewable"
+  other = "other"
 }
 
 structure EqDurationCard {
@@ -68,12 +68,12 @@ structure EqLegalCard {
 }
 
 union EqCardUniqueData {
-  MONEY_RECEIVED: EqMoneyCard
-  OWNERSHIP: EqOwnershipCard
-  RESPONSIBILITIES: EqResponsibilitiesCard 
-  DURATION: EqDurationCard
-  LEGAL: EqLegalCard
-  EMPTY: EmptyStructure
+  moneyYouReceive: EqMoneyCard
+  whatYouOwn: EqOwnershipCard
+  whatYoureResponsibleFor: EqResponsibilitiesCard
+  howLongThisDealLasts: EqDurationCard
+  risksCostsLegalStuff: EqLegalCard
+  empty: EmptyStructure
 }
 
 // EQMode data structure - matches the eqmode field in seniSpecialData
@@ -84,10 +84,10 @@ map EqModeCardMap {
 
 enum EqCardType {
   @documentation("v0")
-  A = "A"
-  
+  a = "a"
+
   @documentation("v1")
-  B = "B"
+  b = "b"
 }
 
 // Individual EqMode card

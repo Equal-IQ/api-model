@@ -7,7 +7,7 @@ use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#Url
 use equaliq#StringList
-use equaliq#FileAccessList
+use equaliq#FileAccessMap
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -157,7 +157,7 @@ operation GetFile {
         file: File
 
         /// Access information if requested
-        access: FileAccessList
+        access: FileAccessMap
 
         /// Presigned URL for download if requested
         downloadUrl: PresignedUrl

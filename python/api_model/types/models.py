@@ -19,12 +19,12 @@ class AuditOperation(StrEnum):
     Database operations for audit tracking
     """
 
-    INSERT = 'INSERT'
-    UPDATE = 'UPDATE'
-    DELETE = 'DELETE'
-    ACCESS = 'ACCESS'
-    EXPORT = 'EXPORT'
-    SHARE = 'SHARE'
+    insert = 'insert'
+    update = 'update'
+    delete = 'delete'
+    access = 'access'
+    export = 'export'
+    share = 'share'
 
 
 class AuditStatistics(BaseModel):
@@ -87,6 +87,10 @@ class ContractSummaryItem(BaseModel):
     sharedWith: list[SharedWithItem] | None
     sharedUsers: list[SharedUser] | None
     sharedEmails: list[SharedEmail] | None
+
+
+class ContractSummaryMap(RootModel[dict[str, ContractSummaryItem]]):
+    root: dict[str, ContractSummaryItem]
 
 
 class ContractVariableType(StrEnum):
@@ -185,12 +189,12 @@ class DealStage(StrEnum):
     Deal stage lifecycle
     """
 
-    DRAFTING = 'DRAFTING'
-    NEGOTIATION = 'NEGOTIATION'
-    SIGNING = 'SIGNING'
-    DELIVERY = 'DELIVERY'
-    COMPLETED = 'COMPLETED'
-    CANCELLED = 'CANCELLED'
+    drafting = 'drafting'
+    negotiation = 'negotiation'
+    signing = 'signing'
+    delivery = 'delivery'
+    completed = 'completed'
+    cancelled = 'cancelled'
 
 
 class DealVersion(BaseModel):
@@ -265,10 +269,10 @@ class DeliverableSource(StrEnum):
     Deliverable source (for tracking origin)
     """
 
-    INFERRED = 'INFERRED'
-    TEMPLATE = 'TEMPLATE'
-    IMPORTED = 'IMPORTED'
-    MANUAL = 'MANUAL'
+    inferred = 'inferred'
+    template = 'template'
+    imported = 'imported'
+    manual = 'manual'
 
 
 class DurationType(StrEnum):
@@ -293,12 +297,12 @@ class EqCardKey(StrEnum):
 
 
 class EqCardType(StrEnum):
-    A = 'A'
-    B = 'B'
+    a = 'a'
+    b = 'b'
 
 
-class EMPTY(BaseModel):
-    EMPTY: EmptyStructure
+class Empty(BaseModel):
+    empty: EmptyStructure
 
 
 class EqLegalCard(BaseModel):
@@ -671,8 +675,8 @@ class ListOrgInvitesRequestContent(BaseModel):
 
 
 class ListSpecialContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem]
-    shared: list[ContractSummaryItem]
+    owned: ContractSummaryMap
+    shared: ContractSummaryMap
 
 
 class ListUserOrganizationsRequestContent(BaseModel):
@@ -760,12 +764,12 @@ class RecordType(StrEnum):
     Record types for audit log entries
     """
 
-    NORMAL = 'NORMAL'
-    META_AUDIT = 'META_AUDIT'
-    UNKNOWN = 'UNKNOWN'
-    CLEANUP = 'CLEANUP'
-    EXPORT = 'EXPORT'
-    SYSTEM = 'SYSTEM'
+    normal = 'normal'
+    meta_audit = 'meta_audit'
+    unknown = 'unknown'
+    cleanup = 'cleanup'
+    export = 'export'
+    system = 'system'
 
 
 class RemoveOrgMemberRequestContent(BaseModel):
@@ -837,6 +841,10 @@ class SharedUserDetails(BaseModel):
     sharedTime: float
 
 
+class SharedUserDetailsMap(RootModel[dict[str, SharedUserDetails]]):
+    root: dict[str, SharedUserDetails]
+
+
 class SimpleTermDescription(BaseModel):
     title: str
     description: str
@@ -847,10 +855,10 @@ class StatisticGrouping(StrEnum):
     Statistic grouping periods
     """
 
-    HOUR = 'HOUR'
-    DAY = 'DAY'
-    WEEK = 'WEEK'
-    MONTH = 'MONTH'
+    hour = 'hour'
+    day = 'day'
+    week = 'week'
+    month = 'month'
 
 
 class TaggedText(BaseModel):
@@ -1074,10 +1082,14 @@ class ContractMetadata(BaseModel):
     )
     ownerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    sharedUsers: list[SharedUserDetails] | None
+    sharedUsers: SharedUserDetailsMap | None
     isOwner: bool | None
     hasTTS: bool | None
     isSpecial: bool | None
+
+
+class ContractMetadataMap(RootModel[dict[str, ContractMetadata]]):
+    root: dict[str, ContractMetadata]
 
 
 class ContractTexts(BaseModel):
@@ -1218,6 +1230,10 @@ class DealAccess(BaseModel):
     )
 
 
+class DealAccessMap(RootModel[dict[str, DealAccess]]):
+    root: dict[str, DealAccess]
+
+
 class Deliverable(BaseModel):
     """
     Deliverable with stage-conditional fields
@@ -1258,12 +1274,12 @@ class DeliverableMap(RootModel[dict[str, Deliverable]]):
     root: dict[str, Deliverable]
 
 
-class MONEYRECEIVED(BaseModel):
-    MONEY_RECEIVED: EqMoneyCard
+class MoneyYouReceive(BaseModel):
+    moneyYouReceive: EqMoneyCard
 
 
-class LEGAL(BaseModel):
-    LEGAL: EqLegalCard
+class RisksCostsLegalStuff(BaseModel):
+    risksCostsLegalStuff: EqLegalCard
 
 
 class EqDurationCard(BaseModel):
@@ -1346,6 +1362,10 @@ class FileAccess(BaseModel):
     )
 
 
+class FileAccessMap(RootModel[dict[str, FileAccess]]):
+    root: dict[str, FileAccess]
+
+
 class GenerateDownloadUrlResponseContent(BaseModel):
     downloadUrl: PresignedUrl
 
@@ -1383,7 +1403,7 @@ class GetDealResponseContent(BaseModel):
     deal: Deal
     versions: DealVersionMap | None
     deliverables: DeliverableMap | None
-    access: list[DealAccess] | None
+    access: DealAccessMap | None
 
 
 class GetDealVersionResponseContent(BaseModel):
@@ -1393,9 +1413,7 @@ class GetDealVersionResponseContent(BaseModel):
 
 class GetFileResponseContent(BaseModel):
     file: File
-    access: list[FileAccess] | None = Field(
-        None, description='Access information if requested'
-    )
+    access: FileAccessMap | None
     downloadUrl: PresignedUrl | None
 
 
@@ -1462,17 +1480,13 @@ class ListAuditLogsResponseContent(BaseModel):
 
 
 class ListContractsResponseContent(BaseModel):
-    owned: list[ContractSummaryItem] | None = Field(
-        None, description='Deprecation path (v0.5)'
-    )
-    shared: list[ContractSummaryItem] | None = Field(
-        None, description='Deprecation path (v0.5)'
-    )
-    contracts: list[ContractMetadata] | None = Field(None, description='v1')
+    owned: ContractSummaryMap | None
+    shared: ContractSummaryMap | None
+    contracts: ContractMetadataMap | None
 
 
 class ListDealAccessResponseContent(BaseModel):
-    access: list[DealAccess]
+    access: DealAccessMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1482,7 +1496,7 @@ class ListDeliverablesResponseContent(BaseModel):
 
 
 class ListFileAccessResponseContent(BaseModel):
-    access: list[FileAccess]
+    access: FileAccessMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1587,6 +1601,10 @@ class OrgInviteMap(RootModel[dict[str, OrgInvite]]):
     root: dict[str, OrgInvite]
 
 
+class OrgMap(RootModel[dict[str, Org]]):
+    root: dict[str, Org]
+
+
 class OrgMember(BaseModel):
     """
     Organization member
@@ -1616,7 +1634,7 @@ class ResendOrgInviteResponseContent(BaseModel):
 class ShareContractResponseContent(BaseModel):
     success: bool
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    sharedWith: list[SharedUserDetails]
+    sharedWith: SharedUserDetailsMap
     added: list[AddedItem] | None
     removed: list[RemovedItem] | None
     invalidRemoves: list[InvalidRemove] | None
@@ -1687,22 +1705,36 @@ class CreateOrgResponseContent(BaseModel):
     org: Org
 
 
-class OWNERSHIP(BaseModel):
-    OWNERSHIP: EqOwnershipCard
+class WhatYouOwn(BaseModel):
+    whatYouOwn: EqOwnershipCard
 
 
-class RESPONSIBILITIES(BaseModel):
-    RESPONSIBILITIES: EqResponsibilitiesCard
+class WhatYoureResponsibleFor(BaseModel):
+    whatYoureResponsibleFor: EqResponsibilitiesCard
 
 
-class DURATION(BaseModel):
-    DURATION: EqDurationCard
+class HowLongThisDealLasts(BaseModel):
+    howLongThisDealLasts: EqDurationCard
 
 
 class EqCardUniqueData(
-    RootModel[MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY]
+    RootModel[
+        MoneyYouReceive
+        | WhatYouOwn
+        | WhatYoureResponsibleFor
+        | HowLongThisDealLasts
+        | RisksCostsLegalStuff
+        | Empty
+    ]
 ):
-    root: MONEYRECEIVED | OWNERSHIP | RESPONSIBILITIES | DURATION | LEGAL | EMPTY
+    root: (
+        MoneyYouReceive
+        | WhatYouOwn
+        | WhatYoureResponsibleFor
+        | HowLongThisDealLasts
+        | RisksCostsLegalStuff
+        | Empty
+    )
 
 
 class EqModeCard(BaseModel):
@@ -1761,7 +1793,7 @@ class ListOrgMembersResponseContent(BaseModel):
 
 
 class ListUserOrganizationsResponseContent(BaseModel):
-    organizations: list[Org]
+    organizations: OrgMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1786,7 +1818,7 @@ class ContractAnalysisRecord(BaseModel):
     terms: ExtractionTermMap | None
     variables: ContractVariableMap | None
     contractTexts: ContractTexts | None
-    sharedUsers: list[SharedUserDetails] | None
+    sharedUsers: SharedUserDetailsMap | None
     hasTTS: bool | None
     isSpecial: bool | None
 

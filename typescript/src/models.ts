@@ -1146,7 +1146,7 @@ export interface components {
             terms?: components["schemas"]["ExtractionTermMap"];
             variables?: components["schemas"]["ContractVariableMap"];
             contractTexts?: components["schemas"]["ContractTexts"];
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
+            sharedUsers?: components["schemas"]["SharedUserDetailsMap"];
             hasTTS?: boolean;
             isSpecial?: boolean;
         };
@@ -1166,10 +1166,13 @@ export interface components {
             uploadedOn: string;
             ownerId: string;
             ownerOrgId?: string;
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
+            sharedUsers?: components["schemas"]["SharedUserDetailsMap"];
             isOwner?: boolean;
             hasTTS?: boolean;
             isSpecial?: boolean;
+        };
+        ContractMetadataMap: {
+            [key: string]: components["schemas"]["ContractMetadata"];
         };
         /** @enum {string} */
         ContractStatus: ContractStatus;
@@ -1185,6 +1188,9 @@ export interface components {
             sharedWith?: string[];
             sharedUsers?: string[];
             sharedEmails?: string[];
+        };
+        ContractSummaryMap: {
+            [key: string]: components["schemas"]["ContractSummaryItem"];
         };
         ContractTexts: {
             originalText?: components["schemas"]["PlainText"];
@@ -1337,6 +1343,9 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        DealAccessMap: {
+            [key: string]: components["schemas"]["DealAccess"];
+        };
         DealMap: {
             [key: string]: components["schemas"]["Deal"];
         };
@@ -1434,17 +1443,17 @@ export interface components {
         /** @enum {string} */
         EqCardType: EqCardType;
         EqCardUniqueData: {
-            MONEY_RECEIVED: components["schemas"]["EqMoneyCard"];
+            moneyYouReceive: components["schemas"]["EqMoneyCard"];
         } | {
-            OWNERSHIP: components["schemas"]["EqOwnershipCard"];
+            whatYouOwn: components["schemas"]["EqOwnershipCard"];
         } | {
-            RESPONSIBILITIES: components["schemas"]["EqResponsibilitiesCard"];
+            whatYoureResponsibleFor: components["schemas"]["EqResponsibilitiesCard"];
         } | {
-            DURATION: components["schemas"]["EqDurationCard"];
+            howLongThisDealLasts: components["schemas"]["EqDurationCard"];
         } | {
-            LEGAL: components["schemas"]["EqLegalCard"];
+            risksCostsLegalStuff: components["schemas"]["EqLegalCard"];
         } | {
-            EMPTY: components["schemas"]["EmptyStructure"];
+            empty: components["schemas"]["EmptyStructure"];
         };
         EqDurationCard: {
             durationType: components["schemas"]["DurationType"];
@@ -1561,6 +1570,9 @@ export interface components {
             createdAt: string;
             updatedAt: string;
         };
+        FileAccessMap: {
+            [key: string]: components["schemas"]["FileAccess"];
+        };
         FileMap: {
             [key: string]: components["schemas"]["File"];
         };
@@ -1657,7 +1669,7 @@ export interface components {
             deal: components["schemas"]["Deal"];
             versions?: components["schemas"]["DealVersionMap"];
             deliverables?: components["schemas"]["DeliverableMap"];
-            access?: components["schemas"]["DealAccess"][];
+            access?: components["schemas"]["DealAccessMap"];
         };
         GetDealVersionRequestContent: {
             dealId: string;
@@ -1679,8 +1691,7 @@ export interface components {
         };
         GetFileResponseContent: {
             file: components["schemas"]["File"];
-            /** @description Access information if requested */
-            access?: components["schemas"]["FileAccess"][];
+            access?: components["schemas"]["FileAccessMap"];
             downloadUrl?: components["schemas"]["PresignedUrl"];
         };
         GetOrgPictureRequestContent: {
@@ -1817,12 +1828,9 @@ export interface components {
             orgId?: string;
         };
         ListContractsResponseContent: {
-            /** @description Deprecation path (v0.5) */
-            owned?: components["schemas"]["ContractSummaryItem"][];
-            /** @description Deprecation path (v0.5) */
-            shared?: components["schemas"]["ContractSummaryItem"][];
-            /** @description v1 */
-            contracts?: components["schemas"]["ContractMetadata"][];
+            owned?: components["schemas"]["ContractSummaryMap"];
+            shared?: components["schemas"]["ContractSummaryMap"];
+            contracts?: components["schemas"]["ContractMetadataMap"];
         };
         ListDealAccessRequestContent: {
             dealId: string;
@@ -1838,7 +1846,7 @@ export interface components {
             limit?: number;
         };
         ListDealAccessResponseContent: {
-            access: components["schemas"]["DealAccess"][];
+            access: components["schemas"]["DealAccessMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -1904,7 +1912,7 @@ export interface components {
             limit?: number;
         };
         ListFileAccessResponseContent: {
-            access: components["schemas"]["FileAccess"][];
+            access: components["schemas"]["FileAccessMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -1976,8 +1984,8 @@ export interface components {
             nextToken?: string;
         };
         ListSpecialContractsResponseContent: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
+            owned: components["schemas"]["ContractSummaryMap"];
+            shared: components["schemas"]["ContractSummaryMap"];
         };
         ListUserOrganizationsRequestContent: {
             /** @description Pagination cursor (encoded orgId) */
@@ -1986,7 +1994,7 @@ export interface components {
             limit?: number;
         };
         ListUserOrganizationsResponseContent: {
-            organizations: components["schemas"]["Org"][];
+            organizations: components["schemas"]["OrgMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -2042,6 +2050,9 @@ export interface components {
         };
         OrgInviteMap: {
             [key: string]: components["schemas"]["OrgInvite"];
+        };
+        OrgMap: {
+            [key: string]: components["schemas"]["Org"];
         };
         /** @description Organization member */
         OrgMember: {
@@ -2135,7 +2146,7 @@ export interface components {
         ShareContractResponseContent: {
             success: boolean;
             contractId: string;
-            sharedWith: components["schemas"]["SharedUserDetails"][];
+            sharedWith: components["schemas"]["SharedUserDetailsMap"];
             added?: string[];
             removed?: string[];
             invalidRemoves?: string[];
@@ -2146,6 +2157,9 @@ export interface components {
             sharedWithUserEmail: string;
             /** Format: double */
             sharedTime: number;
+        };
+        SharedUserDetailsMap: {
+            [key: string]: components["schemas"]["SharedUserDetails"];
         };
         SimpleTermDescription: {
             title: string;
@@ -5904,12 +5918,12 @@ export interface operations {
     };
 }
 export enum AuditOperation {
-    INSERT = "INSERT",
-    UPDATE = "UPDATE",
-    DELETE = "DELETE",
-    ACCESS = "ACCESS",
-    EXPORT = "EXPORT",
-    SHARE = "SHARE"
+    insert = "insert",
+    update = "update",
+    delete = "delete",
+    access = "access",
+    export = "export",
+    share = "share"
 }
 export enum ContractStatus {
     processing = "processing",
@@ -5945,18 +5959,18 @@ export enum DealPermission {
     edit_financial = "edit_financial"
 }
 export enum DealStage {
-    DRAFTING = "DRAFTING",
-    NEGOTIATION = "NEGOTIATION",
-    SIGNING = "SIGNING",
-    DELIVERY = "DELIVERY",
-    COMPLETED = "COMPLETED",
-    CANCELLED = "CANCELLED"
+    drafting = "drafting",
+    negotiation = "negotiation",
+    signing = "signing",
+    delivery = "delivery",
+    completed = "completed",
+    cancelled = "cancelled"
 }
 export enum DeliverableSource {
-    INFERRED = "INFERRED",
-    TEMPLATE = "TEMPLATE",
-    IMPORTED = "IMPORTED",
-    MANUAL = "MANUAL"
+    inferred = "inferred",
+    template = "template",
+    imported = "imported",
+    manual = "manual"
 }
 export enum DurationType {
     fixed = "fixed",
@@ -5972,8 +5986,8 @@ export enum EqCardKey {
     risksCostsLegalStuff = "risksCostsLegalStuff"
 }
 export enum EqCardType {
-    A = "A",
-    B = "B"
+    a = "a",
+    b = "b"
 }
 export enum FilePermission {
     view_file = "view_file",
@@ -6017,16 +6031,16 @@ export enum OrgRole {
     custom = "custom"
 }
 export enum RecordType {
-    NORMAL = "NORMAL",
-    META_AUDIT = "META_AUDIT",
-    UNKNOWN = "UNKNOWN",
-    CLEANUP = "CLEANUP",
-    EXPORT = "EXPORT",
-    SYSTEM = "SYSTEM"
+    normal = "normal",
+    meta_audit = "meta_audit",
+    unknown = "unknown",
+    cleanup = "cleanup",
+    export = "export",
+    system = "system"
 }
 export enum StatisticGrouping {
-    HOUR = "HOUR",
-    DAY = "DAY",
-    WEEK = "WEEK",
-    MONTH = "MONTH"
+    hour = "hour",
+    day = "day",
+    week = "week",
+    month = "month"
 }
