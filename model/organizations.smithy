@@ -15,7 +15,6 @@ use equaliq#PresignedPostData
 
 // Import RBAC structures from rbac.smithy
 // Note: These are now defined in rbac.smithy
-// - OrgRole enum
 // - OrgPermission enum
 // - OrgPermissionList
 // - OrgMember structure
@@ -80,7 +79,7 @@ structure Org {
 
     // Computed/context fields
     memberCount: Integer
-    userRole: OrgRole
+    userRole: String
     dealCount: Integer
     inviteCount: Integer
     roleCount: Integer
@@ -302,7 +301,7 @@ operation ListOrgMembers {
         orgId: OrgId
 
         /// Filter by role
-        role: OrgRole
+        role: String
 
         /// Include inactive members
         includeInactive: Boolean
@@ -338,7 +337,7 @@ operation UpdateOrgMember {
         @required
         userId: UserId
 
-        role: OrgRole
+        role: String
         customRoleId: OrgCustomRoleId
         orgEmail: Email
     }
@@ -523,7 +522,7 @@ operation CreateOrgInvite {
         emails: EmailList
 
         @required
-        role: OrgRole
+        role: String
 
         customRoleId: OrgCustomRoleId
         orgEmail: Email

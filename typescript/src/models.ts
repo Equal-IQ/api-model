@@ -1283,7 +1283,7 @@ export interface components {
         CreateOrgInviteRequestContent: {
             orgId: string;
             emails: string[];
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             orgEmail?: string;
         };
@@ -1970,7 +1970,8 @@ export interface components {
         };
         ListOrgMembersRequestContent: {
             orgId: string;
-            role?: components["schemas"]["OrgRole"];
+            /** @description Filter by role */
+            role?: string;
             /** @description Include inactive members */
             includeInactive?: boolean;
             /** @description Pagination cursor (encoded userId) */
@@ -2013,7 +2014,7 @@ export interface components {
             createdAt: string;
             updatedAt: string;
             memberCount?: number;
-            userRole?: components["schemas"]["OrgRole"];
+            userRole?: string;
             dealCount?: number;
             inviteCount?: number;
             roleCount?: number;
@@ -2036,7 +2037,7 @@ export interface components {
             orgInviteId: string;
             orgId: string;
             invitedEmail: string;
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
@@ -2058,7 +2059,7 @@ export interface components {
         OrgMember: {
             userId: string;
             orgEmail: string;
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
@@ -2073,11 +2074,6 @@ export interface components {
          * @enum {string}
          */
         OrgPermission: OrgPermission;
-        /**
-         * @description Organization roles
-         * @enum {string}
-         */
-        OrgRole: OrgRole;
         OrgTheme: {
             primaryColor?: string;
             secondaryColor?: string;
@@ -2271,7 +2267,7 @@ export interface components {
         UpdateOrgMemberRequestContent: {
             orgId: string;
             userId: string;
-            role?: components["schemas"]["OrgRole"];
+            role?: string;
             customRoleId?: string;
             orgEmail?: string;
         };
@@ -6020,15 +6016,6 @@ export enum OrgPermission {
     manage_roles = "manage_roles",
     view_analytics = "view_analytics",
     view_audit_logs = "view_audit_logs"
-}
-export enum OrgRole {
-    primary_owner = "primary_owner",
-    admin = "admin",
-    billing_admin = "billing_admin",
-    auditor = "auditor",
-    member = "member",
-    viewer = "viewer",
-    custom = "custom"
 }
 export enum RecordType {
     normal = "normal",

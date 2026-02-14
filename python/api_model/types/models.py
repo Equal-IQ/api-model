@@ -120,6 +120,16 @@ class Email(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
+class CreateOrgInviteRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    emails: list[Email]
+    role: str
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    orgEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+
+
 class FailedEmail(RootModel[str]):
     root: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
@@ -674,6 +684,16 @@ class ListOrgInvitesRequestContent(BaseModel):
     limit: float | None = Field(None, description='Page size')
 
 
+class ListOrgMembersRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    role: str | None = Field(None, description='Filter by role')
+    includeInactive: bool | None = Field(None, description='Include inactive members')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded userId)'
+    )
+    limit: float | None = Field(None, description='Page size')
+
+
 class ListSpecialContractsResponseContent(BaseModel):
     owned: ContractSummaryMap
     shared: ContractSummaryMap
@@ -682,6 +702,46 @@ class ListSpecialContractsResponseContent(BaseModel):
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size')
+
+
+class Org(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str
+    type: str
+    primaryOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    description: str | None
+    website: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    logoUrl: str | None = Field(
+        None,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    billingEmail: str | None = Field(
+        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
+    )
+    metadata: Any | None = Field(
+        None,
+        description='Additional metadata (UI preferences, etc.)\nTODO: Post-beta - Consider removing if unused or replace with explicit typed fields',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    memberCount: float | None
+    userRole: str | None
+    dealCount: float | None
+    inviteCount: float | None
+    roleCount: float | None
+
+
+class OrgMap(RootModel[dict[str, Org]]):
+    root: dict[str, Org]
 
 
 class OrgPermission(StrEnum):
@@ -696,20 +756,6 @@ class OrgPermission(StrEnum):
     manage_roles = 'manage_roles'
     view_analytics = 'view_analytics'
     view_audit_logs = 'view_audit_logs'
-
-
-class OrgRole(StrEnum):
-    """
-    Organization roles
-    """
-
-    primary_owner = 'primary_owner'
-    admin = 'admin'
-    billing_admin = 'billing_admin'
-    auditor = 'auditor'
-    member = 'member'
-    viewer = 'viewer'
-    custom = 'custom'
 
 
 class OrgTheme(BaseModel):
@@ -883,6 +929,10 @@ class TransferOrgOwnershipRequestContent(BaseModel):
     newOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class TransferOrgOwnershipResponseContent(BaseModel):
+    org: Org
+
+
 class UpdateContractRequestContent(BaseModel):
     contractId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
@@ -972,7 +1022,7 @@ class UpdateOrgCustomRoleRequestContent(BaseModel):
 class UpdateOrgMemberRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    role: OrgRole | None
+    role: str | None
     customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     orgEmail: str | None = Field(
         None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
@@ -990,6 +1040,10 @@ class UpdateOrgRequestContent(BaseModel):
     billingEmail: str | None = Field(
         None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
     )
+
+
+class UpdateOrgResponseContent(BaseModel):
+    org: Org
 
 
 class UpdateOrgThemeRequestContent(BaseModel):
@@ -1167,14 +1221,8 @@ class CreateOrgCustomRoleRequestContent(BaseModel):
     permissions: list[OrgPermission]
 
 
-class CreateOrgInviteRequestContent(BaseModel):
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    emails: list[Email]
-    role: OrgRole
-    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    orgEmail: str | None = Field(
-        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
-    )
+class CreateOrgResponseContent(BaseModel):
+    org: Org
 
 
 class DealAccess(BaseModel):
@@ -1417,6 +1465,10 @@ class GetFileResponseContent(BaseModel):
     downloadUrl: PresignedUrl | None
 
 
+class GetOrgResponseContent(BaseModel):
+    org: Org
+
+
 class GetOrgThemeResponseContent(BaseModel):
     theme: OrgTheme
 
@@ -1500,50 +1552,9 @@ class ListFileAccessResponseContent(BaseModel):
     nextToken: str | None = Field(None, description='Token for next page')
 
 
-class ListOrgMembersRequestContent(BaseModel):
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    role: OrgRole | None
-    includeInactive: bool | None = Field(None, description='Include inactive members')
-    nextToken: str | None = Field(
-        None, description='Pagination cursor (encoded userId)'
-    )
-    limit: float | None = Field(None, description='Page size')
-
-
-class Org(BaseModel):
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    name: str
-    type: str
-    primaryOwnerId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    description: str | None
-    website: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-    logoUrl: str | None = Field(
-        None,
-        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
-    )
-    billingEmail: str | None = Field(
-        None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$'
-    )
-    metadata: Any | None = Field(
-        None,
-        description='Additional metadata (UI preferences, etc.)\nTODO: Post-beta - Consider removing if unused or replace with explicit typed fields',
-    )
-    createdAt: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    updatedAt: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    memberCount: float | None
-    userRole: OrgRole | None
-    dealCount: float | None
-    inviteCount: float | None
-    roleCount: float | None
+class ListUserOrganizationsResponseContent(BaseModel):
+    organizations: OrgMap
+    nextToken: str | None = Field(None, description='Token for next page')
 
 
 class OrgCustomRole(BaseModel):
@@ -1572,7 +1583,7 @@ class OrgInvite(BaseModel):
     orgInviteId: str
     orgId: str
     invitedEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-    role: OrgRole
+    role: str
     customRoleId: str | None
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
@@ -1601,10 +1612,6 @@ class OrgInviteMap(RootModel[dict[str, OrgInvite]]):
     root: dict[str, OrgInvite]
 
 
-class OrgMap(RootModel[dict[str, Org]]):
-    root: dict[str, Org]
-
-
 class OrgMember(BaseModel):
     """
     Organization member
@@ -1612,7 +1619,7 @@ class OrgMember(BaseModel):
 
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     orgEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
-    role: OrgRole
+    role: str
     customRoleId: str | None
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
@@ -1640,10 +1647,6 @@ class ShareContractResponseContent(BaseModel):
     invalidRemoves: list[InvalidRemove] | None
 
 
-class TransferOrgOwnershipResponseContent(BaseModel):
-    org: Org
-
-
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1662,10 +1665,6 @@ class UpdateOrgCustomRoleResponseContent(BaseModel):
 
 class UpdateOrgMemberResponseContent(BaseModel):
     member: OrgMember
-
-
-class UpdateOrgResponseContent(BaseModel):
-    org: Org
 
 
 class UpdateProfileResponseContent(BaseModel):
@@ -1699,10 +1698,6 @@ class CreateOrgCustomRoleResponseContent(BaseModel):
 class CreateOrgInviteResponseContent(BaseModel):
     invites: OrgInviteMap
     failedEmails: list[FailedEmail] | None
-
-
-class CreateOrgResponseContent(BaseModel):
-    org: Org
 
 
 class WhatYouOwn(BaseModel):
@@ -1765,10 +1760,6 @@ class EqModeData(BaseModel):
     cards: EqModeCardMap | None
 
 
-class GetOrgResponseContent(BaseModel):
-    org: Org
-
-
 class IqModePerspective(BaseModel):
     sections: IqModeSectionMap
 
@@ -1789,11 +1780,6 @@ class ListOrgInvitesResponseContent(BaseModel):
 
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
-    nextToken: str | None = Field(None, description='Token for next page')
-
-
-class ListUserOrganizationsResponseContent(BaseModel):
-    organizations: OrgMap
     nextToken: str | None = Field(None, description='Token for next page')
 
 

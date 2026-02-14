@@ -26,17 +26,6 @@ enum PlatformRole {
     auditor = "auditor"
 }
 
-/// Organization roles
-enum OrgRole {
-    primary_owner = "primary_owner"
-    admin = "admin"
-    billing_admin = "billing_admin"
-    auditor = "auditor"
-    member = "member"
-    viewer = "viewer"
-    custom = "custom"
-}
-
 /// Organization permissions
 enum OrgPermission {
     manage_members = "manage_members"
@@ -90,7 +79,7 @@ structure OrgMember {
     orgEmail: Email
 
     @required
-    role: OrgRole
+    role: String
 
     customRoleId: String
     customRoleName: String
@@ -114,7 +103,7 @@ structure OrgInvite {
     invitedEmail: Email
 
     @required
-    role: OrgRole
+    role: String
 
     customRoleId: String
     customRoleName: String

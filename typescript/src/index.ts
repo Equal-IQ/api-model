@@ -129,16 +129,6 @@ export enum OrgPermission {
   view_audit_logs = "view_audit_logs"
 }
 
-export enum OrgRole {
-  primary_owner = "primary_owner",
-  admin = "admin",
-  billing_admin = "billing_admin",
-  auditor = "auditor",
-  member = "member",
-  viewer = "viewer",
-  custom = "custom"
-}
-
 export enum RecordType {
   normal = "normal",
   meta_audit = "meta_audit",
@@ -345,7 +335,7 @@ export type CreateOrgCustomRoleResponseContent = {
 export type CreateOrgInviteRequestContent = {
   orgId: string;
   emails: string[];
-  role: OrgRole;
+  role: string;
   customRoleId?: string;
   orgEmail?: string;
 };
@@ -966,7 +956,7 @@ export type ListOrgInvitesResponseContent = {
 
 export type ListOrgMembersRequestContent = {
   orgId: string;
-  role?: OrgRole;
+  role?: string;
   includeInactive?: boolean;
   nextToken?: string;
   limit?: number;
@@ -1005,7 +995,7 @@ export type Org = {
   createdAt: string;
   updatedAt: string;
   memberCount?: number;
-  userRole?: OrgRole;
+  userRole?: string;
   dealCount?: number;
   inviteCount?: number;
   roleCount?: number;
@@ -1028,7 +1018,7 @@ export type OrgInvite = {
   orgInviteId: string;
   orgId: string;
   invitedEmail: string;
-  role: OrgRole;
+  role: string;
   customRoleId?: string;
   customRoleName?: string;
   customPermissions?: OrgPermission[];
@@ -1048,7 +1038,7 @@ export type OrgMap = { [key: string]: Org };
 export type OrgMember = {
   userId: string;
   orgEmail: string;
-  role: OrgRole;
+  role: string;
   customRoleId?: string;
   customRoleName?: string;
   customPermissions?: OrgPermission[];
@@ -1259,7 +1249,7 @@ export type UpdateOrgCustomRoleResponseContent = {
 export type UpdateOrgMemberRequestContent = {
   orgId: string;
   userId: string;
-  role?: OrgRole;
+  role?: string;
   customRoleId?: string;
   orgEmail?: string;
 };
