@@ -11,6 +11,19 @@ namespace equaliq
 
 /// Common types and structures shared across all operations
 
+structure PresignedPostData {
+  @required
+  url: Url
+
+  @required
+  fields: Document
+}
+
+structure ContractTexts {
+    originalText: PlainText
+    taggedText: TaggedText
+}
+
 structure EmptyStructure {
   // Empty structure - avoid using, but useful in data migrations or making union workable
 }

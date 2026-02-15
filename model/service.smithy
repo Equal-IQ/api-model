@@ -5,13 +5,12 @@ namespace equaliq
 use aws.protocols#restJson1
 
 /// Equal IQ API Service
-/// Provides contract management, upload, sharing, and user profile functionality
+/// Provides deal management, upload, sharing, and user profile functionality
 @restJson1
 service EqualIQ {
   version: "2023-01-01"
   resources: [
     Organization
-    Contract
     User
     DealResource
     FileResource
@@ -27,11 +26,6 @@ service EqualIQ {
     // Utility operations
     Ping
     ExposeTypes
-
-    // Deprecated Contract operations
-    ListSpecialContracts
-    GetUploadURL
-    
   ]
 }
 
@@ -51,6 +45,5 @@ operation Ping {
 @http(method: "POST", uri: "/notARealEndpoint")
 operation ExposeTypes {
     output := {
-        contractAnalysisRecord: ContractAnalysisRecord
     }
 }
