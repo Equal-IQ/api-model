@@ -5,7 +5,6 @@
  * DO NOT add to smithy-build.json - this file is maintained manually
  */
 
-import { ContractVariable, ContractVariableType } from './index'
 import {
   VariableTagAttributes,
   ParsedVariableTag,
@@ -44,7 +43,6 @@ export function parseVariableTag(tagMatch: RegExpMatchArray): ParsedVariableTag 
   while ((attrMatch = attrRegex.exec(rawAttrs)) !== null) {
     const [, key, value] = attrMatch
     if (key === 'type') {
-      attrs.type = value as ContractVariableType
     } else if (key === 'id') {
       attrs.id = value
     } else if (key === 'instance') {
@@ -54,7 +52,7 @@ export function parseVariableTag(tagMatch: RegExpMatchArray): ParsedVariableTag 
     }
   }
 
-  if (!attrs.type || !attrs.id) return null
+  if (!attrs.id) return null
 
   return {
     attributes: attrs as VariableTagAttributes,
@@ -76,7 +74,7 @@ export function buildVariableTag(
   attributes: VariableTagAttributes,
   content: string
 ): string {
-  let tag = `<variable type="${attributes.type}" id="${attributes.id}"`
+  let tag = `<variable id="${attributes.id}"`
 
   if (attributes.instance) {
     tag += ` instance="${attributes.instance}"`
@@ -129,28 +127,8 @@ export function parseAllVariableTags(
  */
 export function validateVariableTag(
   tag: ParsedVariableTag,
-  variable: ContractVariable
 ): ValidationResult {
   const errors: string[] = []
-
-  if (tag.attributes.type !== variable.type) {
-    errors.push(`Type mismatch: tag=${tag.attributes.type}, variable=${variable.type}`)
-  }
-
-  if (tag.attributes.id !== variable.id) {
-    errors.push(`ID mismatch: tag=${tag.attributes.id}, variable=${variable.id}`)
-  }
-
-  if (tag.attributes.level !== undefined && variable.level !== undefined) {
-    if (tag.attributes.level !== variable.level) {
-      errors.push(`Level mismatch: tag=${tag.attributes.level}, variable=${variable.level}`)
-    }
-  }
-
-  // Only external_term should have level attribute
-  if (tag.attributes.level !== undefined && tag.attributes.type !== 'external_term') {
-    errors.push(`Level attribute should only be present for external_term type`)
-  }
 
   return {
     isValid: errors.length === 0,
@@ -167,7 +145,6 @@ export function validateVariableTag(
  */
 export function variableAttrsToDataAttrs(attrs: VariableTagAttributes): Record<string, string> {
   const dataAttrs: Record<string, string> = {
-    'data-type': attrs.type,
     'data-id': attrs.id
   }
 
@@ -192,12 +169,11 @@ export function variableAttrsToDataAttrs(attrs: VariableTagAttributes): Record<s
 export function dataAttrsToVariableAttrs(
   dataAttrs: Record<string, string>
 ): VariableTagAttributes | null {
-  const type = dataAttrs['data-type'] as ContractVariableType
   const id = dataAttrs['data-id']
 
-  if (!type || !id) return null
+    if (!id) return null
 
-  const attrs: VariableTagAttributes = { type, id }
+  const attrs: VariableTagAttributes = { id }
 
   if (dataAttrs['data-instance']) {
     attrs.instance = dataAttrs['data-instance']

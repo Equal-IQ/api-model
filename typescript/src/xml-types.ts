@@ -5,13 +5,11 @@
  * DO NOT add to smithy-build.json - this file is maintained manually
  */
 
-import { ContractVariableType, ContractVariable } from './index'
 
 /**
  * Parsed XML variable tag attributes
  */
 export interface VariableTagAttributes {
-  type: ContractVariableType
   id: string
   instance?: string
   level?: number
