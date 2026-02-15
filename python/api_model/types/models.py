@@ -273,6 +273,7 @@ class FilePermission(StrEnum):
     """
 
     view_file = 'view_file'
+    view_all_files = 'view_all_files'
     edit_file = 'edit_file'
     delete_file = 'delete_file'
     share_file = 'share_file'
