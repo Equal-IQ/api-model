@@ -273,7 +273,6 @@ class FilePermission(StrEnum):
     """
 
     view_file = 'view_file'
-    view_all_files = 'view_all_files'
     edit_file = 'edit_file'
     delete_file = 'delete_file'
     share_file = 'share_file'
@@ -585,6 +584,8 @@ class OrgPermission(StrEnum):
     manage_roles = 'manage_roles'
     view_analytics = 'view_analytics'
     view_audit_logs = 'view_audit_logs'
+    view_all_deals = 'view_all_deals'
+    view_all_files = 'view_all_files'
 
 
 class OrgTheme(BaseModel):
