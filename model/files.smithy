@@ -37,13 +37,13 @@ structure File {
     fileId: FileId
 
     @required
-    ownerUserId: String
+    ownerUserId: UserId
 
     /// Organization context (nullable for personal files)
-    ownerOrgId: String
+    ownerOrgId: UserId
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
     @required
     fileName: String
@@ -58,15 +58,15 @@ structure File {
     description: String
 
     /// Associated deal if applicable (mutually exclusive with dealVersionId)
-    dealId: String
+    dealId: DealId
 
     /// Associated deal version if applicable (mutually exclusive with dealId)
-    dealVersionId: String
+    dealVersionId: DealVersionId
 
     /// Additional metadata as JSON
     metadata: Document
 
-    updatedByUserId: String
+    updatedByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -95,7 +95,7 @@ structure PresignedUrl {
 operation CreateFile {
     input := {
         @required
-        orgId: String
+        orgId: OrgId
 
         @required
         fileName: String
@@ -113,10 +113,10 @@ operation CreateFile {
         tags: StringList
 
         /// Associated deal if applicable
-        dealId: String
+        dealId: DealId
 
         /// Associated deal version if applicable
-        dealVersionId: String
+        dealVersionId: DealVersionId
 
         /// Request upload URL in response
         requestUploadUrl: Boolean
@@ -181,8 +181,8 @@ operation UpdateFile {
         fileName: String
         folderPath: String
         tags: StringList
-        dealId: String
-        dealVersionId: String
+        dealId: DealId
+        dealVersionId: DealVersionId
     }
 
     output := {
@@ -226,13 +226,13 @@ operation DeleteFile {
 operation ListFiles {
     input := {
         /// Filter by organization
-        orgId: String
+        orgId: OrgId
 
         /// Filter by deal
-        dealId: String
+        dealId: DealId
 
         /// Filter by deal version
-        dealVersionId: String
+        dealVersionId: DealVersionId
 
         /// Filter by folder path
         folderPath: String

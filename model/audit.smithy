@@ -36,7 +36,7 @@ enum AuditOperation {
 
 /// Audit log resource
 resource AuditLogResource {
-    identifiers: { logId: AuditLogId }
+    identifiers: { auditLogId: AuditLogId }
     read: GetAuditLog
     list: ListAuditLogs
     operations: []
@@ -116,7 +116,7 @@ operation ListAuditLogs {
 operation GetAuditLog {
     input := {
         @required
-        logId: AuditLogId
+        auditLogId: AuditLogId
     }
 
     output := {

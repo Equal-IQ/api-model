@@ -104,7 +104,7 @@ structure OrgCustomRole {
     createdDate: ISODate
 
     @required
-    createdBy: UserId
+    createdByUserId: UserId
     
     // Frontend-specific field
     memberCount: Integer

@@ -29,6 +29,7 @@ enum ReferenceType {
 
 // User identifier
 string UserId with [UuidLikeMixin]
+string QuickAccessId with [UuidLikeMixin]
 
 list UserIdList {
     member: UserId
@@ -62,7 +63,7 @@ structure UserProfile {
 /// Quick access / pinned items for user navigation
 structure QuickAccess {
     @required
-    quickAccessId: String
+    quickAccessId: QuickAccessId
 
     @required
     userId: UserId
@@ -215,7 +216,7 @@ operation CreateQuickAccess {
 operation UpdateQuickAccess {
     input := {
         @required
-        quickAccessId: String
+        quickAccessId: QuickAccessId
 
         pinType: PinType
         sortOrder: Integer
@@ -240,7 +241,7 @@ operation UpdateQuickAccess {
 operation DeleteQuickAccess {
     input := {
         @required
-        quickAccessId: String
+        quickAccessId: QuickAccessId
     }
 
     output := {}
@@ -290,6 +291,6 @@ operation ListQuickAccess {
 
 // Helper map types
 map QuickAccessMap {
-    key: String  // quickAccessId
+    key: QuickAccessId
     value: QuickAccess
 }

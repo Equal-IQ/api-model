@@ -167,7 +167,7 @@ export type CreateDealVersionResponseContent = {
 
 export type CreateDeliverableRequestContent = {
   dealId: string;
-  versionId: string;
+  dealVersionId: string;
   description: string;
   source?: DeliverableSource;
   dueDate?: string;
@@ -388,7 +388,7 @@ export type GenerateUploadUrlResponseContent = {
 };
 
 export type GetAuditLogRequestContent = {
-  logId: string;
+  auditLogId: string;
 };
 
 export type GetAuditLogResponseContent = {
@@ -423,7 +423,7 @@ export type GetDealResponseContent = {
 
 export type GetDealVersionRequestContent = {
   dealId: string;
-  versionId: string;
+  dealVersionId: string;
   includeDeliverables?: boolean;
 };
 
@@ -575,7 +575,7 @@ export type ListDealsResponseContent = {
 
 export type ListDeliverablesRequestContent = {
   dealId: string;
-  versionId?: string;
+  dealVersionId?: string;
   status?: string;
   assignedTo?: string;
   nextToken?: string;
@@ -691,7 +691,7 @@ export type OrgCustomRole = {
   description?: string;
   permissions: OrgPermission[];
   createdDate: string;
-  createdBy: string;
+  createdByUserId: string;
   memberCount?: number;
 };
 

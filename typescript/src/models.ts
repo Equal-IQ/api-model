@@ -1012,7 +1012,7 @@ export interface components {
         };
         CreateDeliverableRequestContent: {
             dealId: string;
-            versionId: string;
+            dealVersionId: string;
             description: string;
             source?: components["schemas"]["DeliverableSource"];
             /** @description For committed stages */
@@ -1226,7 +1226,6 @@ export interface components {
         };
         /** @description File access control */
         FileAccess: {
-            /** @description Access control identifier */
             fileAccessId: string;
             /** @description File identifier */
             fileId: string;
@@ -1289,7 +1288,7 @@ export interface components {
         };
         GetAuditLogRequestContent: {
             /** @description Audit log identifier */
-            logId: string;
+            auditLogId: string;
         };
         GetAuditLogResponseContent: {
             auditLog: components["schemas"]["AuditLog"];
@@ -1322,7 +1321,7 @@ export interface components {
         };
         GetDealVersionRequestContent: {
             dealId: string;
-            versionId: string;
+            dealVersionId: string;
             /** @description Include deliverables for this version */
             includeDeliverables?: boolean;
         };
@@ -1479,7 +1478,7 @@ export interface components {
         ListDeliverablesRequestContent: {
             dealId: string;
             /** @description Filter by version */
-            versionId?: string;
+            dealVersionId?: string;
             /** @description Filter by status */
             status?: string;
             /** @description Filter by assignee */
@@ -1619,7 +1618,7 @@ export interface components {
             description?: string;
             permissions: components["schemas"]["OrgPermission"][];
             createdDate: string;
-            createdBy: string;
+            createdByUserId: string;
             memberCount?: number;
         };
         OrgCustomRoleMap: {
@@ -1718,7 +1717,6 @@ export interface components {
         RevokeFileAccessRequestContent: {
             /** @description File identifier */
             fileId: string;
-            /** @description Access control identifier */
             accessId: string;
             reason: string;
         };
@@ -1783,7 +1781,6 @@ export interface components {
         UpdateFileAccessRequestContent: {
             /** @description File identifier */
             fileId: string;
-            /** @description Access control identifier */
             accessId: string;
             permissions?: components["schemas"]["FilePermission"][];
             grantablePermissions?: components["schemas"]["FilePermission"][];

@@ -17,7 +17,8 @@ use equaliq#ValidationError
 use equaliq#InternalServerError
 
 /// Access control identifier
-string AccessId with [UuidLikeMixin]
+string DealAccessId with [UuidLikeMixin]
+string FileAccessId with [UuidLikeMixin]
 
 /// Platform-level roles (system-wide, not organization-scoped)
 enum PlatformRole {
@@ -83,7 +84,7 @@ structure OrgMember {
     @required
     role: String
 
-    customRoleId: String
+    customRoleId: OrgCustomRoleId
     customRoleName: String
     customPermissions: OrgPermissionList
 
@@ -96,10 +97,10 @@ structure OrgMember {
 /// Organization invitation
 structure OrgInvite {
     @required
-    orgInviteId: String
+    orgInviteId: InviteId
 
     @required
-    orgId: String
+    orgId: OrgId
 
     @required
     invitedEmail: Email
@@ -107,7 +108,7 @@ structure OrgInvite {
     @required
     role: String
 
-    customRoleId: String
+    customRoleId: OrgCustomRoleId
     customRoleName: String
     customPermissions: OrgPermissionList
 
@@ -131,7 +132,7 @@ structure OrgInvite {
 
 /// Deal access resource (sub-resource of Deal)
 resource DealAccessResource {
-    identifiers: { dealId: DealId, accessId: AccessId }
+    identifiers: { dealId: DealId, accessId: DealAccessId }
     create: GrantDealAccess
     update: UpdateDealAccess
     delete: RevokeDealAccess
@@ -141,19 +142,19 @@ resource DealAccessResource {
 /// Deal access control
 structure DealAccess {
     @required
-    dealAccessId: AccessId
+    dealAccessId: DealAccessId
 
     @required
     dealId: DealId
 
     @required
-    grantedToOrgId: String
+    grantedToOrgId: OrgId
 
     /// Specific user within org (if omitted, entire org has access)
-    grantedToUserId: String
+    grantedToUserId: UserId
 
     @required
-    grantedByUserId: String
+    grantedByUserId: UserId
 
     @required
     grantedAt: ISODate
@@ -174,7 +175,7 @@ structure DealAccess {
     isDeny: Boolean
 
     /// Revocation tracking
-    revokedByUserId: String
+    revokedByUserId: UserId
     revokedAt: ISODate
     revocationReason: String
 
@@ -191,7 +192,7 @@ structure DealAccess {
 
 /// File access resource (sub-resource of File)
 resource FileAccessResource {
-    identifiers: { fileId: FileId, accessId: AccessId }
+    identifiers: { fileId: FileId, accessId: FileAccessId }
     create: GrantFileAccess
     update: UpdateFileAccess
     delete: RevokeFileAccess
@@ -201,19 +202,19 @@ resource FileAccessResource {
 /// File access control
 structure FileAccess {
     @required
-    fileAccessId: AccessId
+    fileAccessId: FileAccessId
 
     @required
     fileId: FileId
 
     @required
-    grantedToOrgId: String
+    grantedToOrgId: OrgId
 
     /// Specific user within org (if omitted, entire org has access)
-    grantedToUserId: String
+    grantedToUserId: UserId
 
     @required
-    grantedByUserId: String
+    grantedByUserId: UserId
 
     @required
     grantedAt: ISODate
@@ -231,7 +232,7 @@ structure FileAccess {
     isDeny: Boolean
 
     /// Revocation tracking
-    revokedByUserId: String
+    revokedByUserId: UserId
     revokedAt: ISODate
     revocationReason: String
 
@@ -254,10 +255,10 @@ operation GrantDealAccess {
         dealId: DealId
 
         @required
-        grantToOrgId: String
+        grantToOrgId: OrgId
 
         /// Specific user within org (if omitted, entire org has access)
-        grantToUserId: String
+        grantToUserId: UserId
 
         @required
         permissions: DealPermissionList
@@ -297,7 +298,7 @@ operation RevokeDealAccess {
         dealId: DealId
 
         @required
-        accessId: AccessId
+        accessId: DealAccessId
 
         @required
         reason: String
@@ -322,7 +323,7 @@ operation ListDealAccess {
         dealId: DealId
 
         /// Filter by organization
-        orgId: String
+        orgId: OrgId
 
         /// Include revoked access
         includeRevoked: Boolean
@@ -361,7 +362,7 @@ operation UpdateDealAccess {
         dealId: DealId
 
         @required
-        accessId: AccessId
+        accessId: DealAccessId
 
         permissions: DealPermissionList
         grantablePermissions: DealPermissionList
@@ -391,10 +392,10 @@ operation GrantFileAccess {
         fileId: FileId
 
         @required
-        grantToOrgId: String
+        grantToOrgId: OrgId
 
         /// Specific user within org (if omitted, entire org has access)
-        grantToUserId: String
+        grantToUserId: UserId
 
         @required
         permissions: FilePermissionList
@@ -431,7 +432,7 @@ operation RevokeFileAccess {
         fileId: FileId
 
         @required
-        accessId: AccessId
+        accessId: FileAccessId
 
         @required
         reason: String
@@ -456,7 +457,7 @@ operation ListFileAccess {
         fileId: FileId
 
         /// Filter by organization
-        orgId: String
+        orgId: OrgId
 
         /// Include revoked access
         includeRevoked: Boolean
@@ -495,7 +496,7 @@ operation UpdateFileAccess {
         fileId: FileId
 
         @required
-        accessId: AccessId
+        accessId: FileAccessId
 
         permissions: FilePermissionList
         grantablePermissions: FilePermissionList
@@ -526,12 +527,12 @@ list FilePermissionList {
 }
 
 map DealAccessMap {
-    key: AccessId
+    key: DealAccessId
     value: DealAccess
 }
 
 map FileAccessMap {
-    key: AccessId
+    key: FileAccessId
     value: FileAccess
 }
 

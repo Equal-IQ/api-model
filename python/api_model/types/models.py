@@ -52,15 +52,19 @@ class CancelOrgInviteRequestContent(BaseModel):
 
 
 class CreateFileRequestContent(BaseModel):
-    orgId: str
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     fileName: str
     sizeBytes: float
     fileType: str | None = Field(None, description='MIME type')
     folderPath: str | None = Field(None, description='Virtual folder path')
     tags: list[str] | None = Field(None, description='User-defined tags')
-    dealId: str | None = Field(None, description='Associated deal if applicable')
+    dealId: str | None = Field(
+        None, description='Associated deal if applicable', pattern='^[A-Za-z0-9-]+$'
+    )
     dealVersionId: str | None = Field(
-        None, description='Associated deal version if applicable'
+        None,
+        description='Associated deal version if applicable',
+        pattern='^[A-Za-z0-9-]+$',
     )
     requestUploadUrl: bool | None = Field(
         None, description='Request upload URL in response'
@@ -102,15 +106,19 @@ class Deal(BaseModel):
     """
 
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    ownerUserId: str
+    ownerUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerOrgId: str | None = Field(
-        None, description='Organization context (nullable for personal deals)'
+        None,
+        description='Organization context (nullable for personal deals)',
+        pattern='^[A-Za-z0-9-]+$',
     )
     parentDealId: str | None = Field(
-        None, description='Parent deal for hierarchies (master agreements, amendments)'
+        None,
+        description='Parent deal for hierarchies (master agreements, amendments)',
+        pattern='^[A-Za-z0-9-]+$',
     )
-    createdByUserId: str
-    updatedByUserId: str | None
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -163,8 +171,8 @@ class DealVersion(BaseModel):
     Deal version for tracking changes through stages
     """
 
-    dealVersionId: str
-    dealId: str
+    dealVersionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     versionNumber: float
     stage: DealStage
     content: Any = Field(
@@ -174,8 +182,10 @@ class DealVersion(BaseModel):
     metadata: Any | None = Field(
         None, description='Metadata for extensibility during beta'
     )
-    createdByUserId: str
-    approvedByUserId: str | None = Field(None, description='Approval workflow tracking')
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    approvedByUserId: str | None = Field(
+        None, description='Approval workflow tracking', pattern='^[A-Za-z0-9-]+$'
+    )
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -234,11 +244,13 @@ class File(BaseModel):
     """
 
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    ownerUserId: str
+    ownerUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     ownerOrgId: str | None = Field(
-        None, description='Organization context (nullable for personal files)'
+        None,
+        description='Organization context (nullable for personal files)',
+        pattern='^[A-Za-z0-9-]+$',
     )
-    createdByUserId: str
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     fileName: str
     sizeBytes: float
     fileType: str
@@ -246,13 +258,15 @@ class File(BaseModel):
     dealId: str | None = Field(
         None,
         description='Associated deal if applicable (mutually exclusive with dealVersionId)',
+        pattern='^[A-Za-z0-9-]+$',
     )
     dealVersionId: str | None = Field(
         None,
         description='Associated deal version if applicable (mutually exclusive with dealId)',
+        pattern='^[A-Za-z0-9-]+$',
     )
     metadata: Any | None = Field(None, description='Additional metadata as JSON')
-    updatedByUserId: str | None
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -304,7 +318,7 @@ class GenerateUploadUrlRequestContent(BaseModel):
 
 
 class GetAuditLogRequestContent(BaseModel):
-    logId: str = Field(
+    auditLogId: str = Field(
         ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
     )
 
@@ -318,7 +332,7 @@ class GetDealRequestContent(BaseModel):
 
 class GetDealVersionRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    versionId: str
+    dealVersionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     includeDeliverables: bool | None = Field(
         None, description='Include deliverables for this version'
     )
@@ -368,9 +382,11 @@ class GetProfileRequestContent(BaseModel):
 
 class GrantDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    grantToOrgId: str
+    grantToOrgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToUserId: str | None = Field(
-        None, description='Specific user within org (if omitted, entire org has access)'
+        None,
+        description='Specific user within org (if omitted, entire org has access)',
+        pattern='^[A-Za-z0-9-]+$',
     )
     permissions: list[DealPermission]
     partyRole: str | None = Field(None, description='Optional party role')
@@ -387,9 +403,11 @@ class GrantDealAccessRequestContent(BaseModel):
 
 class GrantFileAccessRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    grantToOrgId: str
+    grantToOrgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToUserId: str | None = Field(
-        None, description='Specific user within org (if omitted, entire org has access)'
+        None,
+        description='Specific user within org (if omitted, entire org has access)',
+        pattern='^[A-Za-z0-9-]+$',
     )
     permissions: list[FilePermission]
     expiresAt: str | None = Field(
@@ -416,7 +434,9 @@ class InviteStatus(StrEnum):
 
 class ListDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    orgId: str | None = Field(None, description='Filter by organization')
+    orgId: str | None = Field(
+        None, description='Filter by organization', pattern='^[A-Za-z0-9-]+$'
+    )
     includeRevoked: bool | None = Field(None, description='Include revoked access')
     includeExpired: bool | None = Field(None, description='Include expired access')
     nextToken: str | None = Field(
@@ -440,7 +460,9 @@ class ListDealVersionsResponseContent(BaseModel):
 
 
 class ListDealsRequestContent(BaseModel):
-    orgId: str | None = Field(None, description='Filter by organization')
+    orgId: str | None = Field(
+        None, description='Filter by organization', pattern='^[A-Za-z0-9-]+$'
+    )
     stage: DealStage | None
     createdBy: str | None = Field(None, description='Filter by creator')
     nextToken: str | None = Field(
@@ -458,7 +480,9 @@ class ListDealsResponseContent(BaseModel):
 
 class ListDeliverablesRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    versionId: str | None = Field(None, description='Filter by version')
+    dealVersionId: str | None = Field(
+        None, description='Filter by version', pattern='^[A-Za-z0-9-]+$'
+    )
     status: str | None = Field(None, description='Filter by status')
     assignedTo: str | None = Field(None, description='Filter by assignee')
     nextToken: str | None = Field(
@@ -469,7 +493,9 @@ class ListDeliverablesRequestContent(BaseModel):
 
 class ListFileAccessRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    orgId: str | None = Field(None, description='Filter by organization')
+    orgId: str | None = Field(
+        None, description='Filter by organization', pattern='^[A-Za-z0-9-]+$'
+    )
     includeRevoked: bool | None = Field(None, description='Include revoked access')
     includeExpired: bool | None = Field(None, description='Include expired access')
     nextToken: str | None = Field(
@@ -479,9 +505,15 @@ class ListFileAccessRequestContent(BaseModel):
 
 
 class ListFilesRequestContent(BaseModel):
-    orgId: str | None = Field(None, description='Filter by organization')
-    dealId: str | None = Field(None, description='Filter by deal')
-    dealVersionId: str | None = Field(None, description='Filter by deal version')
+    orgId: str | None = Field(
+        None, description='Filter by organization', pattern='^[A-Za-z0-9-]+$'
+    )
+    dealId: str | None = Field(
+        None, description='Filter by deal', pattern='^[A-Za-z0-9-]+$'
+    )
+    dealVersionId: str | None = Field(
+        None, description='Filter by deal version', pattern='^[A-Za-z0-9-]+$'
+    )
     folderPath: str | None = Field(None, description='Filter by folder path')
     tags: list[str] | None = Field(None, description='Filter by tags (any match)')
     uploadedBy: str | None = Field(None, description='Filter by uploader')
@@ -672,9 +704,7 @@ class RevokeDealAccessRequestContent(BaseModel):
 
 class RevokeFileAccessRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    accessId: str = Field(
-        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
-    )
+    accessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     reason: str
 
 
@@ -742,7 +772,7 @@ class UpdateDealResponseContent(BaseModel):
 
 class UpdateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    deliverableId: str
+    deliverableId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     description: str | None
     source: DeliverableSource | None
     dueDate: str | None = Field(
@@ -755,9 +785,7 @@ class UpdateDeliverableRequestContent(BaseModel):
 
 class UpdateFileAccessRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    accessId: str = Field(
-        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
-    )
+    accessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     permissions: list[FilePermission] | None
     grantablePermissions: list[FilePermission] | None
     expiresAt: str | None = Field(
@@ -772,8 +800,8 @@ class UpdateFileRequestContent(BaseModel):
     fileName: str | None
     folderPath: str | None
     tags: list[str] | None
-    dealId: str | None
-    dealVersionId: str | None
+    dealId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    dealVersionId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
 class UpdateFileResponseContent(BaseModel):
@@ -895,7 +923,7 @@ class AuditLogMap(RootModel[dict[str, AuditLog]]):
 
 
 class CreateDealRequestContent(BaseModel):
-    orgId: str
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     title: str
     description: str | None
     initialStage: DealStage | None
@@ -922,7 +950,7 @@ class CreateDealVersionResponseContent(BaseModel):
 
 class CreateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    versionId: str
+    dealVersionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     description: str
     source: DeliverableSource | None
     dueDate: str | None = Field(
@@ -959,11 +987,13 @@ class DealAccess(BaseModel):
         ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
     )
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    grantedToOrgId: str
+    grantedToOrgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantedToUserId: str | None = Field(
-        None, description='Specific user within org (if omitted, entire org has access)'
+        None,
+        description='Specific user within org (if omitted, entire org has access)',
+        pattern='^[A-Za-z0-9-]+$',
     )
-    grantedByUserId: str
+    grantedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantedAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -983,7 +1013,9 @@ class DealAccess(BaseModel):
     isDeny: bool | None = Field(
         None, description='Explicit deny (overrides all grants)'
     )
-    revokedByUserId: str | None = Field(None, description='Revocation tracking')
+    revokedByUserId: str | None = Field(
+        None, description='Revocation tracking', pattern='^[A-Za-z0-9-]+$'
+    )
     revokedAt: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1012,16 +1044,16 @@ class Deliverable(BaseModel):
     Deliverable with stage-conditional fields
     """
 
-    deliverableId: str
-    dealVersionId: str
+    deliverableId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealVersionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     name: str
     description: str | None
     source: DeliverableSource | None
     status: str | None = Field(
         None, description='Status as free-form string for flexibility'
     )
-    assignedToUserId: str | None
-    responsibleOrgId: str | None
+    assignedToUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    responsibleOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     dueDate: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1031,8 +1063,8 @@ class Deliverable(BaseModel):
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
     metadata: Any | None
-    createdByUserId: str
-    updatedByUserId: str | None
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1052,15 +1084,15 @@ class FileAccess(BaseModel):
     File access control
     """
 
-    fileAccessId: str = Field(
-        ..., description='Access control identifier', pattern='^[A-Za-z0-9-]+$'
-    )
+    fileAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
-    grantedToOrgId: str
+    grantedToOrgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantedToUserId: str | None = Field(
-        None, description='Specific user within org (if omitted, entire org has access)'
+        None,
+        description='Specific user within org (if omitted, entire org has access)',
+        pattern='^[A-Za-z0-9-]+$',
     )
-    grantedByUserId: str
+    grantedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantedAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1077,7 +1109,9 @@ class FileAccess(BaseModel):
     isDeny: bool | None = Field(
         None, description='Explicit deny (overrides all grants)'
     )
-    revokedByUserId: str | None = Field(None, description='Revocation tracking')
+    revokedByUserId: str | None = Field(
+        None, description='Revocation tracking', pattern='^[A-Za-z0-9-]+$'
+    )
     revokedAt: str | None = Field(
         None,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -1225,7 +1259,7 @@ class OrgCustomRole(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
-    createdBy: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     memberCount: float | None
 
 
@@ -1238,11 +1272,11 @@ class OrgInvite(BaseModel):
     Organization invitation
     """
 
-    orgInviteId: str
-    orgId: str
+    orgInviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     invitedEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     role: str
-    customRoleId: str | None
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
     invitedByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -1278,7 +1312,7 @@ class OrgMember(BaseModel):
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     orgEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     role: str
-    customRoleId: str | None
+    customRoleId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     customRoleName: str | None
     customPermissions: list[OrgPermission] | None
     joinedDate: str = Field(

@@ -31,6 +31,12 @@ enum DeliverableSource {
 }
 
 string DealId with [UuidLikeMixin]
+string DealVersionId with [UuidLikeMixin]
+string DealRevisionId with [UuidLikeMixin]
+string DeliverableId with [UuidLikeMixin]
+string DealAccessId with [UuidLikeMixin]
+string DealApprovalId with [UuidLikeMixin]
+string DealAnalysisId with [UuidLikeMixin]
 
 /// Deal resource with sub-resources for versions, deliverables, and access control
 resource DealResource {
@@ -57,18 +63,18 @@ structure Deal {
     dealId: DealId
 
     @required
-    ownerUserId: String
+    ownerUserId: UserId
 
     /// Organization context (nullable for personal deals)
-    ownerOrgId: String
+    ownerOrgId: OrgId
 
     /// Parent deal for hierarchies (master agreements, amendments)
-    parentDealId: String
+    parentDealId: DealId
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
-    updatedByUserId: String
+    updatedByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -80,10 +86,10 @@ structure Deal {
 /// Deal version for tracking changes through stages
 structure DealVersion {
     @required
-    dealVersionId: String
+    dealVersionId: DealVersionId
 
     @required
-    dealId: String
+    dealId: DealId
 
     @required
     versionNumber: Integer
@@ -99,10 +105,10 @@ structure DealVersion {
     metadata: Document
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
     /// Approval workflow tracking
-    approvedByUserId: String
+    approvedByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -114,10 +120,10 @@ structure DealVersion {
 /// Deliverable with stage-conditional fields
 structure Deliverable {
     @required
-    deliverableId: String
+    deliverableId: DeliverableId
 
     @required
-    dealVersionId: String
+    dealVersionId: DealVersionId
 
     @required
     name: String
@@ -130,9 +136,9 @@ structure Deliverable {
     /// Status as free-form string for flexibility
     status: String
 
-    assignedToUserId: String
+    assignedToUserId: UserId
 
-    responsibleOrgId: String
+    responsibleOrgId: UserId
 
     dueDate: ISODate
 
@@ -141,9 +147,9 @@ structure Deliverable {
     metadata: Document
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
-    updatedByUserId: String
+    updatedByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -155,15 +161,15 @@ structure Deliverable {
 /// Deal approval for stage transitions
 structure DealApproval {
     @required
-    dealApprovalId: String
+    dealApprovalId: DealApprovalId
 
     @required
-    dealId: String
+    dealId: DealId
 
-    dealVersionId: String
+    dealVersionId: DealVersionId
 
     @required
-    approverUserId: String
+    approverUserId: UserId
 
     /// Approval status as free-form string for flexibility
     @required
@@ -176,9 +182,9 @@ structure DealApproval {
     metadata: Document
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
-    updatedByUserId: String
+    updatedByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -189,13 +195,13 @@ structure DealApproval {
 
 structure DealRevision {
     @required
-    dealRevisionId: String
+    dealRevisionId: DealRevisionId
 
     @required
-    dealId: String
+    dealId: DealId
 
     @required
-    dealVersionId: String
+    dealVersionId: DealVersionId
 
     /// Link to CRDT pipeline or external revision tracking system
     externalRevisionId: String
@@ -207,7 +213,7 @@ structure DealRevision {
     changeMetadata: Document
 
     @required
-    createdByUserId: String
+    createdByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -216,17 +222,17 @@ structure DealRevision {
 /// AI-powered deal analysis (clause extraction, risk assessment, etc.)
 structure DealAnalysis {
     @required
-    dealAnalysisId: String
+    dealAnalysisId: DealAnalysisId
 
     @required
-    dealId: String
+    dealId: DealId
 
     /// Analysis output (clauses, risks, financial terms, etc.)
     @required
     analysisData: Document
 
     /// System-generated if null, user-triggered if set
-    createdByUserId: String
+    createdByUserId: UserId
 
     @required
     createdAt: ISODate
@@ -237,7 +243,7 @@ structure DealAnalysis {
 operation CreateDeal {
     input := {
         @required
-        orgId: String
+        orgId: OrgId
 
         @required
         title: String
@@ -361,7 +367,7 @@ operation DeleteDeal {
 operation ListDeals {
     input := {
         /// Filter by organization
-        orgId: String
+        orgId: OrgId
 
         /// Filter by stage
         stage: DealStage
@@ -430,7 +436,7 @@ operation GetDealVersion {
         dealId: DealId
 
         @required
-        versionId: String
+        dealVersionId: DealVersionId
 
         /// Include deliverables for this version
         includeDeliverables: Boolean
@@ -492,7 +498,7 @@ operation CreateDeliverable {
         dealId: DealId
 
         @required
-        versionId: String
+        dealVersionId: DealVersionId
 
         @required
         description: String
@@ -528,7 +534,7 @@ operation UpdateDeliverable {
         dealId: DealId
 
         @required
-        deliverableId: String
+        deliverableId: DeliverableId
 
         description: String
         source: DeliverableSource
@@ -559,7 +565,7 @@ operation ListDeliverables {
         dealId: DealId
 
         /// Filter by version
-        versionId: String
+        dealVersionId: DealVersionId
 
         /// Filter by status
         status: String
@@ -596,21 +602,21 @@ map DealMap {
 }
 
 map DealVersionMap {
-    key: String  // dealVersionId
+    key: DealVersionId
     value: DealVersion
 }
 
 map DeliverableMap {
-    key: String  // deliverableId
+    key: DeliverableId
     value: Deliverable
 }
 
 map DealApprovalMap {
-    key: String  // dealApprovalId
+    key: DealApprovalId
     value: DealApproval
 }
 
 map DealRevisionMap {
-    key: String  // dealRevisionId
+    key: DealRevisionId
     value: DealRevision
 }
