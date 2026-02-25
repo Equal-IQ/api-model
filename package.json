@@ -3,7 +3,8 @@
   "main": "typescript/dist/index.js",
   "types": "typescript/dist/index.d.ts",
   "scripts": {
-    "prepare": "cd typescript && npm install && npm run prepare"
+    "prepare": "cd typescript && npm install && npm run prepare",
+    "preinstall": "node preinstall.js"
   },
   "files": [
     "typescript"

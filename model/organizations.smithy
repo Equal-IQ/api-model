@@ -11,9 +11,15 @@ use equaliq#ISODate
 use equaliq#StringList
 use equaliq#EmailList
 use equaliq#HexColor
+use equaliq#PageLimit
 use equaliq#PresignedPostData
-use equaliq#PaginationInput
-use equaliq#PaginationMeta
+
+// Import RBAC structures from rbac.smithy
+// Note: These are now defined in rbac.smithy
+// - OrgPermission enum
+// - OrgPermissionList
+// - OrgMember structure
+// - OrgInvite structure
 
 // Org structures and operations
 
@@ -21,39 +27,20 @@ string OrgId with [UuidLikeMixin]
 string InviteId with [UuidLikeMixin]
 string OrgCustomRoleId with [UuidLikeMixin]
 
-// This has been loosened to a string in the db-model, but remains
-// an enum here for the time being. Consider removing - Gwyn
-enum OrgRole {
-    PRIMARY_OWNER = "primary_owner"
-    ADMIN = "admin"
-    BILLING_ADMIN = "billing_admin"
-    MEMBER = "member"
-    VIEWER = "viewer"
-    CUSTOM = "custom"
-}
-
 enum InviteStatus {
-    PENDING = "pending"
-    ACCEPTED = "accepted"
-    DECLINED = "declined"
-    EXPIRED = "expired"
+    pending = "pending"
+    accepted = "accepted"
+    declined = "declined"
+    expired = "expired"
 }
 
-// Another OrgPermission enum exists on the db-model; must be kept in sync.
-// Consider loosening one or both to strings for ease of maintenance - Gwyn
-enum OrgPermission {
-    MANAGE_MEMBERS = "manage_members"
-    MANAGE_BILLING = "manage_billing"
-    MANAGE_SETTINGS = "manage_settings"
-    VIEW_ALL_CONTRACTS = "view_all_contracts"
-    MANAGE_CONTRACTS = "manage_contracts"
-    INVITE_USERS = "invite_users"
-    MANAGE_ROLES = "manage_roles"
-    VIEW_ANALYTICS = "view_analytics"
+enum OrgMemberFilter {
+    active = "active"
+    inactive = "inactive"
 }
 
-list OrgPermissionList {
-    member: OrgPermission
+list OrgMemberFilterList {
+    member: OrgMemberFilter
 }
 
 map OrgMemberMap {
@@ -82,74 +69,30 @@ structure Org {
     type: String
 
     @required
-    primaryOwner: UserId
+    primaryOwnerId: UserId
 
     description: String
     website: Url
     logoUrl: Url
-    
+
     billingEmail: Email
 
-    @required
-    createdDate: ISODate
+    /// Additional metadata (UI preferences, etc.)
+    /// TODO: Post-beta - Consider removing if unused or replace with explicit typed fields
+    metadata: Document
 
+    @required
+    createdAt: ISODate
+
+    @required
+    updatedAt: ISODate
+
+    // Computed/context fields
     memberCount: Integer
-    
-    // Frontend-specific fields
-    userRole: OrgRole
-    contractCount: Integer
+    userRole: String
+    dealCount: Integer
     inviteCount: Integer
     roleCount: Integer
-}
-
-structure OrgMember {
-    @required
-    userId: UserId
-
-    @required
-    orgEmail: Email
-
-    @required
-    role: OrgRole
-
-    customRoleId: OrgCustomRoleId
-    customRoleName: String
-    customPermissions: OrgPermissionList
-
-    @required
-    joinedDate: ISODate
-
-    userProfile: UserProfile
-}
-
-structure OrgInvite {
-    @required
-    inviteId: InviteId
-
-    @required
-    orgId: OrgId
-
-    @required
-    invitedEmail: Email
-
-    @required
-    role: OrgRole
-
-    customRoleId: OrgCustomRoleId
-    customRoleName: String
-    customPermissions: OrgPermissionList
-
-    @required
-    invitedBy: UserId
-    invitedByProfile: UserProfile
-
-    @required
-    status: InviteStatus
-
-    @required
-    createdDate: ISODate
-
-    expiresDate: ISODate
 }
 
 structure OrgCustomRole {
@@ -171,7 +114,7 @@ structure OrgCustomRole {
     createdDate: ISODate
 
     @required
-    createdBy: UserId
+    createdByUserId: UserId
     
     // Frontend-specific field
     memberCount: Integer
@@ -233,59 +176,79 @@ resource OrganizationCustomRole {
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
 @readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "organizations", pageSize: "limit")
 @http(method: "POST", uri: "/orgs/listUserOrganizations")
 operation ListUserOrganizations {
-    input: ListUserOrganizationsInput
-    output: ListUserOrganizationsOutput
+    input := {
+        /// Pagination cursor (encoded orgId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        organizations: OrgMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
     errors: [
         AuthenticationError
         InternalServerError
     ]
 }
 
-structure ListUserOrganizationsInput {
-    pagination: PaginationInput  // Optional pagination parameters
-}
-
-structure ListUserOrganizationsOutput {
-    @required
-    organizations: OrgList
-
-    paginationMeta: PaginationMeta  // Optional pagination metadata
-}
-
-list OrgList {
-    member: Org
+map OrgMap {
+    key: OrgId
+    value: Org
 }
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
 @readonly
 @http(method: "POST", uri: "/orgs/get")
 operation GetOrg {
-    input: GetOrgInput
-    output: GetOrgOutput
+    input := {
+        @required
+        orgId: OrgId
+    }
+
+    output := {
+        @required
+        org: Org
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
     ]
-}
-
-structure GetOrgInput {
-    @required
-    orgId: OrgId
-}
-
-structure GetOrgOutput {
-    @required
-    org: Org
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/create")
 operation CreateOrg {
-    input: CreateOrgInput
-    output: CreateOrgOutput
+    input := {
+        @required
+        name: String
+
+        @required
+        type: String
+
+        description: String
+        website: Url
+
+        @required
+        billingEmail: Email
+    }
+
+    output := {
+        @required
+        org: Org
+    }
+
     errors: [
         AuthenticationError
         ValidationError
@@ -293,89 +256,81 @@ operation CreateOrg {
     ]
 }
 
-structure CreateOrgInput {
-    @required
-    name: String
-
-    @required
-    type: String
-
-    description: String
-    website: Url
-    
-    @required
-    billingEmail: Email
-}
-
-structure CreateOrgOutput {
-    @required
-    success: Boolean
-
-    @required
-    org: Org
-}
-
 @http(method: "POST", uri: "/orgs/update")
 operation UpdateOrg {
-    input: UpdateOrgInput
-    output: UpdateOrgOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        name: String
+        description: String
+        website: Url
+        billingEmail: Email
+    }
+
+    output := {
+        @required
+        org: Org
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure UpdateOrgInput {
-    @required
-    orgId: OrgId
-
-    name: String
-    description: String
-    website: Url
-    billingEmail: Email
-}
-
-structure UpdateOrgOutput {
-    @required
-    success: Boolean
-
-    @required
-    org: Org
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/delete")
 operation DeleteOrg {
-    input: DeleteOrgInput
-    output: DeleteOrgOutput
+    input := {
+        @required
+        orgId: OrgId
+    }
+
+    output := {}
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure DeleteOrgInput {
-    @required
-    orgId: OrgId
-}
-
-structure DeleteOrgOutput {
-    @required
-    success: Boolean
 }
 
 // ==================== MEMBER MANAGEMENT APIs ====================
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
 @readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "members", pageSize: "limit")
 @http(method: "POST", uri: "/orgs/members/list")
 operation ListOrgMembers {
-    input: ListOrgMembersInput
-    output: ListOrgMembersOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        /// Filter by role
+        role: String
+
+        /// Member status filters (if not specified, defaults to active only)
+        filters: OrgMemberFilterList
+
+        /// Pagination cursor (encoded userId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        members: OrgMemberMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -383,106 +338,75 @@ operation ListOrgMembers {
     ]
 }
 
-structure ListOrgMembersInput {
-    @required
-    orgId: OrgId
-
-    role: OrgRole           // Optional filter by role
-    includeInactive: Boolean  // Optional filter to include inactive members
-    pagination: PaginationInput  // Optional pagination parameters
-}
-
-structure ListOrgMembersOutput {
-    @required
-    members: OrgMemberMap
-
-    paginationMeta: PaginationMeta  // Optional pagination metadata
-}
-
 @http(method: "POST", uri: "/orgs/updateMember")
 operation UpdateOrgMember {
-    input: UpdateOrgMemberInput
-    output: UpdateOrgMemberOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        userId: UserId
+
+        role: String
+        customRoleId: OrgCustomRoleId
+        orgEmail: Email
+    }
+
+    output := {
+        @required
+        member: OrgMember
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure UpdateOrgMemberInput {
-    @required
-    orgId: OrgId
-
-    @required
-    userId: UserId
-
-    role: OrgRole
-    customRoleId: OrgCustomRoleId
-    orgEmail: Email
-}
-
-structure UpdateOrgMemberOutput {
-    @required
-    success: Boolean
-
-    @required
-    member: OrgMember
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/removeMember")
 operation RemoveOrgMember {
-    input: RemoveOrgMemberInput
-    output: RemoveOrgMemberOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        userId: UserId
+    }
+
+    output := {}
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure RemoveOrgMemberInput {
-    @required
-    orgId: OrgId
-
-    @required
-    userId: UserId
-}
-
-structure RemoveOrgMemberOutput {
-    @required
-    success: Boolean
 }
 
 @http(method: "POST", uri: "/orgs/transferOwnership")
 operation TransferOrgOwnership {
-    input: TransferOrgOwnershipInput
-    output: TransferOrgOwnershipOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        newOwnerId: UserId
+    }
+
+    output := {
+        @required
+        org: Org
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure TransferOrgOwnershipInput {
-    @required
-    orgId: OrgId
-
-    @required
-    newOwnerId: UserId
-}
-
-structure TransferOrgOwnershipOutput {
-    @required
-    success: Boolean
-
-    @required
-    org: Org
 }
 
 // ==================== ROLE MANAGEMENT APIs ====================
@@ -490,8 +414,24 @@ structure TransferOrgOwnershipOutput {
 @idempotent
 @http(method: "POST", uri: "/orgs/roles/create")
 operation CreateOrgCustomRole {
-    input: CreateOrgCustomRoleInput
-    output: CreateOrgCustomRoleOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        name: String
+
+        description: String
+
+        @required
+        permissions: OrgPermissionList
+    }
+
+    output := {
+        @required
+        customRole: OrgCustomRole
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -500,106 +440,83 @@ operation CreateOrgCustomRole {
     ]
 }
 
-structure CreateOrgCustomRoleInput {
-    @required
-    orgId: OrgId
-
-    @required
-    name: String
-
-    description: String
-
-    @required
-    permissions: OrgPermissionList
-}
-
-structure CreateOrgCustomRoleOutput {
-    @required
-    success: Boolean
-
-    @required
-    customRole: OrgCustomRole
-}
-
 @readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "roles", pageSize: "limit")
 @http(method: "POST", uri: "/orgs/roles/list")
 operation ListOrgCustomRoles {
-    input: ListOrgCustomRolesInput
-    output: ListOrgCustomRolesOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        /// Pagination cursor (encoded roleId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        roles: OrgCustomRoleMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
     ]
-}
-
-structure ListOrgCustomRolesInput {
-    @required
-    orgId: OrgId
-}
-
-structure ListOrgCustomRolesOutput {
-    @required
-    roles: OrgCustomRoleMap
 }
 
 
 @http(method: "POST", uri: "/orgs/roles/update")
 operation UpdateOrgCustomRole {
-    input: UpdateOrgCustomRoleInput
-    output: UpdateOrgCustomRoleOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        customRoleId: OrgCustomRoleId
+
+        name: String
+        description: String
+        permissions: OrgPermissionList
+    }
+
+    output := {
+        @required
+        customRole: OrgCustomRole
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure UpdateOrgCustomRoleInput {
-    @required
-    orgId: OrgId
-
-    @required
-    customRoleId: OrgCustomRoleId
-
-    name: String
-    description: String
-    permissions: OrgPermissionList
-}
-
-structure UpdateOrgCustomRoleOutput {
-    @required
-    success: Boolean
-
-    @required
-    customRole: OrgCustomRole
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/roles/delete")
 operation DeleteOrgCustomRole {
-    input: DeleteOrgCustomRoleInput
-    output: DeleteOrgCustomRoleOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        customRoleId: OrgCustomRoleId
+    }
+
+    output := {}
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure DeleteOrgCustomRoleInput {
-    @required
-    orgId: OrgId
-
-    @required
-    customRoleId: OrgCustomRoleId
-}
-
-structure DeleteOrgCustomRoleOutput {
-    @required
-    success: Boolean
 }
 
 // ==================== INVITATION MANAGEMENT APIs ====================
@@ -607,8 +524,27 @@ structure DeleteOrgCustomRoleOutput {
 @idempotent
 @http(method: "POST", uri: "/orgs/invites/create")
 operation CreateOrgInvite {
-    input: CreateOrgInviteInput
-    output: CreateOrgInviteOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        emails: EmailList
+
+        @required
+        role: String
+
+        customRoleId: OrgCustomRoleId
+        orgEmail: Email
+    }
+
+    output := {
+        @required
+        invites: OrgInviteMap
+
+        failedEmails: EmailList
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -617,219 +553,187 @@ operation CreateOrgInvite {
     ]
 }
 
-structure CreateOrgInviteInput {
-    @required
-    orgId: OrgId
-
-    @required
-    emails: EmailList
-
-    @required
-    role: OrgRole
-
-    customRoleId: OrgCustomRoleId
-    orgEmail: Email
-}
-
-structure CreateOrgInviteOutput {
-    @required
-    success: Boolean
-
-    @required
-    invites: OrgInviteMap
-
-    failedEmails: EmailList
-}
-
 @readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "invites", pageSize: "limit")
 @http(method: "POST", uri: "/orgs/invites/list")
 operation ListOrgInvites {
-    input: ListOrgInvitesInput
-    output: ListOrgInvitesOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        /// Filter by invite status
+        status: InviteStatus
+
+        /// Pagination cursor (encoded inviteId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        invites: OrgInviteMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
     ]
-}
-
-structure ListOrgInvitesInput {
-    @required
-    orgId: OrgId
-
-    status: InviteStatus
-}
-
-structure ListOrgInvitesOutput {
-    @required
-    invites: OrgInviteMap
 }
 
 @idempotent
 @http(method: "POST", uri: "/orgs/invites/cancel")
 operation CancelOrgInvite {
-    input: CancelOrgInviteInput
-    output: CancelOrgInviteOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        inviteId: InviteId
+    }
+
+    output := {}
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure CancelOrgInviteInput {
-    @required
-    orgId: OrgId
-
-    @required
-    inviteId: InviteId
-}
-
-structure CancelOrgInviteOutput {
-    @required
-    success: Boolean
 }
 
 @http(method: "POST", uri: "/orgs/invites/resend")
 operation ResendOrgInvite {
-    input: ResendOrgInviteInput
-    output: ResendOrgInviteOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        inviteId: InviteId
+
+        expiresDate: ISODate
+    }
+
+    output := {
+        @required
+        invite: OrgInvite
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure ResendOrgInviteInput {
-    @required
-    orgId: OrgId
-
-    @required
-    inviteId: InviteId
-
-    expiresDate: ISODate
-
-}
-
-structure ResendOrgInviteOutput {
-    @required
-    success: Boolean
-
-    @required
-    invite: OrgInvite
 }
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
 @http(method: "POST", uri: "/orgs/invites/accept")
 operation AcceptOrgInvite {
-    input: AcceptOrgInviteInput
-    output: AcceptOrgInviteOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        inviteId: InviteId
+    }
+
+    output := {
+        @required
+        organization: Org
+
+        @required
+        member: OrgMember
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure AcceptOrgInviteInput {
-    @required
-    orgId: OrgId
-
-    @required
-    inviteId: InviteId
-}
-
-structure AcceptOrgInviteOutput {
-    @required
-    success: Boolean
-
-    @required
-    organization: Org
-
-    @required
-    member: OrgMember
 }
 
 @tags(["TODOFEIMPL", "TODOBESTUB", "TODOBEIMPL"])
 @http(method: "POST", uri: "/orgs/invites/decline")
 operation DeclineOrgInvite {
-    input: DeclineOrgInviteInput
-    output: DeclineOrgInviteOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        inviteId: InviteId
+    }
+
+    output := {}
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure DeclineOrgInviteInput {
-    @required
-    orgId: OrgId
-
-    @required
-    inviteId: InviteId
-}
-
-structure DeclineOrgInviteOutput {
-    @required
-    success: Boolean
 }
 
 // ==================== ORG PROFILE PICTURE APIs ====================
 
 @http(method: "POST", uri: "/orgs/getOrgPicture")
 operation GetOrgPicture {
-    input: GetOrgPictureInput
-    output: GetOrgPictureOutput
+    input := {
+        @required
+        orgId: OrgId
+    }
+
+    output := {
+        @required
+        profilePictureURL: Url
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
     ]
-}
-
-structure GetOrgPictureInput {
-    @required
-    orgId: OrgId
-}
-
-structure GetOrgPictureOutput {
-    @required
-    profilePictureURL: Url
 }
 
 @http(method: "POST", uri: "/orgs/uploadOrgPicture")
 operation UploadOrgPicture {
-    input: UploadOrgPictureInput
-    output: UploadOrgPictureOutput
+    input := {
+        @required
+        orgId: OrgId
+    }
+
+    output := {
+        @required
+        urlInfo: PresignedPostData
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
     ]
-}
-
-structure UploadOrgPictureInput {
-    @required
-    orgId: OrgId
-}
-
-structure UploadOrgPictureOutput {
-    @required
-    url_info: PresignedPostData
 }
 
 // ==================== ORG THEME APIs ====================
 
 @http(method: "POST", uri: "/orgs/getOrgTheme")
 operation GetOrgTheme {
-    input: GetOrgThemeInput
-    output: GetOrgThemeOutput
+    input := {
+        @required
+        orgId: OrgId
+    }
+
+    output := {
+        @required
+        theme: OrgTheme
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
@@ -837,41 +741,26 @@ operation GetOrgTheme {
     ]
 }
 
-structure GetOrgThemeInput {
-    @required
-    orgId: OrgId
-}
-
-structure GetOrgThemeOutput {
-    @required
-    theme: OrgTheme
-}
-
 @idempotent
 @http(method: "POST", uri: "/orgs/updateOrgTheme")
 operation UpdateOrgTheme {
-    input: UpdateOrgThemeInput
-    output: UpdateOrgThemeOutput
+    input := {
+        @required
+        orgId: OrgId
+
+        @required
+        theme: OrgTheme
+    }
+
+    output := {
+        @required
+        theme: OrgTheme
+    }
+
     errors: [
         AuthenticationError
         ResourceNotFoundError
         ValidationError
         InternalServerError
     ]
-}
-
-structure UpdateOrgThemeInput {
-    @required
-    orgId: OrgId
-
-    @required
-    theme: OrgTheme
-}
-
-structure UpdateOrgThemeOutput {
-    @required
-    success: Boolean
-
-    @required
-    theme: OrgTheme
 }

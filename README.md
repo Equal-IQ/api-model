@@ -34,10 +34,20 @@ For manual builds:
 ```
 api-model/
 ├── model/                   # Your Smithy models go here
-│   └── equaliq.smithy
+│   ├── service.smithy       # Service definition
+│   ├── common.smithy        # Shared types (Email, ISODate, etc.)
+│   ├── errors.smithy        # Common error structures
+│   ├── users.smithy         # User resources & operations
+│   ├── organizations.smithy # Organization resources
+│   ├── deals.smithy         # Deal resources
+│   ├── files.smithy         # File resources
+│   ├── audit.smithy         # Audit log resources
+│   ├── rbac.smithy          # RBAC enums & operations
+│   └── contracts.smithy     # Legacy contract operations (deprecated)
 ├── smithy-build.json        # Projection configuration
 ├── build.gradle.kts         # Gradle config
 ├── settings.gradle.kts
+├── .smithy-project.json     # LSP configuration for IDE support
 ├── build/                   # Auto-generated output
 ├── Containers               # For containerized builds
 │   └── Containerfile-xxx

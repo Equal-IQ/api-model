@@ -3,24 +3,26 @@
   "version": "0.1.0",
   "type": "module",
   "description": "EqualIQ API TypeScript models generated from Smithy",
-  "main": "dist/index.js",
+  "main": "dist/index.cjs",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js",
-      "default": "./dist/index.js"
+      "require": "./dist/index.cjs"
     }
   },
   "scripts": {
-    "build": "tsc",
-    "clean": "rm -rf dist",
-    "prepare": "npm run clean && npm run build"
+    "build": "tsup src/index.ts --format esm,cjs --dts --clean",
+    "dev": "tsup src/index.ts --format esm,cjs --dts --watch",
+    "typecheck": "tsc --noEmit",
+    "prepare": "npm run build"
   },
   "author": "EqualIQ Team",
   "license": "MIT",
   "devDependencies": {
+    "tsup": "^8.5.1",
     "typescript": "^5.0.0"
   },
   "files": [

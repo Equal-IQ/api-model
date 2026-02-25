@@ -4,7 +4,7 @@
  */
 
 export interface paths {
-    "/deleteContract": {
+    "/audit/list": {
         parameters: {
             query?: never;
             header?: never;
@@ -13,14 +13,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["DeleteContract"];
+        post: operations["ListAuditLogs"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/getContract": {
+    "/audit/logs/get": {
         parameters: {
             query?: never;
             header?: never;
@@ -29,14 +29,14 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["GetContract"];
+        post: operations["GetAuditLog"];
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/getContractReadURL": {
+    "/audit/statistics": {
         parameters: {
             query?: never;
             header?: never;
@@ -45,7 +45,423 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        post: operations["GetContractReadURL"];
+        post: operations["GetAuditStatistics"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GrantDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/access/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDealAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/deliverables/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDeliverables"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/deliverables/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDeliverable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDeals"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateDeal"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDealVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/deliverables/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateDeliverable"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetDealVersion"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/versions/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListDealVersions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/grant": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GrantFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/revoke": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RevokeFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/access/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateFileAccess"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["DeleteFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/download-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GenerateDownloadUrl"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListFiles"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateFile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/files/upload-url": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GenerateUploadUrl"];
         delete?: never;
         options?: never;
         head?: never;
@@ -78,70 +494,6 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetProfilePicture"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/getSpecialContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetSpecialContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/listContracts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListContracts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/listSpecialContracts": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListSpecialContracts"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/notARealEndpoint": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ExposeTypes"];
         delete?: never;
         options?: never;
         head?: never;
@@ -532,38 +884,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/shareContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ShareContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/updateContract": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateContract"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/updateProfile": {
         parameters: {
             query?: never;
@@ -596,22 +916,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/uploadURL": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["GetUploadURL"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -621,10 +925,46 @@ export interface components {
             inviteId: string;
         };
         AcceptOrgInviteResponseContent: {
-            success: boolean;
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        /** @description Audit log entry for field-level change tracking */
+        AuditLog: {
+            /** @description Audit log identifier */
+            auditLogId: string;
+            tableName: string;
+            recordType: components["schemas"]["RecordType"];
+            operation: components["schemas"]["AuditOperation"];
+            /** @description Specific field that changed (for UPDATE operations) */
+            fieldName?: string;
+            /** @description Previous value (JSON) */
+            oldValue?: unknown;
+            /** @description New value (JSON) */
+            newValue?: unknown;
+            changedBy: string;
+            changedAt: string;
+            /** @description Additional metadata for extensibility */
+            metadata?: unknown;
+        };
+        AuditLogMap: {
+            [key: string]: components["schemas"]["AuditLog"];
+        };
+        /**
+         * @description Database operations for audit tracking
+         * @enum {string}
+         */
+        AuditOperation: AuditOperation;
+        /** @description Audit statistics */
+        AuditStatistics: {
+            totalEvents: number;
+            /** @description Breakdown by table name */
+            byTable?: unknown;
+            /** @description Breakdown by operation */
+            byOperation?: unknown;
+            /** @description Most active users */
+            topUsers?: unknown;
+        };
+        /** @description Common error structures used across all operations */
         AuthenticationErrorResponseContent: {
             message: string;
         };
@@ -632,86 +972,67 @@ export interface components {
             orgId: string;
             inviteId: string;
         };
-        CancelOrgInviteResponseContent: {
-            success: boolean;
+        /**
+         * @description Content disposition for file downloads
+         * @enum {string}
+         */
+        ContentDisposition: ContentDisposition;
+        CreateDealRequestContent: {
+            orgId: string;
+            title: string;
+            description?: string;
+            initialStage?: components["schemas"]["DealStage"];
+            /** @description Optional metadata for the initial version */
+            metadata?: unknown;
         };
-        ContractAnalysisRecord: {
-            contractId: string;
-            name: string;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            uploadedOn: string;
-            ownerId: string;
-            eqCards?: components["schemas"]["EqModeData"];
-            iqData: components["schemas"]["IqModeData"];
-            extractedType?: string;
-            parties?: string[];
-            terms?: components["schemas"]["ExtractionTermMap"];
-            variables?: components["schemas"]["ContractVariableMap"];
-            contractTexts?: components["schemas"]["ContractTexts"];
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
-            hasTTS?: boolean;
-            isSpecial?: boolean;
+        CreateDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            initialVersion: components["schemas"]["DealVersion"];
         };
-        ContractExtractionResult: {
-            /** @description The contract type here is the one extracted by the model, not necessarily the one set by user */
-            extractedType?: string;
-            parties?: string[];
-            terms?: components["schemas"]["ExtractionTermMap"];
-            variables?: components["schemas"]["ContractVariableMap"];
-            contractTexts?: components["schemas"]["ContractTexts"];
+        CreateDealVersionRequestContent: {
+            dealId: string;
+            stage: components["schemas"]["DealStage"];
+            changeReason: string;
+            /** @description Optional metadata for version */
+            metadata?: unknown;
         };
-        ContractMetadata: {
-            contractId: string;
-            name: string;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            uploadedOn: string;
-            ownerId: string;
-            ownerOrgId?: string;
-            sharedUsers?: components["schemas"]["SharedUserDetails"][];
-            isOwner?: boolean;
-            hasTTS?: boolean;
-            isSpecial?: boolean;
+        CreateDealVersionResponseContent: {
+            version: components["schemas"]["DealVersion"];
         };
-        /** @enum {string} */
-        ContractStatus: ContractStatus;
-        ContractSummaryItem: {
-            contractId: string;
-            name: string;
-            /** Format: double */
-            uploadedOn: number;
-            type: string;
-            status: components["schemas"]["ContractStatus"];
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith?: string[];
-            sharedUsers?: string[];
-            sharedEmails?: string[];
+        CreateDeliverableRequestContent: {
+            dealId: string;
+            dealVersionId: string;
+            description: string;
+            source?: components["schemas"]["DeliverableSource"];
+            /** @description For committed stages */
+            dueDate?: string;
+            assignedTo?: string;
+            status?: string;
         };
-        ContractTexts: {
-            originalText?: components["schemas"]["PlainText"];
-            taggedText?: components["schemas"]["TaggedText"];
+        CreateDeliverableResponseContent: {
+            deliverable: components["schemas"]["Deliverable"];
         };
-        ContractVariable: {
-            name: string;
-            type: components["schemas"]["ContractVariableType"];
-            id: string;
-            value?: string;
-            level?: number;
-            /** Format: float */
-            confidence?: number;
-            firstOccurrence?: number;
-            context?: string;
-            variations?: string[];
-            referencedSection?: string;
-            definitionCitation?: string;
+        CreateFileRequestContent: {
+            orgId: string;
+            fileName: string;
+            sizeBytes: number;
+            /** @description MIME type */
+            fileType?: string;
+            /** @description Virtual folder path */
+            folderPath?: string;
+            /** @description User-defined tags */
+            tags?: string[];
+            /** @description Associated deal IDs */
+            dealIds?: string[];
+            /** @description Associated deal version IDs */
+            dealVersionIds?: string[];
+            /** @description Request upload URL in response */
+            requestUploadUrl?: boolean;
         };
-        ContractVariableMap: {
-            [key: string]: components["schemas"]["ContractVariable"];
+        CreateFileResponseContent: {
+            file: components["schemas"]["File"];
+            uploadUrl?: components["schemas"]["PresignedUrl"];
         };
-        /** @enum {string} */
-        ContractVariableType: ContractVariableType;
         CreateOrgCustomRoleRequestContent: {
             orgId: string;
             name: string;
@@ -719,18 +1040,16 @@ export interface components {
             permissions: components["schemas"]["OrgPermission"][];
         };
         CreateOrgCustomRoleResponseContent: {
-            success: boolean;
             customRole: components["schemas"]["OrgCustomRole"];
         };
         CreateOrgInviteRequestContent: {
             orgId: string;
             emails: string[];
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             orgEmail?: string;
         };
         CreateOrgInviteResponseContent: {
-            success: boolean;
             invites: components["schemas"]["OrgInviteMap"];
             failedEmails?: string[];
         };
@@ -742,151 +1061,279 @@ export interface components {
             billingEmail: string;
         };
         CreateOrgResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
+        };
+        /** @description Main deal entity */
+        Deal: {
+            dealId: string;
+            ownerUserId: string;
+            /** @description Organization context (nullable for personal deals) */
+            ownerOrgId?: string;
+            /** @description Parent deal for hierarchies (master agreements, amendments) */
+            parentDealId?: string;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            /** @description Associated file IDs */
+            fileIds?: string[];
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @description Deal access control */
+        DealAccess: {
+            /** @description Access control identifier */
+            dealAccessId: string;
+            dealId: string;
+            grantedToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantedToUserId?: string;
+            grantedByUserId: string;
+            grantedAt: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Party role (e.g., "buyer", "seller", "advisor") */
+            partyRole?: string;
+            permissions: components["schemas"]["DealPermission"][];
+            /** @description Maximum permissions this party can grant to others */
+            grantablePermissions?: components["schemas"]["DealPermission"][];
+            /** @description Explicit deny (overrides all grants) */
+            isDeny?: boolean;
+            /** @description Revocation tracking */
+            revokedByUserId?: string;
+            revokedAt?: string;
+            revocationReason?: string;
+            /** @description Additional metadata as JSON
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
+        };
+        DealAccessMap: {
+            [key: string]: components["schemas"]["DealAccess"];
+        };
+        DealMap: {
+            [key: string]: components["schemas"]["Deal"];
+        };
+        /**
+         * @description Deal permissions
+         * @enum {string}
+         */
+        DealPermission: DealPermission;
+        /**
+         * @description Deal stage lifecycle
+         * @enum {string}
+         */
+        DealStage: DealStage;
+        /** @description Deal version for tracking changes through stages */
+        DealVersion: {
+            dealVersionId: string;
+            dealId: string;
+            versionNumber: number;
+            stage: components["schemas"]["DealStage"];
+            /** @description Main deal content (name, description, terms, financial details) */
+            content: unknown;
+            /** @description Metadata for extensibility during beta */
+            metadata?: unknown;
+            createdByUserId: string;
+            /** @description Approval workflow tracking */
+            approvedByUserId?: string;
+            /** @description Associated file IDs */
+            fileIds?: string[];
+            createdAt: string;
+            /** @description When this version was approved */
+            approvedAt?: string;
+        };
+        DealVersionMap: {
+            [key: string]: components["schemas"]["DealVersion"];
         };
         DeclineOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
         };
-        DeclineOrgInviteResponseContent: {
-            success: boolean;
+        DeleteDealRequestContent: {
+            dealId: string;
+            /** @description Soft delete by default */
+            hardDelete?: boolean;
         };
-        DeleteContractRequestContent: {
-            contractId: string;
-        };
-        DeleteContractResponseContent: {
-            success: boolean;
+        DeleteFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Hard delete the file (default is soft delete) */
+            hardDelete?: boolean;
         };
         DeleteOrgCustomRoleRequestContent: {
             orgId: string;
             customRoleId: string;
         };
-        DeleteOrgCustomRoleResponseContent: {
-            success: boolean;
-        };
         DeleteOrgRequestContent: {
             orgId: string;
         };
-        DeleteOrgResponseContent: {
-            success: boolean;
-        };
-        /** @enum {string} */
-        DurationType: DurationType;
-        EmptyStructure: Record<string, never>;
-        /** @enum {string} */
-        EqCardKey: EqCardKey;
-        /** @enum {string} */
-        EqCardType: EqCardType;
-        EqCardUniqueData: {
-            MONEY_RECEIVED: components["schemas"]["EqMoneyCard"];
-        } | {
-            OWNERSHIP: components["schemas"]["EqOwnershipCard"];
-        } | {
-            RESPONSIBILITIES: components["schemas"]["EqResponsibilitiesCard"];
-        } | {
-            DURATION: components["schemas"]["EqDurationCard"];
-        } | {
-            LEGAL: components["schemas"]["EqLegalCard"];
-        } | {
-            EMPTY: components["schemas"]["EmptyStructure"];
-        };
-        EqDurationCard: {
-            durationType: components["schemas"]["DurationType"];
-            durationText: string;
-            durationDetails?: components["schemas"]["SimpleTermDescription"][];
-        };
-        EqLegalCard: {
-            risks: string;
-            costs: string;
-            legal: string;
-        };
-        EqModeCard: {
-            id: components["schemas"]["EqCardKey"];
-            title: string;
-            type: components["schemas"]["EqCardType"];
-            cardUniqueData: components["schemas"]["EqCardUniqueData"];
-            /** @description Deprecated, use subTitle Instead */
-            eqTitle?: string;
-            subTitle?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            totalAdvance?: string;
-            /** @description Deprecated, this should be in the in a custom subtype */
-            items?: components["schemas"]["EqModeItem"][];
-            /** @description Deprecated, use the ttsSrcUrl */
-            audioSrc?: string;
-            ttsSrcUrl?: string;
-        };
-        EqModeCardMap: {
-            [key: string]: components["schemas"]["EqModeCard"];
-        };
-        EqModeData: {
-            cards?: components["schemas"]["EqModeCardMap"];
-        };
-        /** @description Deprecated */
-        EqModeItem: {
-            title?: string;
-            value?: string;
-        };
-        EqMoneyCard: {
-            majorNumber: string;
-            paidAfterList: string[];
-        };
-        EqOwnershipCard: {
-            ownershipTerms: components["schemas"]["SimpleTermDescription"][];
-        };
-        EqResponsibilitiesCard: {
-            responsibilities: components["schemas"]["SimpleTermDescription"][];
-        };
-        ExposeTypesResponseContent: {
-            contractAnalysisRecord?: components["schemas"]["ContractAnalysisRecord"];
-        };
-        ExtractionTerm: {
+        /** @description Deliverable with stage-conditional fields */
+        Deliverable: {
+            deliverableId: string;
+            dealVersionId: string;
             name: string;
-            definition: string;
-            unitType: string;
-            explanation: string;
-            notes: string;
-            citation: string;
-            fixedValues?: components["schemas"]["FixedValueTermInference"];
-            fixedValueGuideline?: string;
-            originalValue?: string;
+            description?: string;
+            source?: components["schemas"]["DeliverableSource"];
+            status?: components["schemas"]["DeliverableStatus"];
+            assignedToUserId?: string;
+            responsibleOrgId?: string;
+            dueDate?: string;
+            completedDate?: string;
+            metadata?: unknown;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
         };
-        ExtractionTermMap: {
-            [key: string]: components["schemas"]["ExtractionTerm"];
+        DeliverableMap: {
+            [key: string]: components["schemas"]["Deliverable"];
         };
-        FixedTermValue: {
-            unit: string;
-            value: string;
-            name?: string;
-            /** Format: float */
-            numericValue?: number;
-            condition?: string;
-        };
-        FixedValueTermInference: {
-            primary: components["schemas"]["FixedTermValue"];
-            subterms?: components["schemas"]["FixedTermValue"][];
-        };
-        GetContractReadURLRequestContent: {
-            contractId: string;
-        };
-        GetContractReadURLResponseContent: {
-            url: string;
-        };
-        GetContractRequestContent: {
-            contractId: string;
-        };
-        GetContractResponseContent: {
-            contractId: string;
-            ownerId: string;
+        /**
+         * @description Deliverable source (for tracking origin)
+         * @enum {string}
+         */
+        DeliverableSource: DeliverableSource;
+        /** @enum {string} */
+        DeliverableStatus: DeliverableStatus;
+        /** @description File entity with dual-ownership pattern */
+        File: {
+            /** @description File identifier */
+            fileId: string;
+            ownerUserId: string;
+            /** @description Organization context (nullable for personal files) */
             ownerOrgId?: string;
-            name: string;
-            type: string;
-            eqData?: components["schemas"]["EqModeData"];
-            iqData?: components["schemas"]["IqModeData"];
-            contractExtraction?: components["schemas"]["ContractExtractionResult"];
-            sharedWith?: string[];
-            isOwner?: boolean;
+            createdByUserId: string;
+            fileName: string;
+            sizeBytes: number;
+            fileType: string;
+            /** @description File description */
+            description?: string;
+            /** @description Associated deal IDs */
+            dealIds?: string[];
+            /** @description Associated deal version IDs */
+            dealVersionIds?: string[];
+            /** @description Additional metadata as JSON */
+            metadata?: unknown;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @description File access control */
+        FileAccess: {
+            fileAccessId: string;
+            /** @description File identifier */
+            fileId: string;
+            grantedToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantedToUserId?: string;
+            grantedByUserId: string;
+            grantedAt: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            permissions: components["schemas"]["FilePermission"][];
+            /** @description Maximum permissions this party can grant to others */
+            grantablePermissions?: components["schemas"]["FilePermission"][];
+            /** @description Explicit deny (overrides all grants) */
+            isDeny?: boolean;
+            /** @description Revocation tracking */
+            revokedByUserId?: string;
+            revokedAt?: string;
+            revocationReason?: string;
+            /** @description Additional metadata as JSON
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
+        };
+        FileAccessMap: {
+            [key: string]: components["schemas"]["FileAccess"];
+        };
+        FileMap: {
+            [key: string]: components["schemas"]["File"];
+        };
+        /**
+         * @description File permissions
+         * @enum {string}
+         */
+        FilePermission: FilePermission;
+        GenerateDownloadUrlRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Expiration time in seconds (default 3600) */
+            expirationSeconds?: number;
+            disposition?: components["schemas"]["ContentDisposition"];
+            /** @description Override filename in download */
+            downloadFileName?: string;
+        };
+        GenerateDownloadUrlResponseContent: {
+            downloadUrl: components["schemas"]["PresignedUrl"];
+        };
+        GenerateUploadUrlRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Content type for the upload */
+            contentType?: string;
+            /** @description Expiration time in seconds (default 3600) */
+            expirationSeconds?: number;
+        };
+        GenerateUploadUrlResponseContent: {
+            uploadUrl: components["schemas"]["PresignedUrl"];
+        };
+        GetAuditLogRequestContent: {
+            /** @description Audit log identifier */
+            auditLogId: string;
+        };
+        GetAuditLogResponseContent: {
+            auditLog: components["schemas"]["AuditLog"];
+        };
+        GetAuditStatisticsRequestContent: {
+            /** @description Filter by table */
+            tableName?: string;
+            /** @description Date range for statistics */
+            startDate: string;
+            endDate: string;
+            groupBy?: components["schemas"]["StatisticGrouping"];
+        };
+        GetAuditStatisticsResponseContent: {
+            statistics: components["schemas"]["AuditStatistics"];
+            /** @description Time series data if groupBy is specified */
+            timeSeries?: components["schemas"]["TimeSeriesPoint"][];
+        };
+        GetDealRequestContent: {
+            dealId: string;
+            /** @description Include related data */
+            includeVersions?: boolean;
+            includeDeliverables?: boolean;
+            includeAccess?: boolean;
+        };
+        GetDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            versions?: components["schemas"]["DealVersionMap"];
+            deliverables?: components["schemas"]["DeliverableMap"];
+            access?: components["schemas"]["DealAccessMap"];
+        };
+        GetDealVersionRequestContent: {
+            dealId: string;
+            dealVersionId: string;
+            /** @description Include deliverables for this version */
+            includeDeliverables?: boolean;
+        };
+        GetDealVersionResponseContent: {
+            version: components["schemas"]["DealVersion"];
+            deliverables?: components["schemas"]["DeliverableMap"];
+        };
+        GetFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Include access information */
+            includeAccess?: boolean;
+            /** @description Request download URL in response */
+            requestDownloadUrl?: boolean;
+        };
+        GetFileResponseContent: {
+            file: components["schemas"]["File"];
+            access?: components["schemas"]["FileAccessMap"];
+            downloadUrl?: components["schemas"]["PresignedUrl"];
         };
         GetOrgPictureRequestContent: {
             orgId: string;
@@ -907,7 +1354,7 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         GetProfilePictureRequestContent: {
-            userId?: string;
+            userId: string;
         };
         GetProfilePictureResponseContent: {
             profilePictureURL: string;
@@ -916,116 +1363,243 @@ export interface components {
             userId?: string;
         };
         GetProfileResponseContent: {
-            userId: string;
             profile: components["schemas"]["UserProfile"];
         };
-        GetSpecialContractRequestContent: {
-            contractId: string;
+        GrantDealAccessRequestContent: {
+            dealId: string;
+            grantToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantToUserId?: string;
+            permissions: components["schemas"]["DealPermission"][];
+            /** @description Optional party role */
+            partyRole?: string;
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Permissions they can grant to others */
+            grantablePermissions?: components["schemas"]["DealPermission"][];
+            /** @description Explicit deny */
+            isDeny?: boolean;
         };
-        GetSpecialContractResponseContent: {
-            contractId: string;
-            name: string;
-            type: string;
-            eqmode: unknown;
-            sections: unknown;
-            isOwner: boolean;
-            ownerId: string;
-            sharedWith: string[];
+        GrantDealAccessResponseContent: {
+            access: components["schemas"]["DealAccess"];
         };
-        GetUploadURLRequestContent: {
-            name: string;
-            orgId?: string;
+        GrantFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            grantToOrgId: string;
+            /** @description Specific user within org (if omitted, entire org has access) */
+            grantToUserId?: string;
+            permissions: components["schemas"]["FilePermission"][];
+            /** @description Optional expiration */
+            expiresAt?: string;
+            /** @description Permissions they can grant to others */
+            grantablePermissions?: components["schemas"]["FilePermission"][];
+            /** @description Explicit deny */
+            isDeny?: boolean;
         };
-        GetUploadURLResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
+        GrantFileAccessResponseContent: {
+            access: components["schemas"]["FileAccess"];
         };
         InternalServerErrorResponseContent: {
             message: string;
         };
         /** @enum {string} */
         InviteStatus: InviteStatus;
-        IqModeData: {
-            iqModeData?: components["schemas"]["IqModePerspectiveMap"];
+        ListAuditLogsRequestContent: {
+            tableName?: string;
+            recordType?: components["schemas"]["RecordType"];
+            operation?: components["schemas"]["AuditOperation"];
+            changedBy?: string;
+            startDate?: string;
+            endDate?: string;
+            fieldName?: string;
+            nextToken?: string;
+            limit?: number;
         };
-        IqModePerspective: {
-            sections: components["schemas"]["IqModeSectionMap"];
+        ListAuditLogsResponseContent: {
+            logs: components["schemas"]["AuditLogMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
-        IqModePerspectiveMap: {
-            [key: string]: components["schemas"]["IqModePerspective"];
-        };
-        IqModeQuestion: {
-            question: components["schemas"]["TaggedText"];
-            answer: components["schemas"]["TaggedText"];
-            ttsSrcUrl?: string;
-        };
-        IqModeSection: {
-            id: components["schemas"]["IqModeSectionKey"];
-            sectionTitle: string;
-            questions: components["schemas"]["IqModeQuestion"][];
-        };
-        /** @enum {string} */
-        IqModeSectionKey: IqModeSectionKey;
-        IqModeSectionMap: {
-            [key: string]: components["schemas"]["IqModeSection"];
-        };
-        ListContractsRequestContent: {
+        ListDealAccessRequestContent: {
+            dealId: string;
+            /** @description Filter by organization */
             orgId?: string;
+            /** @description Include revoked access */
+            includeRevoked?: boolean;
+            /** @description Include expired access */
+            includeExpired?: boolean;
+            /** @description Pagination cursor (encoded accessId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
-        ListContractsResponseContent: {
-            /** @description Deprecation path (v0.5) */
-            owned?: components["schemas"]["ContractSummaryItem"][];
-            /** @description Deprecation path (v0.5) */
-            shared?: components["schemas"]["ContractSummaryItem"][];
-            /** @description v1 */
-            contracts?: components["schemas"]["ContractMetadata"][];
+        ListDealAccessResponseContent: {
+            access: components["schemas"]["DealAccessMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListDealVersionsRequestContent: {
+            dealId: string;
+            stage?: components["schemas"]["DealStage"];
+            /** @description Pagination cursor (encoded versionId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDealVersionsResponseContent: {
+            versions: components["schemas"]["DealVersionMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListDealsRequestContent: {
+            /** @description Filter by organization */
+            orgId?: string;
+            stage?: components["schemas"]["DealStage"];
+            /** @description Filter by creator */
+            createdBy?: string;
+            /** @description Pagination cursor (encoded dealId) */
+            nextToken?: string;
+            /** @description Page size (default 20, max 100) */
+            limit?: number;
+        };
+        ListDealsResponseContent: {
+            deals: components["schemas"]["DealMap"];
+            /** @description Token for next page (null if no more results) */
+            nextToken?: string;
+        };
+        ListDeliverablesRequestContent: {
+            dealId: string;
+            /** @description Filter by version */
+            dealVersionId?: string;
+            /** @description Filter by status */
+            status?: string;
+            /** @description Filter by assignee */
+            assignedTo?: string;
+            /** @description Pagination cursor (encoded deliverableId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDeliverablesResponseContent: {
+            deliverables: components["schemas"]["DeliverableMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Include revoked access */
+            includeRevoked?: boolean;
+            /** @description Include expired access */
+            includeExpired?: boolean;
+            /** @description Pagination cursor (encoded accessId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListFileAccessResponseContent: {
+            access: components["schemas"]["FileAccessMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListFilesRequestContent: {
+            /** @description Filter by organization */
+            orgId?: string;
+            /** @description Filter by deal */
+            dealId?: string;
+            /** @description Filter by deal version */
+            dealVersionId?: string;
+            /** @description Filter by folder path */
+            folderPath?: string;
+            /** @description Filter by tags (any match) */
+            tags?: string[];
+            /** @description Filter by uploader */
+            uploadedBy?: string;
+            /** @description Include deleted files */
+            includeDeleted?: boolean;
+            /** @description Pagination cursor (encoded fileId) */
+            nextToken?: string;
+            limit?: number;
+        };
+        ListFilesResponseContent: {
+            files: components["schemas"]["FileMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+            /** @description Total size of files in current page */
+            totalSizeBytes?: number;
         };
         ListOrgCustomRolesRequestContent: {
             orgId: string;
+            /** @description Pagination cursor (encoded roleId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgCustomRolesResponseContent: {
             roles: components["schemas"]["OrgCustomRoleMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListOrgInvitesRequestContent: {
             orgId: string;
             status?: components["schemas"]["InviteStatus"];
+            /** @description Pagination cursor (encoded inviteId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgInvitesResponseContent: {
             invites: components["schemas"]["OrgInviteMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListOrgMembersRequestContent: {
             orgId: string;
-            role?: components["schemas"]["OrgRole"];
-            includeInactive?: boolean;
-            pagination?: components["schemas"]["PaginationInput"];
+            /** @description Filter by role */
+            role?: string;
+            /** @description Member status filters (if not specified, defaults to active only) */
+            filters?: components["schemas"]["OrgMemberFilter"][];
+            /** @description Pagination cursor (encoded userId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListOrgMembersResponseContent: {
             members: components["schemas"]["OrgMemberMap"];
-            paginationMeta?: components["schemas"]["PaginationMeta"];
-        };
-        ListSpecialContractsResponseContent: {
-            owned: components["schemas"]["ContractSummaryItem"][];
-            shared: components["schemas"]["ContractSummaryItem"][];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         ListUserOrganizationsRequestContent: {
-            pagination?: components["schemas"]["PaginationInput"];
+            /** @description Pagination cursor (encoded orgId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
         };
         ListUserOrganizationsResponseContent: {
-            organizations: components["schemas"]["Org"][];
-            paginationMeta?: components["schemas"]["PaginationMeta"];
+            organizations: components["schemas"]["OrgMap"];
+            /** @description Token for next page */
+            nextToken?: string;
         };
         Org: {
             orgId: string;
             name: string;
             type: string;
-            primaryOwner: string;
+            primaryOwnerId: string;
             description?: string;
             website?: string;
             logoUrl?: string;
             billingEmail?: string;
-            createdDate: string;
+            /** @description Additional metadata (UI preferences, etc.)
+             *     TODO: Post-beta - Consider removing if unused or replace with explicit typed fields */
+            metadata?: unknown;
+            createdAt: string;
+            updatedAt: string;
             memberCount?: number;
-            userRole?: components["schemas"]["OrgRole"];
-            contractCount?: number;
+            userRole?: string;
+            dealCount?: number;
             inviteCount?: number;
             roleCount?: number;
         };
@@ -1036,81 +1610,86 @@ export interface components {
             description?: string;
             permissions: components["schemas"]["OrgPermission"][];
             createdDate: string;
-            createdBy: string;
+            createdByUserId: string;
             memberCount?: number;
         };
         OrgCustomRoleMap: {
             [key: string]: components["schemas"]["OrgCustomRole"];
         };
+        /** @description Organization invitation */
         OrgInvite: {
-            inviteId: string;
+            orgInviteId: string;
             orgId: string;
             invitedEmail: string;
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
-            invitedBy: string;
+            invitedByUserId: string;
             invitedByProfile?: components["schemas"]["UserProfile"];
             status: components["schemas"]["InviteStatus"];
-            createdDate: string;
-            expiresDate?: string;
+            createdAt: string;
+            updatedAt: string;
+            expiresAt?: string;
+            acceptedAt?: string;
         };
         OrgInviteMap: {
             [key: string]: components["schemas"]["OrgInvite"];
         };
+        OrgMap: {
+            [key: string]: components["schemas"]["Org"];
+        };
+        /** @description Organization member */
         OrgMember: {
             userId: string;
             orgEmail: string;
-            role: components["schemas"]["OrgRole"];
+            role: string;
             customRoleId?: string;
             customRoleName?: string;
             customPermissions?: components["schemas"]["OrgPermission"][];
             joinedDate: string;
             userProfile?: components["schemas"]["UserProfile"];
         };
+        /** @enum {string} */
+        OrgMemberFilter: OrgMemberFilter;
         OrgMemberMap: {
             [key: string]: components["schemas"]["OrgMember"];
         };
-        /** @enum {string} */
+        /**
+         * @description Organization permissions
+         * @enum {string}
+         */
         OrgPermission: OrgPermission;
-        /** @enum {string} */
-        OrgRole: OrgRole;
         OrgTheme: {
             primaryColor?: string;
             secondaryColor?: string;
             accentColor?: string;
         };
-        PaginationInput: {
-            offset?: number;
-            limit?: number;
-            sortBy?: string;
-            sortOrder?: components["schemas"]["SortOrder"];
-        };
-        PaginationMeta: {
-            totalCount: number;
-            offset: number;
-            limit: number;
-        };
         PingResponseContent: {
             message: string;
         };
-        PlainText: {
-            text: string;
-        };
+        /** @description Common types and structures shared across all operations */
         PresignedPostData: {
             url: string;
             fields: unknown;
         };
-        ProcessingIncompleteErrorResponseContent: {
-            message: string;
+        /** @description Presigned URL response */
+        PresignedUrl: {
+            url: string;
+            expiresAt: string;
+            /** @description HTTP method for the URL */
+            method?: string;
+            /** @description Required headers for the request */
+            headers?: unknown;
         };
+        /**
+         * @description Record types for audit log entries
+         * @enum {string}
+         */
+        RecordType: RecordType;
         RemoveOrgMemberRequestContent: {
             orgId: string;
             userId: string;
-        };
-        RemoveOrgMemberResponseContent: {
-            success: boolean;
         };
         ResendOrgInviteRequestContent: {
             orgId: string;
@@ -1118,55 +1697,106 @@ export interface components {
             expiresDate?: string;
         };
         ResendOrgInviteResponseContent: {
-            success: boolean;
             invite: components["schemas"]["OrgInvite"];
         };
         ResourceNotFoundErrorResponseContent: {
             message: string;
         };
-        ShareContractRequestContent: {
-            contractId: string;
-            emailsToAdd?: string[];
-            emailsToRemove?: string[];
+        RevokeDealAccessRequestContent: {
+            dealId: string;
+            /** @description Access control identifier */
+            accessId: string;
+            reason: string;
         };
-        ShareContractResponseContent: {
-            success: boolean;
-            contractId: string;
-            sharedWith: components["schemas"]["SharedUserDetails"][];
-            added?: string[];
-            removed?: string[];
-            invalidRemoves?: string[];
+        RevokeFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            accessId: string;
+            reason: string;
         };
-        SharedUserDetails: {
-            sharedWithUserId: string;
-            sharedByUserId: string;
-            sharedWithUserEmail: string;
-            /** Format: double */
-            sharedTime: number;
-        };
-        SimpleTermDescription: {
-            title: string;
-            description: string;
-        };
-        /** @enum {string} */
-        SortOrder: SortOrder;
-        TaggedText: {
-            text: string;
+        /**
+         * @description Statistic grouping periods
+         * @enum {string}
+         */
+        StatisticGrouping: StatisticGrouping;
+        /** @description Time series data point */
+        TimeSeriesPoint: {
+            timestamp: string;
+            count: number;
+            /** @description Additional metrics */
+            metrics?: unknown;
         };
         TransferOrgOwnershipRequestContent: {
             orgId: string;
             newOwnerId: string;
         };
         TransferOrgOwnershipResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
         };
-        UpdateContractRequestContent: {
-            contractId: string;
-            name: string;
+        UpdateDealAccessRequestContent: {
+            dealId: string;
+            /** @description Access control identifier */
+            accessId: string;
+            permissions?: components["schemas"]["DealPermission"][];
+            grantablePermissions?: components["schemas"]["DealPermission"][];
+            partyRole?: string;
+            expiresAt?: string;
+            isDeny?: boolean;
         };
-        UpdateContractResponseContent: {
-            success: boolean;
+        UpdateDealAccessResponseContent: {
+            access: components["schemas"]["DealAccess"];
+        };
+        UpdateDealRequestContent: {
+            dealId: string;
+            title?: string;
+            description?: string;
+            newStage?: components["schemas"]["DealStage"];
+            /** @description Required when changing stage */
+            changeReason?: string;
+            /** @description Optional metadata for new version */
+            metadata?: unknown;
+        };
+        UpdateDealResponseContent: {
+            deal: components["schemas"]["Deal"];
+            newVersion?: components["schemas"]["DealVersion"];
+        };
+        UpdateDeliverableRequestContent: {
+            dealId: string;
+            deliverableId: string;
+            description?: string;
+            source?: components["schemas"]["DeliverableSource"];
+            dueDate?: string;
+            assignedTo?: string;
+            status?: string;
+        };
+        UpdateDeliverableResponseContent: {
+            deliverable: components["schemas"]["Deliverable"];
+        };
+        UpdateFileAccessRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            accessId: string;
+            permissions?: components["schemas"]["FilePermission"][];
+            grantablePermissions?: components["schemas"]["FilePermission"][];
+            expiresAt?: string;
+            isDeny?: boolean;
+        };
+        UpdateFileAccessResponseContent: {
+            access: components["schemas"]["FileAccess"];
+        };
+        UpdateFileRequestContent: {
+            /** @description File identifier */
+            fileId: string;
+            fileName?: string;
+            folderPath?: string;
+            tags?: string[];
+            /** @description List of deal identifiers */
+            dealIds?: string[];
+            /** @description List of deal version identifiers */
+            dealVersionIds?: string[];
+        };
+        UpdateFileResponseContent: {
+            file: components["schemas"]["File"];
         };
         UpdateOrgCustomRoleRequestContent: {
             orgId: string;
@@ -1176,18 +1806,16 @@ export interface components {
             permissions?: components["schemas"]["OrgPermission"][];
         };
         UpdateOrgCustomRoleResponseContent: {
-            success: boolean;
             customRole: components["schemas"]["OrgCustomRole"];
         };
         UpdateOrgMemberRequestContent: {
             orgId: string;
             userId: string;
-            role?: components["schemas"]["OrgRole"];
+            role?: string;
             customRoleId?: string;
             orgEmail?: string;
         };
         UpdateOrgMemberResponseContent: {
-            success: boolean;
             member: components["schemas"]["OrgMember"];
         };
         UpdateOrgRequestContent: {
@@ -1198,7 +1826,6 @@ export interface components {
             billingEmail?: string;
         };
         UpdateOrgResponseContent: {
-            success: boolean;
             org: components["schemas"]["Org"];
         };
         UpdateOrgThemeRequestContent: {
@@ -1206,7 +1833,6 @@ export interface components {
             theme: components["schemas"]["OrgTheme"];
         };
         UpdateOrgThemeResponseContent: {
-            success: boolean;
             theme: components["schemas"]["OrgTheme"];
         };
         UpdateProfileRequestContent: {
@@ -1218,26 +1844,23 @@ export interface components {
             isOver18?: boolean;
         };
         UpdateProfileResponseContent: {
-            success: boolean;
-            message: string;
-            userId: string;
-            updatedFields?: string[];
+            profile: components["schemas"]["UserProfile"];
         };
         UploadOrgPictureRequestContent: {
             orgId: string;
         };
         UploadOrgPictureResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
+            urlInfo: components["schemas"]["PresignedPostData"];
         };
         UploadProfilePictureResponseContent: {
-            url_info: components["schemas"]["PresignedPostData"];
+            urlInfo: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
-            userId?: string;
-            firstName?: string;
-            lastName?: string;
+            userId: string;
+            firstName: string;
+            lastName: string;
             displayName?: string;
-            email?: string;
+            email: string;
             accountType?: string;
             bio?: string;
         };
@@ -1253,7 +1876,58 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
-    DeleteContract: {
+    ListAuditLogs: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListAuditLogsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListAuditLogs 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListAuditLogsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetAuditLog: {
         parameters: {
             query?: never;
             header?: never;
@@ -1262,21 +1936,30 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["DeleteContractRequestContent"];
+                "application/json": components["schemas"]["GetAuditLogRequestContent"];
             };
         };
         responses: {
-            /** @description DeleteContract 200 response */
+            /** @description GetAuditLog 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["DeleteContractResponseContent"];
+                    "application/json": components["schemas"]["GetAuditLogResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1295,7 +1978,7 @@ export interface operations {
             };
         };
     };
-    GetContract: {
+    GetAuditStatistics: {
         parameters: {
             query?: never;
             header?: never;
@@ -1304,26 +1987,35 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GetContractRequestContent"];
+                "application/json": components["schemas"]["GetAuditStatisticsRequestContent"];
             };
         };
         responses: {
-            /** @description GetContract 200 response */
+            /** @description GetAuditStatistics 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetContractResponseContent"];
+                    "application/json": components["schemas"]["GetAuditStatisticsResponseContent"];
                 };
             };
-            /** @description ProcessingIncompleteError 400 response */
+            /** @description ValidationError 400 response */
             400: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1337,7 +2029,7 @@ export interface operations {
             };
         };
     };
-    GetContractReadURL: {
+    GrantDealAccess: {
         parameters: {
             query?: never;
             header?: never;
@@ -1346,21 +2038,1396 @@ export interface operations {
         };
         requestBody: {
             content: {
-                "application/json": components["schemas"]["GetContractReadURLRequestContent"];
+                "application/json": components["schemas"]["GrantDealAccessRequestContent"];
             };
         };
         responses: {
-            /** @description GetContractReadURL 200 response */
+            /** @description GrantDealAccess 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["GetContractReadURLResponseContent"];
+                    "application/json": components["schemas"]["GrantDealAccessResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
+            /** @description ValidationError 400 response */
             400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealAccessResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RevokeDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RevokeDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDealAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDealAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDeliverables: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDeliverablesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDeliverables 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDeliverablesResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDeliverableResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetDealResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDeals: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListDealsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDeals 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateDeal: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateDealRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateDeal 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateDealResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDealVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealVersionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDealVersion 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealVersionResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDeliverable: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDeliverableRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDeliverable 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDeliverableResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetDealVersion: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetDealVersionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetDealVersion 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetDealVersionResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealVersions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListDealVersionsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealVersions 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealVersionsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GrantFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GrantFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GrantFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GrantFileAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListFileAccessResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RevokeFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RevokeFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RevokeFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateFileAccess: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFileAccessRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateFileAccess 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateFileAccessResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateFileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["DeleteFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description DeleteFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GenerateDownloadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateDownloadUrlRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GenerateDownloadUrl 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateDownloadUrlResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetFileResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListFiles: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListFilesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListFiles 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListFilesResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateFile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateFileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateFile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateFileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GenerateUploadUrl: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GenerateUploadUrlRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GenerateUploadUrl 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GenerateUploadUrlResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1401,8 +3468,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetProfileResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1428,7 +3504,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["GetProfilePictureRequestContent"];
             };
@@ -1443,8 +3519,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetProfilePictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1459,148 +3544,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    GetSpecialContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetSpecialContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetSpecialContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetSpecialContractResponseContent"];
-                };
-            };
-            /** @description ProcessingIncompleteError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ProcessingIncompleteErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListContracts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: {
-            content: {
-                "application/json": components["schemas"]["ListContractsRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ListContracts 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListContractsResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListSpecialContracts: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ListSpecialContracts 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListSpecialContractsResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ExposeTypes: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description ExposeTypes 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ExposeTypesResponseContent"];
                 };
             };
         };
@@ -1636,6 +3579,15 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -1665,9 +3617,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeleteOrgResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -1676,6 +3626,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1711,8 +3679,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1753,8 +3730,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgPictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1795,8 +3781,17 @@ export interface operations {
                     "application/json": components["schemas"]["GetOrgThemeResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -1846,6 +3841,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -1875,9 +3888,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["CancelOrgInviteResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -1886,6 +3897,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -1930,6 +3959,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -1959,9 +4006,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeclineOrgInviteResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -1970,6 +4015,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2005,8 +4068,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgInvitesResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2056,6 +4128,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2089,8 +4179,8 @@ export interface operations {
                     "application/json": components["schemas"]["ListUserOrganizationsResponseContent"];
                 };
             };
-            /** @description AuthenticationError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2131,8 +4221,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgMembersResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2169,9 +4268,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["RemoveOrgMemberResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -2180,6 +4277,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2224,6 +4339,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2253,9 +4386,7 @@ export interface operations {
                 headers: {
                     [name: string]: unknown;
                 };
-                content: {
-                    "application/json": components["schemas"]["DeleteOrgCustomRoleResponseContent"];
-                };
+                content?: never;
             };
             /** @description ValidationError 400 response */
             400: {
@@ -2264,6 +4395,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2299,8 +4448,17 @@ export interface operations {
                     "application/json": components["schemas"]["ListOrgCustomRolesResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2350,6 +4508,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2390,6 +4566,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2434,6 +4628,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2474,6 +4686,24 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -2518,6 +4748,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2551,8 +4799,17 @@ export interface operations {
                     "application/json": components["schemas"]["UploadOrgPictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2591,90 +4848,6 @@ export interface operations {
             };
         };
     };
-    ShareContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ShareContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ShareContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ShareContractResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateContract: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateContractRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateContract 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateContractResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
     UpdateProfile: {
         parameters: {
             query?: never;
@@ -2706,6 +4879,24 @@ export interface operations {
                     "application/json": components["schemas"]["ValidationErrorResponseContent"];
                 };
             };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -2735,8 +4926,17 @@ export interface operations {
                     "application/json": components["schemas"]["UploadProfilePictureResponseContent"];
                 };
             };
-            /** @description ResourceNotFoundError 400 response */
-            400: {
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -2755,83 +4955,63 @@ export interface operations {
             };
         };
     };
-    GetUploadURL: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["GetUploadURLRequestContent"];
-            };
-        };
-        responses: {
-            /** @description GetUploadURL 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["GetUploadURLResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
 }
-export enum ContractStatus {
-    processing = "processing",
-    awaiting_upload = "awaiting_upload",
-    extracting_text = "extracting_text",
-    eq_generation = "eq_generation",
-    iq_generation = "iq_generation",
-    variable_extraction = "variable_extraction",
-    contract_markup = "contract_markup",
-    tts_generation = "tts_generation",
-    complete = "complete",
-    error = "error"
+export enum AuditOperation {
+    insert = "insert",
+    update = "update",
+    delete = "delete",
+    access = "access",
+    export = "export",
+    share = "share"
 }
-export enum ContractVariableType {
-    eq_term = "eq_term",
-    discovered_term = "discovered_term",
-    external_term = "external_term",
-    internal_citation = "internal_citation"
+export enum ContentDisposition {
+    inline = "inline",
+    attachment = "attachment"
 }
-export enum DurationType {
-    fixed = "fixed",
-    indefinite = "indefinite",
-    renewable = "renewable",
-    other = "other"
+export enum DealPermission {
+    view_deal = "view_deal",
+    edit_deal = "edit_deal",
+    delete_deal = "delete_deal",
+    manage_access = "manage_access",
+    approve_deal = "approve_deal",
+    create_version = "create_version",
+    view_ai_analysis = "view_ai_analysis",
+    view_revision_history = "view_revision_history",
+    export_deal = "export_deal",
+    manage_deliverables = "manage_deliverables",
+    comment_deal = "comment_deal",
+    view_financial = "view_financial",
+    edit_financial = "edit_financial"
 }
-export enum EqCardKey {
-    moneyYouReceive = "moneyYouReceive",
-    whatYouOwn = "whatYouOwn",
-    whatYoureResponsibleFor = "whatYoureResponsibleFor",
-    howLongThisDealLasts = "howLongThisDealLasts",
-    risksCostsLegalStuff = "risksCostsLegalStuff"
+export enum DealStage {
+    drafting = "drafting",
+    negotiation = "negotiation",
+    signing = "signing",
+    delivery = "delivery",
+    completed = "completed",
+    cancelled = "cancelled"
 }
-export enum EqCardType {
-    A = "A",
-    B = "B"
+export enum DeliverableSource {
+    inferred = "inferred",
+    template = "template",
+    imported = "imported",
+    manual = "manual"
+}
+export enum DeliverableStatus {
+    incomplete = "incomplete",
+    in_progress = "in_progress",
+    overdue = "overdue",
+    complete = "complete"
+}
+export enum FilePermission {
+    view_file = "view_file",
+    edit_file = "edit_file",
+    delete_file = "delete_file",
+    share_file = "share_file",
+    manage_access = "manage_access",
+    comment_file = "comment_file",
+    export_file = "export_file",
+    rename_file = "rename_file"
 }
 export enum InviteStatus {
     pending = "pending",
@@ -2839,32 +5019,32 @@ export enum InviteStatus {
     declined = "declined",
     expired = "expired"
 }
-export enum IqModeSectionKey {
-    earnings = "earnings",
-    qualityOfRights = "qualityOfRights",
-    usageObligations = "usageObligations",
-    agreementLength = "agreementLength",
-    liabilitySafeguards = "liabilitySafeguards"
+export enum OrgMemberFilter {
+    active = "active",
+    inactive = "inactive"
 }
 export enum OrgPermission {
     manage_members = "manage_members",
     manage_billing = "manage_billing",
     manage_settings = "manage_settings",
-    view_all_contracts = "view_all_contracts",
-    manage_contracts = "manage_contracts",
     invite_users = "invite_users",
     manage_roles = "manage_roles",
-    view_analytics = "view_analytics"
+    view_analytics = "view_analytics",
+    view_audit_logs = "view_audit_logs",
+    view_all_deals = "view_all_deals",
+    view_all_files = "view_all_files"
 }
-export enum OrgRole {
-    primary_owner = "primary_owner",
-    admin = "admin",
-    billing_admin = "billing_admin",
-    member = "member",
-    viewer = "viewer",
-    custom = "custom"
+export enum RecordType {
+    normal = "normal",
+    meta_audit = "meta_audit",
+    unknown = "unknown",
+    cleanup = "cleanup",
+    export = "export",
+    system = "system"
 }
-export enum SortOrder {
-    asc = "asc",
-    desc = "desc"
+export enum StatisticGrouping {
+    hour = "hour",
+    day = "day",
+    week = "week",
+    month = "month"
 }
