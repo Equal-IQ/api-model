@@ -7,6 +7,8 @@ use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#Url
 use equaliq#StringList
+use equaliq#TagList
+use equaliq#PageLimit
 use equaliq#DealId
 use equaliq#DealVersionId
 use equaliq#DealIdList
@@ -19,6 +21,12 @@ use equaliq#InternalServerError
 
 /// File identifier
 string FileId with [UuidLikeMixin]
+
+/// Content disposition for file downloads
+enum ContentDisposition {
+    inline = "inline"
+    attachment = "attachment"
+}
 
 /// File resource with sub-resources for access control
 resource FileResource {
@@ -114,7 +122,7 @@ operation CreateFile {
         folderPath: String
 
         /// User-defined tags
-        tags: StringList
+        tags: TagList
 
         /// Associated deal IDs
         dealIds: DealIdList
@@ -184,7 +192,7 @@ operation UpdateFile {
 
         fileName: String
         folderPath: String
-        tags: StringList
+        tags: TagList
         dealIds: DealIdList
         dealVersionIds: DealVersionIdList
     }
@@ -242,7 +250,7 @@ operation ListFiles {
         folderPath: String
 
         /// Filter by tags (any match)
-        tags: StringList
+        tags: TagList
 
         /// Filter by uploader
         uploadedBy: String
@@ -253,8 +261,7 @@ operation ListFiles {
         /// Pagination cursor (encoded fileId)
         nextToken: String
 
-        /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -312,8 +319,8 @@ operation GenerateDownloadUrl {
         /// Expiration time in seconds (default 3600)
         expirationSeconds: Integer
 
-        /// Content disposition (inline or attachment)
-        disposition: String
+        /// Content disposition
+        disposition: ContentDisposition
 
         /// Override filename in download
         downloadFileName: String

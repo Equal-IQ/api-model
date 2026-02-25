@@ -6,6 +6,7 @@ use aws.protocols#restJson1
 use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#StringList
+use equaliq#PageLimit
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -92,7 +93,7 @@ operation ListAuditLogs {
 
         // Pagination
         nextToken: String
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {

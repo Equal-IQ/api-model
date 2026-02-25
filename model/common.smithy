@@ -19,11 +19,6 @@ structure PresignedPostData {
   fields: Document
 }
 
-structure ContractTexts {
-    originalText: PlainText
-    taggedText: TaggedText
-}
-
 structure EmptyStructure {
   // Empty structure - avoid using, but useful in data migrations or making union workable
 }
@@ -45,6 +40,13 @@ string Url // This pattern passes for any URLs we're currently using (S3 Presign
 @pattern("^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$")
 string HexColor
 
+@pattern("^[a-z0-9]+(-[a-z0-9]+)*$")
+@length(max: 64)
+string Tag // Kebab-case: lowercase letters, numbers, hyphens (no whitespace, no consecutive hyphens)
+
+@range(min: 1, max: 100)
+integer PageLimit // Standard pagination limit (1-100 items per page)
+
 // Generic list types
 list StringList {
   member: String
@@ -54,14 +56,6 @@ list EmailList {
   member: Email
 }
 
-// Text structures
-// We plan to extend this Tagged Text system to a more structured format
-structure TaggedText {
-  @required
-  text: String
-}
-
-structure PlainText {
-  @required
-  text: String
+list TagList {
+  member: Tag
 }

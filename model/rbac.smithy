@@ -9,6 +9,7 @@ use equaliq#FileId
 use equaliq#ISODate
 use equaliq#Email
 use equaliq#StringList
+use equaliq#PageLimit
 use equaliq#UserId
 use equaliq#UserProfile
 use equaliq#AuthenticationError
@@ -335,7 +336,7 @@ operation ListDealAccess {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -469,7 +470,7 @@ operation ListFileAccess {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {

@@ -6,6 +6,7 @@ use equaliq#UuidLikeMixin
 use equaliq#Email
 use equaliq#Url
 use equaliq#ISODate
+use equaliq#PageLimit
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -39,10 +40,19 @@ list UserIdList {
 resource User {
     identifiers: { userId: UserId }
     update: UpdateProfile
+    resources: [QuickAccessResource]
     operations: [
         GetProfilePicture
         UploadProfilePicture
     ]
+}
+
+resource QuickAccessResource {
+    identifiers: { userId: UserId, quickAccessId: QuickAccessId }
+    create: CreateQuickAccess
+    update: UpdateQuickAccess
+    delete: DeleteQuickAccess
+    list: ListQuickAccess
 }
 
 // User structures
@@ -216,6 +226,9 @@ operation CreateQuickAccess {
 operation UpdateQuickAccess {
     input := {
         @required
+        userId: UserId
+
+        @required
         quickAccessId: QuickAccessId
 
         pinType: PinType
@@ -241,6 +254,9 @@ operation UpdateQuickAccess {
 operation DeleteQuickAccess {
     input := {
         @required
+        userId: UserId
+
+        @required
         quickAccessId: QuickAccessId
     }
 
@@ -255,6 +271,7 @@ operation DeleteQuickAccess {
 
 // List Quick Access
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "items", pageSize: "limit")
+@readonly
 @http(method: "POST", uri: "/quick-access/list")
 operation ListQuickAccess {
     input := {
@@ -271,7 +288,7 @@ operation ListQuickAccess {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {

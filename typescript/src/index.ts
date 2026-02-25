@@ -21,6 +21,11 @@ export enum AuditOperation {
   share = "share"
 }
 
+export enum ContentDisposition {
+  inline = "inline",
+  attachment = "attachment"
+}
+
 export enum DealPermission {
   view_deal = "view_deal",
   edit_deal = "edit_deal",
@@ -78,6 +83,11 @@ export enum InviteStatus {
   expired = "expired"
 }
 
+export enum OrgMemberFilter {
+  active = "active",
+  inactive = "inactive"
+}
+
 export enum OrgPermission {
   manage_members = "manage_members",
   manage_billing = "manage_billing",
@@ -90,6 +100,11 @@ export enum OrgPermission {
   view_all_files = "view_all_files"
 }
 
+export enum PinType {
+  user_pinned = "user_pinned",
+  auto_pinned = "auto_pinned"
+}
+
 export enum RecordType {
   normal = "normal",
   meta_audit = "meta_audit",
@@ -97,6 +112,13 @@ export enum RecordType {
   cleanup = "cleanup",
   export = "export",
   system = "system"
+}
+
+export enum ReferenceType {
+  deal = "deal",
+  file = "file",
+  org = "org",
+  user = "user"
 }
 
 export enum StatisticGrouping {
@@ -239,6 +261,18 @@ export type CreateOrgResponseContent = {
   org: Org;
 };
 
+export type CreateQuickAccessRequestContent = {
+  userId: string;
+  referenceType: ReferenceType;
+  referenceId: string;
+  pinType: PinType;
+  sortOrder: number;
+};
+
+export type CreateQuickAccessResponseContent = {
+  quickAccess: QuickAccess;
+};
+
 export type Deal = {
   dealId: string;
   ownerUserId: string;
@@ -315,6 +349,11 @@ export type DeleteOrgRequestContent = {
   orgId: string;
 };
 
+export type DeleteQuickAccessRequestContent = {
+  userId: string;
+  quickAccessId: string;
+};
+
 export type Deliverable = {
   deliverableId: string;
   dealVersionId: string;
@@ -378,7 +417,7 @@ export type FileMap = { [key: string]: File };
 export type GenerateDownloadUrlRequestContent = {
   fileId: string;
   expirationSeconds?: number;
-  disposition?: string;
+  disposition?: ContentDisposition;
   downloadFileName?: string;
 };
 
@@ -654,13 +693,26 @@ export type ListOrgInvitesResponseContent = {
 export type ListOrgMembersRequestContent = {
   orgId: string;
   role?: string;
-  includeInactive?: boolean;
+  filters?: OrgMemberFilter[];
   nextToken?: string;
   limit?: number;
 };
 
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
+  nextToken?: string;
+};
+
+export type ListQuickAccessRequestContent = {
+  userId: string;
+  pinType?: PinType;
+  referenceType?: ReferenceType;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListQuickAccessResponseContent = {
+  items: QuickAccessMap;
   nextToken?: string;
 };
 
@@ -761,6 +813,20 @@ export type PresignedUrl = {
   method?: string;
   headers?: unknown;
 };
+
+export type QuickAccess = {
+  quickAccessId: string;
+  userId: string;
+  referenceType: ReferenceType;
+  referenceId: string;
+  pinType: PinType;
+  sortOrder: number;
+  createdAt: string;
+  lastAccessedAt: string;
+  metadata?: unknown;
+};
+
+export type QuickAccessMap = { [key: string]: QuickAccess };
 
 export type RemoveOrgMemberRequestContent = {
   orgId: string;
@@ -933,6 +999,17 @@ export type UpdateProfileRequestContent = {
 
 export type UpdateProfileResponseContent = {
   profile: UserProfile;
+};
+
+export type UpdateQuickAccessRequestContent = {
+  userId: string;
+  quickAccessId: string;
+  pinType?: PinType;
+  sortOrder?: number;
+};
+
+export type UpdateQuickAccessResponseContent = {
+  quickAccess: QuickAccess;
 };
 
 export type UploadOrgPictureRequestContent = {

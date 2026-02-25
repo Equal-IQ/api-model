@@ -5,6 +5,7 @@ namespace equaliq
 use aws.protocols#restJson1
 use equaliq#ISODate
 use equaliq#StringList
+use equaliq#PageLimit
 use equaliq#FileId
 use equaliq#DealAccessMap
 use equaliq#DealAccess
@@ -69,15 +70,21 @@ resource DealResource {
     update: UpdateDeal
     delete: DeleteDeal
     list: ListDeals
-    resources: [DealAccessResource]
-    operations: [
-        CreateDealVersion
-        GetDealVersion
-        ListDealVersions
-        CreateDeliverable
-        UpdateDeliverable
-        ListDeliverables
-    ]
+    resources: [DealAccessResource, DealVersionResource, DeliverableResource]
+}
+
+resource DealVersionResource {
+    identifiers: { dealId: DealId, dealVersionId: DealVersionId }
+    create: CreateDealVersion
+    read: GetDealVersion
+    list: ListDealVersions
+}
+
+resource DeliverableResource {
+    identifiers: { dealId: DealId, deliverableId: DeliverableId }
+    create: CreateDeliverable
+    update: UpdateDeliverable
+    list: ListDeliverables
 }
 
 /// Main deal entity
@@ -407,7 +414,7 @@ operation ListDeals {
         nextToken: String
 
         /// Page size (default 20, max 100)
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -500,7 +507,7 @@ operation ListDealVersions {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -585,6 +592,7 @@ operation UpdateDeliverable {
 }
 
 // List Deliverables
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "deliverables", pageSize: "limit")
 @http(method: "POST", uri: "/deals/deliverables/list")
 operation ListDeliverables {
@@ -605,7 +613,7 @@ operation ListDeliverables {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {

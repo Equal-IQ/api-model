@@ -51,6 +51,19 @@ class CancelOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class ContentDisposition(StrEnum):
+    """
+    Content disposition for file downloads
+    """
+
+    inline = 'inline'
+    attachment = 'attachment'
+
+
+class Tag(RootModel[str]):
+    root: str = Field(..., max_length=64, pattern='^[a-z0-9]+(-[a-z0-9]+)*$')
+
+
 class DealId(RootModel[str]):
     root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -65,7 +78,7 @@ class CreateFileRequestContent(BaseModel):
     sizeBytes: float
     fileType: str | None = Field(None, description='MIME type')
     folderPath: str | None = Field(None, description='Virtual folder path')
-    tags: list[str] | None = Field(None, description='User-defined tags')
+    tags: list[Tag] | None = Field(None, description='User-defined tags')
     dealIds: list[DealId] | None = Field(None, description='Associated deal IDs')
     dealVersionIds: list[DealVersionId] | None = Field(
         None, description='Associated deal version IDs'
@@ -237,6 +250,11 @@ class DeleteOrgRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class DeleteQuickAccessRequestContent(BaseModel):
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class DeliverableSource(StrEnum):
     """
     Deliverable source (for tracking origin)
@@ -312,9 +330,7 @@ class GenerateDownloadUrlRequestContent(BaseModel):
     expirationSeconds: float | None = Field(
         None, description='Expiration time in seconds (default 3600)'
     )
-    disposition: str | None = Field(
-        None, description='Content disposition (inline or attachment)'
-    )
+    disposition: ContentDisposition | None
     downloadFileName: str | None = Field(
         None, description='Override filename in download'
     )
@@ -453,7 +469,7 @@ class ListDealAccessRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded accessId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListDealVersionsRequestContent(BaseModel):
@@ -462,7 +478,7 @@ class ListDealVersionsRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded versionId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListDealVersionsResponseContent(BaseModel):
@@ -479,7 +495,9 @@ class ListDealsRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded dealId)'
     )
-    limit: float | None = Field(None, description='Page size (default 20, max 100)')
+    limit: float | None = Field(
+        None, description='Page size (default 20, max 100)', ge=1.0, le=100.0
+    )
 
 
 class ListDealsResponseContent(BaseModel):
@@ -499,7 +517,7 @@ class ListDeliverablesRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded deliverableId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListFileAccessRequestContent(BaseModel):
@@ -512,7 +530,7 @@ class ListFileAccessRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded accessId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListFilesRequestContent(BaseModel):
@@ -526,13 +544,13 @@ class ListFilesRequestContent(BaseModel):
         None, description='Filter by deal version', pattern='^[A-Za-z0-9-]+$'
     )
     folderPath: str | None = Field(None, description='Filter by folder path')
-    tags: list[str] | None = Field(None, description='Filter by tags (any match)')
+    tags: list[Tag] | None = Field(None, description='Filter by tags (any match)')
     uploadedBy: str | None = Field(None, description='Filter by uploader')
     includeDeleted: bool | None = Field(None, description='Include deleted files')
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded fileId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, ge=1.0, le=100.0)
 
 
 class ListFilesResponseContent(BaseModel):
@@ -548,7 +566,7 @@ class ListOrgCustomRolesRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded roleId)'
     )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListOrgInvitesRequestContent(BaseModel):
@@ -557,22 +575,12 @@ class ListOrgInvitesRequestContent(BaseModel):
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded inviteId)'
     )
-    limit: float | None = Field(None, description='Page size')
-
-
-class ListOrgMembersRequestContent(BaseModel):
-    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    role: str | None = Field(None, description='Filter by role')
-    includeInactive: bool | None = Field(None, description='Include inactive members')
-    nextToken: str | None = Field(
-        None, description='Pagination cursor (encoded userId)'
-    )
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
-    limit: float | None = Field(None, description='Page size')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class Org(BaseModel):
@@ -615,6 +623,11 @@ class OrgMap(RootModel[dict[str, Org]]):
     root: dict[str, Org]
 
 
+class OrgMemberFilter(StrEnum):
+    active = 'active'
+    inactive = 'inactive'
+
+
 class OrgPermission(StrEnum):
     """
     Organization permissions
@@ -639,6 +652,16 @@ class OrgTheme(BaseModel):
         None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$'
     )
     accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
+
+
+class PinType(StrEnum):
+    """
+    User resource and profile operations
+    Pin type for quick access items
+    """
+
+    user_pinned = 'user_pinned'
+    auto_pinned = 'auto_pinned'
 
 
 class PingResponseContent(BaseModel):
@@ -685,6 +708,17 @@ class RecordType(StrEnum):
     cleanup = 'cleanup'
     export = 'export'
     system = 'system'
+
+
+class ReferenceType(StrEnum):
+    """
+    Reference type for quick access
+    """
+
+    deal = 'deal'
+    file = 'file'
+    org = 'org'
+    user = 'user'
 
 
 class RemoveOrgMemberRequestContent(BaseModel):
@@ -810,7 +844,7 @@ class UpdateFileRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     fileName: str | None
     folderPath: str | None
-    tags: list[str] | None
+    tags: list[Tag] | None
     dealIds: list[DealId] | None = Field(None, description='List of deal identifiers')
     dealVersionIds: list[DealVersionId] | None = Field(
         None, description='List of deal version identifiers'
@@ -873,6 +907,13 @@ class UpdateProfileRequestContent(BaseModel):
     accountType: str | None
     bio: str | None
     isOver18: bool | None
+
+
+class UpdateQuickAccessRequestContent(BaseModel):
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    pinType: PinType | None
+    sortOrder: float | None
 
 
 class UploadOrgPictureRequestContent(BaseModel):
@@ -989,6 +1030,14 @@ class CreateOrgCustomRoleRequestContent(BaseModel):
 
 class CreateOrgResponseContent(BaseModel):
     org: Org
+
+
+class CreateQuickAccessRequestContent(BaseModel):
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    referenceType: ReferenceType
+    referenceId: str
+    pinType: PinType
+    sortOrder: float
 
 
 class DealAccess(BaseModel):
@@ -1232,7 +1281,7 @@ class ListAuditLogsRequestContent(BaseModel):
     )
     fieldName: str | None
     nextToken: str | None
-    limit: float | None
+    limit: float | None = Field(None, ge=1.0, le=100.0)
 
 
 class ListAuditLogsResponseContent(BaseModel):
@@ -1253,6 +1302,27 @@ class ListDeliverablesResponseContent(BaseModel):
 class ListFileAccessResponseContent(BaseModel):
     access: FileAccessMap
     nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListOrgMembersRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    role: str | None = Field(None, description='Filter by role')
+    filters: list[OrgMemberFilter] | None = Field(
+        None,
+        description='Member status filters (if not specified, defaults to active only)',
+    )
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded userId)'
+    )
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class ListQuickAccessRequestContent(BaseModel):
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    pinType: PinType | None
+    referenceType: ReferenceType | None
+    nextToken: str | None = Field(None, description='Pagination cursor')
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
 class ListUserOrganizationsResponseContent(BaseModel):
@@ -1337,6 +1407,34 @@ class OrgMemberMap(RootModel[dict[str, OrgMember]]):
     root: dict[str, OrgMember]
 
 
+class QuickAccess(BaseModel):
+    """
+    Quick access / pinned items for user navigation
+    """
+
+    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    referenceType: ReferenceType
+    referenceId: str
+    pinType: PinType
+    sortOrder: float
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    lastAccessedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    metadata: Any | None = Field(
+        None, description='Additional metadata for extensibility'
+    )
+
+
+class QuickAccessMap(RootModel[dict[str, QuickAccess]]):
+    root: dict[str, QuickAccess]
+
+
 class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
@@ -1365,6 +1463,10 @@ class UpdateProfileResponseContent(BaseModel):
     profile: UserProfile
 
 
+class UpdateQuickAccessResponseContent(BaseModel):
+    quickAccess: QuickAccess
+
+
 class AcceptOrgInviteResponseContent(BaseModel):
     organization: Org
     member: OrgMember
@@ -1383,6 +1485,10 @@ class CreateOrgInviteResponseContent(BaseModel):
     failedEmails: list[FailedEmail] | None
 
 
+class CreateQuickAccessResponseContent(BaseModel):
+    quickAccess: QuickAccess
+
+
 class ListOrgCustomRolesResponseContent(BaseModel):
     roles: OrgCustomRoleMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1395,4 +1501,9 @@ class ListOrgInvitesResponseContent(BaseModel):
 
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListQuickAccessResponseContent(BaseModel):
+    items: QuickAccessMap
     nextToken: str | None = Field(None, description='Token for next page')

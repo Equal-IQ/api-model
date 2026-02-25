@@ -11,6 +11,7 @@ use equaliq#ISODate
 use equaliq#StringList
 use equaliq#EmailList
 use equaliq#HexColor
+use equaliq#PageLimit
 use equaliq#PresignedPostData
 
 // Import RBAC structures from rbac.smithy
@@ -31,6 +32,15 @@ enum InviteStatus {
     accepted = "accepted"
     declined = "declined"
     expired = "expired"
+}
+
+enum OrgMemberFilter {
+    active = "active"
+    inactive = "inactive"
+}
+
+list OrgMemberFilterList {
+    member: OrgMemberFilter
 }
 
 map OrgMemberMap {
@@ -174,7 +184,7 @@ operation ListUserOrganizations {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -303,14 +313,14 @@ operation ListOrgMembers {
         /// Filter by role
         role: String
 
-        /// Include inactive members
-        includeInactive: Boolean
+        /// Member status filters (if not specified, defaults to active only)
+        filters: OrgMemberFilterList
 
         /// Pagination cursor (encoded userId)
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -442,7 +452,7 @@ operation ListOrgCustomRoles {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
@@ -558,7 +568,7 @@ operation ListOrgInvites {
         nextToken: String
 
         /// Page size
-        limit: Integer
+        limit: PageLimit
     }
 
     output := {
