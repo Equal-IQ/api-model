@@ -884,6 +884,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/updateProfile": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UpdateProfile"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/uploadProfilePicture": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["UploadProfilePicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1803,10 +1835,24 @@ export interface components {
         UpdateOrgThemeResponseContent: {
             theme: components["schemas"]["OrgTheme"];
         };
+        UpdateProfileRequestContent: {
+            firstName?: string;
+            lastName?: string;
+            displayName?: string;
+            accountType?: string;
+            bio?: string;
+            isOver18?: boolean;
+        };
+        UpdateProfileResponseContent: {
+            profile: components["schemas"]["UserProfile"];
+        };
         UploadOrgPictureRequestContent: {
             orgId: string;
         };
         UploadOrgPictureResponseContent: {
+            urlInfo: components["schemas"]["PresignedPostData"];
+        };
+        UploadProfilePictureResponseContent: {
             urlInfo: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
@@ -4798,6 +4844,113 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["PingResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateProfile: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["UpdateProfileRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateProfile 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateProfileResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UploadProfilePicture: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description UploadProfilePicture 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UploadProfilePictureResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
                 };
             };
         };

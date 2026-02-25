@@ -931,11 +931,28 @@ export type UpdateOrgThemeResponseContent = {
   theme: OrgTheme;
 };
 
+export type UpdateProfileRequestContent = {
+  firstName?: string;
+  lastName?: string;
+  displayName?: string;
+  accountType?: string;
+  bio?: string;
+  isOver18?: boolean;
+};
+
+export type UpdateProfileResponseContent = {
+  profile: UserProfile;
+};
+
 export type UploadOrgPictureRequestContent = {
   orgId: string;
 };
 
 export type UploadOrgPictureResponseContent = {
+  urlInfo: PresignedPostData;
+};
+
+export type UploadProfilePictureResponseContent = {
   urlInfo: PresignedPostData;
 };
 

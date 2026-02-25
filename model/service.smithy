@@ -17,8 +17,10 @@ service EqualIQ {
     AuditLogResource
   ]
   operations: [
-    // users.smithy - GetProfile is standalone (not resource-bound) to support optional userId
     GetProfile
+    UpdateProfile
+    UploadProfilePicture
+    GetProfilePicture
 
     // audit.smithy - GetAuditStatistics is cross-cutting (aggregates all logs, not bound to single log)
     GetAuditStatistics

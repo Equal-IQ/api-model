@@ -39,9 +39,6 @@ list UserIdList {
 // User resource
 resource User {
     identifiers: { userId: UserId }
-    operations: [
-        GetProfilePicture
-    ]
 }
 
 // User structures

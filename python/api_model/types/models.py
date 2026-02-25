@@ -873,11 +873,24 @@ class UpdateOrgThemeResponseContent(BaseModel):
     theme: OrgTheme
 
 
+class UpdateProfileRequestContent(BaseModel):
+    firstName: str | None
+    lastName: str | None
+    displayName: str | None
+    accountType: str | None
+    bio: str | None
+    isOver18: bool | None
+
+
 class UploadOrgPictureRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class UploadOrgPictureResponseContent(BaseModel):
+    urlInfo: PresignedPostData
+
+
+class UploadProfilePictureResponseContent(BaseModel):
     urlInfo: PresignedPostData
 
 
@@ -1362,6 +1375,10 @@ class UpdateOrgCustomRoleResponseContent(BaseModel):
 
 class UpdateOrgMemberResponseContent(BaseModel):
     member: OrgMember
+
+
+class UpdateProfileResponseContent(BaseModel):
+    profile: UserProfile
 
 
 class AcceptOrgInviteResponseContent(BaseModel):
