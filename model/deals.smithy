@@ -5,6 +5,7 @@ namespace equaliq
 use aws.protocols#restJson1
 use equaliq#ISODate
 use equaliq#StringList
+use equaliq#FileId
 use equaliq#DealAccessMap
 use equaliq#DealAccess
 use equaliq#AuthenticationError
@@ -30,6 +31,13 @@ enum DeliverableSource {
     manual = "manual"
 }
 
+enum DeliverableStatus {
+    incomplete = "incomplete"
+    in_progress = "in_progress"
+    overdure = "overdue"
+    complete = "complete"
+}
+
 string DealId with [UuidLikeMixin]
 string DealVersionId with [UuidLikeMixin]
 string DealRevisionId with [UuidLikeMixin]
@@ -37,6 +45,21 @@ string DeliverableId with [UuidLikeMixin]
 string DealAccessId with [UuidLikeMixin]
 string DealApprovalId with [UuidLikeMixin]
 string DealAnalysisId with [UuidLikeMixin]
+
+/// List of deal identifiers
+list DealIdList {
+    member: DealId
+}
+
+/// List of deal version identifiers
+list DealVersionIdList {
+    member: DealVersionId
+}
+
+/// List of file identifiers
+list FileIdList {
+    member: FileId
+}
 
 /// Deal resource with sub-resources for versions, deliverables, and access control
 resource DealResource {
@@ -76,6 +99,9 @@ structure Deal {
 
     updatedByUserId: UserId
 
+    /// Associated file IDs
+    fileIds: FileIdList
+
     @required
     createdAt: ISODate
 
@@ -110,6 +136,9 @@ structure DealVersion {
     /// Approval workflow tracking
     approvedByUserId: UserId
 
+    /// Associated file IDs
+    fileIds: FileIdList
+
     @required
     createdAt: ISODate
 
@@ -133,8 +162,7 @@ structure Deliverable {
     /// Source of deliverable (null = manual)
     source: DeliverableSource
 
-    /// Status as free-form string for flexibility
-    status: String
+    status: DeliverableStatus
 
     assignedToUserId: UserId
 

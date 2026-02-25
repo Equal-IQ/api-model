@@ -53,6 +53,13 @@ export enum DeliverableSource {
   manual = "manual"
 }
 
+export enum DeliverableStatus {
+  incomplete = "incomplete",
+  in_progress = "in_progress",
+  overdue = "overdue",
+  complete = "complete"
+}
+
 export enum FilePermission {
   view_file = "view_file",
   edit_file = "edit_file",
@@ -186,8 +193,8 @@ export type CreateFileRequestContent = {
   fileType?: string;
   folderPath?: string;
   tags?: string[];
-  dealId?: string;
-  dealVersionId?: string;
+  dealIds?: string[];
+  dealVersionIds?: string[];
   requestUploadUrl?: boolean;
 };
 
@@ -239,6 +246,7 @@ export type Deal = {
   parentDealId?: string;
   createdByUserId: string;
   updatedByUserId?: string;
+  fileIds?: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -276,6 +284,7 @@ export type DealVersion = {
   metadata?: unknown;
   createdByUserId: string;
   approvedByUserId?: string;
+  fileIds?: string[];
   createdAt: string;
   approvedAt?: string;
 };
@@ -312,7 +321,7 @@ export type Deliverable = {
   name: string;
   description?: string;
   source?: DeliverableSource;
-  status?: string;
+  status?: DeliverableStatus;
   assignedToUserId?: string;
   responsibleOrgId?: string;
   dueDate?: string;
@@ -335,8 +344,8 @@ export type File = {
   sizeBytes: number;
   fileType: string;
   description?: string;
-  dealId?: string;
-  dealVersionId?: string;
+  dealIds?: string[];
+  dealVersionIds?: string[];
   metadata?: unknown;
   updatedByUserId?: string;
   createdAt: string;
@@ -859,8 +868,8 @@ export type UpdateFileRequestContent = {
   fileName?: string;
   folderPath?: string;
   tags?: string[];
-  dealId?: string;
-  dealVersionId?: string;
+  dealIds?: string[];
+  dealVersionIds?: string[];
 };
 
 export type UpdateFileResponseContent = {

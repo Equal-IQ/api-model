@@ -1033,10 +1033,10 @@ export interface components {
             folderPath?: string;
             /** @description User-defined tags */
             tags?: string[];
-            /** @description Associated deal if applicable */
-            dealId?: string;
-            /** @description Associated deal version if applicable */
-            dealVersionId?: string;
+            /** @description Associated deal IDs */
+            dealIds?: string[];
+            /** @description Associated deal version IDs */
+            dealVersionIds?: string[];
             /** @description Request upload URL in response */
             requestUploadUrl?: boolean;
         };
@@ -1084,6 +1084,8 @@ export interface components {
             parentDealId?: string;
             createdByUserId: string;
             updatedByUserId?: string;
+            /** @description Associated file IDs */
+            fileIds?: string[];
             createdAt: string;
             updatedAt: string;
         };
@@ -1145,6 +1147,8 @@ export interface components {
             createdByUserId: string;
             /** @description Approval workflow tracking */
             approvedByUserId?: string;
+            /** @description Associated file IDs */
+            fileIds?: string[];
             createdAt: string;
             /** @description When this version was approved */
             approvedAt?: string;
@@ -1181,8 +1185,7 @@ export interface components {
             name: string;
             description?: string;
             source?: components["schemas"]["DeliverableSource"];
-            /** @description Status as free-form string for flexibility */
-            status?: string;
+            status?: components["schemas"]["DeliverableStatus"];
             assignedToUserId?: string;
             responsibleOrgId?: string;
             dueDate?: string;
@@ -1201,6 +1204,8 @@ export interface components {
          * @enum {string}
          */
         DeliverableSource: DeliverableSource;
+        /** @enum {string} */
+        DeliverableStatus: DeliverableStatus;
         /** @description File entity with dual-ownership pattern */
         File: {
             /** @description File identifier */
@@ -1214,10 +1219,10 @@ export interface components {
             fileType: string;
             /** @description File description */
             description?: string;
-            /** @description Associated deal if applicable (mutually exclusive with dealVersionId) */
-            dealId?: string;
-            /** @description Associated deal version if applicable (mutually exclusive with dealId) */
-            dealVersionId?: string;
+            /** @description Associated deal IDs */
+            dealIds?: string[];
+            /** @description Associated deal version IDs */
+            dealVersionIds?: string[];
             /** @description Additional metadata as JSON */
             metadata?: unknown;
             updatedByUserId?: string;
@@ -1796,8 +1801,10 @@ export interface components {
             fileName?: string;
             folderPath?: string;
             tags?: string[];
-            dealId?: string;
-            dealVersionId?: string;
+            /** @description List of deal identifiers */
+            dealIds?: string[];
+            /** @description List of deal version identifiers */
+            dealVersionIds?: string[];
         };
         UpdateFileResponseContent: {
             file: components["schemas"]["File"];
@@ -5022,6 +5029,12 @@ export enum DeliverableSource {
     template = "template",
     imported = "imported",
     manual = "manual"
+}
+export enum DeliverableStatus {
+    incomplete = "incomplete",
+    in_progress = "in_progress",
+    overdue = "overdue",
+    complete = "complete"
 }
 export enum FilePermission {
     view_file = "view_file",

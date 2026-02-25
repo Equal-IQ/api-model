@@ -7,6 +7,10 @@ use equaliq#UuidLikeMixin
 use equaliq#ISODate
 use equaliq#Url
 use equaliq#StringList
+use equaliq#DealId
+use equaliq#DealVersionId
+use equaliq#DealIdList
+use equaliq#DealVersionIdList
 use equaliq#FileAccessMap
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
@@ -57,11 +61,11 @@ structure File {
     /// File description
     description: String
 
-    /// Associated deal if applicable (mutually exclusive with dealVersionId)
-    dealId: DealId
+    /// Associated deal IDs
+    dealIds: DealIdList
 
-    /// Associated deal version if applicable (mutually exclusive with dealId)
-    dealVersionId: DealVersionId
+    /// Associated deal version IDs
+    dealVersionIds: DealVersionIdList
 
     /// Additional metadata as JSON
     metadata: Document
@@ -112,11 +116,11 @@ operation CreateFile {
         /// User-defined tags
         tags: StringList
 
-        /// Associated deal if applicable
-        dealId: DealId
+        /// Associated deal IDs
+        dealIds: DealIdList
 
-        /// Associated deal version if applicable
-        dealVersionId: DealVersionId
+        /// Associated deal version IDs
+        dealVersionIds: DealVersionIdList
 
         /// Request upload URL in response
         requestUploadUrl: Boolean
@@ -181,8 +185,8 @@ operation UpdateFile {
         fileName: String
         folderPath: String
         tags: StringList
-        dealId: DealId
-        dealVersionId: DealVersionId
+        dealIds: DealIdList
+        dealVersionIds: DealVersionIdList
     }
 
     output := {

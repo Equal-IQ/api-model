@@ -51,6 +51,14 @@ class CancelOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class DealId(RootModel[str]):
+    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class DealVersionId(RootModel[str]):
+    root: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class CreateFileRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     fileName: str
@@ -58,13 +66,9 @@ class CreateFileRequestContent(BaseModel):
     fileType: str | None = Field(None, description='MIME type')
     folderPath: str | None = Field(None, description='Virtual folder path')
     tags: list[str] | None = Field(None, description='User-defined tags')
-    dealId: str | None = Field(
-        None, description='Associated deal if applicable', pattern='^[A-Za-z0-9-]+$'
-    )
-    dealVersionId: str | None = Field(
-        None,
-        description='Associated deal version if applicable',
-        pattern='^[A-Za-z0-9-]+$',
+    dealIds: list[DealId] | None = Field(None, description='Associated deal IDs')
+    dealVersionIds: list[DealVersionId] | None = Field(
+        None, description='Associated deal version IDs'
     )
     requestUploadUrl: bool | None = Field(
         None, description='Request upload URL in response'
@@ -100,6 +104,10 @@ class CreateOrgRequestContent(BaseModel):
     billingEmail: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
 
 
+class FileId(RootModel[str]):
+    root: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
+
+
 class Deal(BaseModel):
     """
     Main deal entity
@@ -119,6 +127,7 @@ class Deal(BaseModel):
     )
     createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    fileIds: list[FileId] | None = Field(None, description='Associated file IDs')
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -186,6 +195,7 @@ class DealVersion(BaseModel):
     approvedByUserId: str | None = Field(
         None, description='Approval workflow tracking', pattern='^[A-Za-z0-9-]+$'
     )
+    fileIds: list[FileId] | None = Field(None, description='Associated file IDs')
     createdAt: str = Field(
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
@@ -238,6 +248,13 @@ class DeliverableSource(StrEnum):
     manual = 'manual'
 
 
+class DeliverableStatus(StrEnum):
+    incomplete = 'incomplete'
+    in_progress = 'in_progress'
+    overdue = 'overdue'
+    complete = 'complete'
+
+
 class File(BaseModel):
     """
     File entity with dual-ownership pattern
@@ -255,15 +272,9 @@ class File(BaseModel):
     sizeBytes: float
     fileType: str
     description: str | None = Field(None, description='File description')
-    dealId: str | None = Field(
-        None,
-        description='Associated deal if applicable (mutually exclusive with dealVersionId)',
-        pattern='^[A-Za-z0-9-]+$',
-    )
-    dealVersionId: str | None = Field(
-        None,
-        description='Associated deal version if applicable (mutually exclusive with dealId)',
-        pattern='^[A-Za-z0-9-]+$',
+    dealIds: list[DealId] | None = Field(None, description='Associated deal IDs')
+    dealVersionIds: list[DealVersionId] | None = Field(
+        None, description='Associated deal version IDs'
     )
     metadata: Any | None = Field(None, description='Additional metadata as JSON')
     updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
@@ -800,8 +811,10 @@ class UpdateFileRequestContent(BaseModel):
     fileName: str | None
     folderPath: str | None
     tags: list[str] | None
-    dealId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
-    dealVersionId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    dealIds: list[DealId] | None = Field(None, description='List of deal identifiers')
+    dealVersionIds: list[DealVersionId] | None = Field(
+        None, description='List of deal version identifiers'
+    )
 
 
 class UpdateFileResponseContent(BaseModel):
@@ -1049,9 +1062,7 @@ class Deliverable(BaseModel):
     name: str
     description: str | None
     source: DeliverableSource | None
-    status: str | None = Field(
-        None, description='Status as free-form string for flexibility'
-    )
+    status: DeliverableStatus | None
     assignedToUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     responsibleOrgId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     dueDate: str | None = Field(
