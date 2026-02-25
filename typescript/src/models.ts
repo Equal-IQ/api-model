@@ -884,102 +884,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/quick-access/create": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["CreateQuickAccess"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/quick-access/delete": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["DeleteQuickAccess"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/quick-access/list": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["ListQuickAccess"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/quick-access/update": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateQuickAccess"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/updateProfile": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UpdateProfile"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/uploadProfilePicture": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post: operations["UploadProfilePicture"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -1127,16 +1031,6 @@ export interface components {
         CreateOrgResponseContent: {
             org: components["schemas"]["Org"];
         };
-        CreateQuickAccessRequestContent: {
-            userId: string;
-            referenceType: components["schemas"]["ReferenceType"];
-            referenceId: string;
-            pinType: components["schemas"]["PinType"];
-            sortOrder: number;
-        };
-        CreateQuickAccessResponseContent: {
-            quickAccess: components["schemas"]["QuickAccess"];
-        };
         /** @description Main deal entity */
         Deal: {
             dealId: string;
@@ -1240,10 +1134,6 @@ export interface components {
         };
         DeleteOrgRequestContent: {
             orgId: string;
-        };
-        DeleteQuickAccessRequestContent: {
-            userId: string;
-            quickAccessId: string;
         };
         /** @description Deliverable with stage-conditional fields */
         Deliverable: {
@@ -1650,20 +1540,6 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
-        ListQuickAccessRequestContent: {
-            userId: string;
-            pinType?: components["schemas"]["PinType"];
-            referenceType?: components["schemas"]["ReferenceType"];
-            /** @description Pagination cursor */
-            nextToken?: string;
-            /** @description Page size */
-            limit?: number;
-        };
-        ListQuickAccessResponseContent: {
-            items: components["schemas"]["QuickAccessMap"];
-            /** @description Token for next page */
-            nextToken?: string;
-        };
         ListUserOrganizationsRequestContent: {
             /** @description Pagination cursor (encoded orgId) */
             nextToken?: string;
@@ -1757,12 +1633,6 @@ export interface components {
             secondaryColor?: string;
             accentColor?: string;
         };
-        /**
-         * @description User resource and profile operations
-         *     Pin type for quick access items
-         * @enum {string}
-         */
-        PinType: PinType;
         PingResponseContent: {
             message: string;
         };
@@ -1780,32 +1650,11 @@ export interface components {
             /** @description Required headers for the request */
             headers?: unknown;
         };
-        /** @description Quick access / pinned items for user navigation */
-        QuickAccess: {
-            quickAccessId: string;
-            userId: string;
-            referenceType: components["schemas"]["ReferenceType"];
-            referenceId: string;
-            pinType: components["schemas"]["PinType"];
-            sortOrder: number;
-            createdAt: string;
-            lastAccessedAt: string;
-            /** @description Additional metadata for extensibility */
-            metadata?: unknown;
-        };
-        QuickAccessMap: {
-            [key: string]: components["schemas"]["QuickAccess"];
-        };
         /**
          * @description Record types for audit log entries
          * @enum {string}
          */
         RecordType: RecordType;
-        /**
-         * @description Reference type for quick access
-         * @enum {string}
-         */
-        ReferenceType: ReferenceType;
         RemoveOrgMemberRequestContent: {
             orgId: string;
             userId: string;
@@ -1954,37 +1803,10 @@ export interface components {
         UpdateOrgThemeResponseContent: {
             theme: components["schemas"]["OrgTheme"];
         };
-        UpdateProfileRequestContent: {
-            userId: string;
-            firstName?: string;
-            lastName?: string;
-            displayName?: string;
-            accountType?: string;
-            bio?: string;
-            isOver18?: boolean;
-        };
-        UpdateProfileResponseContent: {
-            profile: components["schemas"]["UserProfile"];
-        };
-        UpdateQuickAccessRequestContent: {
-            userId: string;
-            quickAccessId: string;
-            pinType?: components["schemas"]["PinType"];
-            sortOrder?: number;
-        };
-        UpdateQuickAccessResponseContent: {
-            quickAccess: components["schemas"]["QuickAccess"];
-        };
         UploadOrgPictureRequestContent: {
             orgId: string;
         };
         UploadOrgPictureResponseContent: {
-            urlInfo: components["schemas"]["PresignedPostData"];
-        };
-        UploadProfilePictureRequestContent: {
-            userId: string;
-        };
-        UploadProfilePictureResponseContent: {
             urlInfo: components["schemas"]["PresignedPostData"];
         };
         UserProfile: {
@@ -4980,328 +4802,6 @@ export interface operations {
             };
         };
     };
-    CreateQuickAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["CreateQuickAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description CreateQuickAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["CreateQuickAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    DeleteQuickAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["DeleteQuickAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description DeleteQuickAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 404 response */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    ListQuickAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["ListQuickAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description ListQuickAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ListQuickAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateQuickAccess: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateQuickAccessRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateQuickAccess 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateQuickAccessResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 404 response */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UpdateProfile: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UpdateProfileRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UpdateProfile 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UpdateProfileResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 404 response */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    UploadProfilePicture: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["UploadProfilePictureRequestContent"];
-            };
-        };
-        responses: {
-            /** @description UploadProfilePicture 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["UploadProfilePictureResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
-                };
-            };
-            /** @description ResourceNotFoundError 404 response */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
 }
 export enum AuditOperation {
     insert = "insert",
@@ -5381,10 +4881,6 @@ export enum OrgPermission {
     view_all_deals = "view_all_deals",
     view_all_files = "view_all_files"
 }
-export enum PinType {
-    user_pinned = "user_pinned",
-    auto_pinned = "auto_pinned"
-}
 export enum RecordType {
     normal = "normal",
     meta_audit = "meta_audit",
@@ -5392,12 +4888,6 @@ export enum RecordType {
     cleanup = "cleanup",
     export = "export",
     system = "system"
-}
-export enum ReferenceType {
-    deal = "deal",
-    file = "file",
-    org = "org",
-    user = "user"
 }
 export enum StatisticGrouping {
     hour = "hour",

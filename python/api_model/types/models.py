@@ -250,11 +250,6 @@ class DeleteOrgRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
-class DeleteQuickAccessRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
 class DeliverableSource(StrEnum):
     """
     Deliverable source (for tracking origin)
@@ -654,16 +649,6 @@ class OrgTheme(BaseModel):
     accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
-class PinType(StrEnum):
-    """
-    User resource and profile operations
-    Pin type for quick access items
-    """
-
-    user_pinned = 'user_pinned'
-    auto_pinned = 'auto_pinned'
-
-
 class PingResponseContent(BaseModel):
     message: str
 
@@ -708,17 +693,6 @@ class RecordType(StrEnum):
     cleanup = 'cleanup'
     export = 'export'
     system = 'system'
-
-
-class ReferenceType(StrEnum):
-    """
-    Reference type for quick access
-    """
-
-    deal = 'deal'
-    file = 'file'
-    org = 'org'
-    user = 'user'
 
 
 class RemoveOrgMemberRequestContent(BaseModel):
@@ -899,36 +873,11 @@ class UpdateOrgThemeResponseContent(BaseModel):
     theme: OrgTheme
 
 
-class UpdateProfileRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    firstName: str | None
-    lastName: str | None
-    displayName: str | None
-    accountType: str | None
-    bio: str | None
-    isOver18: bool | None
-
-
-class UpdateQuickAccessRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    pinType: PinType | None
-    sortOrder: float | None
-
-
 class UploadOrgPictureRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class UploadOrgPictureResponseContent(BaseModel):
-    urlInfo: PresignedPostData
-
-
-class UploadProfilePictureRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-
-
-class UploadProfilePictureResponseContent(BaseModel):
     urlInfo: PresignedPostData
 
 
@@ -1030,14 +979,6 @@ class CreateOrgCustomRoleRequestContent(BaseModel):
 
 class CreateOrgResponseContent(BaseModel):
     org: Org
-
-
-class CreateQuickAccessRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    referenceType: ReferenceType
-    referenceId: str
-    pinType: PinType
-    sortOrder: float
 
 
 class DealAccess(BaseModel):
@@ -1317,14 +1258,6 @@ class ListOrgMembersRequestContent(BaseModel):
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
-class ListQuickAccessRequestContent(BaseModel):
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    pinType: PinType | None
-    referenceType: ReferenceType | None
-    nextToken: str | None = Field(None, description='Pagination cursor')
-    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
-
-
 class ListUserOrganizationsResponseContent(BaseModel):
     organizations: OrgMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1407,34 +1340,6 @@ class OrgMemberMap(RootModel[dict[str, OrgMember]]):
     root: dict[str, OrgMember]
 
 
-class QuickAccess(BaseModel):
-    """
-    Quick access / pinned items for user navigation
-    """
-
-    quickAccessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    referenceType: ReferenceType
-    referenceId: str
-    pinType: PinType
-    sortOrder: float
-    createdAt: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    lastAccessedAt: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-    metadata: Any | None = Field(
-        None, description='Additional metadata for extensibility'
-    )
-
-
-class QuickAccessMap(RootModel[dict[str, QuickAccess]]):
-    root: dict[str, QuickAccess]
-
-
 class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
@@ -1459,14 +1364,6 @@ class UpdateOrgMemberResponseContent(BaseModel):
     member: OrgMember
 
 
-class UpdateProfileResponseContent(BaseModel):
-    profile: UserProfile
-
-
-class UpdateQuickAccessResponseContent(BaseModel):
-    quickAccess: QuickAccess
-
-
 class AcceptOrgInviteResponseContent(BaseModel):
     organization: Org
     member: OrgMember
@@ -1485,10 +1382,6 @@ class CreateOrgInviteResponseContent(BaseModel):
     failedEmails: list[FailedEmail] | None
 
 
-class CreateQuickAccessResponseContent(BaseModel):
-    quickAccess: QuickAccess
-
-
 class ListOrgCustomRolesResponseContent(BaseModel):
     roles: OrgCustomRoleMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1501,9 +1394,4 @@ class ListOrgInvitesResponseContent(BaseModel):
 
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
-    nextToken: str | None = Field(None, description='Token for next page')
-
-
-class ListQuickAccessResponseContent(BaseModel):
-    items: QuickAccessMap
     nextToken: str | None = Field(None, description='Token for next page')

@@ -100,11 +100,6 @@ export enum OrgPermission {
   view_all_files = "view_all_files"
 }
 
-export enum PinType {
-  user_pinned = "user_pinned",
-  auto_pinned = "auto_pinned"
-}
-
 export enum RecordType {
   normal = "normal",
   meta_audit = "meta_audit",
@@ -112,13 +107,6 @@ export enum RecordType {
   cleanup = "cleanup",
   export = "export",
   system = "system"
-}
-
-export enum ReferenceType {
-  deal = "deal",
-  file = "file",
-  org = "org",
-  user = "user"
 }
 
 export enum StatisticGrouping {
@@ -261,18 +249,6 @@ export type CreateOrgResponseContent = {
   org: Org;
 };
 
-export type CreateQuickAccessRequestContent = {
-  userId: string;
-  referenceType: ReferenceType;
-  referenceId: string;
-  pinType: PinType;
-  sortOrder: number;
-};
-
-export type CreateQuickAccessResponseContent = {
-  quickAccess: QuickAccess;
-};
-
 export type Deal = {
   dealId: string;
   ownerUserId: string;
@@ -347,11 +323,6 @@ export type DeleteOrgCustomRoleRequestContent = {
 
 export type DeleteOrgRequestContent = {
   orgId: string;
-};
-
-export type DeleteQuickAccessRequestContent = {
-  userId: string;
-  quickAccessId: string;
 };
 
 export type Deliverable = {
@@ -703,19 +674,6 @@ export type ListOrgMembersResponseContent = {
   nextToken?: string;
 };
 
-export type ListQuickAccessRequestContent = {
-  userId: string;
-  pinType?: PinType;
-  referenceType?: ReferenceType;
-  nextToken?: string;
-  limit?: number;
-};
-
-export type ListQuickAccessResponseContent = {
-  items: QuickAccessMap;
-  nextToken?: string;
-};
-
 export type ListUserOrganizationsRequestContent = {
   nextToken?: string;
   limit?: number;
@@ -813,20 +771,6 @@ export type PresignedUrl = {
   method?: string;
   headers?: unknown;
 };
-
-export type QuickAccess = {
-  quickAccessId: string;
-  userId: string;
-  referenceType: ReferenceType;
-  referenceId: string;
-  pinType: PinType;
-  sortOrder: number;
-  createdAt: string;
-  lastAccessedAt: string;
-  metadata?: unknown;
-};
-
-export type QuickAccessMap = { [key: string]: QuickAccess };
 
 export type RemoveOrgMemberRequestContent = {
   orgId: string;
@@ -987,44 +931,11 @@ export type UpdateOrgThemeResponseContent = {
   theme: OrgTheme;
 };
 
-export type UpdateProfileRequestContent = {
-  userId: string;
-  firstName?: string;
-  lastName?: string;
-  displayName?: string;
-  accountType?: string;
-  bio?: string;
-  isOver18?: boolean;
-};
-
-export type UpdateProfileResponseContent = {
-  profile: UserProfile;
-};
-
-export type UpdateQuickAccessRequestContent = {
-  userId: string;
-  quickAccessId: string;
-  pinType?: PinType;
-  sortOrder?: number;
-};
-
-export type UpdateQuickAccessResponseContent = {
-  quickAccess: QuickAccess;
-};
-
 export type UploadOrgPictureRequestContent = {
   orgId: string;
 };
 
 export type UploadOrgPictureResponseContent = {
-  urlInfo: PresignedPostData;
-};
-
-export type UploadProfilePictureRequestContent = {
-  userId: string;
-};
-
-export type UploadProfilePictureResponseContent = {
   urlInfo: PresignedPostData;
 };
 

@@ -39,20 +39,9 @@ list UserIdList {
 // User resource
 resource User {
     identifiers: { userId: UserId }
-    update: UpdateProfile
-    resources: [QuickAccessResource]
     operations: [
         GetProfilePicture
-        UploadProfilePicture
     ]
-}
-
-resource QuickAccessResource {
-    identifiers: { userId: UserId, quickAccessId: QuickAccessId }
-    create: CreateQuickAccess
-    update: UpdateQuickAccess
-    delete: DeleteQuickAccess
-    list: ListQuickAccess
 }
 
 // User structures
@@ -143,10 +132,7 @@ operation GetProfilePicture {
 
 @http(method: "POST", uri: "/uploadProfilePicture")
 operation UploadProfilePicture {
-    input := {
-        @required
-        userId: UserId
-    }
+    input := {}
 
     output := {
         @required
@@ -164,9 +150,6 @@ operation UploadProfilePicture {
 @http(method: "POST", uri: "/updateProfile")
 operation UpdateProfile {
     input := {
-        @required
-        userId: UserId
-
         firstName: String
         lastName: String
         displayName: String
@@ -192,9 +175,6 @@ operation UpdateProfile {
 @http(method: "POST", uri: "/quick-access/create")
 operation CreateQuickAccess {
     input := {
-        @required
-        userId: UserId
-
         @required
         referenceType: ReferenceType
 
@@ -226,9 +206,6 @@ operation CreateQuickAccess {
 operation UpdateQuickAccess {
     input := {
         @required
-        userId: UserId
-
-        @required
         quickAccessId: QuickAccessId
 
         pinType: PinType
@@ -254,9 +231,6 @@ operation UpdateQuickAccess {
 operation DeleteQuickAccess {
     input := {
         @required
-        userId: UserId
-
-        @required
         quickAccessId: QuickAccessId
     }
 
@@ -275,9 +249,6 @@ operation DeleteQuickAccess {
 @http(method: "POST", uri: "/quick-access/list")
 operation ListQuickAccess {
     input := {
-        @required
-        userId: UserId
-
         /// Filter by pin type
         pinType: PinType
 
