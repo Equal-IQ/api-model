@@ -500,6 +500,130 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/integrations/nylas/auth/callback": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Handle OAuth callback from Nylas
+         *     Exchanges authorization code for grant ID */
+        post: operations["NylasHandleAuthCallback"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/auth/initiate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Initiate OAuth flow to connect a Nylas account
+         *     Generates Nylas Hosted Authentication URL */
+        post: operations["NylasInitiateAuth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/connection/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Disconnect Nylas account (soft delete) */
+        post: operations["NylasDisconnectConnection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/connection/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get connection status for authenticated user */
+        post: operations["NylasGetConnectionStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get a specific message by ID
+         *     Maps to Nylas v3: GET /v3/grants/{grant_id}/messages/{message_id} */
+        post: operations["NylasGetMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List messages for authenticated user
+         *     Maps to Nylas v3: GET /v3/grants/{grant_id}/messages */
+        post: operations["NylasListMessages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Send an email message
+         *     Maps to Nylas v3: POST /v3/grants/{grant_id}/messages/send */
+        post: operations["NylasSendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/create": {
         parameters: {
             query?: never;
@@ -1195,6 +1319,12 @@ export interface components {
         DeliverableSource: DeliverableSource;
         /** @enum {string} */
         DeliverableStatus: DeliverableStatus;
+        /** @description Email participant (sender/recipient)
+         *     Matches Nylas v3 participant structure */
+        EmailParticipant: {
+            email?: string;
+            name?: string;
+        };
         /** @description File entity with dual-ownership pattern */
         File: {
             /** @description File identifier */
@@ -1582,6 +1712,126 @@ export interface components {
             organizations: components["schemas"]["OrgMap"];
             /** @description Token for next page */
             nextToken?: string;
+        };
+        /** @description Nylas connection status */
+        NylasConnection: {
+            /** @description Nylas email integration resource
+             *     Provides email operations via connected Nylas accounts (v3 API)
+             *     MVP: Email operations only */
+            connectionId: string;
+            grantId: string;
+            email: string;
+            /** @description Email provider: 'google', 'microsoft', etc. */
+            provider: string;
+            enabled: boolean;
+            connectedAt: string;
+            /** @description OAuth scopes granted */
+            scopes?: string[];
+        };
+        NylasDisconnectConnectionRequestContent: {
+            /** @description Connection ID to disconnect (required for multi-account) */
+            connectionId?: string;
+        };
+        NylasDisconnectConnectionResponseContent: {
+            success: boolean;
+        };
+        NylasGetConnectionStatusResponseContent: {
+            connected: boolean;
+            /** @description Connection details if connected */
+            connections?: components["schemas"]["NylasConnection"][];
+        };
+        NylasGetMessageRequestContent: {
+            messageId: string;
+        };
+        NylasGetMessageResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"];
+        };
+        NylasHandleAuthCallbackRequestContent: {
+            code: string;
+            /** @description State parameter from initiation (for CSRF validation) */
+            state?: string;
+        };
+        NylasHandleAuthCallbackResponseContent: {
+            connection: components["schemas"]["NylasConnection"];
+        };
+        NylasInitiateAuthRequestContent: {
+            /** @description Optional: Specify email provider hint */
+            provider?: string;
+        };
+        NylasInitiateAuthResponseContent: {
+            authUrl: string;
+            /** @description State parameter for CSRF validation */
+            state?: string;
+        };
+        NylasListMessagesRequestContent: {
+            /** @description Maximum number of messages to return (default 50, max 200) */
+            limit?: number;
+            /** @description Pagination cursor from previous response */
+            cursor?: string;
+            /** @description Filter by subject */
+            subject?: string;
+            /** @description Filter by sender email */
+            anyEmail?: string;
+            /** @description Filter to folder/label */
+            in?: string;
+            /** @description Filter unread messages */
+            unread?: boolean;
+            /** @description Filter starred messages */
+            starred?: boolean;
+            /** @description Unix timestamp - messages after this date */
+            receivedAfter?: number;
+            /** @description Unix timestamp - messages before this date */
+            receivedBefore?: number;
+        };
+        NylasListMessagesResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"][];
+            /** @description Cursor for next page */
+            nextCursor?: string;
+        };
+        /** @description Email message
+         *     Matches Nylas v3 Message object structure */
+        NylasMessage: {
+            /** @description Nylas message ID */
+            id: string;
+            /** @description Grant ID that owns this message */
+            grantId: string;
+            /** @description Thread ID */
+            threadId?: string;
+            subject: string;
+            /** @description Plain text preview/snippet */
+            snippet?: string;
+            /** @description Email body (HTML or plain text) */
+            body?: string;
+            /** @description Sender information */
+            from?: components["schemas"]["EmailParticipant"][];
+            /** @description Recipients */
+            to?: components["schemas"]["EmailParticipant"][];
+            cc?: components["schemas"]["EmailParticipant"][];
+            bcc?: components["schemas"]["EmailParticipant"][];
+            replyTo?: components["schemas"]["EmailParticipant"][];
+            /** @description Unix timestamp (seconds) */
+            date: number;
+            unread: boolean;
+            starred?: boolean;
+            /** @description Folder names/labels */
+            folders?: string[];
+        };
+        NylasSendMessageRequestContent: {
+            to: components["schemas"]["EmailParticipant"][];
+            cc?: components["schemas"]["EmailParticipant"][];
+            bcc?: components["schemas"]["EmailParticipant"][];
+            replyTo?: components["schemas"]["EmailParticipant"][];
+            subject: string;
+            /** @description Email body (HTML or plain text) */
+            body: string;
+            /** @description Reply to specific message (for threading) */
+            replyToMessageId?: string;
+        };
+        NylasSendMessageResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"];
         };
         Org: {
             orgId: string;
@@ -3535,6 +3785,350 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasHandleAuthCallback: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasHandleAuthCallbackRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasHandleAuthCallback 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasHandleAuthCallbackResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasInitiateAuth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NylasInitiateAuthRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasInitiateAuth 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasInitiateAuthResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasDisconnectConnection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NylasDisconnectConnectionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasDisconnectConnection 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasDisconnectConnectionResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasGetConnectionStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NylasGetConnectionStatus 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasGetConnectionStatusResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasGetMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasGetMessageRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasGetMessage 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasGetMessageResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasListMessages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NylasListMessagesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasListMessages 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasListMessagesResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasSendMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasSendMessageRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasSendMessage 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasSendMessageResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

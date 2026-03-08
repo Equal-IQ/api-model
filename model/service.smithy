@@ -15,6 +15,7 @@ service EqualIQ {
     DealResource
     FileResource
     AuditLogResource
+    NylasResource
   ]
   operations: [
     GetProfile
@@ -24,6 +25,15 @@ service EqualIQ {
 
     // audit.smithy - GetAuditStatistics is cross-cutting (aggregates all logs, not bound to single log)
     GetAuditStatistics
+
+    // nylas.smithy - Email integration operations
+    NylasListMessages
+    NylasGetMessage
+    NylasSendMessage
+    NylasInitiateAuth
+    NylasHandleAuthCallback
+    NylasGetConnectionStatus
+    NylasDisconnectConnection
 
     // Utility operations
     Ping

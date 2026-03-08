@@ -268,6 +268,16 @@ class DeliverableStatus(StrEnum):
     complete = 'complete'
 
 
+class EmailParticipant(BaseModel):
+    """
+    Email participant (sender/recipient)
+    Matches Nylas v3 participant structure
+    """
+
+    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    name: str | None
+
+
 class File(BaseModel):
     """
     File entity with dual-ownership pattern
@@ -576,6 +586,139 @@ class ListOrgInvitesRequestContent(BaseModel):
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class NylasConnection(BaseModel):
+    """
+    Nylas connection status
+    """
+
+    connectionId: str = Field(
+        ...,
+        description='Nylas email integration resource\nProvides email operations via connected Nylas accounts (v3 API)\nMVP: Email operations only',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    grantId: str
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    provider: str = Field(
+        ..., description="Email provider: 'google', 'microsoft', etc."
+    )
+    enabled: bool
+    connectedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    scopes: list[str] | None = Field(None, description='OAuth scopes granted')
+
+
+class NylasDisconnectConnectionRequestContent(BaseModel):
+    connectionId: str | None = Field(
+        None,
+        description='Connection ID to disconnect (required for multi-account)',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class NylasDisconnectConnectionResponseContent(BaseModel):
+    success: bool
+
+
+class NylasGetConnectionStatusResponseContent(BaseModel):
+    connected: bool
+    connections: list[NylasConnection] | None = Field(
+        None, description='Connection details if connected'
+    )
+
+
+class NylasGetMessageRequestContent(BaseModel):
+    messageId: str
+
+
+class NylasHandleAuthCallbackRequestContent(BaseModel):
+    code: str
+    state: str | None = Field(
+        None, description='State parameter from initiation (for CSRF validation)'
+    )
+
+
+class NylasHandleAuthCallbackResponseContent(BaseModel):
+    connection: NylasConnection
+
+
+class NylasInitiateAuthRequestContent(BaseModel):
+    provider: str | None = Field(
+        None, description='Optional: Specify email provider hint'
+    )
+
+
+class NylasInitiateAuthResponseContent(BaseModel):
+    authUrl: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    state: str | None = Field(None, description='State parameter for CSRF validation')
+
+
+class NylasListMessagesRequestContent(BaseModel):
+    limit: float | None = Field(
+        None, description='Maximum number of messages to return (default 50, max 200)'
+    )
+    cursor: str | None = Field(
+        None, description='Pagination cursor from previous response'
+    )
+    subject: str | None = Field(None, description='Filter by subject')
+    anyEmail: str | None = Field(None, description='Filter by sender email')
+    in_: str | None = Field(None, alias='in', description='Filter to folder/label')
+    unread: bool | None = Field(None, description='Filter unread messages')
+    starred: bool | None = Field(None, description='Filter starred messages')
+    receivedAfter: float | None = Field(
+        None, description='Unix timestamp - messages after this date'
+    )
+    receivedBefore: float | None = Field(
+        None, description='Unix timestamp - messages before this date'
+    )
+
+
+class NylasMessage(BaseModel):
+    """
+    Email message
+    Matches Nylas v3 Message object structure
+    """
+
+    id: str = Field(..., description='Nylas message ID')
+    grantId: str = Field(..., description='Grant ID that owns this message')
+    threadId: str | None = Field(None, description='Thread ID')
+    subject: str
+    snippet: str | None = Field(None, description='Plain text preview/snippet')
+    body: str | None = Field(None, description='Email body (HTML or plain text)')
+    from_: list[EmailParticipant] | None = Field(
+        None, alias='from', description='Sender information'
+    )
+    to: list[EmailParticipant] | None = Field(None, description='Recipients')
+    cc: list[EmailParticipant] | None
+    bcc: list[EmailParticipant] | None
+    replyTo: list[EmailParticipant] | None
+    date: float = Field(..., description='Unix timestamp (seconds)')
+    unread: bool
+    starred: bool | None
+    folders: list[str] | None = Field(None, description='Folder names/labels')
+
+
+class NylasSendMessageRequestContent(BaseModel):
+    to: list[EmailParticipant]
+    cc: list[EmailParticipant] | None
+    bcc: list[EmailParticipant] | None
+    replyTo: list[EmailParticipant] | None
+    subject: str
+    body: str = Field(..., description='Email body (HTML or plain text)')
+    replyToMessageId: str | None = Field(
+        None, description='Reply to specific message (for threading)'
+    )
+
+
+class NylasSendMessageResponseContent(BaseModel):
+    requestId: str
+    data: NylasMessage
 
 
 class Org(BaseModel):
@@ -1274,6 +1417,17 @@ class ListOrgMembersRequestContent(BaseModel):
 class ListUserOrganizationsResponseContent(BaseModel):
     organizations: OrgMap
     nextToken: str | None = Field(None, description='Token for next page')
+
+
+class NylasGetMessageResponseContent(BaseModel):
+    requestId: str
+    data: NylasMessage
+
+
+class NylasListMessagesResponseContent(BaseModel):
+    requestId: str
+    data: list[NylasMessage]
+    nextCursor: str | None = Field(None, description='Cursor for next page')
 
 
 class OrgCustomRole(BaseModel):

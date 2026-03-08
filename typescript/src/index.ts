@@ -345,6 +345,11 @@ export type Deliverable = {
 
 export type DeliverableMap = { [key: string]: Deliverable };
 
+export type EmailParticipant = {
+  email?: string;
+  name?: string;
+};
+
 export type File = {
   fileId: string;
   ownerUserId: string;
@@ -682,6 +687,107 @@ export type ListUserOrganizationsRequestContent = {
 export type ListUserOrganizationsResponseContent = {
   organizations: OrgMap;
   nextToken?: string;
+};
+
+export type NylasConnection = {
+  connectionId: string;
+  grantId: string;
+  email: string;
+  provider: string;
+  enabled: boolean;
+  connectedAt: string;
+  scopes?: string[];
+};
+
+export type NylasDisconnectConnectionRequestContent = {
+  connectionId?: string;
+};
+
+export type NylasDisconnectConnectionResponseContent = {
+  success: boolean;
+};
+
+export type NylasGetConnectionStatusResponseContent = {
+  connected: boolean;
+  connections?: NylasConnection[];
+};
+
+export type NylasGetMessageRequestContent = {
+  messageId: string;
+};
+
+export type NylasGetMessageResponseContent = {
+  requestId: string;
+  data: NylasMessage;
+};
+
+export type NylasHandleAuthCallbackRequestContent = {
+  code: string;
+  state?: string;
+};
+
+export type NylasHandleAuthCallbackResponseContent = {
+  connection: NylasConnection;
+};
+
+export type NylasInitiateAuthRequestContent = {
+  provider?: string;
+};
+
+export type NylasInitiateAuthResponseContent = {
+  authUrl: string;
+  state?: string;
+};
+
+export type NylasListMessagesRequestContent = {
+  limit?: number;
+  cursor?: string;
+  subject?: string;
+  anyEmail?: string;
+  in?: string;
+  unread?: boolean;
+  starred?: boolean;
+  receivedAfter?: number;
+  receivedBefore?: number;
+};
+
+export type NylasListMessagesResponseContent = {
+  requestId: string;
+  data: NylasMessage[];
+  nextCursor?: string;
+};
+
+export type NylasMessage = {
+  id: string;
+  grantId: string;
+  threadId?: string;
+  subject: string;
+  snippet?: string;
+  body?: string;
+  from?: EmailParticipant[];
+  to?: EmailParticipant[];
+  cc?: EmailParticipant[];
+  bcc?: EmailParticipant[];
+  replyTo?: EmailParticipant[];
+  date: number;
+  unread: boolean;
+  starred?: boolean;
+  folders?: string[];
+};
+
+export type NylasSendMessageRequestContent = {
+  to: EmailParticipant[];
+  cc?: EmailParticipant[];
+  bcc?: EmailParticipant[];
+  replyTo?: EmailParticipant[];
+  subject: string;
+  body: string;
+  replyToMessageId?: string;
+};
+
+export type NylasSendMessageResponseContent = {
+  requestId: string;
+  data: NylasMessage;
 };
 
 export type Org = {
