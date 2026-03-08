@@ -623,13 +623,6 @@ class NylasDisconnectConnectionResponseContent(BaseModel):
     success: bool
 
 
-class NylasGetConnectionStatusResponseContent(BaseModel):
-    connected: bool
-    connections: list[NylasConnection] | None = Field(
-        None, description='Connection details if connected'
-    )
-
-
 class NylasGetMessageRequestContent(BaseModel):
     connectionId: str = Field(
         ...,
@@ -662,6 +655,13 @@ class NylasInitiateAuthResponseContent(BaseModel):
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
     state: str | None = Field(None, description='State parameter for CSRF validation')
+
+
+class NylasListConnectionsResponseContent(BaseModel):
+    connected: bool
+    connections: list[NylasConnection] | None = Field(
+        None, description='List of active connections'
+    )
 
 
 class NylasListMessagesRequestContent(BaseModel):

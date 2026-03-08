@@ -707,11 +707,6 @@ export type NylasDisconnectConnectionResponseContent = {
   success: boolean;
 };
 
-export type NylasGetConnectionStatusResponseContent = {
-  connected: boolean;
-  connections?: NylasConnection[];
-};
-
 export type NylasGetMessageRequestContent = {
   connectionId: string;
   messageId: string;
@@ -738,6 +733,11 @@ export type NylasInitiateAuthRequestContent = {
 export type NylasInitiateAuthResponseContent = {
   authUrl: string;
   state?: string;
+};
+
+export type NylasListConnectionsResponseContent = {
+  connected: boolean;
+  connections?: NylasConnection[];
 };
 
 export type NylasListMessagesRequestContent = {

@@ -536,7 +536,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integrations/nylas/connection/disconnect": {
+    "/integrations/nylas/connections/disconnect": {
         parameters: {
             query?: never;
             header?: never;
@@ -545,7 +545,7 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Disconnect Nylas account (soft delete) */
+        /** @description Disconnect a specific Nylas connection (soft delete) */
         post: operations["NylasDisconnectConnection"];
         delete?: never;
         options?: never;
@@ -553,7 +553,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integrations/nylas/connection/status": {
+    "/integrations/nylas/connections/list": {
         parameters: {
             query?: never;
             header?: never;
@@ -562,8 +562,8 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Get connection status for authenticated user */
-        post: operations["NylasGetConnectionStatus"];
+        /** @description List all Nylas connections for authenticated user */
+        post: operations["NylasListConnections"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1735,11 +1735,6 @@ export interface components {
         NylasDisconnectConnectionResponseContent: {
             success: boolean;
         };
-        NylasGetConnectionStatusResponseContent: {
-            connected: boolean;
-            /** @description Connection details if connected */
-            connections?: components["schemas"]["NylasConnection"][];
-        };
         NylasGetMessageRequestContent: {
             /** @description Connection ID to use for this request */
             connectionId: string;
@@ -1765,6 +1760,11 @@ export interface components {
             authUrl: string;
             /** @description State parameter for CSRF validation */
             state?: string;
+        };
+        NylasListConnectionsResponseContent: {
+            connected: boolean;
+            /** @description List of active connections */
+            connections?: components["schemas"]["NylasConnection"][];
         };
         NylasListMessagesRequestContent: {
             /** @description Connection ID to use for this request */
@@ -3957,7 +3957,7 @@ export interface operations {
             };
         };
     };
-    NylasGetConnectionStatus: {
+    NylasListConnections: {
         parameters: {
             query?: never;
             header?: never;
@@ -3966,13 +3966,13 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description NylasGetConnectionStatus 200 response */
+            /** @description NylasListConnections 200 response */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
-                    "application/json": components["schemas"]["NylasGetConnectionStatusResponseContent"];
+                    "application/json": components["schemas"]["NylasListConnectionsResponseContent"];
                 };
             };
             /** @description AuthenticationError 401 response */

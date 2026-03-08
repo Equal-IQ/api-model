@@ -22,6 +22,13 @@ string NylasGrantId
 // Nylas resource
 resource NylasResource {
     identifiers: { connectionId: NylasConnectionId }
+    create: NylasHandleAuthCallback
+    delete: NylasDisconnectConnection
+    operations: [
+        NylasListMessages
+        NylasGetMessage
+        NylasSendMessage
+    ]
 }
 
 // Email structures matching Nylas v3 API exactly
@@ -323,16 +330,16 @@ operation NylasHandleAuthCallback {
     ]
 }
 
-/// Get connection status for authenticated user
-@http(method: "POST", uri: "/integrations/nylas/connection/status")
-operation NylasGetConnectionStatus {
+/// List all Nylas connections for authenticated user
+@http(method: "POST", uri: "/integrations/nylas/connections/list")
+operation NylasListConnections {
     input := {}
 
     output := {
         @required
         connected: Boolean
 
-        /// Connection details if connected
+        /// List of active connections
         connections: NylasConnectionList
     }
 
@@ -346,9 +353,9 @@ list NylasConnectionList {
     member: NylasConnection
 }
 
-/// Disconnect Nylas account (soft delete)
+/// Disconnect a specific Nylas connection (soft delete)
 @idempotent
-@http(method: "POST", uri: "/integrations/nylas/connection/disconnect")
+@http(method: "POST", uri: "/integrations/nylas/connections/disconnect")
 operation NylasDisconnectConnection {
     input := {
         /// Connection ID to disconnect (required for multi-account)
