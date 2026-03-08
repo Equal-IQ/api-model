@@ -612,8 +612,8 @@ class NylasConnection(BaseModel):
 
 
 class NylasDisconnectConnectionRequestContent(BaseModel):
-    connectionId: str | None = Field(
-        None,
+    connectionId: str = Field(
+        ...,
         description='Connection ID to disconnect (required for multi-account)',
         pattern='^[A-Za-z0-9-]+$',
     )
@@ -631,6 +631,11 @@ class NylasGetConnectionStatusResponseContent(BaseModel):
 
 
 class NylasGetMessageRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
     messageId: str
 
 
@@ -660,6 +665,11 @@ class NylasInitiateAuthResponseContent(BaseModel):
 
 
 class NylasListMessagesRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
     limit: float | None = Field(
         None, description='Maximum number of messages to return (default 50, max 200)'
     )
@@ -705,6 +715,11 @@ class NylasMessage(BaseModel):
 
 
 class NylasSendMessageRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
     to: list[EmailParticipant]
     cc: list[EmailParticipant] | None
     bcc: list[EmailParticipant] | None

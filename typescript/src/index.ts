@@ -700,7 +700,7 @@ export type NylasConnection = {
 };
 
 export type NylasDisconnectConnectionRequestContent = {
-  connectionId?: string;
+  connectionId: string;
 };
 
 export type NylasDisconnectConnectionResponseContent = {
@@ -713,6 +713,7 @@ export type NylasGetConnectionStatusResponseContent = {
 };
 
 export type NylasGetMessageRequestContent = {
+  connectionId: string;
   messageId: string;
 };
 
@@ -740,6 +741,7 @@ export type NylasInitiateAuthResponseContent = {
 };
 
 export type NylasListMessagesRequestContent = {
+  connectionId: string;
   limit?: number;
   cursor?: string;
   subject?: string;
@@ -776,6 +778,7 @@ export type NylasMessage = {
 };
 
 export type NylasSendMessageRequestContent = {
+  connectionId: string;
   to: EmailParticipant[];
   cc?: EmailParticipant[];
   bcc?: EmailParticipant[];

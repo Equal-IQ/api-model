@@ -1730,7 +1730,7 @@ export interface components {
         };
         NylasDisconnectConnectionRequestContent: {
             /** @description Connection ID to disconnect (required for multi-account) */
-            connectionId?: string;
+            connectionId: string;
         };
         NylasDisconnectConnectionResponseContent: {
             success: boolean;
@@ -1741,6 +1741,8 @@ export interface components {
             connections?: components["schemas"]["NylasConnection"][];
         };
         NylasGetMessageRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
             messageId: string;
         };
         NylasGetMessageResponseContent: {
@@ -1765,6 +1767,8 @@ export interface components {
             state?: string;
         };
         NylasListMessagesRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
             /** @description Maximum number of messages to return (default 50, max 200) */
             limit?: number;
             /** @description Pagination cursor from previous response */
@@ -1819,6 +1823,8 @@ export interface components {
             folders?: string[];
         };
         NylasSendMessageRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
             to: components["schemas"]["EmailParticipant"][];
             cc?: components["schemas"]["EmailParticipant"][];
             bcc?: components["schemas"]["EmailParticipant"][];
@@ -3907,7 +3913,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["NylasDisconnectConnectionRequestContent"];
             };
@@ -4047,7 +4053,7 @@ export interface operations {
             path?: never;
             cookie?: never;
         };
-        requestBody?: {
+        requestBody: {
             content: {
                 "application/json": components["schemas"]["NylasListMessagesRequestContent"];
             };

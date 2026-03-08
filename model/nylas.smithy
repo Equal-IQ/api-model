@@ -50,7 +50,7 @@ structure NylasMessage {
 
     /// Grant ID that owns this message
     @required
-    grantId: String
+    grantId: NylasGrantId
 
     /// Thread ID
     threadId: String
@@ -153,6 +153,10 @@ structure NylasAuthUrl {
 @http(method: "POST", uri: "/integrations/nylas/messages/list")
 operation NylasListMessages {
     input := {
+        /// Connection ID to use for this request
+        @required
+        connectionId: NylasConnectionId
+
         /// Maximum number of messages to return (default 50, max 200)
         limit: Integer
 
@@ -204,6 +208,10 @@ operation NylasListMessages {
 @http(method: "POST", uri: "/integrations/nylas/messages/get")
 operation NylasGetMessage {
     input := {
+        /// Connection ID to use for this request
+        @required
+        connectionId: NylasConnectionId
+
         @required
         messageId: String
     }
@@ -228,6 +236,10 @@ operation NylasGetMessage {
 @http(method: "POST", uri: "/integrations/nylas/messages/send")
 operation NylasSendMessage {
     input := {
+        /// Connection ID to use for this request
+        @required
+        connectionId: NylasConnectionId
+
         @required
         to: EmailParticipantList
 
@@ -340,6 +352,7 @@ list NylasConnectionList {
 operation NylasDisconnectConnection {
     input := {
         /// Connection ID to disconnect (required for multi-account)
+        @required
         connectionId: NylasConnectionId
     }
 
