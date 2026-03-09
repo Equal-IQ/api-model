@@ -308,13 +308,16 @@ operation NylasInitiateAuth {
 
 /// Handle OAuth callback from Nylas
 /// Exchanges authorization code for grant ID
-@http(method: "POST", uri: "/integrations/nylas/auth/callback")
+/// Note: GET request with query parameters (OAuth redirect from external provider)
+@http(method: "GET", uri: "/integrations/nylas/auth/callback")
 operation NylasHandleAuthCallback {
     input := {
         @required
+        @httpQuery("code")
         code: String
 
         /// State parameter from initiation (for CSRF validation)
+        @httpQuery("state")
         state: String
     }
 

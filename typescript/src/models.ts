@@ -507,11 +507,12 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        put?: never;
         /** @description Handle OAuth callback from Nylas
-         *     Exchanges authorization code for grant ID */
-        post: operations["NylasHandleAuthCallback"];
+         *     Exchanges authorization code for grant ID
+         *     Note: GET request with query parameters (OAuth redirect from external provider) */
+        get: operations["NylasHandleAuthCallback"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -1743,11 +1744,6 @@ export interface components {
         NylasGetMessageResponseContent: {
             requestId: string;
             data: components["schemas"]["NylasMessage"];
-        };
-        NylasHandleAuthCallbackRequestContent: {
-            code: string;
-            /** @description State parameter from initiation (for CSRF validation) */
-            state?: string;
         };
         NylasHandleAuthCallbackResponseContent: {
             connection: components["schemas"]["NylasConnection"];
@@ -3806,16 +3802,16 @@ export interface operations {
     };
     NylasHandleAuthCallback: {
         parameters: {
-            query?: never;
+            query: {
+                code: string;
+                /** @description State parameter from initiation (for CSRF validation) */
+                state?: string;
+            };
             header?: never;
             path?: never;
             cookie?: never;
         };
-        requestBody: {
-            content: {
-                "application/json": components["schemas"]["NylasHandleAuthCallbackRequestContent"];
-            };
-        };
+        requestBody?: never;
         responses: {
             /** @description NylasHandleAuthCallback 200 response */
             200: {

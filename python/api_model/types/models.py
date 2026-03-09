@@ -632,13 +632,6 @@ class NylasGetMessageRequestContent(BaseModel):
     messageId: str
 
 
-class NylasHandleAuthCallbackRequestContent(BaseModel):
-    code: str
-    state: str | None = Field(
-        None, description='State parameter from initiation (for CSRF validation)'
-    )
-
-
 class NylasHandleAuthCallbackResponseContent(BaseModel):
     connection: NylasConnection
 
