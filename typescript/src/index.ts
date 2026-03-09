@@ -717,10 +717,6 @@ export type NylasGetMessageResponseContent = {
   data: NylasMessage;
 };
 
-export type NylasHandleAuthCallbackResponseContent = {
-  connection: NylasConnection;
-};
-
 export type NylasInitiateAuthRequestContent = {
   provider?: string;
 };

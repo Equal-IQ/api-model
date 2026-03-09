@@ -500,25 +500,6 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/integrations/nylas/auth/callback": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** @description Handle OAuth callback from Nylas
-         *     Exchanges authorization code for grant ID
-         *     Note: GET request with query parameters (OAuth redirect from external provider) */
-        get: operations["NylasHandleAuthCallback"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/integrations/nylas/auth/initiate": {
         parameters: {
             query?: never;
@@ -563,7 +544,10 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description List all Nylas connections for authenticated user */
+        /** @description OAuth callback handler (/integrations/nylas/auth/callback) is not defined in Smithy
+         *     It's a raw GET endpoint that accepts query params (code, state) and returns a 302 redirect
+         *     Similar to Google OAuth callback - handles browser redirects, not API JSON responses
+         *     List all Nylas connections for authenticated user */
         post: operations["NylasListConnections"];
         delete?: never;
         options?: never;
@@ -1744,9 +1728,6 @@ export interface components {
         NylasGetMessageResponseContent: {
             requestId: string;
             data: components["schemas"]["NylasMessage"];
-        };
-        NylasHandleAuthCallbackResponseContent: {
-            connection: components["schemas"]["NylasConnection"];
         };
         NylasInitiateAuthRequestContent: {
             /** @description Optional: Specify email provider hint */
@@ -3787,57 +3768,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
-                };
-            };
-            /** @description InternalServerError 500 response */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
-                };
-            };
-        };
-    };
-    NylasHandleAuthCallback: {
-        parameters: {
-            query: {
-                code: string;
-                /** @description State parameter from initiation (for CSRF validation) */
-                state?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description NylasHandleAuthCallback 200 response */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["NylasHandleAuthCallbackResponseContent"];
-                };
-            };
-            /** @description ValidationError 400 response */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
-                };
-            };
-            /** @description AuthenticationError 401 response */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

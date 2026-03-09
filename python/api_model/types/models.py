@@ -632,10 +632,6 @@ class NylasGetMessageRequestContent(BaseModel):
     messageId: str
 
 
-class NylasHandleAuthCallbackResponseContent(BaseModel):
-    connection: NylasConnection
-
-
 class NylasInitiateAuthRequestContent(BaseModel):
     provider: str | None = Field(
         None, description='Optional: Specify email provider hint'

@@ -22,7 +22,6 @@ string NylasGrantId
 // Nylas resource
 resource NylasResource {
     identifiers: { connectionId: NylasConnectionId }
-    create: NylasHandleAuthCallback
     delete: NylasDisconnectConnection
     operations: [
         NylasListMessages
@@ -142,15 +141,6 @@ structure NylasConnection {
 
     /// OAuth scopes granted
     scopes: StringList
-}
-
-/// OAuth initiation response
-structure NylasAuthUrl {
-    @required
-    authUrl: Url
-
-    /// Optional state parameter for CSRF protection
-    state: String
 }
 
 // Email Operations (MVP)
@@ -306,32 +296,9 @@ operation NylasInitiateAuth {
     ]
 }
 
-/// Handle OAuth callback from Nylas
-/// Exchanges authorization code for grant ID
-/// Note: GET request with query parameters (OAuth redirect from external provider)
-@http(method: "GET", uri: "/integrations/nylas/auth/callback")
-operation NylasHandleAuthCallback {
-    input := {
-        @required
-        @httpQuery("code")
-        code: String
-
-        /// State parameter from initiation (for CSRF validation)
-        @httpQuery("state")
-        state: String
-    }
-
-    output := {
-        @required
-        connection: NylasConnection
-    }
-
-    errors: [
-        AuthenticationError
-        ValidationError
-        InternalServerError
-    ]
-}
+/// OAuth callback handler (/integrations/nylas/auth/callback) is not defined in Smithy
+/// It's a raw GET endpoint that accepts query params (code, state) and returns a 302 redirect
+/// Similar to Google OAuth callback - handles browser redirects, not API JSON responses
 
 /// List all Nylas connections for authenticated user
 @http(method: "POST", uri: "/integrations/nylas/connections/list")
