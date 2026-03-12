@@ -6,6 +6,8 @@ use equaliq#UuidLikeMixin
 use equaliq#Email
 use equaliq#Url
 use equaliq#ISODate
+use equaliq#StringList
+use equaliq#PageLimit
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -18,6 +20,7 @@ use equaliq#InternalServerError
 // Identifiers
 string NylasConnectionId with [UuidLikeMixin]
 string NylasGrantId
+string ThreadMetadataId with [UuidLikeMixin]
 
 // Nylas resource
 resource NylasResource {
@@ -27,6 +30,7 @@ resource NylasResource {
         NylasListMessages
         NylasGetMessage
         NylasSendMessage
+        NylasListThreads
     ]
 }
 
@@ -41,10 +45,6 @@ structure EmailParticipant {
 
 list EmailParticipantList {
     member: EmailParticipant
-}
-
-list StringList {
-    member: String
 }
 
 /// Email message
@@ -97,6 +97,51 @@ list NylasMessageList {
     member: NylasMessage
 }
 
+/// Thread with enriched metadata
+structure NylasThread {
+    /// Our database ID
+    @required
+    threadMetadataId: ThreadMetadataId
+
+    /// Nylas thread ID
+    @required
+    externalThreadId: String
+
+    @required
+    provider: String
+
+    connectionId: String
+
+    /// Timeline
+    @required
+    lastMessageAt: ISODate
+
+    @required
+    messageCount: Integer
+
+    /// AI-generated metadata (no PII)
+    summary: String
+    priority: Integer
+    labels: StringList
+    ragKeywords: StringList
+
+    /// Processing state
+    @required
+    analyzed: Boolean
+
+    analyzedAt: ISODate
+
+    @required
+    createdAt: ISODate
+
+    @required
+    updatedAt: ISODate
+}
+
+list NylasThreadList {
+    member: NylasThread
+}
+
 /// Nylas API list response wrapper
 structure ListMessagesResponse {
     @required
@@ -141,6 +186,50 @@ structure NylasConnection {
 
     /// OAuth scopes granted
     scopes: StringList
+}
+
+// Thread Operations
+
+/// List threads with enriched metadata
+/// Fetches threads from our database (includes AI-generated summary, priority, labels)
+/// For live thread data (subject, participants), use NylasGetMessage per message
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "threads", pageSize: "limit")
+@http(method: "POST", uri: "/integrations/nylas/threads/list")
+operation NylasListThreads {
+    input := {
+        /// Connection ID to use for this request
+        @required
+        connectionId: NylasConnectionId
+
+        /// Filter by priority (minimum value)
+        minPriority: Integer
+
+        /// Filter by label
+        label: String
+
+        /// Filter analyzed threads only
+        analyzedOnly: Boolean
+
+        /// Pagination cursor (encoded threadMetadataId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        threads: NylasThreadList
+
+        /// Token for next page
+        nextToken: String
+    }
+
+    errors: [
+        AuthenticationError
+        ValidationError
+        InternalServerError
+    ]
 }
 
 // Email Operations (MVP)
