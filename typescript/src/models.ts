@@ -609,6 +609,25 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/integrations/nylas/threads/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List threads with enriched metadata
+         *     Fetches threads from our database (includes AI-generated summary, priority, labels)
+         *     For live thread data (subject, participants), use NylasGetMessage per message */
+        post: operations["NylasListThreads"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/create": {
         parameters: {
             query?: never;
@@ -1771,6 +1790,25 @@ export interface components {
             /** @description Cursor for next page */
             nextCursor?: string;
         };
+        NylasListThreadsRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
+            /** @description Filter by priority (minimum value) */
+            minPriority?: number;
+            /** @description Filter by label */
+            label?: string;
+            /** @description Filter analyzed threads only */
+            analyzedOnly?: boolean;
+            /** @description Pagination cursor (encoded threadMetadataId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        NylasListThreadsResponseContent: {
+            threads: components["schemas"]["NylasThread"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
         /** @description Email message
          *     Matches Nylas v3 Message object structure */
         NylasMessage: {
@@ -1815,6 +1853,28 @@ export interface components {
         NylasSendMessageResponseContent: {
             requestId: string;
             data: components["schemas"]["NylasMessage"];
+        };
+        /** @description Thread with enriched metadata */
+        NylasThread: {
+            /** @description Our database ID */
+            threadMetadataId: string;
+            /** @description Nylas thread ID */
+            externalThreadId: string;
+            provider: string;
+            connectionId?: string;
+            /** @description Timeline */
+            lastMessageAt: string;
+            messageCount: number;
+            /** @description AI-generated metadata (no PII) */
+            summary?: string;
+            priority?: number;
+            labels?: string[];
+            ragKeywords?: string[];
+            /** @description Processing state */
+            analyzed: boolean;
+            analyzedAt?: string;
+            createdAt: string;
+            updatedAt: string;
         };
         Org: {
             orgId: string;
@@ -4043,6 +4103,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["NylasSendMessageResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasListThreads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasListThreadsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasListThreads 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasListThreadsResponseContent"];
                 };
             };
             /** @description ValidationError 400 response */

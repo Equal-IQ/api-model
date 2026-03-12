@@ -750,6 +750,20 @@ export type NylasListMessagesResponseContent = {
   nextCursor?: string;
 };
 
+export type NylasListThreadsRequestContent = {
+  connectionId: string;
+  minPriority?: number;
+  label?: string;
+  analyzedOnly?: boolean;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type NylasListThreadsResponseContent = {
+  threads: NylasThread[];
+  nextToken?: string;
+};
+
 export type NylasMessage = {
   id: string;
   grantId: string;
@@ -782,6 +796,23 @@ export type NylasSendMessageRequestContent = {
 export type NylasSendMessageResponseContent = {
   requestId: string;
   data: NylasMessage;
+};
+
+export type NylasThread = {
+  threadMetadataId: string;
+  externalThreadId: string;
+  provider: string;
+  connectionId?: string;
+  lastMessageAt: string;
+  messageCount: number;
+  summary?: string;
+  priority?: number;
+  labels?: string[];
+  ragKeywords?: string[];
+  analyzed: boolean;
+  analyzedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Org = {

@@ -678,6 +678,23 @@ class NylasListMessagesRequestContent(BaseModel):
     )
 
 
+class NylasListThreadsRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    minPriority: float | None = Field(
+        None, description='Filter by priority (minimum value)'
+    )
+    label: str | None = Field(None, description='Filter by label')
+    analyzedOnly: bool | None = Field(None, description='Filter analyzed threads only')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded threadMetadataId)'
+    )
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
 class NylasMessage(BaseModel):
     """
     Email message
@@ -723,6 +740,42 @@ class NylasSendMessageRequestContent(BaseModel):
 class NylasSendMessageResponseContent(BaseModel):
     requestId: str
     data: NylasMessage
+
+
+class NylasThread(BaseModel):
+    """
+    Thread with enriched metadata
+    """
+
+    threadMetadataId: str = Field(
+        ..., description='Our database ID', pattern='^[A-Za-z0-9-]+$'
+    )
+    externalThreadId: str = Field(..., description='Nylas thread ID')
+    provider: str
+    connectionId: str | None
+    lastMessageAt: str = Field(
+        ...,
+        description='Timeline',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    messageCount: float
+    summary: str | None = Field(None, description='AI-generated metadata (no PII)')
+    priority: float | None
+    labels: list[str] | None
+    ragKeywords: list[str] | None
+    analyzed: bool = Field(..., description='Processing state')
+    analyzedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
 
 
 class Org(BaseModel):
@@ -1432,6 +1485,11 @@ class NylasListMessagesResponseContent(BaseModel):
     requestId: str
     data: list[NylasMessage]
     nextCursor: str | None = Field(None, description='Cursor for next page')
+
+
+class NylasListThreadsResponseContent(BaseModel):
+    threads: list[NylasThread]
+    nextToken: str | None = Field(None, description='Token for next page')
 
 
 class OrgCustomRole(BaseModel):
