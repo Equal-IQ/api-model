@@ -396,7 +396,6 @@ operation DeleteDealFile {
 }
 
 /// List files associated with a deal
-@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
 @http(method: "POST", uri: "/deals/{dealId}/files/list")
 operation ListDealFiles {
@@ -484,7 +483,6 @@ operation DeleteDealVersionFile {
 }
 
 /// List files associated with a deal version
-@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
 @http(method: "POST", uri: "/deals/versions/{dealVersionId}/files/list")
 operation ListDealVersionFiles {

@@ -730,7 +730,6 @@ operation DeleteDealThread {
 }
 
 /// List threads associated with a deal
-@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "dealThreads", pageSize: "limit")
 @http(method: "POST", uri: "/deals/{dealId}/threads/list")
 operation ListDealThreads {
