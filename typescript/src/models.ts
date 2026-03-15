@@ -292,6 +292,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/{dealId}/threads/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Associate a thread with a deal */
+        post: operations["CreateDealThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/threads/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List threads associated with a deal */
+        post: operations["ListDealThreads"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/threads/{dealThreadId}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Remove thread association from deal */
+        post: operations["DeleteDealThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/files/access/grant": {
         parameters: {
             query?: never;
@@ -1117,6 +1168,15 @@ export interface components {
             deal: components["schemas"]["Deal"];
             initialVersion: components["schemas"]["DealVersion"];
         };
+        CreateDealThreadRequestContent: {
+            threadMetadataId: string;
+            associationType: components["schemas"]["DealThreadAssociationType"];
+            notes?: string;
+        };
+        CreateDealThreadResponseContent: {
+            success: boolean;
+            dealThread: components["schemas"]["DealThread"];
+        };
         CreateDealVersionRequestContent: {
             dealId: string;
             stage: components["schemas"]["DealStage"];
@@ -1251,6 +1311,26 @@ export interface components {
          * @enum {string}
          */
         DealStage: DealStage;
+        /** @description Deal-Thread association */
+        DealThread: {
+            dealThreadId: string;
+            dealId: string;
+            threadMetadataId: string;
+            associationType: components["schemas"]["DealThreadAssociationType"];
+            associatedBy?: string;
+            associatedAt?: string;
+            notes?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /**
+         * @description How a thread was associated with a deal
+         * @enum {string}
+         */
+        DealThreadAssociationType: DealThreadAssociationType;
+        DealThreadMap: {
+            [key: string]: components["schemas"]["DealThread"];
+        };
         /** @description Deal version for tracking changes through stages */
         DealVersion: {
             dealVersionId: string;
@@ -1281,6 +1361,9 @@ export interface components {
             dealId: string;
             /** @description Soft delete by default */
             hardDelete?: boolean;
+        };
+        DeleteDealThreadResponseContent: {
+            success: boolean;
         };
         DeleteFileRequestContent: {
             /** @description File identifier */
@@ -1570,6 +1653,18 @@ export interface components {
         };
         ListDealAccessResponseContent: {
             access: components["schemas"]["DealAccessMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        ListDealThreadsRequestContent: {
+            associationType?: components["schemas"]["DealThreadAssociationType"];
+            /** @description Pagination cursor (encoded dealThreadId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDealThreadsResponseContent: {
+            dealThreads: components["schemas"]["DealThreadMap"];
             /** @description Token for next page */
             nextToken?: string;
         };
@@ -3106,6 +3201,171 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ListDealVersionsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateDealThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealThreadRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDealThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealThreadResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealThreads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListDealThreadsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealThreads 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealThreadsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteDealThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+                dealThreadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DeleteDealThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteDealThreadResponseContent"];
                 };
             };
             /** @description AuthenticationError 401 response */
@@ -5627,6 +5887,11 @@ export enum DealStage {
     delivery = "delivery",
     completed = "completed",
     cancelled = "cancelled"
+}
+export enum DealThreadAssociationType {
+    manual = "manual",
+    ai_suggested = "ai_suggested",
+    participant_match = "participant_match"
 }
 export enum DeliverableSource {
     inferred = "inferred",

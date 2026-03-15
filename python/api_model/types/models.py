@@ -188,6 +188,16 @@ class DealStage(StrEnum):
     cancelled = 'cancelled'
 
 
+class DealThreadAssociationType(StrEnum):
+    """
+    How a thread was associated with a deal
+    """
+
+    manual = 'manual'
+    ai_suggested = 'ai_suggested'
+    participant_match = 'participant_match'
+
+
 class DealVersion(BaseModel):
     """
     Deal version for tracking changes through stages
@@ -232,6 +242,10 @@ class DeclineOrgInviteRequestContent(BaseModel):
 class DeleteDealRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     hardDelete: bool | None = Field(None, description='Soft delete by default')
+
+
+class DeleteDealThreadResponseContent(BaseModel):
+    success: bool
 
 
 class DeleteFileRequestContent(BaseModel):
@@ -473,6 +487,14 @@ class ListDealAccessRequestContent(BaseModel):
     includeExpired: bool | None = Field(None, description='Include expired access')
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded accessId)'
+    )
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class ListDealThreadsRequestContent(BaseModel):
+    associationType: DealThreadAssociationType | None
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded dealThreadId)'
     )
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
@@ -1153,6 +1175,12 @@ class CreateDealResponseContent(BaseModel):
     initialVersion: DealVersion
 
 
+class CreateDealThreadRequestContent(BaseModel):
+    threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    associationType: DealThreadAssociationType
+    notes: str | None
+
+
 class CreateDealVersionRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     stage: DealStage
@@ -1253,6 +1281,35 @@ class DealAccess(BaseModel):
 
 class DealAccessMap(RootModel[dict[str, DealAccess]]):
     root: dict[str, DealAccess]
+
+
+class DealThread(BaseModel):
+    """
+    Deal-Thread association
+    """
+
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    associationType: DealThreadAssociationType
+    associatedBy: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    associatedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    notes: str | None
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class DealThreadMap(RootModel[dict[str, DealThread]]):
+    root: dict[str, DealThread]
 
 
 class Deliverable(BaseModel):
@@ -1448,6 +1505,11 @@ class ListDealAccessResponseContent(BaseModel):
     nextToken: str | None = Field(None, description='Token for next page')
 
 
+class ListDealThreadsResponseContent(BaseModel):
+    dealThreads: DealThreadMap
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
 class ListDeliverablesResponseContent(BaseModel):
     deliverables: DeliverableMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1600,6 +1662,11 @@ class UpdateProfileResponseContent(BaseModel):
 class AcceptOrgInviteResponseContent(BaseModel):
     organization: Org
     member: OrgMember
+
+
+class CreateDealThreadResponseContent(BaseModel):
+    success: bool
+    dealThread: DealThread
 
 
 class CreateDeliverableResponseContent(BaseModel):

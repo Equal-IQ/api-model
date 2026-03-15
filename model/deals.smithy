@@ -79,7 +79,7 @@ resource DealResource {
     update: UpdateDeal
     delete: DeleteDeal
     list: ListDeals
-    resources: [DealAccessResource, DealVersionResource, DeliverableResource]
+    resources: [DealAccessResource, DealVersionResource, DeliverableResource, DealThreadResource]
 }
 
 resource DealVersionResource {
@@ -94,6 +94,13 @@ resource DeliverableResource {
     create: CreateDeliverable
     update: UpdateDeliverable
     list: ListDeliverables
+}
+
+resource DealThreadResource {
+    identifiers: { dealId: DealId, dealThreadId: DealThreadId }
+    create: CreateDealThread
+    delete: DeleteDealThread
+    list: ListDealThreads
 }
 
 /// Main deal entity
@@ -730,6 +737,7 @@ operation DeleteDealThread {
 }
 
 /// List threads associated with a deal
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "dealThreads", pageSize: "limit")
 @http(method: "POST", uri: "/deals/{dealId}/threads/list")
 operation ListDealThreads {

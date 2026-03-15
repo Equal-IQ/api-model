@@ -51,6 +51,12 @@ export enum DealStage {
   cancelled = "cancelled"
 }
 
+export enum DealThreadAssociationType {
+  manual = "manual",
+  ai_suggested = "ai_suggested",
+  participant_match = "participant_match"
+}
+
 export enum DeliverableSource {
   inferred = "inferred",
   template = "template",
@@ -171,6 +177,17 @@ export type CreateDealResponseContent = {
   initialVersion: DealVersion;
 };
 
+export type CreateDealThreadRequestContent = {
+  threadMetadataId: string;
+  associationType: DealThreadAssociationType;
+  notes?: string;
+};
+
+export type CreateDealThreadResponseContent = {
+  success: boolean;
+  dealThread: DealThread;
+};
+
 export type CreateDealVersionRequestContent = {
   dealId: string;
   stage: DealStage;
@@ -285,6 +302,20 @@ export type DealAccessMap = { [key: string]: DealAccess };
 
 export type DealMap = { [key: string]: Deal };
 
+export type DealThread = {
+  dealThreadId: string;
+  dealId: string;
+  threadMetadataId: string;
+  associationType: DealThreadAssociationType;
+  associatedBy?: string;
+  associatedAt?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DealThreadMap = { [key: string]: DealThread };
+
 export type DealVersion = {
   dealVersionId: string;
   dealId: string;
@@ -309,6 +340,10 @@ export type DeclineOrgInviteRequestContent = {
 export type DeleteDealRequestContent = {
   dealId: string;
   hardDelete?: boolean;
+};
+
+export type DeleteDealThreadResponseContent = {
+  success: boolean;
 };
 
 export type DeleteFileRequestContent = {
@@ -569,6 +604,17 @@ export type ListDealAccessRequestContent = {
 
 export type ListDealAccessResponseContent = {
   access: DealAccessMap;
+  nextToken?: string;
+};
+
+export type ListDealThreadsRequestContent = {
+  associationType?: DealThreadAssociationType;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDealThreadsResponseContent = {
+  dealThreads: DealThreadMap;
   nextToken?: string;
 };
 
