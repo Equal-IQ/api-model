@@ -763,6 +763,14 @@ export type NylasGetMessageResponseContent = {
   data: NylasMessage;
 };
 
+export type NylasGetThreadRequestContent = {
+  threadMetadataId: string;
+};
+
+export type NylasGetThreadResponseContent = {
+  thread: NylasThread;
+};
+
 export type NylasInitiateAuthRequestContent = {
   provider?: string;
 };

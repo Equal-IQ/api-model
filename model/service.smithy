@@ -29,6 +29,7 @@ service EqualIQ {
     // nylas.smithy - Cross-cutting Nylas operations (resource-bound operations are on NylasResource)
     NylasInitiateAuth
     NylasListConnections
+    NylasGetThread
 
     // Utility operations
     Ping

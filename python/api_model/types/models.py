@@ -654,6 +654,12 @@ class NylasGetMessageRequestContent(BaseModel):
     messageId: str
 
 
+class NylasGetThreadRequestContent(BaseModel):
+    threadMetadataId: str = Field(
+        ..., description='Thread metadata ID', pattern='^[A-Za-z0-9-]+$'
+    )
+
+
 class NylasInitiateAuthRequestContent(BaseModel):
     provider: str | None = Field(
         None, description='Optional: Specify email provider hint'
@@ -1541,6 +1547,10 @@ class ListUserOrganizationsResponseContent(BaseModel):
 class NylasGetMessageResponseContent(BaseModel):
     requestId: str
     data: NylasMessage
+
+
+class NylasGetThreadResponseContent(BaseModel):
+    thread: NylasThread
 
 
 class NylasListMessagesResponseContent(BaseModel):

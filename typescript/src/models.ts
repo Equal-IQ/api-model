@@ -660,6 +660,24 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/integrations/nylas/threads/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get a single thread by ID
+         *     Fetches thread metadata from our database (includes AI-generated summary, priority, labels) */
+        post: operations["NylasGetThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/integrations/nylas/threads/list": {
         parameters: {
             query?: never;
@@ -1842,6 +1860,13 @@ export interface components {
         NylasGetMessageResponseContent: {
             requestId: string;
             data: components["schemas"]["NylasMessage"];
+        };
+        NylasGetThreadRequestContent: {
+            /** @description Thread metadata ID */
+            threadMetadataId: string;
+        };
+        NylasGetThreadResponseContent: {
+            thread: components["schemas"]["NylasThread"];
         };
         NylasInitiateAuthRequestContent: {
             /** @description Optional: Specify email provider hint */
@@ -4381,6 +4406,57 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasGetThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasGetThreadRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasGetThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasGetThreadResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

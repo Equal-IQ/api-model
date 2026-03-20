@@ -232,6 +232,28 @@ operation NylasListThreads {
     ]
 }
 
+/// Get a single thread by ID
+/// Fetches thread metadata from our database (includes AI-generated summary, priority, labels)
+@http(method: "POST", uri: "/integrations/nylas/threads/get")
+operation NylasGetThread {
+    input := {
+        /// Thread metadata ID
+        @required
+        threadMetadataId: ThreadMetadataId
+    }
+
+    output := {
+        @required
+        thread: NylasThread
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
 // Email Operations (MVP)
 
 /// List messages for authenticated user
