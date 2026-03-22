@@ -414,7 +414,7 @@ operation CreateConversation {
 }
 
 @readonly
-@http(method: "GET", uri: "/ai/conversations/{conversationId}")
+@http(method: "POST", uri: "/ai/conversations/get")
 operation GetConversation {
     input := {
         @required
@@ -448,7 +448,7 @@ structure SendMessageOutput {
 /// Send a message to a conversation. Creates a run asynchronously.
 /// Poll GetRun to track progress (chain of thought, steps) and retrieve the final response.
 /// Also used by CreateConversation to send the initial message and create the first run.
-@http(method: "POST", uri: "/ai/conversations/{conversationId}/messages")
+@http(method: "POST", uri: "/ai/conversations/send-message")
 operation SendMessage {
     input := {
         @required
@@ -474,7 +474,7 @@ operation SendMessage {
 // ─── Operations: Runs ───────────────────────────────────────────────────────
 
 @readonly
-@http(method: "GET", uri: "/ai/runs/{runId}")
+@http(method: "POST", uri: "/ai/runs/get")
 /// This is generally only used for polling the active run. Otherwise, we'll just fetch the conversations to load all messages.
 operation GetRun {
     input := {
@@ -495,7 +495,7 @@ operation GetRun {
 }
 
 @idempotent
-@http(method: "DELETE", uri: "/ai/runs/{runId}")
+@http(method: "POST", uri: "/ai/runs/cancel")
 operation CancelRun {
     input := {
         @required
@@ -518,7 +518,7 @@ operation CancelRun {
 // ─── Operations: Revisions ──────────────────────────────────────────────────
 
 @readonly
-@http(method: "GET", uri: "/ai/runs/{runId}/revisions")
+@http(method: "POST", uri: "/ai/revisions/list")
 operation ListRunRevisions {
     input := {
         @required
@@ -537,7 +537,7 @@ operation ListRunRevisions {
     ]
 }
 
-@http(method: "POST", uri: "/ai/revisions/{revisionId}/apply")
+@http(method: "POST", uri: "/ai/revisions/apply")
 operation ApplyRevision {
     input := {
         @required
@@ -557,7 +557,7 @@ operation ApplyRevision {
     ]
 }
 
-@http(method: "POST", uri: "/ai/revisions/{revisionId}/reject")
+@http(method: "POST", uri: "/ai/revisions/reject")
 operation RejectRevision {
     input := {
         @required
