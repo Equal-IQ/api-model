@@ -213,6 +213,9 @@ structure Run {
     /// Error message if run failed
     errorMessage: String
 
+    /// The assistant's response message (populated when run completes)
+    responseMessage: Message
+
     @required
     createdByUserId: UserId
 
@@ -468,13 +471,15 @@ operation CreateConversation {
       @required
       selectedContexts: SelectedContext
 
+      @required
+      initialMessage: String
+      
       /// Optional title
       title: String
     }
 
     output := {
-        @required
-        conversation: Conversation
+        sendMessageOutput: SendMessageOutput
     }
 
     errors: [
@@ -489,7 +494,6 @@ operation CreateConversation {
 operation GetConversation {
     input := {
         @required
-        @httpLabel
         conversationId: ConversationId
     }
 
@@ -508,23 +512,21 @@ operation GetConversation {
     ]
 }
 
-/// Send a message to a conversation. Creates a run and streams SSE events.
-///
-/// Streaming behavior: This endpoint returns an SSE stream, not a single JSON response.
-/// The stream emits the following event types:
-/// - run_started — { runId, conversationId }
-/// - step_complete — { stepNumber, mode, status, statusMessage, durationMs }
-/// - response_chunk — { text }
-/// - run_complete — { runId, response, revisions[], citations[], cycleCount }
-/// - run_error — { error }
-/// - run_cancelled — { runId }
-///
-/// The output structure below represents the final accumulated result.
+/// Send a message to a conversation. Creates a run asynchronously.
+/// Poll GetRun to track progress (chain of thought, steps) and retrieve the final response.
+/// Also used by CreateConversation to send the initial message and create the first run.
 @http(method: "POST", uri: "/ai/conversations/{conversationId}/messages")
+structure SendMessageOutput {
+  @required
+  conversationId: ConversationId
+
+  @required
+  runId: RunId
+}
+
 operation SendMessage {
     input := {
         @required
-        @httpLabel
         conversationId: ConversationId
 
         @required
@@ -538,16 +540,7 @@ operation SendMessage {
         selectedContexts: SelectedContext
     }
 
-    output := {
-        @required
-        runId: RunId
-
-        @required
-        conversationId: ConversationId
-
-        @required
-        assistantMessage: Message
-    }
+    output : SendMessageOutput
 
     errors: [
         AuthenticationError
@@ -564,11 +557,9 @@ operation SendMessage {
 operation GetRun {
     input := {
         @required
-        @httpLabel
         runId: RunId
 
         /// Include step audit records in the response
-        @httpQuery("includeSteps")
         includeSteps: Boolean
     }
 
@@ -592,7 +583,6 @@ operation GetRun {
 operation CancelRun {
     input := {
         @required
-        @httpLabel
         runId: RunId
     }
 
@@ -616,7 +606,6 @@ operation CancelRun {
 operation ListRunRevisions {
     input := {
         @required
-        @httpLabel
         runId: RunId
     }
 
@@ -636,7 +625,6 @@ operation ListRunRevisions {
 operation ApplyRevision {
     input := {
         @required
-        @httpLabel
         revisionId: RevisionId
     }
 
@@ -657,7 +645,6 @@ operation ApplyRevision {
 operation RejectRevision {
     input := {
         @required
-        @httpLabel
         revisionId: RevisionId
     }
 
