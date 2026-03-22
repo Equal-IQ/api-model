@@ -37,6 +37,7 @@ enum CitationSourceType {
     legal_kb = "legal_kb"
     app_kb = "app_kb"
     user_document = "user_document"
+    deal = "deal_analysis"
     external = "external"
 }
 
@@ -56,7 +57,7 @@ enum RiskLevel {
 
 // ─── ID Types ────────────────────────────────────────────────────────────────
 
-string ConversationId with [UuidLikeMixin]
+string  ConversationId with [UuidLikeMixin]
 string MessageId with [UuidLikeMixin]
 string RunId with [UuidLikeMixin]
 string RevisionId with [UuidLikeMixin]
@@ -145,6 +146,10 @@ structure Conversation {
 }
 
 structure Message {
+    /// Run that produced this message (or run that this message produced for user)
+    @required
+    runId: RunId
+
     @required
     messageId: MessageId
 
@@ -157,25 +162,11 @@ structure Message {
     @required
     content: String
 
-    /// Run that produced this message (assistant messages only)
-    runId: RunId
-
-    /// Citations included in the response (assistant messages only)
+    /// Citations included in the message (assistant messages only)
     citations: CitationList
 
-    /// Number of agent cycles in the run (assistant messages only)
-    cycleCount: Integer
-
     @required
-    createdByUserId: UserId
-
-    updatedByUserId: UserId
-
-    @required
-    createdAt: ISODate
-
-    @required
-    updatedAt: ISODate
+    timestamp: ISODate
 }
 
 @documentation("A Run is a single Reason/Act Loop Cycle - comprising of a single AI response to a user query + the associated agent activity (tool calls, reasoning traces) that led to that response. A Conversation may have multiple Runs as the user and AI assistant go back and forth.")
@@ -186,46 +177,32 @@ structure Run {
     @required
     conversationId: ConversationId
 
+    /// User message that initiated this run
     @required
-    messageId: MessageId
+    userMessageId: MessageId
 
     @required
     status: RunStatus
 
-    /// Serialized agent context (working memory, plan, ledgers) — internal JSONB
-    context: Document
-
     @required
     currentStep: Integer
 
-    @required
-    dealId: DealId
-
-    @required
-    contractFileId: FileId
-
     /// Context items selected at run creation (files, deal, global)
+    @required
     selectedContexts: SelectedContext
 
-    /// When the run completed
-    completedAt: ISODate
-
-    /// Error message if run failed
-    errorMessage: String
+    /// Human-readable current thoughts/status from the AI (e.g. "Thinking through the implications of clause 8.2...")
+    thoughtDescription: String
 
     /// The assistant's response message (populated when run completes)
     responseMessage: Message
 
-    @required
-    createdByUserId: UserId
+    // TODO: Spec this properly
+    /// Error message if run failed 
+    errorMessage: String
 
-    updatedByUserId: UserId
-
-    @required
-    createdAt: ISODate
-
-    @required
-    updatedAt: ISODate
+    /// Step audit records for this run
+    steps: StepAuditRecordMap
 }
 
 structure Revision {
@@ -293,29 +270,19 @@ structure StepAuditRecord {
     /// Tool results received during this step — JSONB
     toolResults: Document
 
-    /// Response text (for quick_response mode)
-    response: String
-
-    /// Status message generated
+    /// Status message generated (human readable summary of what the AI is doing)
     statusMessage: String
 
     @required
     durationMs: Long
 
     @required
-    createdByUserId: UserId
-
-    updatedByUserId: UserId
-
-    @required
-    createdAt: ISODate
-
-    @required
-    updatedAt: ISODate
+    timestamp: ISODate
 }
 
 // ─── Sub-Structures ─────────────────────────────────────────────────────────
 
+//TODO: need to figure out sitemap setup for AI referencing things effectively to user.
 structure Citation {
     @required
     id: CitationId
@@ -329,14 +296,16 @@ structure Citation {
     @required
     sourceName: String
 
-    @required
     excerpt: String
 
     /// Location within the source (section, page)
     location: String
 
+    /// Internal Site Reference
+    siteReference: SiteReference
+
     /// URL if applicable
-    url: String
+    url: Url
 }
 
 structure RawDiffOperation {
@@ -368,6 +337,12 @@ structure RawDiffOperation {
 structure ProcessedDiffOperation {
     @required
     id: String
+
+    /// Version of the deal we are suggesting a revision to
+    dealVersionId: DealVersionId
+
+    @required
+    rawDiff: RawDiffOperation
 
     @required
     type: DiffOperationType
@@ -532,11 +507,7 @@ operation SendMessage {
         @required
         message: String
 
-        /// Primary contract file for this run
-        @required
-        contractFileId: FileId
-
-        /// Override contexts for this message (defaults to conversation contexts)
+        /// Update contexts for this conversation
         selectedContexts: SelectedContext
     }
 
@@ -554,21 +525,16 @@ operation SendMessage {
 
 @readonly
 @http(method: "GET", uri: "/ai/runs/{runId}")
+/// This is generally only used for polling the active run. Otherwise, we'll just fetch the conversations to load all messages.
 operation GetRun {
     input := {
         @required
         runId: RunId
-
-        /// Include step audit records in the response
-        includeSteps: Boolean
     }
 
     output := {
         @required
         run: Run
-
-        /// Step audit records keyed by runStepId (present when includeSteps=true)
-        steps: StepAuditRecordMap
     }
 
     errors: [
