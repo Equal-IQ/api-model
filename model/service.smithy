@@ -15,6 +15,11 @@ service EqualIQ {
     DealResource
     FileResource
     AuditLogResource
+
+    // AI Chat
+    ConversationResource
+    RunResource
+    RevisionResource
   ]
   operations: [
     GetProfile
