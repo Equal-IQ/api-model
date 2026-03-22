@@ -4,6 +4,137 @@
  */
 
 export interface paths {
+    "/ai/conversations": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CreateConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/conversations/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetConversation"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/conversations/send-message": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Send a message to a conversation. Creates a run asynchronously.
+         *     Poll GetRun to track progress (chain of thought, steps) and retrieve the final response.
+         *     Also used by CreateConversation to send the initial message and create the first run. */
+        post: operations["SendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/revisions/apply": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ApplyRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/revisions/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["ListRunRevisions"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/revisions/reject": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["RejectRevision"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/runs/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["CancelRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ai/runs/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["GetRun"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/audit/list": {
         parameters: {
             query?: never;
@@ -928,6 +1059,12 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        ApplyRevisionRequestContent: {
+            revisionId: string;
+        };
+        ApplyRevisionResponseContent: {
+            revision: components["schemas"]["Revision"];
+        };
         /** @description Audit log entry for field-level change tracking */
         AuditLog: {
             /** @description Audit log identifier */
@@ -972,11 +1109,59 @@ export interface components {
             orgId: string;
             inviteId: string;
         };
+        CancelRunRequestContent: {
+            runId: string;
+        };
+        CancelRunResponseContent: {
+            run: components["schemas"]["Run"];
+        };
+        CharacterRange: {
+            start: number;
+            end: number;
+        };
+        Citation: {
+            id: string;
+            sourceType: components["schemas"]["CitationSourceType"];
+            sourceId: string;
+            sourceName: string;
+            excerpt?: string;
+            /** @description Location within the source (section, page) */
+            location?: string;
+            /** @description Internal Site Reference */
+            siteReference?: string;
+            /** @description URL if applicable */
+            url?: string;
+        };
+        /**
+         * @description Citation source type
+         * @enum {string}
+         */
+        CitationSourceType: CitationSourceType;
         /**
          * @description Content disposition for file downloads
          * @enum {string}
          */
         ContentDisposition: ContentDisposition;
+        Conversation: {
+            conversationId: string;
+            dealId: string;
+            selectedContexts?: components["schemas"]["SelectedContext"];
+            /** @description Conversation title (auto-generated or user-set) */
+            title?: string;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        CreateConversationRequestContent: {
+            selectedContexts: components["schemas"]["SelectedContext"];
+            initialMessage: string;
+            /** @description Optional title */
+            title?: string;
+        };
+        CreateConversationResponseContent: {
+            sendMessageOutput?: components["schemas"]["SendMessageOutput"];
+        };
         CreateDealRequestContent: {
             orgId: string;
             title: string;
@@ -1110,6 +1295,10 @@ export interface components {
         DealAccessMap: {
             [key: string]: components["schemas"]["DealAccess"];
         };
+        DealContext: {
+            /** @description List of deal identifiers */
+            dealIds: string[];
+        };
         DealMap: {
             [key: string]: components["schemas"]["Deal"];
         };
@@ -1195,6 +1384,49 @@ export interface components {
         DeliverableSource: DeliverableSource;
         /** @enum {string} */
         DeliverableStatus: DeliverableStatus;
+        DiffImpact: {
+            riskLevel: components["schemas"]["RiskLevel"];
+            affectedParties: string[];
+            relatedClauses?: string[];
+        };
+        DiffLocation: {
+            section?: string;
+            clauseId?: string;
+            path?: string;
+            range?: components["schemas"]["CharacterRange"];
+            lineRange?: components["schemas"]["LineRange"];
+            context?: string;
+        };
+        DiffOperation: {
+            id: string;
+            /** @description Version of the deal we are suggesting a revision to */
+            dealVersionId: string;
+            type: components["schemas"]["DiffOperationType"];
+            oldText: string;
+            newText: string;
+            reason: string;
+            legalRationale?: string;
+            location: components["schemas"]["DiffLocation"];
+            validation: components["schemas"]["DiffValidation"];
+            impact: components["schemas"]["DiffImpact"];
+            preview: components["schemas"]["DiffPreview"];
+        };
+        /**
+         * @description Diff operation type
+         * @enum {string}
+         */
+        DiffOperationType: DiffOperationType;
+        DiffPreview: {
+            before: string;
+            after: string;
+            highlighted: boolean;
+        };
+        DiffValidation: {
+            textFound: boolean;
+            multipleMatches?: number;
+            /** @description Match locations if multiple found */
+            matchLocations?: components["schemas"]["CharacterRange"][];
+        };
         /** @description File entity with dual-ownership pattern */
         File: {
             /** @description File identifier */
@@ -1248,6 +1480,10 @@ export interface components {
         FileAccessMap: {
             [key: string]: components["schemas"]["FileAccess"];
         };
+        FileContext: {
+            /** @description List of file identifiers */
+            fileIds: string[];
+        };
         FileMap: {
             [key: string]: components["schemas"]["File"];
         };
@@ -1298,6 +1534,13 @@ export interface components {
             statistics: components["schemas"]["AuditStatistics"];
             /** @description Time series data if groupBy is specified */
             timeSeries?: components["schemas"]["TimeSeriesPoint"][];
+        };
+        GetConversationRequestContent: {
+            conversationId: string;
+        };
+        GetConversationResponseContent: {
+            conversation: components["schemas"]["Conversation"];
+            messages: components["schemas"]["MessageMap"];
         };
         GetDealRequestContent: {
             dealId: string;
@@ -1365,6 +1608,15 @@ export interface components {
         GetProfileResponseContent: {
             profile: components["schemas"]["UserProfile"];
         };
+        GetRunRequestContent: {
+            runId: string;
+        };
+        GetRunResponseContent: {
+            run: components["schemas"]["Run"];
+        };
+        GlobalContext: {
+            isEnabled: boolean;
+        };
         GrantDealAccessRequestContent: {
             dealId: string;
             grantToOrgId: string;
@@ -1405,6 +1657,12 @@ export interface components {
         };
         /** @enum {string} */
         InviteStatus: InviteStatus;
+        LineRange: {
+            startLine: number;
+            endLine: number;
+            startColumn?: number;
+            endColumn?: number;
+        };
         ListAuditLogsRequestContent: {
             tableName?: string;
             recordType?: components["schemas"]["RecordType"];
@@ -1572,6 +1830,12 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
+        ListRunRevisionsRequestContent: {
+            runId: string;
+        };
+        ListRunRevisionsResponseContent: {
+            revisions: components["schemas"]["RevisionMap"];
+        };
         ListUserOrganizationsRequestContent: {
             /** @description Pagination cursor (encoded orgId) */
             nextToken?: string;
@@ -1583,6 +1847,25 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
+        Message: {
+            /** @description Run that produced this message (or run that this message produced for user) */
+            runId: string;
+            messageId: string;
+            conversationId: string;
+            role: components["schemas"]["MessageRole"];
+            content: string;
+            /** @description Citations included in the message (assistant messages only) */
+            citations?: components["schemas"]["Citation"][];
+            timestamp: string;
+        };
+        MessageMap: {
+            [key: string]: components["schemas"]["Message"];
+        };
+        /**
+         * @description Message author role
+         * @enum {string}
+         */
+        MessageRole: MessageRole;
         Org: {
             orgId: string;
             name: string;
@@ -1687,6 +1970,12 @@ export interface components {
          * @enum {string}
          */
         RecordType: RecordType;
+        RejectRevisionRequestContent: {
+            revisionId: string;
+        };
+        RejectRevisionResponseContent: {
+            revision: components["schemas"]["Revision"];
+        };
         RemoveOrgMemberRequestContent: {
             orgId: string;
             userId: string;
@@ -1702,6 +1991,24 @@ export interface components {
         ResourceNotFoundErrorResponseContent: {
             message: string;
         };
+        Revision: {
+            revisionId: string;
+            runId: string;
+            stepId: string;
+            diff: components["schemas"]["DiffOperation"];
+            status: components["schemas"]["RevisionStatus"];
+            createdAt: string;
+            /** @description When the revision was applied */
+            appliedAt?: string;
+        };
+        RevisionMap: {
+            [key: string]: components["schemas"]["Revision"];
+        };
+        /**
+         * @description Revision lifecycle status
+         * @enum {string}
+         */
+        RevisionStatus: RevisionStatus;
         RevokeDealAccessRequestContent: {
             dealId: string;
             /** @description Access control identifier */
@@ -1715,10 +2022,82 @@ export interface components {
             reason: string;
         };
         /**
+         * @description Risk level for a change
+         * @enum {string}
+         */
+        RiskLevel: RiskLevel;
+        /** @description A Run is a single Reason/Act Loop Cycle - comprising of a single AI response to a user query + the associated agent activity (tool calls, reasoning traces) that led to that response. A Conversation may have multiple Runs as the user and AI assistant go back and forth. */
+        Run: {
+            runId: string;
+            conversationId: string;
+            /** @description User message that initiated this run */
+            userMessageId: string;
+            status: components["schemas"]["RunStatus"];
+            currentStep: number;
+            selectedContexts: components["schemas"]["SelectedContext"];
+            /** @description Human-readable current thoughts/status from the AI (e.g. "Thinking through the implications of clause 8.2...") */
+            thoughtDescription?: string;
+            responseMessage?: components["schemas"]["Message"];
+            /** @description Error message if run failed */
+            errorMessage?: string;
+            steps?: components["schemas"]["StepAuditRecordMap"];
+        };
+        /**
+         * @description Run execution status
+         * @enum {string}
+         */
+        RunStatus: RunStatus;
+        /** @description A context item selected for an AI conversation or run.
+         *     Each variant carries the data relevant to that context type. */
+        SelectedContext: {
+            file: components["schemas"]["FileContext"];
+        } | {
+            deal: components["schemas"]["DealContext"];
+        } | {
+            global: components["schemas"]["GlobalContext"];
+        };
+        SendMessageOutput: {
+            conversationId: string;
+            runId: string;
+        };
+        SendMessageRequestContent: {
+            conversationId: string;
+            message: string;
+            selectedContexts?: components["schemas"]["SelectedContext"];
+        };
+        SendMessageResponseContent: {
+            conversationId: string;
+            runId: string;
+        };
+        /**
          * @description Statistic grouping periods
          * @enum {string}
          */
         StatisticGrouping: StatisticGrouping;
+        StepAuditRecord: {
+            runStepId: string;
+            runId: string;
+            stepNumber: number;
+            mode: components["schemas"]["StepMode"];
+            /** @description Reasoning output text */
+            reasoning?: string;
+            /** @description Tool calls made during this step — JSONB */
+            toolCalls?: unknown;
+            /** @description Tool results received during this step — JSONB */
+            toolResults?: unknown;
+            /** @description Status message generated (human readable summary of what the AI is doing) */
+            statusMessage?: string;
+            durationMs: number;
+            timestamp: string;
+        };
+        StepAuditRecordMap: {
+            [key: string]: components["schemas"]["StepAuditRecord"];
+        };
+        /**
+         * @description Step execution mode
+         * @enum {string}
+         */
+        StepMode: StepMode;
         /** @description Time series data point */
         TimeSeriesPoint: {
             timestamp: string;
@@ -1876,6 +2255,450 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+    CreateConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateConversationRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateConversation 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateConversationResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetConversation: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetConversationRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetConversation 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetConversationResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    SendMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SendMessageRequestContent"];
+            };
+        };
+        responses: {
+            /** @description SendMessage 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SendMessageResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ApplyRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ApplyRevisionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ApplyRevision 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ApplyRevisionResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListRunRevisions: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ListRunRevisionsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListRunRevisions 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListRunRevisionsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    RejectRevision: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RejectRevisionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description RejectRevision 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["RejectRevisionResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CancelRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelRunRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CancelRun 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancelRunResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetRun: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetRunRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetRun 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetRunResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     ListAuditLogs: {
         parameters: {
             query?: never;
@@ -4964,6 +5787,13 @@ export enum AuditOperation {
     export = "export",
     share = "share"
 }
+export enum CitationSourceType {
+    legal_kb = "legal_kb",
+    app_kb = "app_kb",
+    user_document = "user_document",
+    deal_analysis = "deal_analysis",
+    external = "external"
+}
 export enum ContentDisposition {
     inline = "inline",
     attachment = "attachment"
@@ -5003,6 +5833,11 @@ export enum DeliverableStatus {
     overdue = "overdue",
     complete = "complete"
 }
+export enum DiffOperationType {
+    insert = "insert",
+    delete = "delete",
+    replace = "replace"
+}
 export enum FilePermission {
     view_file = "view_file",
     edit_file = "edit_file",
@@ -5018,6 +5853,10 @@ export enum InviteStatus {
     accepted = "accepted",
     declined = "declined",
     expired = "expired"
+}
+export enum MessageRole {
+    user = "user",
+    assistant = "assistant"
 }
 export enum OrgMemberFilter {
     active = "active",
@@ -5042,9 +5881,30 @@ export enum RecordType {
     export = "export",
     system = "system"
 }
+export enum RevisionStatus {
+    pending = "pending",
+    applied = "applied",
+    rejected = "rejected",
+    failed = "failed"
+}
+export enum RiskLevel {
+    low = "low",
+    medium = "medium",
+    high = "high"
+}
+export enum RunStatus {
+    in_progress = "in_progress",
+    complete = "complete",
+    failed = "failed",
+    cancelled = "cancelled"
+}
 export enum StatisticGrouping {
     hour = "hour",
     day = "day",
     week = "week",
     month = "month"
+}
+export enum StepMode {
+    quick_response = "quick_response",
+    full_cycle = "full_cycle"
 }

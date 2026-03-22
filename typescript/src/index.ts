@@ -21,6 +21,14 @@ export enum AuditOperation {
   share = "share"
 }
 
+export enum CitationSourceType {
+  legal_kb = "legal_kb",
+  app_kb = "app_kb",
+  user_document = "user_document",
+  deal_analysis = "deal_analysis",
+  external = "external"
+}
+
 export enum ContentDisposition {
   inline = "inline",
   attachment = "attachment"
@@ -65,6 +73,12 @@ export enum DeliverableStatus {
   complete = "complete"
 }
 
+export enum DiffOperationType {
+  insert = "insert",
+  delete = "delete",
+  replace = "replace"
+}
+
 export enum FilePermission {
   view_file = "view_file",
   edit_file = "edit_file",
@@ -81,6 +95,11 @@ export enum InviteStatus {
   accepted = "accepted",
   declined = "declined",
   expired = "expired"
+}
+
+export enum MessageRole {
+  user = "user",
+  assistant = "assistant"
 }
 
 export enum OrgMemberFilter {
@@ -109,11 +128,36 @@ export enum RecordType {
   system = "system"
 }
 
+export enum RevisionStatus {
+  pending = "pending",
+  applied = "applied",
+  rejected = "rejected",
+  failed = "failed"
+}
+
+export enum RiskLevel {
+  low = "low",
+  medium = "medium",
+  high = "high"
+}
+
+export enum RunStatus {
+  in_progress = "in_progress",
+  complete = "complete",
+  failed = "failed",
+  cancelled = "cancelled"
+}
+
 export enum StatisticGrouping {
   hour = "hour",
   day = "day",
   week = "week",
   month = "month"
+}
+
+export enum StepMode {
+  quick_response = "quick_response",
+  full_cycle = "full_cycle"
 }
 
 // Unwrapped type definitions (no aliases)
@@ -125,6 +169,14 @@ export type AcceptOrgInviteRequestContent = {
 export type AcceptOrgInviteResponseContent = {
   organization: Org;
   member: OrgMember;
+};
+
+export type ApplyRevisionRequestContent = {
+  revisionId: string;
+};
+
+export type ApplyRevisionResponseContent = {
+  revision: Revision;
 };
 
 export type AuditLog = {
@@ -156,6 +208,51 @@ export type AuthenticationErrorResponseContent = {
 export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
+};
+
+export type CancelRunRequestContent = {
+  runId: string;
+};
+
+export type CancelRunResponseContent = {
+  run: Run;
+};
+
+export type CharacterRange = {
+  start: number;
+  end: number;
+};
+
+export type Citation = {
+  id: string;
+  sourceType: CitationSourceType;
+  sourceId: string;
+  sourceName: string;
+  excerpt?: string;
+  location?: string;
+  siteReference?: string;
+  url?: string;
+};
+
+export type Conversation = {
+  conversationId: string;
+  dealId: string;
+  selectedContexts?: SelectedContext;
+  title?: string;
+  createdByUserId: string;
+  updatedByUserId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type CreateConversationRequestContent = {
+  selectedContexts: SelectedContext;
+  initialMessage: string;
+  title?: string;
+};
+
+export type CreateConversationResponseContent = {
+  sendMessageOutput?: SendMessageOutput;
 };
 
 export type CreateDealRequestContent = {
@@ -283,6 +380,10 @@ export type DealAccess = {
 
 export type DealAccessMap = { [key: string]: DealAccess };
 
+export type DealContext = {
+  dealIds: string[];
+};
+
 export type DealMap = { [key: string]: Deal };
 
 export type DealVersion = {
@@ -345,6 +446,47 @@ export type Deliverable = {
 
 export type DeliverableMap = { [key: string]: Deliverable };
 
+export type DiffImpact = {
+  riskLevel: RiskLevel;
+  affectedParties: string[];
+  relatedClauses?: string[];
+};
+
+export type DiffLocation = {
+  section?: string;
+  clauseId?: string;
+  path?: string;
+  range?: CharacterRange;
+  lineRange?: LineRange;
+  context?: string;
+};
+
+export type DiffOperation = {
+  id: string;
+  dealVersionId: string;
+  type: DiffOperationType;
+  oldText: string;
+  newText: string;
+  reason: string;
+  legalRationale?: string;
+  location: DiffLocation;
+  validation: DiffValidation;
+  impact: DiffImpact;
+  preview: DiffPreview;
+};
+
+export type DiffPreview = {
+  before: string;
+  after: string;
+  highlighted: boolean;
+};
+
+export type DiffValidation = {
+  textFound: boolean;
+  multipleMatches?: number;
+  matchLocations?: CharacterRange[];
+};
+
 export type File = {
   fileId: string;
   ownerUserId: string;
@@ -382,6 +524,10 @@ export type FileAccess = {
 };
 
 export type FileAccessMap = { [key: string]: FileAccess };
+
+export type FileContext = {
+  fileIds: string[];
+};
 
 export type FileMap = { [key: string]: File };
 
@@ -424,6 +570,15 @@ export type GetAuditStatisticsRequestContent = {
 export type GetAuditStatisticsResponseContent = {
   statistics: AuditStatistics;
   timeSeries?: TimeSeriesPoint[];
+};
+
+export type GetConversationRequestContent = {
+  conversationId: string;
+};
+
+export type GetConversationResponseContent = {
+  conversation: Conversation;
+  messages: MessageMap;
 };
 
 export type GetDealRequestContent = {
@@ -503,6 +658,18 @@ export type GetProfileResponseContent = {
   profile: UserProfile;
 };
 
+export type GetRunRequestContent = {
+  runId: string;
+};
+
+export type GetRunResponseContent = {
+  run: Run;
+};
+
+export type GlobalContext = {
+  isEnabled: boolean;
+};
+
 export type GrantDealAccessRequestContent = {
   dealId: string;
   grantToOrgId: string;
@@ -534,6 +701,13 @@ export type GrantFileAccessResponseContent = {
 
 export type InternalServerErrorResponseContent = {
   message: string;
+};
+
+export type LineRange = {
+  startLine: number;
+  endLine: number;
+  startColumn?: number;
+  endColumn?: number;
 };
 
 export type ListAuditLogsRequestContent = {
@@ -674,6 +848,14 @@ export type ListOrgMembersResponseContent = {
   nextToken?: string;
 };
 
+export type ListRunRevisionsRequestContent = {
+  runId: string;
+};
+
+export type ListRunRevisionsResponseContent = {
+  revisions: RevisionMap;
+};
+
 export type ListUserOrganizationsRequestContent = {
   nextToken?: string;
   limit?: number;
@@ -683,6 +865,18 @@ export type ListUserOrganizationsResponseContent = {
   organizations: OrgMap;
   nextToken?: string;
 };
+
+export type Message = {
+  runId: string;
+  messageId: string;
+  conversationId: string;
+  role: MessageRole;
+  content: string;
+  citations?: Citation[];
+  timestamp: string;
+};
+
+export type MessageMap = { [key: string]: Message };
 
 export type Org = {
   orgId: string;
@@ -772,6 +966,14 @@ export type PresignedUrl = {
   headers?: unknown;
 };
 
+export type RejectRevisionRequestContent = {
+  revisionId: string;
+};
+
+export type RejectRevisionResponseContent = {
+  revision: Revision;
+};
+
 export type RemoveOrgMemberRequestContent = {
   orgId: string;
   userId: string;
@@ -791,6 +993,18 @@ export type ResourceNotFoundErrorResponseContent = {
   message: string;
 };
 
+export type Revision = {
+  revisionId: string;
+  runId: string;
+  stepId: string;
+  diff: DiffOperation;
+  status: RevisionStatus;
+  createdAt: string;
+  appliedAt?: string;
+};
+
+export type RevisionMap = { [key: string]: Revision };
+
 export type RevokeDealAccessRequestContent = {
   dealId: string;
   accessId: string;
@@ -802,6 +1016,58 @@ export type RevokeFileAccessRequestContent = {
   accessId: string;
   reason: string;
 };
+
+export type Run = {
+  runId: string;
+  conversationId: string;
+  userMessageId: string;
+  status: RunStatus;
+  currentStep: number;
+  selectedContexts: SelectedContext;
+  thoughtDescription?: string;
+  responseMessage?: Message;
+  errorMessage?: string;
+  steps?: StepAuditRecordMap;
+};
+
+export type SelectedContext = {
+  file: FileContext;
+} | {
+  deal: DealContext;
+} | {
+  global: GlobalContext;
+};
+
+export type SendMessageOutput = {
+  conversationId: string;
+  runId: string;
+};
+
+export type SendMessageRequestContent = {
+  conversationId: string;
+  message: string;
+  selectedContexts?: SelectedContext;
+};
+
+export type SendMessageResponseContent = {
+  conversationId: string;
+  runId: string;
+};
+
+export type StepAuditRecord = {
+  runStepId: string;
+  runId: string;
+  stepNumber: number;
+  mode: StepMode;
+  reasoning?: string;
+  toolCalls?: unknown;
+  toolResults?: unknown;
+  statusMessage?: string;
+  durationMs: number;
+  timestamp: string;
+};
+
+export type StepAuditRecordMap = { [key: string]: StepAuditRecord };
 
 export type TimeSeriesPoint = {
   timestamp: string;
