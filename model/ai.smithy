@@ -213,39 +213,19 @@ structure Revision {
     runId: RunId
 
     @required
-    stepNumber: Integer
+    stepId: RunStepId
 
     @required
-    targetFileId: FileId
-
-    @required
-    targetFileName: String
-
-    /// Section hint for locating the change
-    sectionHint: String
-
-    @required
-    rawDiff: RawDiffOperation
-
-    /// Processed diff with computed positions and metadata
-    processedDiff: ProcessedDiffOperation
+    diff: DiffOperation
 
     @required
     status: RevisionStatus
 
-    /// When the revision was applied
-    appliedAt: ISODate
-
-    @required
-    createdByUserId: UserId
-
-    updatedByUserId: UserId
-
     @required
     createdAt: ISODate
 
-    @required
-    updatedAt: ISODate
+    /// When the revision was applied
+    appliedAt: ISODate
 }
 
 structure StepAuditRecord {
@@ -308,41 +288,13 @@ structure Citation {
     url: Url
 }
 
-structure RawDiffOperation {
-    /// Human-readable document name
-    documentReference: String
-
-    /// Section reference (e.g., "8.2" or "Indemnification")
-    section: String
-
-    /// Clause ID if available
-    clauseId: String
-
-    @required
-    oldText: String
-
-    @required
-    newText: String
-
-    @required
-    reason: String
-
-    /// Legal basis for the change
-    legalRationale: String
-
-    /// Risk considerations
-    riskNote: String
-}
-
-structure ProcessedDiffOperation {
+structure DiffOperation {
     @required
     id: String
 
     /// Version of the deal we are suggesting a revision to
-    dealVersionId: DealVersionId
-
     @required
-    rawDiff: RawDiffOperation
+    dealVersionId: DealVersionId
 
     @required
     type: DiffOperationType
@@ -420,9 +372,6 @@ structure DiffImpact {
     @required
     affectedParties: StringList
 
-    @required
-    requiresApproval: Boolean
-
     relatedClauses: StringList
 }
 
@@ -487,10 +436,7 @@ operation GetConversation {
     ]
 }
 
-/// Send a message to a conversation. Creates a run asynchronously.
-/// Poll GetRun to track progress (chain of thought, steps) and retrieve the final response.
-/// Also used by CreateConversation to send the initial message and create the first run.
-@http(method: "POST", uri: "/ai/conversations/{conversationId}/messages")
+
 structure SendMessageOutput {
   @required
   conversationId: ConversationId
@@ -499,6 +445,10 @@ structure SendMessageOutput {
   runId: RunId
 }
 
+/// Send a message to a conversation. Creates a run asynchronously.
+/// Poll GetRun to track progress (chain of thought, steps) and retrieve the final response.
+/// Also used by CreateConversation to send the initial message and create the first run.
+@http(method: "POST", uri: "/ai/conversations/{conversationId}/messages")
 operation SendMessage {
     input := {
         @required
