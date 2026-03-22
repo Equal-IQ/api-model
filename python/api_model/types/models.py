@@ -14,6 +14,10 @@ class AcceptOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class ApplyRevisionRequestContent(BaseModel):
+    revisionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class AuditOperation(StrEnum):
     """
     Database operations for audit tracking
@@ -49,6 +53,27 @@ class AuthenticationErrorResponseContent(BaseModel):
 class CancelOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class CancelRunRequestContent(BaseModel):
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class CharacterRange(BaseModel):
+    start: float
+    end: float
+
+
+class CitationSourceType(StrEnum):
+    """
+    Citation source type
+    """
+
+    legal_kb = 'legal_kb'
+    app_kb = 'app_kb'
+    user_document = 'user_document'
+    deal_analysis = 'deal_analysis'
+    external = 'external'
 
 
 class ContentDisposition(StrEnum):
@@ -149,6 +174,10 @@ class Deal(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
+
+
+class DealContext(BaseModel):
+    dealIds: list[DealId] = Field(..., description='List of deal identifiers')
 
 
 class DealMap(RootModel[dict[str, Deal]]):
@@ -268,6 +297,30 @@ class DeliverableStatus(StrEnum):
     complete = 'complete'
 
 
+class DiffOperationType(StrEnum):
+    """
+    Diff operation type
+    """
+
+    insert = 'insert'
+    delete = 'delete'
+    replace = 'replace'
+
+
+class DiffPreview(BaseModel):
+    before: str
+    after: str
+    highlighted: bool
+
+
+class DiffValidation(BaseModel):
+    textFound: bool
+    multipleMatches: float | None
+    matchLocations: list[CharacterRange] | None = Field(
+        None, description='Match locations if multiple found'
+    )
+
+
 class File(BaseModel):
     """
     File entity with dual-ownership pattern
@@ -299,6 +352,10 @@ class File(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
+
+
+class FileContext(BaseModel):
+    fileIds: list[FileId] = Field(..., description='List of file identifiers')
 
 
 class FileMap(RootModel[dict[str, File]]):
@@ -343,6 +400,10 @@ class GetAuditLogRequestContent(BaseModel):
     auditLogId: str = Field(
         ..., description='Audit log identifier', pattern='^[A-Za-z0-9-]+$'
     )
+
+
+class GetConversationRequestContent(BaseModel):
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class GetDealRequestContent(BaseModel):
@@ -402,6 +463,14 @@ class GetProfileRequestContent(BaseModel):
     userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
 
 
+class GetRunRequestContent(BaseModel):
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class GlobalContext(BaseModel):
+    isEnabled: bool
+
+
 class GrantDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     grantToOrgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -452,6 +521,13 @@ class InviteStatus(StrEnum):
     accepted = 'accepted'
     declined = 'declined'
     expired = 'expired'
+
+
+class LineRange(BaseModel):
+    startLine: float
+    endLine: float
+    startColumn: float | None
+    endColumn: float | None
 
 
 class ListDealAccessRequestContent(BaseModel):
@@ -573,9 +649,22 @@ class ListOrgInvitesRequestContent(BaseModel):
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
+class ListRunRevisionsRequestContent(BaseModel):
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class MessageRole(StrEnum):
+    """
+    Message author role
+    """
+
+    user = 'user'
+    assistant = 'assistant'
 
 
 class Org(BaseModel):
@@ -695,6 +784,10 @@ class RecordType(StrEnum):
     system = 'system'
 
 
+class RejectRevisionRequestContent(BaseModel):
+    revisionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class RemoveOrgMemberRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     userId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -713,6 +806,17 @@ class ResourceNotFoundErrorResponseContent(BaseModel):
     message: str
 
 
+class RevisionStatus(StrEnum):
+    """
+    Revision lifecycle status
+    """
+
+    pending = 'pending'
+    applied = 'applied'
+    rejected = 'rejected'
+    failed = 'failed'
+
+
 class RevokeDealAccessRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     accessId: str = Field(
@@ -727,6 +831,77 @@ class RevokeFileAccessRequestContent(BaseModel):
     reason: str
 
 
+class RiskLevel(StrEnum):
+    """
+    Risk level for a change
+    """
+
+    low = 'low'
+    medium = 'medium'
+    high = 'high'
+
+
+class RunStatus(StrEnum):
+    """
+    Run execution status
+    """
+
+    in_progress = 'in_progress'
+    complete = 'complete'
+    failed = 'failed'
+    cancelled = 'cancelled'
+
+
+class File1(BaseModel):
+    """
+    A context item selected for an AI conversation or run.
+    Each variant carries the data relevant to that context type.
+    """
+
+    file: FileContext
+
+
+class Deal1(BaseModel):
+    """
+    A context item selected for an AI conversation or run.
+    Each variant carries the data relevant to that context type.
+    """
+
+    deal: DealContext
+
+
+class Global(BaseModel):
+    """
+    A context item selected for an AI conversation or run.
+    Each variant carries the data relevant to that context type.
+    """
+
+    global_: GlobalContext = Field(..., alias='global')
+
+
+class SelectedContext(RootModel[File1 | Deal1 | Global]):
+    root: File1 | Deal1 | Global = Field(
+        ...,
+        description='A context item selected for an AI conversation or run.\nEach variant carries the data relevant to that context type.',
+    )
+
+
+class SendMessageOutput(BaseModel):
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
+class SendMessageRequestContent(BaseModel):
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    message: str
+    selectedContexts: SelectedContext | None
+
+
+class SendMessageResponseContent(BaseModel):
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class StatisticGrouping(StrEnum):
     """
     Statistic grouping periods
@@ -736,6 +911,15 @@ class StatisticGrouping(StrEnum):
     day = 'day'
     week = 'week'
     month = 'month'
+
+
+class StepMode(StrEnum):
+    """
+    Step execution mode
+    """
+
+    quick_response = 'quick_response'
+    full_cycle = 'full_cycle'
 
 
 class TimeSeriesPoint(BaseModel):
@@ -938,6 +1122,54 @@ class AuditLogMap(RootModel[dict[str, AuditLog]]):
     root: dict[str, AuditLog]
 
 
+class Citation(BaseModel):
+    id: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    sourceType: CitationSourceType
+    sourceId: str
+    sourceName: str
+    excerpt: str | None
+    location: str | None = Field(
+        None, description='Location within the source (section, page)'
+    )
+    siteReference: str | None = Field(
+        None, description='Internal Site Reference', max_length=512
+    )
+    url: str | None = Field(
+        None,
+        description='URL if applicable',
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+
+
+class Conversation(BaseModel):
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    selectedContexts: SelectedContext | None
+    title: str | None = Field(
+        None, description='Conversation title (auto-generated or user-set)'
+    )
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class CreateConversationRequestContent(BaseModel):
+    selectedContexts: SelectedContext
+    initialMessage: str
+    title: str | None = Field(None, description='Optional title')
+
+
+class CreateConversationResponseContent(BaseModel):
+    sendMessageOutput: SendMessageOutput | None
+
+
 class CreateDealRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     title: str
@@ -1091,6 +1323,39 @@ class Deliverable(BaseModel):
 
 class DeliverableMap(RootModel[dict[str, Deliverable]]):
     root: dict[str, Deliverable]
+
+
+class DiffImpact(BaseModel):
+    riskLevel: RiskLevel
+    affectedParties: list[str]
+    relatedClauses: list[str] | None
+
+
+class DiffLocation(BaseModel):
+    section: str | None
+    clauseId: str | None
+    path: str | None
+    range: CharacterRange | None
+    lineRange: LineRange | None
+    context: str | None
+
+
+class DiffOperation(BaseModel):
+    id: str
+    dealVersionId: str = Field(
+        ...,
+        description='Version of the deal we are suggesting a revision to',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    type: DiffOperationType
+    oldText: str
+    newText: str
+    reason: str
+    legalRationale: str | None
+    location: DiffLocation
+    validation: DiffValidation
+    impact: DiffImpact
+    preview: DiffPreview
 
 
 class FileAccess(BaseModel):
@@ -1276,6 +1541,29 @@ class ListUserOrganizationsResponseContent(BaseModel):
     nextToken: str | None = Field(None, description='Token for next page')
 
 
+class Message(BaseModel):
+    runId: str = Field(
+        ...,
+        description='Run that produced this message (or run that this message produced for user)',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    messageId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    role: MessageRole
+    content: str
+    citations: list[Citation] | None = Field(
+        None, description='Citations included in the message (assistant messages only)'
+    )
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class MessageMap(RootModel[dict[str, Message]]):
+    root: dict[str, Message]
+
+
 class OrgCustomRole(BaseModel):
     customRoleId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -1357,6 +1645,54 @@ class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
 
+class Revision(BaseModel):
+    revisionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    stepId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    diff: DiffOperation
+    status: RevisionStatus
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    appliedAt: str | None = Field(
+        None,
+        description='When the revision was applied',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class RevisionMap(RootModel[dict[str, Revision]]):
+    root: dict[str, Revision]
+
+
+class StepAuditRecord(BaseModel):
+    runStepId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    stepNumber: float
+    mode: StepMode
+    reasoning: str | None = Field(None, description='Reasoning output text')
+    toolCalls: Any | None = Field(
+        None, description='Tool calls made during this step — JSONB'
+    )
+    toolResults: Any | None = Field(
+        None, description='Tool results received during this step — JSONB'
+    )
+    statusMessage: str | None = Field(
+        None,
+        description='Status message generated (human readable summary of what the AI is doing)',
+    )
+    durationMs: float
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class StepAuditRecordMap(RootModel[dict[str, StepAuditRecord]]):
+    root: dict[str, StepAuditRecord]
+
+
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1386,6 +1722,10 @@ class AcceptOrgInviteResponseContent(BaseModel):
     member: OrgMember
 
 
+class ApplyRevisionResponseContent(BaseModel):
+    revision: Revision
+
+
 class CreateDeliverableResponseContent(BaseModel):
     deliverable: Deliverable
 
@@ -1397,6 +1737,11 @@ class CreateOrgCustomRoleResponseContent(BaseModel):
 class CreateOrgInviteResponseContent(BaseModel):
     invites: OrgInviteMap
     failedEmails: list[FailedEmail] | None
+
+
+class GetConversationResponseContent(BaseModel):
+    conversation: Conversation
+    messages: MessageMap
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):
@@ -1412,3 +1757,43 @@ class ListOrgInvitesResponseContent(BaseModel):
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
     nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListRunRevisionsResponseContent(BaseModel):
+    revisions: RevisionMap
+
+
+class RejectRevisionResponseContent(BaseModel):
+    revision: Revision
+
+
+class Run(BaseModel):
+    """
+    A Run is a single Reason/Act Loop Cycle - comprising of a single AI response to a user query + the associated agent activity (tool calls, reasoning traces) that led to that response. A Conversation may have multiple Runs as the user and AI assistant go back and forth.
+    """
+
+    runId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    conversationId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    userMessageId: str = Field(
+        ...,
+        description='User message that initiated this run',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    status: RunStatus
+    currentStep: float
+    selectedContexts: SelectedContext
+    thoughtDescription: str | None = Field(
+        None,
+        description='Human-readable current thoughts/status from the AI (e.g. "Thinking through the implications of clause 8.2...")',
+    )
+    responseMessage: Message | None
+    errorMessage: str | None = Field(None, description='Error message if run failed')
+    steps: StepAuditRecordMap | None
+
+
+class CancelRunResponseContent(BaseModel):
+    run: Run
+
+
+class GetRunResponseContent(BaseModel):
+    run: Run

@@ -44,6 +44,13 @@ string HexColor
 @length(max: 64)
 string Tag // Kebab-case: lowercase letters, numbers, hyphens (no whitespace, no consecutive hyphens)
 
+
+//TODO: Figure out site reference system
+/// Used for internal site references (e.g. knowledge base articles, delivery manager item, deal). Exact schema TBD string placeholder.
+@length(max: 512)
+string SiteReference 
+
+
 @range(min: 1, max: 100)
 integer PageLimit // Standard pagination limit (1-100 items per page)
 
