@@ -4,13 +4,6 @@ namespace equaliq
 
 // ─── Enums ───────────────────────────────────────────────────────────────────
 
-/// Scope for AI context selection
-enum AiScopeId {
-    contract = "contract"
-    deal = "deal"
-    global = "global"
-}
-
 /// Message author role
 enum MessageRole {
     user = "user"
@@ -76,6 +69,33 @@ list CitationList {
     member: Citation
 }
 
+/// A context item selected for an AI conversation or run.
+/// Each variant carries the data relevant to that context type.
+union SelectedContext {
+    /// A specific file/document
+    file: FileContext
+
+    /// Deal-level context
+    deal: DealContext
+
+    /// Global/org-level context
+    global: GlobalContext
+}
+
+structure FileContext {
+  @required
+  fileIds: FileIdList
+}
+
+structure DealContext {
+  @required
+  dealIds: DealIdList
+}
+
+structure GlobalContext {
+  @required  isEnabled: Boolean
+}
+
 // ─── Resources ───────────────────────────────────────────────────────────────
 
 resource ConversationResource {
@@ -104,16 +124,10 @@ structure Conversation {
     conversationId: ConversationId
 
     @required
-    userId: UserId
-
-    @required
     dealId: DealId
 
-    @required
-    scopeId: AiScopeId
-
-    /// File IDs selected by the user for this conversation
-    selectedFileIds: FileIdList
+    /// Context items selected for this conversation (files, deal, global)
+    selectedContexts: SelectedContext
 
     /// Conversation title (auto-generated or user-set)
     title: String
@@ -164,6 +178,7 @@ structure Message {
     updatedAt: ISODate
 }
 
+@documentation("A Run is a single Reason/Act Loop Cycle - comprising of a single AI response to a user query + the associated agent activity (tool calls, reasoning traces) that led to that response. A Conversation may have multiple Runs as the user and AI assistant go back and forth.")
 structure Run {
     @required
     runId: RunId
@@ -189,11 +204,8 @@ structure Run {
     @required
     contractFileId: FileId
 
-    @required
-    scopeId: AiScopeId
-
-    /// Files selected by the user at run creation
-    selectedFileIds: FileIdList
+    /// Context items selected at run creation (files, deal, global)
+    selectedContexts: SelectedContext
 
     /// When the run completed
     completedAt: ISODate
@@ -452,17 +464,12 @@ structure DiffPreview {
 @http(method: "POST", uri: "/ai/conversations")
 operation CreateConversation {
     input := {
-        @required
-        dealId: DealId
+      /// Context items to include (files, deal, global)
+      @required
+      selectedContexts: SelectedContext
 
-        @required
-        scopeId: AiScopeId
-
-        /// Files selected by the user
-        selectedFileIds: FileIdList
-
-        /// Optional title
-        title: String
+      /// Optional title
+      title: String
     }
 
     output := {
@@ -527,11 +534,8 @@ operation SendMessage {
         @required
         contractFileId: FileId
 
-        /// Override scope for this message (defaults to conversation scope)
-        scopeId: AiScopeId
-
-        /// Override selected files for this message
-        selectedFileIds: FileIdList
+        /// Override contexts for this message (defaults to conversation contexts)
+        selectedContexts: SelectedContext
     }
 
     output := {
