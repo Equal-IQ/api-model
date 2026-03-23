@@ -613,6 +613,7 @@ class ListUserOrganizationsRequestContent(BaseModel):
 class NylasConnection(BaseModel):
     """
     Nylas connection status
+    Note: grantId intentionally excluded - internal Nylas credential, not for frontend
     """
 
     connectionId: str = Field(
@@ -620,7 +621,6 @@ class NylasConnection(BaseModel):
         description='Nylas email integration resource\nProvides email operations via connected Nylas accounts (v3 API)\nMVP: Email operations only',
         pattern='^[A-Za-z0-9-]+$',
     )
-    grantId: str
     email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     provider: str = Field(
         ..., description="Email provider: 'google', 'microsoft', etc."

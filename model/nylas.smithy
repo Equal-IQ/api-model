@@ -165,12 +165,10 @@ structure GetMessageResponse {
 }
 
 /// Nylas connection status
+/// Note: grantId intentionally excluded - internal Nylas credential, not for frontend
 structure NylasConnection {
     @required
     connectionId: NylasConnectionId
-
-    @required
-    grantId: NylasGrantId
 
     @required
     email: Email

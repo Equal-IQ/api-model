@@ -1830,13 +1830,13 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
-        /** @description Nylas connection status */
+        /** @description Nylas connection status
+         *     Note: grantId intentionally excluded - internal Nylas credential, not for frontend */
         NylasConnection: {
             /** @description Nylas email integration resource
              *     Provides email operations via connected Nylas accounts (v3 API)
              *     MVP: Email operations only */
             connectionId: string;
-            grantId: string;
             email: string;
             /** @description Email provider: 'google', 'microsoft', etc. */
             provider: string;

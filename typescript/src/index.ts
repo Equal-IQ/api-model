@@ -737,7 +737,6 @@ export type ListUserOrganizationsResponseContent = {
 
 export type NylasConnection = {
   connectionId: string;
-  grantId: string;
   email: string;
   provider: string;
   enabled: boolean;
