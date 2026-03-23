@@ -856,7 +856,7 @@ export type NylasThread = {
   threadMetadataId: string;
   externalThreadId: string;
   provider: string;
-  connectionId?: string;
+  connectionEmail?: string;
   lastMessageAt: string;
   messageCount: number;
   summary?: string;

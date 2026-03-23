@@ -110,7 +110,8 @@ structure NylasThread {
     @required
     provider: String
 
-    connectionId: String
+    /// Email address of the connected account
+    connectionEmail: String
 
     /// Timeline
     @required

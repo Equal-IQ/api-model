@@ -780,7 +780,9 @@ class NylasThread(BaseModel):
     )
     externalThreadId: str = Field(..., description='Nylas thread ID')
     provider: str
-    connectionId: str | None
+    connectionEmail: str | None = Field(
+        None, description='Email address of the connected account'
+    )
     lastMessageAt: str = Field(
         ...,
         description='Timeline',

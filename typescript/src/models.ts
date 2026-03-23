@@ -1981,7 +1981,8 @@ export interface components {
             /** @description Nylas thread ID */
             externalThreadId: string;
             provider: string;
-            connectionId?: string;
+            /** @description Email address of the connected account */
+            connectionEmail?: string;
             /** @description Timeline */
             lastMessageAt: string;
             messageCount: number;
