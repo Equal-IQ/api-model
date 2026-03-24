@@ -9,6 +9,7 @@ use equaliq#PageLimit
 use equaliq#FileId
 use equaliq#DealAccessMap
 use equaliq#DealAccess
+use equaliq#ThreadMetadataId
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -54,7 +55,6 @@ string DealAccessId with [UuidLikeMixin]
 string DealApprovalId with [UuidLikeMixin]
 string DealAnalysisId with [UuidLikeMixin]
 string DealThreadId with [UuidLikeMixin]
-string ThreadMetadataId with [UuidLikeMixin]
 
 /// List of deal identifiers
 list DealIdList {

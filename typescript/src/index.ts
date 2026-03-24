@@ -381,7 +381,7 @@ export type Deliverable = {
 export type DeliverableMap = { [key: string]: Deliverable };
 
 export type EmailParticipant = {
-  email?: string;
+  email: string;
   name?: string;
 };
 
@@ -776,7 +776,7 @@ export type NylasInitiateAuthRequestContent = {
 
 export type NylasInitiateAuthResponseContent = {
   authUrl: string;
-  state?: string;
+  state: string;
 };
 
 export type NylasListConnectionsResponseContent = {

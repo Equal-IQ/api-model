@@ -13,9 +13,6 @@ use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
 use equaliq#InternalServerError
 
-/// Nylas email integration resource
-/// Provides email operations via connected Nylas accounts (v3 API)
-/// MVP: Email operations only
 
 // Identifiers
 string NylasConnectionId with [UuidLikeMixin]
@@ -23,6 +20,9 @@ string NylasGrantId
 string ThreadMetadataId with [UuidLikeMixin]
 
 // Nylas resource
+/// Nylas email integration resource
+/// Provides email operations via connected Nylas accounts (v3 API)
+/// MVP: Email operations only
 resource NylasResource {
     identifiers: { connectionId: NylasConnectionId }
     delete: NylasDisconnectConnection
@@ -39,7 +39,9 @@ resource NylasResource {
 /// Email participant (sender/recipient)
 /// Matches Nylas v3 participant structure
 structure EmailParticipant {
+    @required
     email: Email
+    
     name: String
 }
 
@@ -265,6 +267,7 @@ operation NylasListMessages {
         connectionId: NylasConnectionId
 
         /// Maximum number of messages to return (default 50, max 200)
+        @range(min: 1, max: 200)
         limit: Integer
 
         /// Pagination cursor from previous response
@@ -274,7 +277,7 @@ operation NylasListMessages {
         subject: String
 
         /// Filter by sender email
-        anyEmail: String
+        anyEmail: Email
 
         /// Filter to folder/label
         in: String
@@ -396,6 +399,7 @@ operation NylasInitiateAuth {
         authUrl: Url
 
         /// State parameter for CSRF validation
+        @required
         state: String
     }
 

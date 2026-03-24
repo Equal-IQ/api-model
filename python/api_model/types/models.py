@@ -288,7 +288,7 @@ class EmailParticipant(BaseModel):
     Matches Nylas v3 participant structure
     """
 
-    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     name: str | None
 
 
@@ -616,11 +616,7 @@ class NylasConnection(BaseModel):
     Note: grantId intentionally excluded - internal Nylas credential, not for frontend
     """
 
-    connectionId: str = Field(
-        ...,
-        description='Nylas email integration resource\nProvides email operations via connected Nylas accounts (v3 API)\nMVP: Email operations only',
-        pattern='^[A-Za-z0-9-]+$',
-    )
+    connectionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
     provider: str = Field(
         ..., description="Email provider: 'google', 'microsoft', etc."
@@ -671,7 +667,7 @@ class NylasInitiateAuthResponseContent(BaseModel):
         ...,
         pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
     )
-    state: str | None = Field(None, description='State parameter for CSRF validation')
+    state: str = Field(..., description='State parameter for CSRF validation')
 
 
 class NylasListConnectionsResponseContent(BaseModel):
@@ -688,13 +684,20 @@ class NylasListMessagesRequestContent(BaseModel):
         pattern='^[A-Za-z0-9-]+$',
     )
     limit: float | None = Field(
-        None, description='Maximum number of messages to return (default 50, max 200)'
+        None,
+        description='Maximum number of messages to return (default 50, max 200)',
+        ge=1.0,
+        le=200.0,
     )
     cursor: str | None = Field(
         None, description='Pagination cursor from previous response'
     )
     subject: str | None = Field(None, description='Filter by subject')
-    anyEmail: str | None = Field(None, description='Filter by sender email')
+    anyEmail: str | None = Field(
+        None,
+        description='Filter by sender email',
+        pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$',
+    )
     in_: str | None = Field(None, alias='in', description='Filter to folder/label')
     unread: bool | None = Field(None, description='Filter unread messages')
     starred: bool | None = Field(None, description='Filter starred messages')

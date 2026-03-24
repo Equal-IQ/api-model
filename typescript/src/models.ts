@@ -1427,7 +1427,7 @@ export interface components {
         /** @description Email participant (sender/recipient)
          *     Matches Nylas v3 participant structure */
         EmailParticipant: {
-            email?: string;
+            email: string;
             name?: string;
         };
         /** @description File entity with dual-ownership pattern */
@@ -1833,9 +1833,6 @@ export interface components {
         /** @description Nylas connection status
          *     Note: grantId intentionally excluded - internal Nylas credential, not for frontend */
         NylasConnection: {
-            /** @description Nylas email integration resource
-             *     Provides email operations via connected Nylas accounts (v3 API)
-             *     MVP: Email operations only */
             connectionId: string;
             email: string;
             /** @description Email provider: 'google', 'microsoft', etc. */
@@ -1875,7 +1872,7 @@ export interface components {
         NylasInitiateAuthResponseContent: {
             authUrl: string;
             /** @description State parameter for CSRF validation */
-            state?: string;
+            state: string;
         };
         NylasListConnectionsResponseContent: {
             connected: boolean;

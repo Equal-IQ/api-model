@@ -396,6 +396,7 @@ operation DeleteDealFile {
 }
 
 /// List files associated with a deal
+@readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
 @http(method: "POST", uri: "/deals/{dealId}/files/list")
 operation ListDealFiles {
@@ -423,6 +424,7 @@ operation ListDealFiles {
         AuthenticationError
         ResourceNotFoundError
         InternalServerError
+        ValidationError
     ]
 }
 
