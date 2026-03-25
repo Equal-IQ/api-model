@@ -819,7 +819,6 @@ export type NylasListThreadsResponseContent = {
 
 export type NylasMessage = {
   id: string;
-  grantId: string;
   threadId?: string;
   subject: string;
   snippet?: string;

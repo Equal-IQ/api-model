@@ -1931,8 +1931,6 @@ export interface components {
         NylasMessage: {
             /** @description Nylas message ID */
             id: string;
-            /** @description Grant ID that owns this message */
-            grantId: string;
             /** @description Thread ID */
             threadId?: string;
             subject: string;

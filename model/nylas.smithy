@@ -56,10 +56,6 @@ structure NylasMessage {
     @required
     id: String
 
-    /// Grant ID that owns this message
-    @required
-    grantId: NylasGrantId
-
     /// Thread ID
     threadId: String
 

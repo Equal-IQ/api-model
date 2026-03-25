@@ -733,7 +733,6 @@ class NylasMessage(BaseModel):
     """
 
     id: str = Field(..., description='Nylas message ID')
-    grantId: str = Field(..., description='Grant ID that owns this message')
     threadId: str | None = Field(None, description='Thread ID')
     subject: str
     snippet: str | None = Field(None, description='Plain text preview/snippet')
