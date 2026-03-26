@@ -188,6 +188,16 @@ class DealStage(StrEnum):
     cancelled = 'cancelled'
 
 
+class DealThreadAssociationType(StrEnum):
+    """
+    How a thread was associated with a deal
+    """
+
+    manual = 'manual'
+    ai_suggested = 'ai_suggested'
+    participant_match = 'participant_match'
+
+
 class DealVersion(BaseModel):
     """
     Deal version for tracking changes through stages
@@ -234,6 +244,10 @@ class DeleteDealRequestContent(BaseModel):
     hardDelete: bool | None = Field(None, description='Soft delete by default')
 
 
+class DeleteDealThreadResponseContent(BaseModel):
+    success: bool
+
+
 class DeleteFileRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     hardDelete: bool | None = Field(
@@ -266,6 +280,16 @@ class DeliverableStatus(StrEnum):
     in_progress = 'in_progress'
     overdue = 'overdue'
     complete = 'complete'
+
+
+class EmailParticipant(BaseModel):
+    """
+    Email participant (sender/recipient)
+    Matches Nylas v3 participant structure
+    """
+
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    name: str | None
 
 
 class File(BaseModel):
@@ -467,6 +491,14 @@ class ListDealAccessRequestContent(BaseModel):
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
 
 
+class ListDealThreadsRequestContent(BaseModel):
+    associationType: DealThreadAssociationType | None
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded dealThreadId)'
+    )
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
 class ListDealVersionsRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     stage: DealStage | None
@@ -576,6 +608,206 @@ class ListOrgInvitesRequestContent(BaseModel):
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class NylasConnection(BaseModel):
+    """
+    Nylas connection status
+    Note: grantId intentionally excluded - internal Nylas credential, not for frontend
+    """
+
+    connectionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    email: str = Field(..., pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    provider: str = Field(
+        ..., description="Email provider: 'google', 'microsoft', etc."
+    )
+    enabled: bool
+    connectedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    scopes: list[str] | None = Field(None, description='OAuth scopes granted')
+
+
+class NylasDisconnectConnectionRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to disconnect (required for multi-account)',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class NylasDisconnectConnectionResponseContent(BaseModel):
+    success: bool
+
+
+class NylasGetMessageRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    messageId: str
+
+
+class NylasGetThreadRequestContent(BaseModel):
+    threadMetadataId: str = Field(
+        ..., description='Thread metadata ID', pattern='^[A-Za-z0-9-]+$'
+    )
+
+
+class NylasInitiateAuthRequestContent(BaseModel):
+    provider: str | None = Field(
+        None, description='Optional: Specify email provider hint'
+    )
+
+
+class NylasInitiateAuthResponseContent(BaseModel):
+    authUrl: str = Field(
+        ...,
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    state: str = Field(..., description='State parameter for CSRF validation')
+
+
+class NylasListConnectionsResponseContent(BaseModel):
+    connected: bool
+    connections: list[NylasConnection] | None = Field(
+        None, description='List of active connections'
+    )
+
+
+class NylasListMessagesRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    limit: float | None = Field(
+        None,
+        description='Maximum number of messages to return (default 50, max 200)',
+        ge=1.0,
+        le=200.0,
+    )
+    cursor: str | None = Field(
+        None, description='Pagination cursor from previous response'
+    )
+    subject: str | None = Field(None, description='Filter by subject')
+    anyEmail: str | None = Field(
+        None,
+        description='Filter by sender email',
+        pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$',
+    )
+    in_: str | None = Field(None, alias='in', description='Filter to folder/label')
+    unread: bool | None = Field(None, description='Filter unread messages')
+    starred: bool | None = Field(None, description='Filter starred messages')
+    receivedAfter: float | None = Field(
+        None, description='Unix timestamp - messages after this date'
+    )
+    receivedBefore: float | None = Field(
+        None, description='Unix timestamp - messages before this date'
+    )
+
+
+class NylasListThreadsRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    minPriority: float | None = Field(
+        None, description='Filter by priority (minimum value)'
+    )
+    label: str | None = Field(None, description='Filter by label')
+    analyzedOnly: bool | None = Field(None, description='Filter analyzed threads only')
+    nextToken: str | None = Field(
+        None, description='Pagination cursor (encoded threadMetadataId)'
+    )
+    limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class NylasMessage(BaseModel):
+    """
+    Email message
+    Matches Nylas v3 Message object structure
+    """
+
+    id: str = Field(..., description='Nylas message ID')
+    threadId: str | None = Field(None, description='Thread ID')
+    subject: str
+    snippet: str | None = Field(None, description='Plain text preview/snippet')
+    body: str | None = Field(None, description='Email body (HTML or plain text)')
+    from_: list[EmailParticipant] | None = Field(
+        None, alias='from', description='Sender information'
+    )
+    to: list[EmailParticipant] | None = Field(None, description='Recipients')
+    cc: list[EmailParticipant] | None
+    bcc: list[EmailParticipant] | None
+    replyTo: list[EmailParticipant] | None
+    date: float = Field(..., description='Unix timestamp (seconds)')
+    unread: bool
+    starred: bool | None
+    folders: list[str] | None = Field(None, description='Folder names/labels')
+
+
+class NylasSendMessageRequestContent(BaseModel):
+    connectionId: str = Field(
+        ...,
+        description='Connection ID to use for this request',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    to: list[EmailParticipant]
+    cc: list[EmailParticipant] | None
+    bcc: list[EmailParticipant] | None
+    replyTo: list[EmailParticipant] | None
+    subject: str
+    body: str = Field(..., description='Email body (HTML or plain text)')
+    replyToMessageId: str | None = Field(
+        None, description='Reply to specific message (for threading)'
+    )
+
+
+class NylasSendMessageResponseContent(BaseModel):
+    requestId: str
+    data: NylasMessage
+
+
+class NylasThread(BaseModel):
+    """
+    Thread with enriched metadata
+    """
+
+    threadMetadataId: str = Field(
+        ..., description='Our database ID', pattern='^[A-Za-z0-9-]+$'
+    )
+    externalThreadId: str = Field(..., description='Nylas thread ID')
+    provider: str
+    connectionEmail: str | None = Field(
+        None, description='Email address of the connected account'
+    )
+    lastMessageAt: str = Field(
+        ...,
+        description='Timeline',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    messageCount: float
+    summary: str | None = Field(None, description='AI-generated metadata (no PII)')
+    priority: float | None
+    labels: list[str] | None
+    ragKeywords: list[str] | None
+    analyzed: bool = Field(..., description='Processing state')
+    analyzedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
 
 
 class Org(BaseModel):
@@ -953,6 +1185,12 @@ class CreateDealResponseContent(BaseModel):
     initialVersion: DealVersion
 
 
+class CreateDealThreadRequestContent(BaseModel):
+    threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    associationType: DealThreadAssociationType
+    notes: str | None
+
+
 class CreateDealVersionRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     stage: DealStage
@@ -1053,6 +1291,35 @@ class DealAccess(BaseModel):
 
 class DealAccessMap(RootModel[dict[str, DealAccess]]):
     root: dict[str, DealAccess]
+
+
+class DealThread(BaseModel):
+    """
+    Deal-Thread association
+    """
+
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    associationType: DealThreadAssociationType
+    associatedBy: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    associatedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    notes: str | None
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class DealThreadMap(RootModel[dict[str, DealThread]]):
+    root: dict[str, DealThread]
 
 
 class Deliverable(BaseModel):
@@ -1248,6 +1515,11 @@ class ListDealAccessResponseContent(BaseModel):
     nextToken: str | None = Field(None, description='Token for next page')
 
 
+class ListDealThreadsResponseContent(BaseModel):
+    dealThreads: DealThreadMap
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
 class ListDeliverablesResponseContent(BaseModel):
     deliverables: DeliverableMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1273,6 +1545,26 @@ class ListOrgMembersRequestContent(BaseModel):
 
 class ListUserOrganizationsResponseContent(BaseModel):
     organizations: OrgMap
+    nextToken: str | None = Field(None, description='Token for next page')
+
+
+class NylasGetMessageResponseContent(BaseModel):
+    requestId: str
+    data: NylasMessage
+
+
+class NylasGetThreadResponseContent(BaseModel):
+    thread: NylasThread
+
+
+class NylasListMessagesResponseContent(BaseModel):
+    requestId: str
+    data: list[NylasMessage]
+    nextCursor: str | None = Field(None, description='Cursor for next page')
+
+
+class NylasListThreadsResponseContent(BaseModel):
+    threads: list[NylasThread]
     nextToken: str | None = Field(None, description='Token for next page')
 
 
@@ -1384,6 +1676,11 @@ class UpdateProfileResponseContent(BaseModel):
 class AcceptOrgInviteResponseContent(BaseModel):
     organization: Org
     member: OrgMember
+
+
+class CreateDealThreadResponseContent(BaseModel):
+    success: bool
+    dealThread: DealThread
 
 
 class CreateDeliverableResponseContent(BaseModel):

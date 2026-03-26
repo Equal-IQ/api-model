@@ -292,6 +292,57 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/deals/{dealId}/threads/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Associate a thread with a deal */
+        post: operations["CreateDealThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/threads/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List threads associated with a deal */
+        post: operations["ListDealThreads"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/deals/{dealId}/threads/{dealThreadId}/delete": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Remove thread association from deal */
+        post: operations["DeleteDealThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/files/access/grant": {
         parameters: {
             query?: never;
@@ -494,6 +545,152 @@ export interface paths {
         get?: never;
         put?: never;
         post: operations["GetProfilePicture"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/auth/initiate": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Initiate OAuth flow to connect a Nylas account
+         *     Generates Nylas Hosted Authentication URL */
+        post: operations["NylasInitiateAuth"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/connections/disconnect": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Disconnect a specific Nylas connection (soft delete) */
+        post: operations["NylasDisconnectConnection"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/connections/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description OAuth callback handler (/integrations/nylas/auth/callback) is not defined in Smithy
+         *     It's a raw GET endpoint that accepts query params (code, state) and returns a 302 redirect
+         *     Similar to Google OAuth callback - handles browser redirects, not API JSON responses
+         *     List all Nylas connections for authenticated user */
+        post: operations["NylasListConnections"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get a specific message by ID
+         *     Maps to Nylas v3: GET /v3/grants/{grant_id}/messages/{message_id} */
+        post: operations["NylasGetMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List messages for authenticated user
+         *     Maps to Nylas v3: GET /v3/grants/{grant_id}/messages */
+        post: operations["NylasListMessages"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/messages/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Send an email message
+         *     Maps to Nylas v3: POST /v3/grants/{grant_id}/messages/send */
+        post: operations["NylasSendMessage"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/threads/get": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get a single thread by ID
+         *     Fetches thread metadata from our database (includes AI-generated summary, priority, labels) */
+        post: operations["NylasGetThread"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/integrations/nylas/threads/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List threads with enriched metadata
+         *     Fetches threads from our database (includes AI-generated summary, priority, labels)
+         *     For live thread data (subject, participants), use NylasGetMessage per message */
+        post: operations["NylasListThreads"];
         delete?: never;
         options?: never;
         head?: never;
@@ -989,6 +1186,15 @@ export interface components {
             deal: components["schemas"]["Deal"];
             initialVersion: components["schemas"]["DealVersion"];
         };
+        CreateDealThreadRequestContent: {
+            threadMetadataId: string;
+            associationType: components["schemas"]["DealThreadAssociationType"];
+            notes?: string;
+        };
+        CreateDealThreadResponseContent: {
+            success: boolean;
+            dealThread: components["schemas"]["DealThread"];
+        };
         CreateDealVersionRequestContent: {
             dealId: string;
             stage: components["schemas"]["DealStage"];
@@ -1123,6 +1329,26 @@ export interface components {
          * @enum {string}
          */
         DealStage: DealStage;
+        /** @description Deal-Thread association */
+        DealThread: {
+            dealThreadId: string;
+            dealId: string;
+            threadMetadataId: string;
+            associationType: components["schemas"]["DealThreadAssociationType"];
+            associatedBy?: string;
+            associatedAt?: string;
+            notes?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /**
+         * @description How a thread was associated with a deal
+         * @enum {string}
+         */
+        DealThreadAssociationType: DealThreadAssociationType;
+        DealThreadMap: {
+            [key: string]: components["schemas"]["DealThread"];
+        };
         /** @description Deal version for tracking changes through stages */
         DealVersion: {
             dealVersionId: string;
@@ -1153,6 +1379,9 @@ export interface components {
             dealId: string;
             /** @description Soft delete by default */
             hardDelete?: boolean;
+        };
+        DeleteDealThreadResponseContent: {
+            success: boolean;
         };
         DeleteFileRequestContent: {
             /** @description File identifier */
@@ -1195,6 +1424,12 @@ export interface components {
         DeliverableSource: DeliverableSource;
         /** @enum {string} */
         DeliverableStatus: DeliverableStatus;
+        /** @description Email participant (sender/recipient)
+         *     Matches Nylas v3 participant structure */
+        EmailParticipant: {
+            email: string;
+            name?: string;
+        };
         /** @description File entity with dual-ownership pattern */
         File: {
             /** @description File identifier */
@@ -1439,6 +1674,18 @@ export interface components {
             /** @description Token for next page */
             nextToken?: string;
         };
+        ListDealThreadsRequestContent: {
+            associationType?: components["schemas"]["DealThreadAssociationType"];
+            /** @description Pagination cursor (encoded dealThreadId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        ListDealThreadsResponseContent: {
+            dealThreads: components["schemas"]["DealThreadMap"];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
         ListDealVersionsRequestContent: {
             dealId: string;
             stage?: components["schemas"]["DealStage"];
@@ -1582,6 +1829,168 @@ export interface components {
             organizations: components["schemas"]["OrgMap"];
             /** @description Token for next page */
             nextToken?: string;
+        };
+        /** @description Nylas connection status
+         *     Note: grantId intentionally excluded - internal Nylas credential, not for frontend */
+        NylasConnection: {
+            connectionId: string;
+            email: string;
+            /** @description Email provider: 'google', 'microsoft', etc. */
+            provider: string;
+            enabled: boolean;
+            connectedAt: string;
+            /** @description OAuth scopes granted */
+            scopes?: string[];
+        };
+        NylasDisconnectConnectionRequestContent: {
+            /** @description Connection ID to disconnect (required for multi-account) */
+            connectionId: string;
+        };
+        NylasDisconnectConnectionResponseContent: {
+            success: boolean;
+        };
+        NylasGetMessageRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
+            messageId: string;
+        };
+        NylasGetMessageResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"];
+        };
+        NylasGetThreadRequestContent: {
+            /** @description Thread metadata ID */
+            threadMetadataId: string;
+        };
+        NylasGetThreadResponseContent: {
+            thread: components["schemas"]["NylasThread"];
+        };
+        NylasInitiateAuthRequestContent: {
+            /** @description Optional: Specify email provider hint */
+            provider?: string;
+        };
+        NylasInitiateAuthResponseContent: {
+            authUrl: string;
+            /** @description State parameter for CSRF validation */
+            state: string;
+        };
+        NylasListConnectionsResponseContent: {
+            connected: boolean;
+            /** @description List of active connections */
+            connections?: components["schemas"]["NylasConnection"][];
+        };
+        NylasListMessagesRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
+            /** @description Maximum number of messages to return (default 50, max 200) */
+            limit?: number;
+            /** @description Pagination cursor from previous response */
+            cursor?: string;
+            /** @description Filter by subject */
+            subject?: string;
+            /** @description Filter by sender email */
+            anyEmail?: string;
+            /** @description Filter to folder/label */
+            in?: string;
+            /** @description Filter unread messages */
+            unread?: boolean;
+            /** @description Filter starred messages */
+            starred?: boolean;
+            /** @description Unix timestamp - messages after this date */
+            receivedAfter?: number;
+            /** @description Unix timestamp - messages before this date */
+            receivedBefore?: number;
+        };
+        NylasListMessagesResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"][];
+            /** @description Cursor for next page */
+            nextCursor?: string;
+        };
+        NylasListThreadsRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
+            /** @description Filter by priority (minimum value) */
+            minPriority?: number;
+            /** @description Filter by label */
+            label?: string;
+            /** @description Filter analyzed threads only */
+            analyzedOnly?: boolean;
+            /** @description Pagination cursor (encoded threadMetadataId) */
+            nextToken?: string;
+            /** @description Page size */
+            limit?: number;
+        };
+        NylasListThreadsResponseContent: {
+            threads: components["schemas"]["NylasThread"][];
+            /** @description Token for next page */
+            nextToken?: string;
+        };
+        /** @description Email message
+         *     Matches Nylas v3 Message object structure */
+        NylasMessage: {
+            /** @description Nylas message ID */
+            id: string;
+            /** @description Thread ID */
+            threadId?: string;
+            subject: string;
+            /** @description Plain text preview/snippet */
+            snippet?: string;
+            /** @description Email body (HTML or plain text) */
+            body?: string;
+            /** @description Sender information */
+            from?: components["schemas"]["EmailParticipant"][];
+            /** @description Recipients */
+            to?: components["schemas"]["EmailParticipant"][];
+            cc?: components["schemas"]["EmailParticipant"][];
+            bcc?: components["schemas"]["EmailParticipant"][];
+            replyTo?: components["schemas"]["EmailParticipant"][];
+            /** @description Unix timestamp (seconds) */
+            date: number;
+            unread: boolean;
+            starred?: boolean;
+            /** @description Folder names/labels */
+            folders?: string[];
+        };
+        NylasSendMessageRequestContent: {
+            /** @description Connection ID to use for this request */
+            connectionId: string;
+            to: components["schemas"]["EmailParticipant"][];
+            cc?: components["schemas"]["EmailParticipant"][];
+            bcc?: components["schemas"]["EmailParticipant"][];
+            replyTo?: components["schemas"]["EmailParticipant"][];
+            subject: string;
+            /** @description Email body (HTML or plain text) */
+            body: string;
+            /** @description Reply to specific message (for threading) */
+            replyToMessageId?: string;
+        };
+        NylasSendMessageResponseContent: {
+            requestId: string;
+            data: components["schemas"]["NylasMessage"];
+        };
+        /** @description Thread with enriched metadata */
+        NylasThread: {
+            /** @description Our database ID */
+            threadMetadataId: string;
+            /** @description Nylas thread ID */
+            externalThreadId: string;
+            provider: string;
+            /** @description Email address of the connected account */
+            connectionEmail?: string;
+            /** @description Timeline */
+            lastMessageAt: string;
+            messageCount: number;
+            /** @description AI-generated metadata (no PII) */
+            summary?: string;
+            priority?: number;
+            labels?: string[];
+            ragKeywords?: string[];
+            /** @description Processing state */
+            analyzed: boolean;
+            analyzedAt?: string;
+            createdAt: string;
+            updatedAt: string;
         };
         Org: {
             orgId: string;
@@ -2844,6 +3253,171 @@ export interface operations {
             };
         };
     };
+    CreateDealThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateDealThreadRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateDealThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateDealThreadResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListDealThreads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListDealThreadsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListDealThreads 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListDealThreadsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    DeleteDealThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                dealId: string;
+                dealThreadId: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description DeleteDealThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["DeleteDealThreadResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     GrantFileAccess: {
         parameters: {
             query?: never;
@@ -3535,6 +4109,401 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasInitiateAuth: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["NylasInitiateAuthRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasInitiateAuth 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasInitiateAuthResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasDisconnectConnection: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasDisconnectConnectionRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasDisconnectConnection 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasDisconnectConnectionResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasListConnections: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description NylasListConnections 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasListConnectionsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasGetMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasGetMessageRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasGetMessage 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasGetMessageResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasListMessages: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasListMessagesRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasListMessages 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasListMessagesResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasSendMessage: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasSendMessageRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasSendMessage 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasSendMessageResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasGetThread: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasGetThreadRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasGetThread 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasGetThreadResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    NylasListThreads: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NylasListThreadsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description NylasListThreads 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["NylasListThreadsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */
@@ -4990,6 +5959,11 @@ export enum DealStage {
     delivery = "delivery",
     completed = "completed",
     cancelled = "cancelled"
+}
+export enum DealThreadAssociationType {
+    manual = "manual",
+    ai_suggested = "ai_suggested",
+    participant_match = "participant_match"
 }
 export enum DeliverableSource {
     inferred = "inferred",
