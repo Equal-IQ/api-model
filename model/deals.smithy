@@ -47,6 +47,18 @@ enum DealThreadAssociationType {
     participant_match = "participant_match"
 }
 
+// ===== APPROVAL REQUESTED: Task #24 - Add DealThreadStatus enum =====
+/// Suggestion workflow status for deal-thread associations
+enum DealThreadStatus {
+    /// Awaiting user review (AI suggestions)
+    pending = "pending"
+    /// User accepted the association
+    accepted = "accepted"
+    /// User rejected the association
+    rejected = "rejected"
+}
+// ===== END: Task #24 =====
+
 string DealId with [UuidLikeMixin]
 string DealVersionId with [UuidLikeMixin]
 string DealRevisionId with [UuidLikeMixin]
@@ -647,6 +659,7 @@ operation ListDeliverables {
     ]
 }
 
+// ===== APPROVAL REQUESTED: Task #35 - Add status field to DealThread =====
 /// Deal-Thread association
 structure DealThread {
     @required
@@ -662,6 +675,10 @@ structure DealThread {
     @required
     associationType: DealThreadAssociationType
 
+    /// Suggestion workflow status
+    @required
+    status: DealThreadStatus
+
     associatedBy: UserId
 
     associatedAt: ISODate
@@ -674,6 +691,7 @@ structure DealThread {
     @required
     updatedAt: ISODate
 }
+// ===== END: Task #35 =====
 
 // Deal-Thread Junction Operations
 

@@ -1335,6 +1335,7 @@ export interface components {
             dealId: string;
             threadMetadataId: string;
             associationType: components["schemas"]["DealThreadAssociationType"];
+            status: components["schemas"]["DealThreadStatus"];
             associatedBy?: string;
             associatedAt?: string;
             notes?: string;
@@ -1349,6 +1350,11 @@ export interface components {
         DealThreadMap: {
             [key: string]: components["schemas"]["DealThread"];
         };
+        /**
+         * @description Suggestion workflow status for deal-thread associations
+         * @enum {string}
+         */
+        DealThreadStatus: DealThreadStatus;
         /** @description Deal version for tracking changes through stages */
         DealVersion: {
             dealVersionId: string;
@@ -1868,6 +1874,9 @@ export interface components {
         NylasInitiateAuthRequestContent: {
             /** @description Optional: Specify email provider hint */
             provider?: string;
+            /** @description Organization context - which org this email connection belongs to
+             *     Included in JWT state and stored on the connection after callback */
+            orgId?: string;
         };
         NylasInitiateAuthResponseContent: {
             authUrl: string;
@@ -5964,6 +5973,11 @@ export enum DealThreadAssociationType {
     manual = "manual",
     ai_suggested = "ai_suggested",
     participant_match = "participant_match"
+}
+export enum DealThreadStatus {
+    pending = "pending",
+    accepted = "accepted",
+    rejected = "rejected"
 }
 export enum DeliverableSource {
     inferred = "inferred",

@@ -381,6 +381,7 @@ operation NylasSendMessage {
 
 // Connection Management Operations
 
+// ===== APPROVAL REQUESTED: Task #31 - Add orgId to NylasInitiateAuth =====
 /// Initiate OAuth flow to connect a Nylas account
 /// Generates Nylas Hosted Authentication URL
 @http(method: "POST", uri: "/integrations/nylas/auth/initiate")
@@ -388,7 +389,12 @@ operation NylasInitiateAuth {
     input := {
         /// Optional: Specify email provider hint
         provider: String
+
+        /// Organization context - which org this email connection belongs to
+        /// Included in JWT state and stored on the connection after callback
+        orgId: OrgId
     }
+// ===== END: Task #31 =====
 
     output := {
         @required

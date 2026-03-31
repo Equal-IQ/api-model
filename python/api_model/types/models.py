@@ -198,6 +198,16 @@ class DealThreadAssociationType(StrEnum):
     participant_match = 'participant_match'
 
 
+class DealThreadStatus(StrEnum):
+    """
+    Suggestion workflow status for deal-thread associations
+    """
+
+    pending = 'pending'
+    accepted = 'accepted'
+    rejected = 'rejected'
+
+
 class DealVersion(BaseModel):
     """
     Deal version for tracking changes through stages
@@ -659,6 +669,11 @@ class NylasGetThreadRequestContent(BaseModel):
 class NylasInitiateAuthRequestContent(BaseModel):
     provider: str | None = Field(
         None, description='Optional: Specify email provider hint'
+    )
+    orgId: str | None = Field(
+        None,
+        description='Organization context - which org this email connection belongs to\nIncluded in JWT state and stored on the connection after callback',
+        pattern='^[A-Za-z0-9-]+$',
     )
 
 
@@ -1302,6 +1317,7 @@ class DealThread(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType
+    status: DealThreadStatus
     associatedBy: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     associatedAt: str | None = Field(
         None,

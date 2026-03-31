@@ -57,6 +57,12 @@ export enum DealThreadAssociationType {
   participant_match = "participant_match"
 }
 
+export enum DealThreadStatus {
+  pending = "pending",
+  accepted = "accepted",
+  rejected = "rejected"
+}
+
 export enum DeliverableSource {
   inferred = "inferred",
   template = "template",
@@ -307,6 +313,7 @@ export type DealThread = {
   dealId: string;
   threadMetadataId: string;
   associationType: DealThreadAssociationType;
+  status: DealThreadStatus;
   associatedBy?: string;
   associatedAt?: string;
   notes?: string;
@@ -772,6 +779,7 @@ export type NylasGetThreadResponseContent = {
 
 export type NylasInitiateAuthRequestContent = {
   provider?: string;
+  orgId?: string;
 };
 
 export type NylasInitiateAuthResponseContent = {
