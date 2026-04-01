@@ -254,6 +254,11 @@ class DeleteDealRequestContent(BaseModel):
     hardDelete: bool | None = Field(None, description='Soft delete by default')
 
 
+class DeleteDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+
+
 class DeleteDealThreadResponseContent(BaseModel):
     success: bool
 
@@ -502,6 +507,7 @@ class ListDealAccessRequestContent(BaseModel):
 
 
 class ListDealThreadsRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType | None
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded dealThreadId)'
@@ -1036,6 +1042,13 @@ class UpdateDealResponseContent(BaseModel):
     newVersion: DealVersion | None
 
 
+class UpdateDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    status: DealThreadStatus | None
+    notes: str | None = Field(None, description='Updated notes')
+
+
 class UpdateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     deliverableId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -1201,6 +1214,7 @@ class CreateDealResponseContent(BaseModel):
 
 
 class CreateDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType
     notes: str | None
@@ -1667,6 +1681,11 @@ class ResendOrgInviteResponseContent(BaseModel):
 
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
+
+
+class UpdateDealThreadResponseContent(BaseModel):
+    success: bool
+    dealThread: DealThread
 
 
 class UpdateDeliverableResponseContent(BaseModel):
