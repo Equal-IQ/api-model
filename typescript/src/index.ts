@@ -11,6 +11,9 @@ export type Schemas = components['schemas'];
 export * from './xml-types';
 export * from './xml-utils';
 
+// Export EA Agent types (manually maintained)
+export * from './ea-types';
+
 // Unwrapped enum definitions
 export enum AuditOperation {
   insert = "insert",
