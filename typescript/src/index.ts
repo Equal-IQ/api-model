@@ -57,6 +57,12 @@ export enum DealThreadAssociationType {
   participant_match = "participant_match"
 }
 
+export enum DealThreadStatus {
+  pending = "pending",
+  accepted = "accepted",
+  rejected = "rejected"
+}
+
 export enum DeliverableSource {
   inferred = "inferred",
   template = "template",
@@ -178,6 +184,7 @@ export type CreateDealResponseContent = {
 };
 
 export type CreateDealThreadRequestContent = {
+  dealId: string;
   threadMetadataId: string;
   associationType: DealThreadAssociationType;
   notes?: string;
@@ -307,6 +314,7 @@ export type DealThread = {
   dealId: string;
   threadMetadataId: string;
   associationType: DealThreadAssociationType;
+  status: DealThreadStatus;
   associatedBy?: string;
   associatedAt?: string;
   notes?: string;
@@ -340,6 +348,11 @@ export type DeclineOrgInviteRequestContent = {
 export type DeleteDealRequestContent = {
   dealId: string;
   hardDelete?: boolean;
+};
+
+export type DeleteDealThreadRequestContent = {
+  dealId: string;
+  dealThreadId: string;
 };
 
 export type DeleteDealThreadResponseContent = {
@@ -608,6 +621,7 @@ export type ListDealAccessResponseContent = {
 };
 
 export type ListDealThreadsRequestContent = {
+  dealId: string;
   associationType?: DealThreadAssociationType;
   nextToken?: string;
   limit?: number;
@@ -772,6 +786,7 @@ export type NylasGetThreadResponseContent = {
 
 export type NylasInitiateAuthRequestContent = {
   provider?: string;
+  orgId?: string;
 };
 
 export type NylasInitiateAuthResponseContent = {
@@ -1027,6 +1042,18 @@ export type UpdateDealRequestContent = {
 export type UpdateDealResponseContent = {
   deal: Deal;
   newVersion?: DealVersion;
+};
+
+export type UpdateDealThreadRequestContent = {
+  dealId: string;
+  dealThreadId: string;
+  status?: DealThreadStatus;
+  notes?: string;
+};
+
+export type UpdateDealThreadResponseContent = {
+  success: boolean;
+  dealThread: DealThread;
 };
 
 export type UpdateDeliverableRequestContent = {

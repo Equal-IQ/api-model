@@ -47,6 +47,16 @@ enum DealThreadAssociationType {
     participant_match = "participant_match"
 }
 
+/// Suggestion workflow status for deal-thread associations
+enum DealThreadStatus {
+    /// Awaiting user review (AI suggestions)
+    pending = "pending"
+    /// User accepted the association
+    accepted = "accepted"
+    /// User rejected the association
+    rejected = "rejected"
+}
+
 string DealId with [UuidLikeMixin]
 string DealVersionId with [UuidLikeMixin]
 string DealRevisionId with [UuidLikeMixin]
@@ -99,6 +109,7 @@ resource DeliverableResource {
 resource DealThreadResource {
     identifiers: { dealId: DealId, dealThreadId: DealThreadId }
     create: CreateDealThread
+    update: UpdateDealThread
     delete: DeleteDealThread
     list: ListDealThreads
 }
@@ -662,6 +673,10 @@ structure DealThread {
     @required
     associationType: DealThreadAssociationType
 
+    /// Suggestion workflow status
+    @required
+    status: DealThreadStatus
+
     associatedBy: UserId
 
     associatedAt: ISODate
@@ -678,11 +693,10 @@ structure DealThread {
 // Deal-Thread Junction Operations
 
 /// Associate a thread with a deal
-@http(method: "POST", uri: "/deals/{dealId}/threads/create")
+@http(method: "POST", uri: "/deals/threads/create")
 operation CreateDealThread {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
@@ -712,15 +726,13 @@ operation CreateDealThread {
 
 /// Remove thread association from deal
 @idempotent
-@http(method: "POST", uri: "/deals/{dealId}/threads/{dealThreadId}/delete")
+@http(method: "POST", uri: "/deals/threads/delete")
 operation DeleteDealThread {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         @required
-        @httpLabel
         dealThreadId: DealThreadId
     }
 
@@ -736,14 +748,47 @@ operation DeleteDealThread {
     ]
 }
 
+/// Update thread association status (e.g., pending → accepted/rejected)
+@idempotent
+@http(method: "POST", uri: "/deals/threads/update")
+operation UpdateDealThread {
+    input := {
+        @required
+        dealId: DealId
+
+        @required
+        dealThreadId: DealThreadId
+
+        /// New status for the association
+        status: DealThreadStatus
+
+        /// Updated notes
+        notes: String
+    }
+
+    output := {
+        @required
+        success: Boolean
+
+        @required
+        dealThread: DealThread
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
 /// List threads associated with a deal
 @readonly
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "dealThreads", pageSize: "limit")
-@http(method: "POST", uri: "/deals/{dealId}/threads/list")
+@http(method: "POST", uri: "/deals/threads/list")
 operation ListDealThreads {
     input := {
         @required
-        @httpLabel
         dealId: DealId
 
         /// Filter by association type

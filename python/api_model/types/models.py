@@ -198,6 +198,16 @@ class DealThreadAssociationType(StrEnum):
     participant_match = 'participant_match'
 
 
+class DealThreadStatus(StrEnum):
+    """
+    Suggestion workflow status for deal-thread associations
+    """
+
+    pending = 'pending'
+    accepted = 'accepted'
+    rejected = 'rejected'
+
+
 class DealVersion(BaseModel):
     """
     Deal version for tracking changes through stages
@@ -242,6 +252,11 @@ class DeclineOrgInviteRequestContent(BaseModel):
 class DeleteDealRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     hardDelete: bool | None = Field(None, description='Soft delete by default')
+
+
+class DeleteDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
 class DeleteDealThreadResponseContent(BaseModel):
@@ -492,6 +507,7 @@ class ListDealAccessRequestContent(BaseModel):
 
 
 class ListDealThreadsRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType | None
     nextToken: str | None = Field(
         None, description='Pagination cursor (encoded dealThreadId)'
@@ -659,6 +675,11 @@ class NylasGetThreadRequestContent(BaseModel):
 class NylasInitiateAuthRequestContent(BaseModel):
     provider: str | None = Field(
         None, description='Optional: Specify email provider hint'
+    )
+    orgId: str | None = Field(
+        None,
+        description='Organization context - which org this email connection belongs to\nIncluded in JWT state and stored on the connection after callback',
+        pattern='^[A-Za-z0-9-]+$',
     )
 
 
@@ -1021,6 +1042,13 @@ class UpdateDealResponseContent(BaseModel):
     newVersion: DealVersion | None
 
 
+class UpdateDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealThreadId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    status: DealThreadStatus | None
+    notes: str | None = Field(None, description='Updated notes')
+
+
 class UpdateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     deliverableId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -1186,6 +1214,7 @@ class CreateDealResponseContent(BaseModel):
 
 
 class CreateDealThreadRequestContent(BaseModel):
+    dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType
     notes: str | None
@@ -1302,6 +1331,7 @@ class DealThread(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     threadMetadataId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     associationType: DealThreadAssociationType
+    status: DealThreadStatus
     associatedBy: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
     associatedAt: str | None = Field(
         None,
@@ -1651,6 +1681,11 @@ class ResendOrgInviteResponseContent(BaseModel):
 
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
+
+
+class UpdateDealThreadResponseContent(BaseModel):
+    success: bool
+    dealThread: DealThread
 
 
 class UpdateDeliverableResponseContent(BaseModel):

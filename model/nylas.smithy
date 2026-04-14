@@ -388,6 +388,10 @@ operation NylasInitiateAuth {
     input := {
         /// Optional: Specify email provider hint
         provider: String
+
+        /// Organization context - which org this email connection belongs to
+        /// Included in JWT state and stored on the connection after callback
+        orgId: OrgId
     }
 
     output := {
