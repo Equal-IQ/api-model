@@ -209,7 +209,8 @@ export type CreateDealVersionResponseContent = {
 export type CreateDeliverableRequestContent = {
   dealId: string;
   dealVersionId: string;
-  description: string;
+  name: string;
+  description?: string;
   source?: DeliverableSource;
   dueDate?: string;
   assignedTo?: string;
@@ -1059,6 +1060,7 @@ export type UpdateDealThreadResponseContent = {
 export type UpdateDeliverableRequestContent = {
   dealId: string;
   deliverableId: string;
+  name?: string;
   description?: string;
   source?: DeliverableSource;
   dueDate?: string;

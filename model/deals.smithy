@@ -563,6 +563,8 @@ operation CreateDeliverable {
         dealVersionId: DealVersionId
 
         @required
+        name: String
+
         description: String
 
         /// Source of deliverable
@@ -598,6 +600,7 @@ operation UpdateDeliverable {
         @required
         deliverableId: DeliverableId
 
+        name: String
         description: String
         source: DeliverableSource
         dueDate: ISODate
