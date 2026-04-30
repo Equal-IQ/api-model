@@ -247,7 +247,7 @@ as transient.""")
 /// Paginated via cursor (`nextToken`) to match Recall's native paging semantics;
 /// `pageSize` binds to `PageLimit` (1..100) for consistency with NylasListThreads.
 /// Recall supports `use_cursor` server-side but handler wiring of this cursor
-/// is follow-up work — see the `[EQIQ-NEW:list-bots-cursor]` anchor in
+/// is follow-up work — see the `[EQIQ-003:list-bots-cursor]` anchor in
 /// cdk/typescript_function_api/src/apis/meeting-bot.ts.
 @paginated(inputToken: "nextToken", outputToken: "nextToken", items: "bots", pageSize: "limit")
 @readonly
