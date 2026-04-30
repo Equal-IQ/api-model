@@ -16,6 +16,7 @@ service EqualIQ {
     FileResource
     AuditLogResource
     NylasResource
+    MeetingBotResource
   ]
   operations: [
     GetProfile

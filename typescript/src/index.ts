@@ -165,6 +165,14 @@ export type AuthenticationErrorResponseContent = {
   message: string;
 };
 
+export type CancelMeetingBotRequestContent = {
+  botId: string;
+};
+
+export type CancelMeetingBotResponseContent = {
+  success: boolean;
+};
+
 export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
@@ -235,6 +243,17 @@ export type CreateFileRequestContent = {
 export type CreateFileResponseContent = {
   file: File;
   uploadUrl?: PresignedUrl;
+};
+
+export type CreateMeetingBotRequestContent = {
+  meetingUrl: string;
+  botName?: string;
+  joinAt?: string;
+};
+
+export type CreateMeetingBotResponseContent = {
+  botId: string;
+  status: string;
 };
 
 export type CreateOrgCustomRoleRequestContent = {
@@ -516,6 +535,32 @@ export type GetFileResponseContent = {
   downloadUrl?: PresignedUrl;
 };
 
+export type GetMeetingBotStatusRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingBotStatusResponseContent = {
+  status: string;
+  recordingUrl?: string;
+  transcriptAvailable?: boolean;
+};
+
+export type GetMeetingRecordingRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingRecordingResponseContent = {
+  recordingUrl?: string;
+};
+
+export type GetMeetingTranscriptRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingTranscriptResponseContent = {
+  transcript?: TranscriptParticipantEntry[];
+};
+
 export type GetOrgPictureRequestContent = {
   orgId: string;
 };
@@ -587,6 +632,14 @@ export type GrantFileAccessResponseContent = {
 
 export type InternalServerErrorResponseContent = {
   message: string;
+};
+
+export type LeaveMeetingBotRequestContent = {
+  botId: string;
+};
+
+export type LeaveMeetingBotResponseContent = {
+  success: boolean;
 };
 
 export type ListAuditLogsRequestContent = {
@@ -703,6 +756,17 @@ export type ListFilesResponseContent = {
   totalSizeBytes?: number;
 };
 
+export type ListMeetingBotsRequestContent = {
+  status?: string;
+  limit?: number;
+  nextToken?: string;
+};
+
+export type ListMeetingBotsResponseContent = {
+  bots: MeetingBotSummary[];
+  nextToken?: string;
+};
+
 export type ListOrgCustomRolesRequestContent = {
   orgId: string;
   nextToken?: string;
@@ -747,6 +811,15 @@ export type ListUserOrganizationsRequestContent = {
 export type ListUserOrganizationsResponseContent = {
   organizations: OrgMap;
   nextToken?: string;
+};
+
+export type MeetingBotSummary = {
+  botId: string;
+  meetingUrl: string;
+  status: string;
+  botName?: string;
+  joinAt?: string;
+  createdAt: string;
 };
 
 export type NylasConnection = {
@@ -1005,6 +1078,30 @@ export type TimeSeriesPoint = {
   timestamp: string;
   count: number;
   metrics?: unknown;
+};
+
+export type TranscriptParticipant = {
+  id: number;
+  name: string;
+  isHost: boolean;
+  platform: string;
+  extraData?: unknown;
+};
+
+export type TranscriptParticipantEntry = {
+  participant: TranscriptParticipant;
+  words: TranscriptWord[];
+};
+
+export type TranscriptTimestamp = {
+  relative: number;
+  absolute: string;
+};
+
+export type TranscriptWord = {
+  text: string;
+  startTimestamp: TranscriptTimestamp;
+  endTimestamp: TranscriptTimestamp;
 };
 
 export type TransferOrgOwnershipRequestContent = {

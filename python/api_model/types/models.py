@@ -46,6 +46,18 @@ class AuthenticationErrorResponseContent(BaseModel):
     message: str
 
 
+class CancelMeetingBotRequestContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class CancelMeetingBotResponseContent(BaseModel):
+    success: bool
+
+
 class CancelOrgInviteRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
@@ -85,6 +97,36 @@ class CreateFileRequestContent(BaseModel):
     )
     requestUploadUrl: bool | None = Field(
         None, description='Request upload URL in response'
+    )
+
+
+class CreateMeetingBotRequestContent(BaseModel):
+    meetingUrl: str = Field(
+        ...,
+        description='Video meeting URL the bot should join (Zoom / Meet / Teams).',
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    botName: str | None = Field(
+        None,
+        description='Display name the bot uses when it appears in the participant list.\nDefaults to a configured fallback when omitted.',
+        max_length=100,
+    )
+    joinAt: str | None = Field(
+        None,
+        description='Scheduled join time. Must be within 10 minutes of a real meeting\nstart — Recall rejects bots scheduled too far out. Enforcement lives\nin the RecallClient (not Smithy-expressible).\nOmit for immediate dispatch.',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class CreateMeetingBotResponseContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    status: str = Field(
+        ...,
+        description='Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally\ndo not model this as an enum because Recall owns the taxonomy and introduces new\nstates without a contract bump. Callers should branch on well-known values\n(`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values\nas transient.',
     )
 
 
@@ -407,6 +449,54 @@ class GetFileRequestContent(BaseModel):
     )
 
 
+class GetMeetingBotStatusRequestContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class GetMeetingBotStatusResponseContent(BaseModel):
+    status: str = Field(
+        ...,
+        description='Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally\ndo not model this as an enum because Recall owns the taxonomy and introduces new\nstates without a contract bump. Callers should branch on well-known values\n(`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values\nas transient.',
+    )
+    recordingUrl: str | None = Field(
+        None,
+        description='Presigned URL to the raw video/audio recording, if Recall has\nfinished upload. Clients should treat absence as "not ready yet."',
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    transcriptAvailable: bool | None = Field(
+        None,
+        description='True when the transcript download has completed and\n`GetMeetingTranscript` will return content.',
+    )
+
+
+class GetMeetingRecordingRequestContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class GetMeetingRecordingResponseContent(BaseModel):
+    recordingUrl: str | None = Field(
+        None,
+        description='Presigned recording URL. Absent while upload is still processing.',
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+
+
+class GetMeetingTranscriptRequestContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
 class GetOrgPictureRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
@@ -491,6 +581,18 @@ class InviteStatus(StrEnum):
     accepted = 'accepted'
     declined = 'declined'
     expired = 'expired'
+
+
+class LeaveMeetingBotRequestContent(BaseModel):
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class LeaveMeetingBotResponseContent(BaseModel):
+    success: bool
 
 
 class ListDealAccessRequestContent(BaseModel):
@@ -604,6 +706,23 @@ class ListFilesResponseContent(BaseModel):
     )
 
 
+class ListMeetingBotsRequestContent(BaseModel):
+    status: str | None = Field(
+        None,
+        description='Filter by Recall status string. Same taxonomy as the `status` field\non `MeetingBotSummary` — caller-chosen, not validated against an enum.',
+    )
+    limit: float | None = Field(
+        None,
+        description='Page size. Default and max enforced by `PageLimit` (1..100).',
+        ge=1.0,
+        le=100.0,
+    )
+    nextToken: str | None = Field(
+        None,
+        description="Cursor from the previous page's `nextToken`. Omit for the first page.",
+    )
+
+
 class ListOrgCustomRolesRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     nextToken: str | None = Field(
@@ -624,6 +743,42 @@ class ListOrgInvitesRequestContent(BaseModel):
 class ListUserOrganizationsRequestContent(BaseModel):
     nextToken: str | None = Field(None, description='Pagination cursor (encoded orgId)')
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class MeetingBotSummary(BaseModel):
+    """
+    Summary of a meeting bot for list operations.
+    Subset of GetMeetingBotStatus output — does NOT include recordingUrl or
+    transcriptAvailable (those require per-bot Recall fetches that would blow
+    up list latency).
+    """
+
+    botId: str = Field(
+        ...,
+        description='Recall.ai bot identifier. Externally assigned by Recall; we treat it as an\nopaque UUID-shaped string.',
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    meetingUrl: str = Field(
+        ...,
+        description='Meeting platform URL the bot joined (Zoom / Meet / Teams link).',
+        pattern='^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@%._\\+~#=]{2,256}\\.[a-z]{2,6}\\b([-a-zA-Z0-9@:%_\\+.~#?&/=]*)$',
+    )
+    status: str = Field(
+        ...,
+        description='Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally\ndo not model this as an enum because Recall owns the taxonomy and introduces new\nstates without a contract bump. Callers should branch on well-known values\n(`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values\nas transient.',
+    )
+    botName: str | None = Field(
+        None, description='Display name the bot uses when it joins the call.'
+    )
+    joinAt: str | None = Field(
+        None,
+        description='Scheduled join time. Absent when the bot was dispatched immediately.',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
 
 
 class NylasConnection(BaseModel):
@@ -1002,6 +1157,54 @@ class TimeSeriesPoint(BaseModel):
     )
     count: float
     metrics: Any | None = Field(None, description='Additional metrics')
+
+
+class TranscriptParticipant(BaseModel):
+    """
+    Speaker identity attached to a TranscriptParticipantEntry.
+    `id` is Recall's participant identifier (scoped to the call, not globally
+    unique); `name` is the display name Recall captured from the platform.
+    """
+
+    id: float = Field(
+        ...,
+        description='Recall-assigned participant ID (small integer, scoped to the call).',
+    )
+    name: str
+    isHost: bool = Field(
+        ..., description='True when this participant owns / hosts the meeting.'
+    )
+    platform: str = Field(
+        ...,
+        description='Meeting platform the participant joined from (e.g. `zoom`, `meet`, `teams`).',
+    )
+    extraData: Any | None = Field(
+        None,
+        description='Free-form platform metadata passed through from Recall. Shape varies per\nplatform; treat as opaque JSON.',
+    )
+
+
+class TranscriptTimestamp(BaseModel):
+    """
+    Timestamp pair: `relative` is seconds from the start of the recording
+    (useful for playback offsets); `absolute` is the wall-clock ISO8601 time.
+    """
+
+    relative: float
+    absolute: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class TranscriptWord(BaseModel):
+    """
+    One transcribed word with precise start/end timestamps.
+    """
+
+    text: str
+    startTimestamp: TranscriptTimestamp
+    endTimestamp: TranscriptTimestamp
 
 
 class TransferOrgOwnershipRequestContent(BaseModel):
@@ -1560,6 +1763,13 @@ class ListFileAccessResponseContent(BaseModel):
     nextToken: str | None = Field(None, description='Token for next page')
 
 
+class ListMeetingBotsResponseContent(BaseModel):
+    bots: list[MeetingBotSummary]
+    nextToken: str | None = Field(
+        None, description='Cursor for the next page. Absent on the final page.'
+    )
+
+
 class ListOrgMembersRequestContent(BaseModel):
     orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     role: str | None = Field(None, description='Filter by role')
@@ -1679,6 +1889,19 @@ class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
 
+class TranscriptParticipantEntry(BaseModel):
+    """
+    A single participant's contiguous speech segment within a transcript.
+    One of these per speaker per continuous utterance.
+    """
+
+    participant: TranscriptParticipant
+    words: list[TranscriptWord] = Field(
+        ...,
+        description='Words spoken by this participant, in order. Each carries its own\nstart/end timestamps relative to the recording.',
+    )
+
+
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1729,6 +1952,13 @@ class CreateOrgCustomRoleResponseContent(BaseModel):
 class CreateOrgInviteResponseContent(BaseModel):
     invites: OrgInviteMap
     failedEmails: list[FailedEmail] | None
+
+
+class GetMeetingTranscriptResponseContent(BaseModel):
+    transcript: list[TranscriptParticipantEntry] | None = Field(
+        None,
+        description='Parsed transcript. Absent while Recall is still processing, or when\nthe meeting ended with no captured speech.',
+    )
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):
