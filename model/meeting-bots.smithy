@@ -83,81 +83,141 @@ list MeetingBotSummaryList {
     member: MeetingBotSummary
 }
 
-// Transcript structures mirror Recall's `download_url` payload 1:1 so the
-// handler can forward parsed JSON without reshaping. Runtime reference:
-// meeting-bot/src/types/recall-api.ts (RecallTranscriptContent).
-// Names: `TranscriptParticipantEntry` on the parent (Entry suffix distinguishes
-// the list member), `TranscriptWord` on the child. `extraData` is `Document`
-// (arbitrary JSON, optional). Timestamps are a nested struct: `relative` is
-// seconds from the recording start, `absolute` is wall-clock ISO8601.
-// CamelCase on the Smithy side; Recall sends snake_case over the wire and
-// Smithy marshalling handles the conversion. `participant.id` is `Integer` —
-// Recall's participant IDs are small ints scoped to the call.
+// Transcript processing lifecycle — owned by contract-analysis Step Functions.
+// The raw Recall JSON is an internal workflow detail (persisted to
+// MeetingTranscript.rawContent as a source-of-truth mirror); the public
+// contract surfaces only the FORMATTED transcript + summary that downstream
+// clients actually consume. Runtime reference for both types:
+// contract-analysis/src/types/transcription.types.ts (FormattedTranscript,
+// MeetingSummary).
+//
+// Status taxonomy: pending (no work yet) → raw_ready (Recall JSON fetched)
+// → formatting → formatted (formattedContent column populated) → summarizing
+// → complete (summary column populated) → failed (terminal; see processingError).
+// Modeled as an enum here because the taxonomy is owned by our own workflow,
+// not a vendor (contrast with MeetingBotStatus).
 
-/// A single participant's contiguous speech segment within a transcript.
-/// One of these per speaker per continuous utterance.
-structure TranscriptParticipantEntry {
-    @required
-    participant: TranscriptParticipant
-
-    /// Words spoken by this participant, in order. Each carries its own
-    /// start/end timestamps relative to the recording.
-    @required
-    words: TranscriptWordList
+/// Processing lifecycle of a meeting transcript through the
+/// contract-analysis Step Functions workflow.
+enum TranscriptProcessingStatus {
+    PENDING = "pending"
+    RAW_READY = "raw_ready"
+    FORMATTING = "formatting"
+    FORMATTED = "formatted"
+    SUMMARIZING = "summarizing"
+    COMPLETE = "complete"
+    FAILED = "failed"
 }
 
-list TranscriptParticipantEntryList {
-    member: TranscriptParticipantEntry
+list StringList {
+    member: String
 }
 
-/// Speaker identity attached to a TranscriptParticipantEntry.
-/// `id` is Recall's participant identifier (scoped to the call, not globally
-/// unique); `name` is the display name Recall captured from the platform.
-structure TranscriptParticipant {
+/// Compact formatted transcript produced by the contract-analysis
+/// transcriptFormattingHandler. `text` is the full transcript rendered as
+/// `[HH:MM:SS] Name: utterance\n`; `metadata` summarizes participants and
+/// timing. Returned only when processingStatus = `complete`.
+structure FormattedTranscript {
+    /// Compact transcript text, one line per contiguous utterance.
+    /// Format: `[HH:MM:SS] Name: text\n`.
+    @required
+    text: String
+
+    @required
+    metadata: FormattedTranscriptMetadata
+}
+
+/// Summary header on a FormattedTranscript. Participant list is flattened
+/// from the raw Recall data; timestamps are wall-clock and may be null when
+/// Recall did not attach absolute times to the recording.
+structure FormattedTranscriptMetadata {
+    /// Distinct speakers counted in the transcript.
+    @required
+    totalParticipants: Integer
+
+    @required
+    participants: FormattedTranscriptParticipantList
+
+    /// Recording duration in seconds.
+    @required
+    duration: Integer
+
+    /// Wall-clock recording start. Null when Recall did not attach an absolute
+    /// timestamp to the first word.
+    startTime: ISODate
+
+    /// Wall-clock recording end. Null when Recall did not attach an absolute
+    /// timestamp to the last word.
+    endTime: ISODate
+}
+
+list FormattedTranscriptParticipantList {
+    member: FormattedTranscriptParticipant
+}
+
+/// Flattened speaker identity on a FormattedTranscript. `id` is Recall's
+/// per-call participant ID; `name` may be null when Recall did not capture
+/// a display name from the meeting platform.
+structure FormattedTranscriptParticipant {
     /// Recall-assigned participant ID (small integer, scoped to the call).
     @required
     id: Integer
 
-    @required
+    /// Display name Recall captured from the platform. Null when absent.
     name: String
 
     /// True when this participant owns / hosts the meeting.
     @required
     isHost: Boolean
-
-    /// Meeting platform the participant joined from (e.g. `zoom`, `meet`, `teams`).
-    @required
-    platform: String
-
-    /// Free-form platform metadata passed through from Recall. Shape varies per
-    /// platform; treat as opaque JSON.
-    extraData: Document
 }
 
-/// One transcribed word with precise start/end timestamps.
-structure TranscriptWord {
+/// LLM-generated meeting summary produced by the contract-analysis
+/// transcriptSummaryHandler. Every field is required; `summary` is the
+/// narrative, the list fields are extracted structured data. Returned only
+/// when processingStatus = `complete`.
+structure MeetingSummary {
+    /// Short title the LLM generated for the meeting.
     @required
-    text: String
+    title: String
 
+    /// Narrative overview of the meeting.
     @required
-    startTimestamp: TranscriptTimestamp
+    summary: String
 
+    /// Main discussion points. May be empty.
     @required
-    endTimestamp: TranscriptTimestamp
+    keyPoints: StringList
+
+    /// Action items the LLM extracted. May be empty.
+    @required
+    actionItems: ActionItemList
+
+    /// Key decisions made during the meeting. May be empty.
+    @required
+    decisions: StringList
+
+    /// Topics discussed. May be empty.
+    @required
+    topics: StringList
 }
 
-list TranscriptWordList {
-    member: TranscriptWord
+list ActionItemList {
+    member: ActionItem
 }
 
-/// Timestamp pair: `relative` is seconds from the start of the recording
-/// (useful for playback offsets); `absolute` is the wall-clock ISO8601 time.
-structure TranscriptTimestamp {
+/// A single action item extracted from the meeting. `assignee` is null when
+/// the LLM could not attribute ownership; `mentioned` is true when the item
+/// was explicitly stated, false when inferred from context.
+structure ActionItem {
     @required
-    relative: Double
+    description: String
 
+    /// Person the action was assigned to. Null when unattributed.
+    assignee: String
+
+    /// True when the action was explicitly mentioned; false when inferred.
     @required
-    absolute: ISODate
+    mentioned: Boolean
 }
 
 // Operations
@@ -342,11 +402,20 @@ operation GetMeetingRecording {
     ]
 }
 
-/// Get the parsed transcript for a completed meeting bot.
-/// Returned shape mirrors Recall's `download_url` payload: an array of
-/// participant entries, each containing the words they spoke with precise
-/// timestamps. Wrapped in a response object (rather than a top-level list)
-/// because Smithy services can't return top-level arrays cleanly.
+/// Fetch the processed transcript + LLM summary for a meeting bot.
+///
+/// Surfaces the state of the contract-analysis Step Functions pipeline:
+///   - `processingStatus` always reflects the latest workflow stage (see
+///     `TranscriptProcessingStatus` for the lifecycle).
+///   - `transcript` and `summary` are populated ONLY when
+///     `processingStatus = complete`. Both return null for every other
+///     status, including `failed`.
+///   - `processingError` carries a human-readable failure detail when
+///     `processingStatus = failed`. Absent / null otherwise.
+///
+/// The raw Recall JSON is intentionally NOT exposed — it's a workflow-internal
+/// source-of-truth mirror. Clients poll `GetMeetingBotStatus.transcriptAvailable`
+/// for bot-level readiness, then poll this endpoint for processing readiness.
 @readonly
 @http(method: "POST", uri: "/meeting-bot/transcript")
 operation GetMeetingTranscript {
@@ -356,9 +425,22 @@ operation GetMeetingTranscript {
     }
 
     output := {
-        /// Parsed transcript. Absent while Recall is still processing, or when
-        /// the meeting ended with no captured speech.
-        transcript: TranscriptParticipantEntryList
+        /// Current stage of the transcript processing pipeline. Clients
+        /// should treat any status other than `complete` as "not yet ready."
+        @required
+        processingStatus: TranscriptProcessingStatus
+
+        /// Human-readable failure detail. Populated only when
+        /// `processingStatus = failed`.
+        processingError: String
+
+        /// Formatted transcript + metadata. Populated only when
+        /// `processingStatus = complete`; null for every other status.
+        transcript: FormattedTranscript
+
+        /// LLM-generated meeting summary. Populated only when
+        /// `processingStatus = complete`; null for every other status.
+        summary: MeetingSummary
     }
 
     errors: [

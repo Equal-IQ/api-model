@@ -14,6 +14,23 @@ class AcceptOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class ActionItem(BaseModel):
+    """
+    A single action item extracted from the meeting. `assignee` is null when
+    the LLM could not attribute ownership; `mentioned` is true when the item
+    was explicitly stated, false when inferred from context.
+    """
+
+    description: str
+    assignee: str | None = Field(
+        None, description='Person the action was assigned to. Null when unattributed.'
+    )
+    mentioned: bool = Field(
+        ...,
+        description='True when the action was explicitly mentioned; false when inferred.',
+    )
+
+
 class AuditOperation(StrEnum):
     """
     Database operations for audit tracking
@@ -401,6 +418,26 @@ class FilePermission(StrEnum):
     rename_file = 'rename_file'
 
 
+class FormattedTranscriptParticipant(BaseModel):
+    """
+    Flattened speaker identity on a FormattedTranscript. `id` is Recall's
+    per-call participant ID; `name` may be null when Recall did not capture
+    a display name from the meeting platform.
+    """
+
+    id: float = Field(
+        ...,
+        description='Recall-assigned participant ID (small integer, scoped to the call).',
+    )
+    name: str | None = Field(
+        None,
+        description='Display name Recall captured from the platform. Null when absent.',
+    )
+    isHost: bool = Field(
+        ..., description='True when this participant owns / hosts the meeting.'
+    )
+
+
 class GenerateDownloadUrlRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     expirationSeconds: float | None = Field(
@@ -775,6 +812,30 @@ class MeetingBotSummary(BaseModel):
         ...,
         pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
     )
+
+
+class MeetingSummary(BaseModel):
+    """
+    LLM-generated meeting summary produced by the contract-analysis
+    transcriptSummaryHandler. Every field is required; `summary` is the
+    narrative, the list fields are extracted structured data. Returned only
+    when processingStatus = `complete`.
+    """
+
+    title: str = Field(
+        ..., description='Short title the LLM generated for the meeting.'
+    )
+    summary: str = Field(..., description='Narrative overview of the meeting.')
+    keyPoints: list[str] = Field(
+        ..., description='Main discussion points. May be empty.'
+    )
+    actionItems: list[ActionItem] = Field(
+        ..., description='Action items the LLM extracted. May be empty.'
+    )
+    decisions: list[str] = Field(
+        ..., description='Key decisions made during the meeting. May be empty.'
+    )
+    topics: list[str] = Field(..., description='Topics discussed. May be empty.')
 
 
 class NylasConnection(BaseModel):
@@ -1155,52 +1216,19 @@ class TimeSeriesPoint(BaseModel):
     metrics: Any | None = Field(None, description='Additional metrics')
 
 
-class TranscriptParticipant(BaseModel):
+class TranscriptProcessingStatus(StrEnum):
     """
-    Speaker identity attached to a TranscriptParticipantEntry.
-    `id` is Recall's participant identifier (scoped to the call, not globally
-    unique); `name` is the display name Recall captured from the platform.
-    """
-
-    id: float = Field(
-        ...,
-        description='Recall-assigned participant ID (small integer, scoped to the call).',
-    )
-    name: str
-    isHost: bool = Field(
-        ..., description='True when this participant owns / hosts the meeting.'
-    )
-    platform: str = Field(
-        ...,
-        description='Meeting platform the participant joined from (e.g. `zoom`, `meet`, `teams`).',
-    )
-    extraData: Any | None = Field(
-        None,
-        description='Free-form platform metadata passed through from Recall. Shape varies per\nplatform; treat as opaque JSON.',
-    )
-
-
-class TranscriptTimestamp(BaseModel):
-    """
-    Timestamp pair: `relative` is seconds from the start of the recording
-    (useful for playback offsets); `absolute` is the wall-clock ISO8601 time.
+    Processing lifecycle of a meeting transcript through the
+    contract-analysis Step Functions workflow.
     """
 
-    relative: float
-    absolute: str = Field(
-        ...,
-        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
-    )
-
-
-class TranscriptWord(BaseModel):
-    """
-    One transcribed word with precise start/end timestamps.
-    """
-
-    text: str
-    startTimestamp: TranscriptTimestamp
-    endTimestamp: TranscriptTimestamp
+    pending = 'pending'
+    raw_ready = 'raw_ready'
+    formatting = 'formatting'
+    formatted = 'formatted'
+    summarizing = 'summarizing'
+    complete = 'complete'
+    failed = 'failed'
 
 
 class TransferOrgOwnershipRequestContent(BaseModel):
@@ -1647,6 +1675,30 @@ class FileAccessMap(RootModel[dict[str, FileAccess]]):
     root: dict[str, FileAccess]
 
 
+class FormattedTranscriptMetadata(BaseModel):
+    """
+    Summary header on a FormattedTranscript. Participant list is flattened
+    from the raw Recall data; timestamps are wall-clock and may be null when
+    Recall did not attach absolute times to the recording.
+    """
+
+    totalParticipants: float = Field(
+        ..., description='Distinct speakers counted in the transcript.'
+    )
+    participants: list[FormattedTranscriptParticipant]
+    duration: float = Field(..., description='Recording duration in seconds.')
+    startTime: str | None = Field(
+        None,
+        description='Wall-clock recording start. Null when Recall did not attach an absolute\ntimestamp to the first word.',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endTime: str | None = Field(
+        None,
+        description='Wall-clock recording end. Null when Recall did not attach an absolute\ntimestamp to the last word.',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
 class GenerateDownloadUrlResponseContent(BaseModel):
     downloadUrl: PresignedUrl
 
@@ -1884,19 +1936,6 @@ class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
 
 
-class TranscriptParticipantEntry(BaseModel):
-    """
-    A single participant's contiguous speech segment within a transcript.
-    One of these per speaker per continuous utterance.
-    """
-
-    participant: TranscriptParticipant
-    words: list[TranscriptWord] = Field(
-        ...,
-        description='Words spoken by this participant, in order. Each carries its own\nstart/end timestamps relative to the recording.',
-    )
-
-
 class UpdateDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1949,11 +1988,29 @@ class CreateOrgInviteResponseContent(BaseModel):
     failedEmails: list[FailedEmail] | None
 
 
-class GetMeetingTranscriptResponseContent(BaseModel):
-    transcript: list[TranscriptParticipantEntry] | None = Field(
-        None,
-        description='Parsed transcript. Absent while Recall is still processing, or when\nthe meeting ended with no captured speech.',
+class FormattedTranscript(BaseModel):
+    """
+    Compact formatted transcript produced by the contract-analysis
+    transcriptFormattingHandler. `text` is the full transcript rendered as
+    `[HH:MM:SS] Name: utterance\\n`; `metadata` summarizes participants and
+    timing. Returned only when processingStatus = `complete`.
+    """
+
+    text: str = Field(
+        ...,
+        description='Compact transcript text, one line per contiguous utterance.\nFormat: `[HH:MM:SS] Name: text\\n`.',
     )
+    metadata: FormattedTranscriptMetadata
+
+
+class GetMeetingTranscriptResponseContent(BaseModel):
+    processingStatus: TranscriptProcessingStatus
+    processingError: str | None = Field(
+        None,
+        description='Human-readable failure detail. Populated only when\n`processingStatus = failed`.',
+    )
+    transcript: FormattedTranscript | None
+    summary: MeetingSummary | None
 
 
 class ListOrgCustomRolesResponseContent(BaseModel):

@@ -128,6 +128,16 @@ export enum StatisticGrouping {
   month = "month"
 }
 
+export enum TranscriptProcessingStatus {
+  pending = "pending",
+  raw_ready = "raw_ready",
+  formatting = "formatting",
+  formatted = "formatted",
+  summarizing = "summarizing",
+  complete = "complete",
+  failed = "failed"
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
@@ -137,6 +147,12 @@ export type AcceptOrgInviteRequestContent = {
 export type AcceptOrgInviteResponseContent = {
   organization: Org;
   member: OrgMember;
+};
+
+export type ActionItem = {
+  description: string;
+  assignee?: string;
+  mentioned: boolean;
 };
 
 export type AuditLog = {
@@ -458,6 +474,25 @@ export type FileAccessMap = { [key: string]: FileAccess };
 
 export type FileMap = { [key: string]: File };
 
+export type FormattedTranscript = {
+  text: string;
+  metadata: FormattedTranscriptMetadata;
+};
+
+export type FormattedTranscriptMetadata = {
+  totalParticipants: number;
+  participants: FormattedTranscriptParticipant[];
+  duration: number;
+  startTime?: string;
+  endTime?: string;
+};
+
+export type FormattedTranscriptParticipant = {
+  id: number;
+  name?: string;
+  isHost: boolean;
+};
+
 export type GenerateDownloadUrlRequestContent = {
   fileId: string;
   expirationSeconds?: number;
@@ -559,7 +594,10 @@ export type GetMeetingTranscriptRequestContent = {
 };
 
 export type GetMeetingTranscriptResponseContent = {
-  transcript?: TranscriptParticipantEntry[];
+  processingStatus: TranscriptProcessingStatus;
+  processingError?: string;
+  transcript?: FormattedTranscript;
+  summary?: MeetingSummary;
 };
 
 export type GetOrgPictureRequestContent = {
@@ -821,6 +859,15 @@ export type MeetingBotSummary = {
   createdAt: string;
 };
 
+export type MeetingSummary = {
+  title: string;
+  summary: string;
+  keyPoints: string[];
+  actionItems: ActionItem[];
+  decisions: string[];
+  topics: string[];
+};
+
 export type NylasConnection = {
   connectionId: string;
   email: string;
@@ -1077,30 +1124,6 @@ export type TimeSeriesPoint = {
   timestamp: string;
   count: number;
   metrics?: unknown;
-};
-
-export type TranscriptParticipant = {
-  id: number;
-  name: string;
-  isHost: boolean;
-  platform: string;
-  extraData?: unknown;
-};
-
-export type TranscriptParticipantEntry = {
-  participant: TranscriptParticipant;
-  words: TranscriptWord[];
-};
-
-export type TranscriptTimestamp = {
-  relative: number;
-  absolute: string;
-};
-
-export type TranscriptWord = {
-  text: string;
-  startTimestamp: TranscriptTimestamp;
-  endTimestamp: TranscriptTimestamp;
 };
 
 export type TransferOrgOwnershipRequestContent = {

@@ -842,11 +842,20 @@ export interface paths {
         };
         get?: never;
         put?: never;
-        /** @description Get the parsed transcript for a completed meeting bot.
-         *     Returned shape mirrors Recall's `download_url` payload: an array of
-         *     participant entries, each containing the words they spoke with precise
-         *     timestamps. Wrapped in a response object (rather than a top-level list)
-         *     because Smithy services can't return top-level arrays cleanly. */
+        /** @description Fetch the processed transcript + LLM summary for a meeting bot.
+         *
+         *     Surfaces the state of the contract-analysis Step Functions pipeline:
+         *       - `processingStatus` always reflects the latest workflow stage (see
+         *         `TranscriptProcessingStatus` for the lifecycle).
+         *       - `transcript` and `summary` are populated ONLY when
+         *         `processingStatus = complete`. Both return null for every other
+         *         status, including `failed`.
+         *       - `processingError` carries a human-readable failure detail when
+         *         `processingStatus = failed`. Absent / null otherwise.
+         *
+         *     The raw Recall JSON is intentionally NOT exposed — it's a workflow-internal
+         *     source-of-truth mirror. Clients poll `GetMeetingBotStatus.transcriptAvailable`
+         *     for bot-level readiness, then poll this endpoint for processing readiness. */
         post: operations["GetMeetingTranscript"];
         delete?: never;
         options?: never;
@@ -1282,6 +1291,16 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        /** @description A single action item extracted from the meeting. `assignee` is null when
+         *     the LLM could not attribute ownership; `mentioned` is true when the item
+         *     was explicitly stated, false when inferred from context. */
+        ActionItem: {
+            description: string;
+            /** @description Person the action was assigned to. Null when unattributed. */
+            assignee?: string;
+            /** @description True when the action was explicitly mentioned; false when inferred. */
+            mentioned: boolean;
+        };
         /** @description Audit log entry for field-level change tracking */
         AuditLog: {
             /** @description Audit log identifier */
@@ -1691,6 +1710,43 @@ export interface components {
          * @enum {string}
          */
         FilePermission: FilePermission;
+        /** @description Compact formatted transcript produced by the contract-analysis
+         *     transcriptFormattingHandler. `text` is the full transcript rendered as
+         *     `[HH:MM:SS] Name: utterance\n`; `metadata` summarizes participants and
+         *     timing. Returned only when processingStatus = `complete`. */
+        FormattedTranscript: {
+            /** @description Compact transcript text, one line per contiguous utterance.
+             *     Format: `[HH:MM:SS] Name: text\n`. */
+            text: string;
+            metadata: components["schemas"]["FormattedTranscriptMetadata"];
+        };
+        /** @description Summary header on a FormattedTranscript. Participant list is flattened
+         *     from the raw Recall data; timestamps are wall-clock and may be null when
+         *     Recall did not attach absolute times to the recording. */
+        FormattedTranscriptMetadata: {
+            /** @description Distinct speakers counted in the transcript. */
+            totalParticipants: number;
+            participants: components["schemas"]["FormattedTranscriptParticipant"][];
+            /** @description Recording duration in seconds. */
+            duration: number;
+            /** @description Wall-clock recording start. Null when Recall did not attach an absolute
+             *     timestamp to the first word. */
+            startTime?: string;
+            /** @description Wall-clock recording end. Null when Recall did not attach an absolute
+             *     timestamp to the last word. */
+            endTime?: string;
+        };
+        /** @description Flattened speaker identity on a FormattedTranscript. `id` is Recall's
+         *     per-call participant ID; `name` may be null when Recall did not capture
+         *     a display name from the meeting platform. */
+        FormattedTranscriptParticipant: {
+            /** @description Recall-assigned participant ID (small integer, scoped to the call). */
+            id: number;
+            /** @description Display name Recall captured from the platform. Null when absent. */
+            name?: string;
+            /** @description True when this participant owns / hosts the meeting. */
+            isHost: boolean;
+        };
         GenerateDownloadUrlRequestContent: {
             /** @description File identifier */
             fileId: string;
@@ -1804,9 +1860,12 @@ export interface components {
             botId: string;
         };
         GetMeetingTranscriptResponseContent: {
-            /** @description Parsed transcript. Absent while Recall is still processing, or when
-             *     the meeting ended with no captured speech. */
-            transcript?: components["schemas"]["TranscriptParticipantEntry"][];
+            processingStatus: components["schemas"]["TranscriptProcessingStatus"];
+            /** @description Human-readable failure detail. Populated only when
+             *     `processingStatus = failed`. */
+            processingError?: string;
+            transcript?: components["schemas"]["FormattedTranscript"];
+            summary?: components["schemas"]["MeetingSummary"];
         };
         GetOrgPictureRequestContent: {
             orgId: string;
@@ -2108,6 +2167,24 @@ export interface components {
             /** @description Scheduled join time. Absent when the bot was dispatched immediately. */
             joinAt?: string;
             createdAt: string;
+        };
+        /** @description LLM-generated meeting summary produced by the contract-analysis
+         *     transcriptSummaryHandler. Every field is required; `summary` is the
+         *     narrative, the list fields are extracted structured data. Returned only
+         *     when processingStatus = `complete`. */
+        MeetingSummary: {
+            /** @description Short title the LLM generated for the meeting. */
+            title: string;
+            /** @description Narrative overview of the meeting. */
+            summary: string;
+            /** @description Main discussion points. May be empty. */
+            keyPoints: string[];
+            /** @description Action items the LLM extracted. May be empty. */
+            actionItems: components["schemas"]["ActionItem"][];
+            /** @description Key decisions made during the meeting. May be empty. */
+            decisions: string[];
+            /** @description Topics discussed. May be empty. */
+            topics: string[];
         };
         /** @description Nylas connection status
          *     Note: grantId intentionally excluded - internal Nylas credential, not for frontend */
@@ -2417,42 +2494,12 @@ export interface components {
             /** @description Additional metrics */
             metrics?: unknown;
         };
-        /** @description Speaker identity attached to a TranscriptParticipantEntry.
-         *     `id` is Recall's participant identifier (scoped to the call, not globally
-         *     unique); `name` is the display name Recall captured from the platform. */
-        TranscriptParticipant: {
-            /** @description Recall-assigned participant ID (small integer, scoped to the call). */
-            id: number;
-            name: string;
-            /** @description True when this participant owns / hosts the meeting. */
-            isHost: boolean;
-            /** @description Meeting platform the participant joined from (e.g. `zoom`, `meet`, `teams`). */
-            platform: string;
-            /** @description Free-form platform metadata passed through from Recall. Shape varies per
-             *     platform; treat as opaque JSON. */
-            extraData?: unknown;
-        };
-        /** @description A single participant's contiguous speech segment within a transcript.
-         *     One of these per speaker per continuous utterance. */
-        TranscriptParticipantEntry: {
-            participant: components["schemas"]["TranscriptParticipant"];
-            /** @description Words spoken by this participant, in order. Each carries its own
-             *     start/end timestamps relative to the recording. */
-            words: components["schemas"]["TranscriptWord"][];
-        };
-        /** @description Timestamp pair: `relative` is seconds from the start of the recording
-         *     (useful for playback offsets); `absolute` is the wall-clock ISO8601 time. */
-        TranscriptTimestamp: {
-            /** Format: double */
-            relative: number;
-            absolute: string;
-        };
-        /** @description One transcribed word with precise start/end timestamps. */
-        TranscriptWord: {
-            text: string;
-            startTimestamp: components["schemas"]["TranscriptTimestamp"];
-            endTimestamp: components["schemas"]["TranscriptTimestamp"];
-        };
+        /**
+         * @description Processing lifecycle of a meeting transcript through the
+         *     contract-analysis Step Functions workflow.
+         * @enum {string}
+         */
+        TranscriptProcessingStatus: TranscriptProcessingStatus;
         TransferOrgOwnershipRequestContent: {
             orgId: string;
             newOwnerId: string;
@@ -6770,4 +6817,13 @@ export enum StatisticGrouping {
     day = "day",
     week = "week",
     month = "month"
+}
+export enum TranscriptProcessingStatus {
+    pending = "pending",
+    raw_ready = "raw_ready",
+    formatting = "formatting",
+    formatted = "formatted",
+    summarizing = "summarizing",
+    complete = "complete",
+    failed = "failed"
 }
