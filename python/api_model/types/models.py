@@ -713,13 +713,9 @@ class ListMeetingBotsRequestContent(BaseModel):
     )
     limit: float | None = Field(
         None,
-        description='Page size. Default and max enforced by `PageLimit` (1..100).',
+        description='Result limit. Default and max enforced by `PageLimit` (1..100).',
         ge=1.0,
         le=100.0,
-    )
-    nextToken: str | None = Field(
-        None,
-        description="Cursor from the previous page's `nextToken`. Omit for the first page.",
     )
 
 
@@ -1765,9 +1761,6 @@ class ListFileAccessResponseContent(BaseModel):
 
 class ListMeetingBotsResponseContent(BaseModel):
     bots: list[MeetingBotSummary]
-    nextToken: str | None = Field(
-        None, description='Cursor for the next page. Absent on the final page.'
-    )
 
 
 class ListOrgMembersRequestContent(BaseModel):

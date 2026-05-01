@@ -783,11 +783,10 @@ export interface paths {
         get?: never;
         put?: never;
         /** @description List bots created by the authenticated user, newest first.
-         *     Paginated via cursor (`nextToken`) to match Recall's native paging semantics;
-         *     `pageSize` binds to `PageLimit` (1..100) for consistency with NylasListThreads.
-         *     Recall supports `use_cursor` server-side but handler wiring of this cursor
-         *     is follow-up work — see the `[EQIQ-003:list-bots-cursor]` anchor in
-         *     cdk/typescript_function_api/src/apis/meeting-bot.ts. */
+         *     Bounded by `limit` (1..100). Not paginated — the handler returns a single
+         *     page keyed off Postgres `MeetingBot` rows for the caller, with Recall
+         *     refreshing transient rows lazily in the same query. Add pagination when a
+         *     consumer actually needs it. */
         post: operations["ListMeetingBots"];
         delete?: never;
         options?: never;
@@ -2029,15 +2028,11 @@ export interface components {
             /** @description Filter by Recall status string. Same taxonomy as the `status` field
              *     on `MeetingBotSummary` — caller-chosen, not validated against an enum. */
             status?: string;
-            /** @description Page size. Default and max enforced by `PageLimit` (1..100). */
+            /** @description Result limit. Default and max enforced by `PageLimit` (1..100). */
             limit?: number;
-            /** @description Cursor from the previous page's `nextToken`. Omit for the first page. */
-            nextToken?: string;
         };
         ListMeetingBotsResponseContent: {
             bots: components["schemas"]["MeetingBotSummary"][];
-            /** @description Cursor for the next page. Absent on the final page. */
-            nextToken?: string;
         };
         ListOrgCustomRolesRequestContent: {
             orgId: string;

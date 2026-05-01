@@ -244,12 +244,10 @@ as transient.""")
 }
 
 /// List bots created by the authenticated user, newest first.
-/// Paginated via cursor (`nextToken`) to match Recall's native paging semantics;
-/// `pageSize` binds to `PageLimit` (1..100) for consistency with NylasListThreads.
-/// Recall supports `use_cursor` server-side but handler wiring of this cursor
-/// is follow-up work — see the `[EQIQ-003:list-bots-cursor]` anchor in
-/// cdk/typescript_function_api/src/apis/meeting-bot.ts.
-@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "bots", pageSize: "limit")
+/// Bounded by `limit` (1..100). Not paginated — the handler returns a single
+/// page keyed off Postgres `MeetingBot` rows for the caller, with Recall
+/// refreshing transient rows lazily in the same query. Add pagination when a
+/// consumer actually needs it.
 @readonly
 @http(method: "POST", uri: "/meeting-bot/list")
 operation ListMeetingBots {
@@ -258,19 +256,13 @@ operation ListMeetingBots {
         /// on `MeetingBotSummary` — caller-chosen, not validated against an enum.
         status: String
 
-        /// Page size. Default and max enforced by `PageLimit` (1..100).
+        /// Result limit. Default and max enforced by `PageLimit` (1..100).
         limit: PageLimit
-
-        /// Cursor from the previous page's `nextToken`. Omit for the first page.
-        nextToken: String
     }
 
     output := {
         @required
         bots: MeetingBotSummaryList
-
-        /// Cursor for the next page. Absent on the final page.
-        nextToken: String
     }
 
     errors: [

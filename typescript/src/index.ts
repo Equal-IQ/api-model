@@ -759,12 +759,10 @@ export type ListFilesResponseContent = {
 export type ListMeetingBotsRequestContent = {
   status?: string;
   limit?: number;
-  nextToken?: string;
 };
 
 export type ListMeetingBotsResponseContent = {
   bots: MeetingBotSummary[];
-  nextToken?: string;
 };
 
 export type ListOrgCustomRolesRequestContent = {
