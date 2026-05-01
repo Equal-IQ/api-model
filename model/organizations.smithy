@@ -21,6 +21,12 @@ use equaliq#PresignedPostData
 // - OrgMember structure
 // - OrgInvite structure
 
+// [EQIQ-NEW:sweep-conflict-error-other-handlers] Throw sites in org-invites,
+// org-members, organizations, org-custom-roles set statusCode=409 but the
+// Smithy operations here don't list ConflictError in their errors: blocks.
+// Sweep each operation that can 409 and add ConflictError to the errors list
+// so the contract matches dispatcher behavior.
+
 // Org structures and operations
 
 string OrgId with [UuidLikeMixin]

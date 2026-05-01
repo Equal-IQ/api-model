@@ -194,6 +194,10 @@ export type CancelOrgInviteRequestContent = {
   inviteId: string;
 };
 
+export type ConflictErrorResponseContent = {
+  message: string;
+};
+
 export type CreateDealRequestContent = {
   orgId: string;
   title: string;

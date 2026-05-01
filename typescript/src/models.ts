@@ -1353,6 +1353,14 @@ export interface components {
             orgId: string;
             inviteId: string;
         };
+        /** @description Conflict with current server state. Use when the request is well-formed
+         *     and the caller is authorized, but the action conflicts with existing
+         *     resources (duplicate member, bot already scheduled, role-name collision).
+         *     Distinct from ProcessingIncompleteError, which carries the same 409 status
+         *     but signals "resource exists, not ready yet." */
+        ConflictErrorResponseContent: {
+            message: string;
+        };
         /**
          * @description Content disposition for file downloads
          * @enum {string}
@@ -5042,6 +5050,15 @@ export interface operations {
                     "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
                 };
             };
+            /** @description ConflictError 409 response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConflictErrorResponseContent"];
+                };
+            };
             /** @description InternalServerError 500 response */
             500: {
                 headers: {
@@ -5091,6 +5108,15 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ConflictError 409 response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConflictErrorResponseContent"];
                 };
             };
             /** @description InternalServerError 500 response */

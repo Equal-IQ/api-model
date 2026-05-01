@@ -261,6 +261,7 @@ as transient.""")
     errors: [
         AuthenticationError
         ValidationError
+        ConflictError
         InternalServerError
     ]
 }
@@ -375,6 +376,7 @@ operation LeaveMeetingBot {
     errors: [
         AuthenticationError
         ResourceNotFoundError
+        ConflictError
         InternalServerError
     ]
 }

@@ -80,6 +80,18 @@ class CancelOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class ConflictErrorResponseContent(BaseModel):
+    """
+    Conflict with current server state. Use when the request is well-formed
+    and the caller is authorized, but the action conflicts with existing
+    resources (duplicate member, bot already scheduled, role-name collision).
+    Distinct from ProcessingIncompleteError, which carries the same 409 status
+    but signals "resource exists, not ready yet."
+    """
+
+    message: str
+
+
 class ContentDisposition(StrEnum):
     """
     Content disposition for file downloads
