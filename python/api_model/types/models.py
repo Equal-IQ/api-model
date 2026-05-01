@@ -1251,6 +1251,7 @@ class UpdateDealThreadRequestContent(BaseModel):
 class UpdateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     deliverableId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    name: str | None
     description: str | None
     source: DeliverableSource | None
     dueDate: str | None = Field(
@@ -1433,7 +1434,8 @@ class CreateDealVersionResponseContent(BaseModel):
 class CreateDeliverableRequestContent(BaseModel):
     dealId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     dealVersionId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
-    description: str
+    name: str
+    description: str | None
     source: DeliverableSource | None
     dueDate: str | None = Field(
         None,
