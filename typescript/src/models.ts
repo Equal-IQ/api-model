@@ -1226,7 +1226,8 @@ export interface components {
         CreateDeliverableRequestContent: {
             dealId: string;
             dealVersionId: string;
-            description: string;
+            name: string;
+            description?: string;
             source?: components["schemas"]["DeliverableSource"];
             /** @description For committed stages */
             dueDate?: string;
@@ -2215,6 +2216,7 @@ export interface components {
         UpdateDeliverableRequestContent: {
             dealId: string;
             deliverableId: string;
+            name?: string;
             description?: string;
             source?: components["schemas"]["DeliverableSource"];
             dueDate?: string;
