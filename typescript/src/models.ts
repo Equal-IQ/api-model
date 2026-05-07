@@ -2505,6 +2505,15 @@ export interface components {
         /**
          * @description Processing lifecycle of a meeting transcript through the
          *     contract-analysis Step Functions workflow.
+         *
+         *     `pending` is the union of two observationally-identical states:
+         *       - No `MeetingTranscript` row exists yet — the workflow has not been
+         *         triggered (e.g. the bot is still pre-call, or Recall's
+         *         transcript.done webhook has not landed).
+         *       - The row exists but no pipeline stage has started.
+         *     Clients cannot distinguish these from the API today; both are "keep
+         *     polling." Adding a dedicated `not_started` state is tracked as future
+         *     work and would be a non-breaking additive enum change when taken.
          * @enum {string}
          */
         TranscriptProcessingStatus: TranscriptProcessingStatus;
