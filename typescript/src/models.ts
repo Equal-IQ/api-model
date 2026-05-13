@@ -714,6 +714,155 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/meeting-bot/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Cancel a scheduled bot before it joins the call.
+         *     Idempotent: cancelling an already-cancelled bot succeeds.
+         *     For bots already in an active call, use `LeaveMeetingBot` instead. */
+        post: operations["CancelMeetingBot"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/create": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Dispatch a Recall.ai bot to a scheduled meeting.
+         *     The bot joins at `joinAt` (or immediately if omitted), records the meeting,
+         *     and posts webhook events back as it progresses through the Recall lifecycle. */
+        post: operations["CreateMeetingBot"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/leave-call": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Force a bot currently in an active call to leave.
+         *     NOT idempotent — the underlying `leaveCall` handler throws when the bot is
+         *     not in an active call, so a second invocation after success returns an error
+         *     rather than a no-op. For scheduled bots that haven't joined yet, use
+         *     `CancelMeetingBot`. */
+        post: operations["LeaveMeetingBot"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/list": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List bots created by the authenticated user, newest first.
+         *     Bounded by `limit` (1..100). Not paginated — the handler returns a single
+         *     page keyed off Postgres `MeetingBot` rows for the caller, with Recall
+         *     refreshing transient rows lazily in the same query. Add pagination when a
+         *     consumer actually needs it. */
+        post: operations["ListMeetingBots"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/recording": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get the recording URL for a completed meeting bot.
+         *     Returns null while Recall is still processing the upload; poll
+         *     `GetMeetingBotStatus` for readiness rather than tight-looping here. */
+        post: operations["GetMeetingRecording"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/status": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Fetch current status of a dispatched bot, plus (when available) the
+         *     recording URL and a flag indicating whether the transcript download has
+         *     landed. Both `recordingUrl` and `transcriptAvailable` are optional because
+         *     they are populated only after Recall finishes post-processing. */
+        post: operations["GetMeetingBotStatus"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meeting-bot/transcript": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Fetch the processed transcript + LLM summary for a meeting bot.
+         *
+         *     Surfaces the state of the contract-analysis Step Functions pipeline:
+         *       - `processingStatus` always reflects the latest workflow stage (see
+         *         `TranscriptProcessingStatus` for the lifecycle).
+         *       - `transcript` and `summary` are populated ONLY when
+         *         `processingStatus = complete`. Both return null for every other
+         *         status, including `failed`.
+         *       - `processingError` carries a human-readable failure detail when
+         *         `processingStatus = failed`. Absent / null otherwise.
+         *
+         *     The raw Recall JSON is intentionally NOT exposed — it's a workflow-internal
+         *     source-of-truth mirror. Clients poll `GetMeetingBotStatus.transcriptAvailable`
+         *     for bot-level readiness, then poll this endpoint for processing readiness. */
+        post: operations["GetMeetingTranscript"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/orgs/create": {
         parameters: {
             query?: never;
@@ -1142,6 +1291,16 @@ export interface components {
             organization: components["schemas"]["Org"];
             member: components["schemas"]["OrgMember"];
         };
+        /** @description A single action item extracted from the meeting. `assignee` is null when
+         *     the LLM could not attribute ownership; `mentioned` is true when the item
+         *     was explicitly stated, false when inferred from context. */
+        ActionItem: {
+            description: string;
+            /** @description Person the action was assigned to. Null when unattributed. */
+            assignee?: string;
+            /** @description True when the action was explicitly mentioned; false when inferred. */
+            mentioned: boolean;
+        };
         /** @description Audit log entry for field-level change tracking */
         AuditLog: {
             /** @description Audit log identifier */
@@ -1182,9 +1341,25 @@ export interface components {
         AuthenticationErrorResponseContent: {
             message: string;
         };
+        CancelMeetingBotRequestContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+        };
+        CancelMeetingBotResponseContent: {
+            success: boolean;
+        };
         CancelOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
+        };
+        /** @description Conflict with current server state. Use when the request is well-formed
+         *     and the caller is authorized, but the action conflicts with existing
+         *     resources (duplicate member, bot already scheduled, role-name collision).
+         *     Distinct from ProcessingIncompleteError, which carries the same 409 status
+         *     but signals "resource exists, not ready yet." */
+        ConflictErrorResponseContent: {
+            message: string;
         };
         /**
          * @description Content disposition for file downloads
@@ -1226,7 +1401,8 @@ export interface components {
         CreateDeliverableRequestContent: {
             dealId: string;
             dealVersionId: string;
-            description: string;
+            name: string;
+            description?: string;
             source?: components["schemas"]["DeliverableSource"];
             /** @description For committed stages */
             dueDate?: string;
@@ -1256,6 +1432,29 @@ export interface components {
         CreateFileResponseContent: {
             file: components["schemas"]["File"];
             uploadUrl?: components["schemas"]["PresignedUrl"];
+        };
+        CreateMeetingBotRequestContent: {
+            /** @description Video meeting URL the bot should join (Zoom / Meet / Teams). */
+            meetingUrl: string;
+            /** @description Display name the bot uses when it appears in the participant list.
+             *     Defaults to a configured fallback when omitted. */
+            botName?: string;
+            /** @description Scheduled join time. Must be within 10 minutes of a real meeting
+             *     start — Recall rejects bots scheduled too far out. Enforcement lives
+             *     in the RecallClient (not Smithy-expressible).
+             *     Omit for immediate dispatch. */
+            joinAt?: string;
+        };
+        CreateMeetingBotResponseContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+            /** @description Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally
+             *     do not model this as an enum because Recall owns the taxonomy and introduces new
+             *     states without a contract bump. Callers should branch on well-known values
+             *     (`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values
+             *     as transient. */
+            status: string;
         };
         CreateOrgCustomRoleRequestContent: {
             orgId: string;
@@ -1519,6 +1718,43 @@ export interface components {
          * @enum {string}
          */
         FilePermission: FilePermission;
+        /** @description Compact formatted transcript produced by the contract-analysis
+         *     transcriptFormattingHandler. `text` is the full transcript rendered as
+         *     `[HH:MM:SS] Name: utterance\n`; `metadata` summarizes participants and
+         *     timing. Returned only when processingStatus = `complete`. */
+        FormattedTranscript: {
+            /** @description Compact transcript text, one line per contiguous utterance.
+             *     Format: `[HH:MM:SS] Name: text\n`. */
+            text: string;
+            metadata: components["schemas"]["FormattedTranscriptMetadata"];
+        };
+        /** @description Summary header on a FormattedTranscript. Participant list is flattened
+         *     from the raw Recall data; timestamps are wall-clock and may be null when
+         *     Recall did not attach absolute times to the recording. */
+        FormattedTranscriptMetadata: {
+            /** @description Distinct speakers counted in the transcript. */
+            totalParticipants: number;
+            participants: components["schemas"]["FormattedTranscriptParticipant"][];
+            /** @description Recording duration in seconds. */
+            duration: number;
+            /** @description Wall-clock recording start. Null when Recall did not attach an absolute
+             *     timestamp to the first word. */
+            startTime?: string;
+            /** @description Wall-clock recording end. Null when Recall did not attach an absolute
+             *     timestamp to the last word. */
+            endTime?: string;
+        };
+        /** @description Flattened speaker identity on a FormattedTranscript. `id` is Recall's
+         *     per-call participant ID; `name` may be null when Recall did not capture
+         *     a display name from the meeting platform. */
+        FormattedTranscriptParticipant: {
+            /** @description Recall-assigned participant ID (small integer, scoped to the call). */
+            id: number;
+            /** @description Display name Recall captured from the platform. Null when absent. */
+            name?: string;
+            /** @description True when this participant owns / hosts the meeting. */
+            isHost: boolean;
+        };
         GenerateDownloadUrlRequestContent: {
             /** @description File identifier */
             fileId: string;
@@ -1598,6 +1834,47 @@ export interface components {
             access?: components["schemas"]["FileAccessMap"];
             downloadUrl?: components["schemas"]["PresignedUrl"];
         };
+        GetMeetingBotStatusRequestContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+        };
+        GetMeetingBotStatusResponseContent: {
+            /** @description Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally
+             *     do not model this as an enum because Recall owns the taxonomy and introduces new
+             *     states without a contract bump. Callers should branch on well-known values
+             *     (`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values
+             *     as transient. */
+            status: string;
+            /** @description Presigned URL to the raw video/audio recording, if Recall has
+             *     finished upload. Clients should treat absence as "not ready yet." */
+            recordingUrl?: string;
+            /** @description True when the transcript download has completed and
+             *     `GetMeetingTranscript` will return content. */
+            transcriptAvailable?: boolean;
+        };
+        GetMeetingRecordingRequestContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+        };
+        GetMeetingRecordingResponseContent: {
+            /** @description Presigned recording URL. Absent while upload is still processing. */
+            recordingUrl?: string;
+        };
+        GetMeetingTranscriptRequestContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+        };
+        GetMeetingTranscriptResponseContent: {
+            processingStatus: components["schemas"]["TranscriptProcessingStatus"];
+            /** @description Human-readable failure detail. Populated only when
+             *     `processingStatus = failed`. */
+            processingError?: string;
+            transcript?: components["schemas"]["FormattedTranscript"];
+            summary?: components["schemas"]["MeetingSummary"];
+        };
         GetOrgPictureRequestContent: {
             orgId: string;
         };
@@ -1668,6 +1945,14 @@ export interface components {
         };
         /** @enum {string} */
         InviteStatus: InviteStatus;
+        LeaveMeetingBotRequestContent: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+        };
+        LeaveMeetingBotResponseContent: {
+            success: boolean;
+        };
         ListAuditLogsRequestContent: {
             tableName?: string;
             recordType?: components["schemas"]["RecordType"];
@@ -1807,6 +2092,16 @@ export interface components {
             /** @description Total size of files in current page */
             totalSizeBytes?: number;
         };
+        ListMeetingBotsRequestContent: {
+            /** @description Filter by Recall status string. Same taxonomy as the `status` field
+             *     on `MeetingBotSummary` — caller-chosen, not validated against an enum. */
+            status?: string;
+            /** @description Result limit. Default and max enforced by `PageLimit` (1..100). */
+            limit?: number;
+        };
+        ListMeetingBotsResponseContent: {
+            bots: components["schemas"]["MeetingBotSummary"][];
+        };
         ListOrgCustomRolesRequestContent: {
             orgId: string;
             /** @description Pagination cursor (encoded roleId) */
@@ -1858,6 +2153,46 @@ export interface components {
             organizations: components["schemas"]["OrgMap"];
             /** @description Token for next page */
             nextToken?: string;
+        };
+        /** @description Summary of a meeting bot for list operations.
+         *     Subset of GetMeetingBotStatus output — does NOT include recordingUrl or
+         *     transcriptAvailable (those require per-bot Recall fetches that would blow
+         *     up list latency). */
+        MeetingBotSummary: {
+            /** @description Recall.ai bot identifier. Externally assigned by Recall; we treat it as an
+             *     opaque UUID-shaped string. */
+            botId: string;
+            /** @description Meeting platform URL the bot joined (Zoom / Meet / Teams link). */
+            meetingUrl: string;
+            /** @description Recall.ai bot lifecycle status. Raw string from the Recall API — we intentionally
+             *     do not model this as an enum because Recall owns the taxonomy and introduces new
+             *     states without a contract bump. Callers should branch on well-known values
+             *     (`joining_call`, `in_call_recording`, `done`, `fatal`) and treat unknown values
+             *     as transient. */
+            status: string;
+            /** @description Display name the bot uses when it joins the call. */
+            botName?: string;
+            /** @description Scheduled join time. Absent when the bot was dispatched immediately. */
+            joinAt?: string;
+            createdAt: string;
+        };
+        /** @description LLM-generated meeting summary produced by the contract-analysis
+         *     transcriptSummaryHandler. Every field is required; `summary` is the
+         *     narrative, the list fields are extracted structured data. Returned only
+         *     when processingStatus = `complete`. */
+        MeetingSummary: {
+            /** @description Short title the LLM generated for the meeting. */
+            title: string;
+            /** @description Narrative overview of the meeting. */
+            summary: string;
+            /** @description Main discussion points. May be empty. */
+            keyPoints: string[];
+            /** @description Action items the LLM extracted. May be empty. */
+            actionItems: components["schemas"]["ActionItem"][];
+            /** @description Key decisions made during the meeting. May be empty. */
+            decisions: string[];
+            /** @description Topics discussed. May be empty. */
+            topics: string[];
         };
         /** @description Nylas connection status
          *     Note: grantId intentionally excluded - internal Nylas credential, not for frontend */
@@ -2167,6 +2502,21 @@ export interface components {
             /** @description Additional metrics */
             metrics?: unknown;
         };
+        /**
+         * @description Processing lifecycle of a meeting transcript through the
+         *     contract-analysis Step Functions workflow.
+         *
+         *     `pending` is the union of two observationally-identical states:
+         *       - No `MeetingTranscript` row exists yet — the workflow has not been
+         *         triggered (e.g. the bot is still pre-call, or Recall's
+         *         transcript.done webhook has not landed).
+         *       - The row exists but no pipeline stage has started.
+         *     Clients cannot distinguish these from the API today; both are "keep
+         *     polling." Adding a dedicated `not_started` state is tracked as future
+         *     work and would be a non-breaking additive enum change when taken.
+         * @enum {string}
+         */
+        TranscriptProcessingStatus: TranscriptProcessingStatus;
         TransferOrgOwnershipRequestContent: {
             orgId: string;
             newOwnerId: string;
@@ -2215,6 +2565,7 @@ export interface components {
         UpdateDeliverableRequestContent: {
             dealId: string;
             deliverableId: string;
+            name?: string;
             description?: string;
             source?: components["schemas"]["DeliverableSource"];
             dueDate?: string;
@@ -4617,6 +4968,381 @@ export interface operations {
             };
         };
     };
+    CancelMeetingBot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelMeetingBotRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CancelMeetingBot 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancelMeetingBotResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CreateMeetingBot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CreateMeetingBotRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CreateMeetingBot 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CreateMeetingBotResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ConflictError 409 response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConflictErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    LeaveMeetingBot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LeaveMeetingBotRequestContent"];
+            };
+        };
+        responses: {
+            /** @description LeaveMeetingBot 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["LeaveMeetingBotResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description ConflictError 409 response */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ConflictErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListMeetingBots: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListMeetingBotsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListMeetingBots 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListMeetingBotsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMeetingRecording: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetMeetingRecordingRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetMeetingRecording 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMeetingRecordingResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMeetingBotStatus: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetMeetingBotStatusRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetMeetingBotStatus 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMeetingBotStatusResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetMeetingTranscript: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetMeetingTranscriptRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetMeetingTranscript 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetMeetingTranscriptResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description ResourceNotFoundError 404 response */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ResourceNotFoundErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     CreateOrg: {
         parameters: {
             query?: never;
@@ -6126,4 +6852,13 @@ export enum StatisticGrouping {
     day = "day",
     week = "week",
     month = "month"
+}
+export enum TranscriptProcessingStatus {
+    pending = "pending",
+    raw_ready = "raw_ready",
+    formatting = "formatting",
+    formatted = "formatted",
+    summarizing = "summarizing",
+    complete = "complete",
+    failed = "failed"
 }

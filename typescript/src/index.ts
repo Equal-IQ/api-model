@@ -128,6 +128,16 @@ export enum StatisticGrouping {
   month = "month"
 }
 
+export enum TranscriptProcessingStatus {
+  pending = "pending",
+  raw_ready = "raw_ready",
+  formatting = "formatting",
+  formatted = "formatted",
+  summarizing = "summarizing",
+  complete = "complete",
+  failed = "failed"
+}
+
 // Unwrapped type definitions (no aliases)
 export type AcceptOrgInviteRequestContent = {
   orgId: string;
@@ -137,6 +147,12 @@ export type AcceptOrgInviteRequestContent = {
 export type AcceptOrgInviteResponseContent = {
   organization: Org;
   member: OrgMember;
+};
+
+export type ActionItem = {
+  description: string;
+  assignee?: string;
+  mentioned: boolean;
 };
 
 export type AuditLog = {
@@ -165,9 +181,21 @@ export type AuthenticationErrorResponseContent = {
   message: string;
 };
 
+export type CancelMeetingBotRequestContent = {
+  botId: string;
+};
+
+export type CancelMeetingBotResponseContent = {
+  success: boolean;
+};
+
 export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
+};
+
+export type ConflictErrorResponseContent = {
+  message: string;
 };
 
 export type CreateDealRequestContent = {
@@ -209,7 +237,8 @@ export type CreateDealVersionResponseContent = {
 export type CreateDeliverableRequestContent = {
   dealId: string;
   dealVersionId: string;
-  description: string;
+  name: string;
+  description?: string;
   source?: DeliverableSource;
   dueDate?: string;
   assignedTo?: string;
@@ -235,6 +264,17 @@ export type CreateFileRequestContent = {
 export type CreateFileResponseContent = {
   file: File;
   uploadUrl?: PresignedUrl;
+};
+
+export type CreateMeetingBotRequestContent = {
+  meetingUrl: string;
+  botName?: string;
+  joinAt?: string;
+};
+
+export type CreateMeetingBotResponseContent = {
+  botId: string;
+  status: string;
 };
 
 export type CreateOrgCustomRoleRequestContent = {
@@ -438,6 +478,25 @@ export type FileAccessMap = { [key: string]: FileAccess };
 
 export type FileMap = { [key: string]: File };
 
+export type FormattedTranscript = {
+  text: string;
+  metadata: FormattedTranscriptMetadata;
+};
+
+export type FormattedTranscriptMetadata = {
+  totalParticipants: number;
+  participants: FormattedTranscriptParticipant[];
+  duration: number;
+  startTime?: string;
+  endTime?: string;
+};
+
+export type FormattedTranscriptParticipant = {
+  id: number;
+  name?: string;
+  isHost: boolean;
+};
+
 export type GenerateDownloadUrlRequestContent = {
   fileId: string;
   expirationSeconds?: number;
@@ -516,6 +575,35 @@ export type GetFileResponseContent = {
   downloadUrl?: PresignedUrl;
 };
 
+export type GetMeetingBotStatusRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingBotStatusResponseContent = {
+  status: string;
+  recordingUrl?: string;
+  transcriptAvailable?: boolean;
+};
+
+export type GetMeetingRecordingRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingRecordingResponseContent = {
+  recordingUrl?: string;
+};
+
+export type GetMeetingTranscriptRequestContent = {
+  botId: string;
+};
+
+export type GetMeetingTranscriptResponseContent = {
+  processingStatus: TranscriptProcessingStatus;
+  processingError?: string;
+  transcript?: FormattedTranscript;
+  summary?: MeetingSummary;
+};
+
 export type GetOrgPictureRequestContent = {
   orgId: string;
 };
@@ -587,6 +675,14 @@ export type GrantFileAccessResponseContent = {
 
 export type InternalServerErrorResponseContent = {
   message: string;
+};
+
+export type LeaveMeetingBotRequestContent = {
+  botId: string;
+};
+
+export type LeaveMeetingBotResponseContent = {
+  success: boolean;
 };
 
 export type ListAuditLogsRequestContent = {
@@ -703,6 +799,15 @@ export type ListFilesResponseContent = {
   totalSizeBytes?: number;
 };
 
+export type ListMeetingBotsRequestContent = {
+  status?: string;
+  limit?: number;
+};
+
+export type ListMeetingBotsResponseContent = {
+  bots: MeetingBotSummary[];
+};
+
 export type ListOrgCustomRolesRequestContent = {
   orgId: string;
   nextToken?: string;
@@ -747,6 +852,24 @@ export type ListUserOrganizationsRequestContent = {
 export type ListUserOrganizationsResponseContent = {
   organizations: OrgMap;
   nextToken?: string;
+};
+
+export type MeetingBotSummary = {
+  botId: string;
+  meetingUrl: string;
+  status: string;
+  botName?: string;
+  joinAt?: string;
+  createdAt: string;
+};
+
+export type MeetingSummary = {
+  title: string;
+  summary: string;
+  keyPoints: string[];
+  actionItems: ActionItem[];
+  decisions: string[];
+  topics: string[];
 };
 
 export type NylasConnection = {
@@ -1059,6 +1182,7 @@ export type UpdateDealThreadResponseContent = {
 export type UpdateDeliverableRequestContent = {
   dealId: string;
   deliverableId: string;
+  name?: string;
   description?: string;
   source?: DeliverableSource;
   dueDate?: string;
