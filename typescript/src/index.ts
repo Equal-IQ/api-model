@@ -54,6 +54,18 @@ export enum DealStage {
   cancelled = "cancelled"
 }
 
+export enum DealThreadAssociationType {
+  manual = "manual",
+  ai_suggested = "ai_suggested",
+  participant_match = "participant_match"
+}
+
+export enum DealThreadStatus {
+  pending = "pending",
+  accepted = "accepted",
+  rejected = "rejected"
+}
+
 export enum DeliverableSource {
   inferred = "inferred",
   template = "template",
@@ -174,6 +186,18 @@ export type CreateDealResponseContent = {
   initialVersion: DealVersion;
 };
 
+export type CreateDealThreadRequestContent = {
+  dealId: string;
+  threadMetadataId: string;
+  associationType: DealThreadAssociationType;
+  notes?: string;
+};
+
+export type CreateDealThreadResponseContent = {
+  success: boolean;
+  dealThread: DealThread;
+};
+
 export type CreateDealVersionRequestContent = {
   dealId: string;
   stage: DealStage;
@@ -288,6 +312,21 @@ export type DealAccessMap = { [key: string]: DealAccess };
 
 export type DealMap = { [key: string]: Deal };
 
+export type DealThread = {
+  dealThreadId: string;
+  dealId: string;
+  threadMetadataId: string;
+  associationType: DealThreadAssociationType;
+  status: DealThreadStatus;
+  associatedBy?: string;
+  associatedAt?: string;
+  notes?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type DealThreadMap = { [key: string]: DealThread };
+
 export type DealVersion = {
   dealVersionId: string;
   dealId: string;
@@ -312,6 +351,15 @@ export type DeclineOrgInviteRequestContent = {
 export type DeleteDealRequestContent = {
   dealId: string;
   hardDelete?: boolean;
+};
+
+export type DeleteDealThreadRequestContent = {
+  dealId: string;
+  dealThreadId: string;
+};
+
+export type DeleteDealThreadResponseContent = {
+  success: boolean;
 };
 
 export type DeleteFileRequestContent = {
@@ -347,6 +395,11 @@ export type Deliverable = {
 };
 
 export type DeliverableMap = { [key: string]: Deliverable };
+
+export type EmailParticipant = {
+  email: string;
+  name?: string;
+};
 
 export type File = {
   fileId: string;
@@ -570,6 +623,18 @@ export type ListDealAccessResponseContent = {
   nextToken?: string;
 };
 
+export type ListDealThreadsRequestContent = {
+  dealId: string;
+  associationType?: DealThreadAssociationType;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type ListDealThreadsResponseContent = {
+  dealThreads: DealThreadMap;
+  nextToken?: string;
+};
+
 export type ListDealVersionsRequestContent = {
   dealId: string;
   stage?: DealStage;
@@ -685,6 +750,139 @@ export type ListUserOrganizationsRequestContent = {
 export type ListUserOrganizationsResponseContent = {
   organizations: OrgMap;
   nextToken?: string;
+};
+
+export type NylasConnection = {
+  connectionId: string;
+  email: string;
+  provider: string;
+  enabled: boolean;
+  connectedAt: string;
+  scopes?: string[];
+};
+
+export type NylasDisconnectConnectionRequestContent = {
+  connectionId: string;
+};
+
+export type NylasDisconnectConnectionResponseContent = {
+  success: boolean;
+};
+
+export type NylasGetMessageRequestContent = {
+  connectionId: string;
+  messageId: string;
+};
+
+export type NylasGetMessageResponseContent = {
+  requestId: string;
+  data: NylasMessage;
+};
+
+export type NylasGetThreadRequestContent = {
+  threadMetadataId: string;
+};
+
+export type NylasGetThreadResponseContent = {
+  thread: NylasThread;
+};
+
+export type NylasInitiateAuthRequestContent = {
+  provider?: string;
+  orgId?: string;
+};
+
+export type NylasInitiateAuthResponseContent = {
+  authUrl: string;
+  state: string;
+};
+
+export type NylasListConnectionsResponseContent = {
+  connected: boolean;
+  connections?: NylasConnection[];
+};
+
+export type NylasListMessagesRequestContent = {
+  connectionId: string;
+  limit?: number;
+  cursor?: string;
+  subject?: string;
+  anyEmail?: string;
+  in?: string;
+  unread?: boolean;
+  starred?: boolean;
+  receivedAfter?: number;
+  receivedBefore?: number;
+};
+
+export type NylasListMessagesResponseContent = {
+  requestId: string;
+  data: NylasMessage[];
+  nextCursor?: string;
+};
+
+export type NylasListThreadsRequestContent = {
+  connectionId: string;
+  minPriority?: number;
+  label?: string;
+  analyzedOnly?: boolean;
+  nextToken?: string;
+  limit?: number;
+};
+
+export type NylasListThreadsResponseContent = {
+  threads: NylasThread[];
+  nextToken?: string;
+};
+
+export type NylasMessage = {
+  id: string;
+  threadId?: string;
+  subject: string;
+  snippet?: string;
+  body?: string;
+  from?: EmailParticipant[];
+  to?: EmailParticipant[];
+  cc?: EmailParticipant[];
+  bcc?: EmailParticipant[];
+  replyTo?: EmailParticipant[];
+  date: number;
+  unread: boolean;
+  starred?: boolean;
+  folders?: string[];
+};
+
+export type NylasSendMessageRequestContent = {
+  connectionId: string;
+  to: EmailParticipant[];
+  cc?: EmailParticipant[];
+  bcc?: EmailParticipant[];
+  replyTo?: EmailParticipant[];
+  subject: string;
+  body: string;
+  replyToMessageId?: string;
+};
+
+export type NylasSendMessageResponseContent = {
+  requestId: string;
+  data: NylasMessage;
+};
+
+export type NylasThread = {
+  threadMetadataId: string;
+  externalThreadId: string;
+  provider: string;
+  connectionEmail?: string;
+  lastMessageAt: string;
+  messageCount: number;
+  summary?: string;
+  priority?: number;
+  labels?: string[];
+  ragKeywords?: string[];
+  analyzed: boolean;
+  analyzedAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type Org = {
@@ -847,6 +1045,18 @@ export type UpdateDealRequestContent = {
 export type UpdateDealResponseContent = {
   deal: Deal;
   newVersion?: DealVersion;
+};
+
+export type UpdateDealThreadRequestContent = {
+  dealId: string;
+  dealThreadId: string;
+  status?: DealThreadStatus;
+  notes?: string;
+};
+
+export type UpdateDealThreadResponseContent = {
+  success: boolean;
+  dealThread: DealThread;
 };
 
 export type UpdateDeliverableRequestContent = {
