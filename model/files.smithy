@@ -339,6 +339,182 @@ operation GenerateDownloadUrl {
     ]
 }
 
+// Deal-File Junction Operations
+
+/// Associate a file with a deal
+@http(method: "POST", uri: "/deals/{dealId}/files/create")
+operation CreateDealFile {
+    input := {
+        @required
+        @httpLabel
+        dealId: DealId
+
+        @required
+        fileId: FileId
+    }
+
+    output := {
+        @required
+        success: Boolean
+
+        @required
+        file: File
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+/// Remove file association from deal
+@idempotent
+@http(method: "POST", uri: "/deals/{dealId}/files/{fileId}/delete")
+operation DeleteDealFile {
+    input := {
+        @required
+        @httpLabel
+        dealId: DealId
+
+        @required
+        @httpLabel
+        fileId: FileId
+    }
+
+    output := {
+        @required
+        success: Boolean
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+/// List files associated with a deal
+@readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
+@http(method: "POST", uri: "/deals/{dealId}/files/list")
+operation ListDealFiles {
+    input := {
+        @required
+        @httpLabel
+        dealId: DealId
+
+        /// Pagination cursor (encoded fileId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        files: FileMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+        ValidationError
+    ]
+}
+
+// Deal Version-File Junction Operations
+
+/// Associate a file with a deal version
+@http(method: "POST", uri: "/deals/versions/{dealVersionId}/files/create")
+operation CreateDealVersionFile {
+    input := {
+        @required
+        @httpLabel
+        dealVersionId: DealVersionId
+
+        @required
+        fileId: FileId
+    }
+
+    output := {
+        @required
+        success: Boolean
+
+        @required
+        file: File
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+/// Remove file association from deal version
+@idempotent
+@http(method: "POST", uri: "/deals/versions/{dealVersionId}/files/{fileId}/delete")
+operation DeleteDealVersionFile {
+    input := {
+        @required
+        @httpLabel
+        dealVersionId: DealVersionId
+
+        @required
+        @httpLabel
+        fileId: FileId
+    }
+
+    output := {
+        @required
+        success: Boolean
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+/// List files associated with a deal version
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "files", pageSize: "limit")
+@http(method: "POST", uri: "/deals/versions/{dealVersionId}/files/list")
+operation ListDealVersionFiles {
+    input := {
+        @required
+        @httpLabel
+        dealVersionId: DealVersionId
+
+        /// Pagination cursor (encoded fileId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        files: FileMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
 // Helper map types
 map FileMap {
     key: FileId

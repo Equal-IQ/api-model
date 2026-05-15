@@ -9,6 +9,7 @@ use equaliq#PageLimit
 use equaliq#FileId
 use equaliq#DealAccessMap
 use equaliq#DealAccess
+use equaliq#ThreadMetadataId
 use equaliq#AuthenticationError
 use equaliq#ResourceNotFoundError
 use equaliq#ValidationError
@@ -39,6 +40,23 @@ enum DeliverableStatus {
     complete = "complete"
 }
 
+/// How a thread was associated with a deal
+enum DealThreadAssociationType {
+    manual = "manual"
+    ai_suggested = "ai_suggested"
+    participant_match = "participant_match"
+}
+
+/// Suggestion workflow status for deal-thread associations
+enum DealThreadStatus {
+    /// Awaiting user review (AI suggestions)
+    pending = "pending"
+    /// User accepted the association
+    accepted = "accepted"
+    /// User rejected the association
+    rejected = "rejected"
+}
+
 string DealId with [UuidLikeMixin]
 string DealVersionId with [UuidLikeMixin]
 string DealRevisionId with [UuidLikeMixin]
@@ -46,6 +64,7 @@ string DeliverableId with [UuidLikeMixin]
 string DealAccessId with [UuidLikeMixin]
 string DealApprovalId with [UuidLikeMixin]
 string DealAnalysisId with [UuidLikeMixin]
+string DealThreadId with [UuidLikeMixin]
 
 /// List of deal identifiers
 list DealIdList {
@@ -70,7 +89,7 @@ resource DealResource {
     update: UpdateDeal
     delete: DeleteDeal
     list: ListDeals
-    resources: [DealAccessResource, DealVersionResource, DeliverableResource]
+    resources: [DealAccessResource, DealVersionResource, DeliverableResource, DealThreadResource]
 }
 
 resource DealVersionResource {
@@ -85,6 +104,14 @@ resource DeliverableResource {
     create: CreateDeliverable
     update: UpdateDeliverable
     list: ListDeliverables
+}
+
+resource DealThreadResource {
+    identifiers: { dealId: DealId, dealThreadId: DealThreadId }
+    create: CreateDealThread
+    update: UpdateDealThread
+    delete: DeleteDealThread
+    list: ListDealThreads
 }
 
 /// Main deal entity
@@ -631,6 +658,164 @@ operation ListDeliverables {
     ]
 }
 
+/// Deal-Thread association
+structure DealThread {
+    @required
+    dealThreadId: DealThreadId
+
+    @required
+    dealId: DealId
+
+    @required
+    threadMetadataId: ThreadMetadataId
+
+    /// How this thread was associated
+    @required
+    associationType: DealThreadAssociationType
+
+    /// Suggestion workflow status
+    @required
+    status: DealThreadStatus
+
+    associatedBy: UserId
+
+    associatedAt: ISODate
+
+    notes: String
+
+    @required
+    createdAt: ISODate
+
+    @required
+    updatedAt: ISODate
+}
+
+// Deal-Thread Junction Operations
+
+/// Associate a thread with a deal
+@http(method: "POST", uri: "/deals/threads/create")
+operation CreateDealThread {
+    input := {
+        @required
+        dealId: DealId
+
+        @required
+        threadMetadataId: ThreadMetadataId
+
+        @required
+        associationType: DealThreadAssociationType
+
+        notes: String
+    }
+
+    output := {
+        @required
+        success: Boolean
+
+        @required
+        dealThread: DealThread
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+/// Remove thread association from deal
+@idempotent
+@http(method: "POST", uri: "/deals/threads/delete")
+operation DeleteDealThread {
+    input := {
+        @required
+        dealId: DealId
+
+        @required
+        dealThreadId: DealThreadId
+    }
+
+    output := {
+        @required
+        success: Boolean
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
+/// Update thread association status (e.g., pending → accepted/rejected)
+@idempotent
+@http(method: "POST", uri: "/deals/threads/update")
+operation UpdateDealThread {
+    input := {
+        @required
+        dealId: DealId
+
+        @required
+        dealThreadId: DealThreadId
+
+        /// New status for the association
+        status: DealThreadStatus
+
+        /// Updated notes
+        notes: String
+    }
+
+    output := {
+        @required
+        success: Boolean
+
+        @required
+        dealThread: DealThread
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        ValidationError
+        InternalServerError
+    ]
+}
+
+/// List threads associated with a deal
+@readonly
+@paginated(inputToken: "nextToken", outputToken: "nextToken", items: "dealThreads", pageSize: "limit")
+@http(method: "POST", uri: "/deals/threads/list")
+operation ListDealThreads {
+    input := {
+        @required
+        dealId: DealId
+
+        /// Filter by association type
+        associationType: DealThreadAssociationType
+
+        /// Pagination cursor (encoded dealThreadId)
+        nextToken: String
+
+        /// Page size
+        limit: PageLimit
+    }
+
+    output := {
+        @required
+        dealThreads: DealThreadMap
+
+        /// Token for next page
+        nextToken: String
+    }
+
+    errors: [
+        AuthenticationError
+        ResourceNotFoundError
+        InternalServerError
+    ]
+}
+
 // Helper map types
 map DealMap {
     key: DealId
@@ -655,4 +840,9 @@ map DealApprovalMap {
 map DealRevisionMap {
     key: DealRevisionId
     value: DealRevision
+}
+
+map DealThreadMap {
+    key: DealThreadId
+    value: DealThread
 }
