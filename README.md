@@ -43,6 +43,8 @@ api-model/
 │   ├── files.smithy         # File resources
 │   ├── audit.smithy         # Audit log resources
 │   ├── rbac.smithy          # RBAC enums & operations
+│   ├── nylas.smithy         # Nylas email integration resources
+│   ├── meeting-bots.smithy  # Recall.ai meeting bot resources
 │   └── contracts.smithy     # Legacy contract operations (deprecated)
 ├── smithy-build.json        # Projection configuration
 ├── build.gradle.kts         # Gradle config
