@@ -506,6 +506,7 @@ structure SchedulingOutcomeResult {
 /// List scheduling requests visible to the caller (own + same-org).
 /// Cursor pagination on schedulingRequestId, ordered by createdAt desc.
 @http(method: "POST", uri: "/scheduling/requests")
+@readonly
 operation ListSchedulingRequests {
     input := {
         /// Filter by status (any-of)
@@ -547,6 +548,7 @@ operation ListSchedulingRequests {
 /// Returns null when the request does not exist or the caller lacks
 /// access (no 404 — admin UIs treat both as "not visible").
 @http(method: "POST", uri: "/scheduling/request")
+@readonly
 operation GetSchedulingRequest {
     input := {
         @required
