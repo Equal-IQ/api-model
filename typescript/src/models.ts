@@ -1098,6 +1098,189 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/scheduling/config": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get the caller's owner-scoped scheduling config. Returns null when
+         *     the user has not yet configured one for any org. */
+        post: operations["GetSchedulingConfig"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/config/update": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Upsert the caller's owner-scoped scheduling config for an org.
+         *     Every field on `config` is optional and patched onto the existing
+         *     row; missing fields fall back to schema defaults on create. */
+        post: operations["UpdateSchedulingConfig"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/request": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Get a single scheduling request with all child relations eager-loaded
+         *     (Participants, ProposedSlots, CalendarEvents, Messages, AuditLog).
+         *     Returns null when the request does not exist or the caller lacks
+         *     access (no 404 — admin UIs treat both as "not visible"). */
+        post: operations["GetSchedulingRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/request/cancel": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Cancel an in-flight scheduling request */
+        post: operations["CancelSchedulingRequest"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/request/outcome": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Record the post-meeting outcome (completed, no-show, …) and append
+         *     an audit-log entry */
+        post: operations["SetSchedulingOutcome"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/request/override": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Override the AI-selected slot with an admin-chosen time. The
+         *     workflow books a calendar event for the supplied slot. */
+        post: operations["OverrideSchedulingSlot"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/request/send": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Force the assistant to send the next outbound message immediately,
+         *     bypassing follow-up delay timers */
+        post: operations["ForceSchedulingSend"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/requests": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List scheduling requests visible to the caller (own + same-org).
+         *     Cursor pagination on schedulingRequestId, ordered by createdAt desc. */
+        post: operations["ListSchedulingRequests"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/stakeholders": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description List the caller's stakeholder profiles, optionally filtered by
+         *     case-insensitive substring on email or company name. Capped at 100,
+         *     no pagination — admin UI uses the filters to narrow. */
+        post: operations["ListStakeholders"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/scheduling/stats": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Aggregate counts across the caller's visible scheduling requests
+         *     (own + same-org), excluding soft-deleted rows */
+        post: operations["GetSchedulingStats"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/updateProfile": {
         parameters: {
             query?: never;
@@ -1185,6 +1368,21 @@ export interface components {
         CancelOrgInviteRequestContent: {
             orgId: string;
             inviteId: string;
+        };
+        CancelSchedulingRequestRequestContent: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+        };
+        /** @description Fire-and-forget envelope returned by the three admin-signal ops.
+         *     `success: false` is returned (not thrown) when the request has no
+         *     active workflow or the Temporal signal fails — admin UIs render the
+         *     `message` directly. */
+        CancelSchedulingRequestResponseContent: {
+            success: boolean;
+            message: string;
         };
         /**
          * @description Content disposition for file downloads
@@ -1519,6 +1717,21 @@ export interface components {
          * @enum {string}
          */
         FilePermission: FilePermission;
+        ForceSchedulingSendRequestContent: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+        };
+        /** @description Fire-and-forget envelope returned by the three admin-signal ops.
+         *     `success: false` is returned (not thrown) when the request has no
+         *     active workflow or the Temporal signal fails — admin UIs render the
+         *     `message` directly. */
+        ForceSchedulingSendResponseContent: {
+            success: boolean;
+            message: string;
+        };
         GenerateDownloadUrlRequestContent: {
             /** @description File identifier */
             fileId: string;
@@ -1627,6 +1840,22 @@ export interface components {
         };
         GetProfileResponseContent: {
             profile: components["schemas"]["UserProfile"];
+        };
+        GetSchedulingConfigResponseContent: {
+            config?: components["schemas"]["SchedulingOwnerConfig"];
+        };
+        GetSchedulingRequestRequestContent: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+        };
+        GetSchedulingRequestResponseContent: {
+            request?: components["schemas"]["SchedulingRequest"];
+        };
+        GetSchedulingStatsResponseContent: {
+            stats: components["schemas"]["SchedulingStats"];
         };
         GrantDealAccessRequestContent: {
             dealId: string;
@@ -1847,6 +2076,34 @@ export interface components {
             members: components["schemas"]["OrgMemberMap"];
             /** @description Token for next page */
             nextToken?: string;
+        };
+        ListSchedulingRequestsRequestContent: {
+            /** @description Filter by status (any-of) */
+            status?: components["schemas"]["SchedulingRequestStatus"][];
+            /** @description Filter by channel (any-of) */
+            channel?: components["schemas"]["SchedulingRequestChannel"][];
+            /** @description Inclusive lower bound on createdAt */
+            createdAfter?: string;
+            /** @description Inclusive upper bound on createdAt */
+            createdBefore?: string;
+            /** @description Cursor: schedulingRequestId from a prior page's last item */
+            cursor?: string;
+            /** @description Defaults to 50 when omitted */
+            limit?: number;
+        };
+        ListSchedulingRequestsResponseContent: {
+            items: components["schemas"]["SchedulingRequest"][];
+            /** @description Present when more pages remain */
+            nextCursor?: string;
+        };
+        ListStakeholdersRequestContent: {
+            /** @description Case-insensitive email substring */
+            email?: string;
+            /** @description Case-insensitive company-name substring */
+            companyName?: string;
+        };
+        ListStakeholdersResponseContent: {
+            stakeholders: components["schemas"]["StakeholderProfile"][];
         };
         ListUserOrganizationsRequestContent: {
             /** @description Pagination cursor (encoded orgId) */
@@ -2106,6 +2363,22 @@ export interface components {
             secondaryColor?: string;
             accentColor?: string;
         };
+        OverrideSchedulingSlotRequestContent: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            slot: components["schemas"]["SchedulingSlotInput"];
+        };
+        /** @description Fire-and-forget envelope returned by the three admin-signal ops.
+         *     `success: false` is returned (not thrown) when the request has no
+         *     active workflow or the Temporal signal fails — admin UIs render the
+         *     `message` directly. */
+        OverrideSchedulingSlotResponseContent: {
+            success: boolean;
+            message: string;
+        };
         PingResponseContent: {
             message: string;
         };
@@ -2122,6 +2395,23 @@ export interface components {
             method?: string;
             /** @description Required headers for the request */
             headers?: unknown;
+        };
+        ProposedSlot: {
+            proposedSlotId: string;
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            startAt: string;
+            endAt: string;
+            timeZone: string;
+            state: components["schemas"]["SlotState"];
+            /** @description Provider-specific hold reference (e.g. Google freebusy hold token) */
+            holdReference?: string;
+            holdExpiresAt?: string;
+            createdAt: string;
+            updatedAt: string;
         };
         /**
          * @description Record types for audit log entries
@@ -2154,6 +2444,211 @@ export interface components {
             fileId: string;
             accessId: string;
             reason: string;
+        };
+        /** @enum {string} */
+        SchedulingAuditActor: SchedulingAuditActor;
+        SchedulingAuditLogEntry: {
+            schedulingAuditLogEntryId: string;
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            timestamp: string;
+            actor: components["schemas"]["SchedulingAuditActor"];
+            actionType: string;
+            correlationId?: string;
+            payload?: unknown;
+        };
+        SchedulingCalendarEvent: {
+            schedulingCalendarEventId: string;
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            provider: components["schemas"]["SchedulingCalendarProvider"];
+            providerEventId: string;
+            providerEventLink?: string;
+            startAt: string;
+            endAt: string;
+            /** @description Attendee list as recorded by the calendar provider */
+            attendees: unknown;
+            conferenceLink?: string;
+            lastSyncedAt: string;
+            createdAt: string;
+        };
+        /** @enum {string} */
+        SchedulingCalendarProvider: SchedulingCalendarProvider;
+        /** @enum {string} */
+        SchedulingIntentType: SchedulingIntentType;
+        SchedulingMessage: {
+            schedulingMessageId: string;
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            channel: components["schemas"]["SchedulingRequestChannel"];
+            direction: components["schemas"]["SchedulingMessageDirection"];
+            /** @description Inbox/thread identifier from the messaging provider */
+            providerThreadId?: string;
+            senderParticipantId?: string;
+            /** @description Recipients as JSON; shape depends on channel */
+            recipients: unknown;
+            timestamp: string;
+            /** @description AI-extracted entities (slots, attendees, etc.) */
+            extractedEntities?: unknown;
+            body?: string;
+        };
+        /** @enum {string} */
+        SchedulingMessageDirection: SchedulingMessageDirection;
+        /** @enum {string} */
+        SchedulingOutcomeType: SchedulingOutcomeType;
+        /** @description Working-hours block: weekday → list of HH:MM ranges
+         *     Stored as Document because the day-of-week → range-list shape is
+         *     owner-defined and varies; coerced in the handler. */
+        SchedulingOwnerConfig: {
+            schedulingOwnerConfigId: string;
+            ownerUserId: string;
+            orgId: string;
+            defaultDurationMinutes: number;
+            workingHours: unknown;
+            timeZone: string;
+            followUpDelayHours: number;
+            maxFollowUps: number;
+            /** @description Owner-defined focus blocks the assistant must avoid */
+            focusTimeBlocks?: unknown;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @description Partial-update payload for /scheduling/config/update — every field
+         *     optional so admins can patch one knob at a time */
+        SchedulingOwnerConfigInput: {
+            defaultDurationMinutes?: number;
+            workingHours?: unknown;
+            timeZone?: string;
+            followUpDelayHours?: number;
+            maxFollowUps?: number;
+            focusTimeBlocks?: unknown;
+        };
+        SchedulingParticipant: {
+            schedulingParticipantId: string;
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            role: components["schemas"]["SchedulingParticipantRole"];
+            name?: string;
+            email?: string;
+            phone?: string;
+            timeZone?: string;
+            /** @description Free-form availability submission captured from inbound messages */
+            availabilitySubmission?: unknown;
+            createdAt: string;
+            updatedAt: string;
+        };
+        /** @enum {string} */
+        SchedulingParticipantRole: SchedulingParticipantRole;
+        /** @description Scheduling request — the durable record paired with one Temporal
+         *     workflow. The workflow id itself is intentionally not exposed on the
+         *     wire (internal Temporal detail; admin signals are dispatched
+         *     server-side). */
+        SchedulingRequest: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            schedulingRequestId: string;
+            ownerUserId: string;
+            orgId: string;
+            dealId?: string;
+            status: components["schemas"]["SchedulingRequestStatus"];
+            channel: components["schemas"]["SchedulingRequestChannel"];
+            intentType?: components["schemas"]["SchedulingIntentType"];
+            title?: string;
+            desiredDurationMinutes: number;
+            timeZone: string;
+            /** @description Free-form scheduling constraints (working-hours overrides,
+             *     blackout windows, etc.) captured from the request source */
+            constraints?: unknown;
+            outcome?: components["schemas"]["SchedulingOutcomeType"];
+            outcomeAt?: string;
+            /** @description Correlation id when the same scheduling intent appears across
+             *     multiple channels (e.g. SMS follow-up to an email thread) */
+            crossChannelRequestId?: string;
+            deletedAt?: string;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
+            Participants?: components["schemas"]["SchedulingParticipant"][];
+            ProposedSlots?: components["schemas"]["ProposedSlot"][];
+            CalendarEvents?: components["schemas"]["SchedulingCalendarEvent"][];
+            Messages?: components["schemas"]["SchedulingMessage"][];
+            AuditLog?: components["schemas"]["SchedulingAuditLogEntry"][];
+        };
+        /** @enum {string} */
+        SchedulingRequestChannel: SchedulingRequestChannel;
+        /** @enum {string} */
+        SchedulingRequestStatus: SchedulingRequestStatus;
+        /** @description Slot payload for OverrideSchedulingSlot — admin picks an explicit
+         *     time outside the AI-proposed set */
+        SchedulingSlotInput: {
+            startAt: string;
+            endAt: string;
+            /** @description Defaults to the request's timeZone if omitted */
+            timeZone?: string;
+        };
+        /** @description Aggregate counts for the admin overview */
+        SchedulingStats: {
+            total: number;
+            /** @description Status → count map (keyed by SchedulingRequestStatus values) */
+            byStatus: unknown;
+        };
+        SetSchedulingOutcomeRequestContent: {
+            /** @description Scheduling subsystem — admin surface over Temporal-backed scheduling
+             *     requests. Reads/writes go to Postgres; force_send / override_slot /
+             *     cancel fan out as `adminCommand` signals on the request's existing
+             *     Temporal workflow. */
+            requestId: string;
+            outcome: components["schemas"]["SchedulingOutcomeType"];
+        };
+        /** @description Outcome ack — echoes the outcome the admin set */
+        SetSchedulingOutcomeResponseContent: {
+            success: boolean;
+            outcome?: components["schemas"]["SchedulingOutcomeType"];
+            /** @description Present when success: false (e.g. request not found) */
+            message?: string;
+        };
+        /** @enum {string} */
+        SlotState: SlotState;
+        StakeholderProfile: {
+            stakeholderProfileId: string;
+            ownerUserId: string;
+            orgId: string;
+            email?: string;
+            phone?: string;
+            name?: string;
+            organizationRole?: string;
+            companyName?: string;
+            /** @description Owner-curated preferences (preferred channel, contact windows, …) */
+            preferences?: unknown;
+            /**
+             * Format: float
+             * @description 0.0–1.0 score from communication-pattern analysis
+             */
+            relationshipStrength?: number;
+            /** @description Aggregated communication patterns (cadence, response times, …) */
+            communicationPatterns?: unknown;
+            lastEnrichedAt?: string;
+            createdByUserId: string;
+            updatedByUserId?: string;
+            createdAt: string;
+            updatedAt: string;
         };
         /**
          * @description Statistic grouping periods
@@ -2297,6 +2792,13 @@ export interface components {
         };
         UpdateProfileResponseContent: {
             profile: components["schemas"]["UserProfile"];
+        };
+        UpdateSchedulingConfigRequestContent: {
+            orgId: string;
+            config: components["schemas"]["SchedulingOwnerConfigInput"];
+        };
+        UpdateSchedulingConfigResponseContent: {
+            config: components["schemas"]["SchedulingOwnerConfig"];
         };
         UploadOrgPictureRequestContent: {
             orgId: string;
@@ -5917,6 +6419,490 @@ export interface operations {
             };
         };
     };
+    GetSchedulingConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetSchedulingConfig 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetSchedulingConfigResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    UpdateSchedulingConfig: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["UpdateSchedulingConfigRequestContent"];
+            };
+        };
+        responses: {
+            /** @description UpdateSchedulingConfig 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["UpdateSchedulingConfigResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetSchedulingRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["GetSchedulingRequestRequestContent"];
+            };
+        };
+        responses: {
+            /** @description GetSchedulingRequest 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetSchedulingRequestResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    CancelSchedulingRequest: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["CancelSchedulingRequestRequestContent"];
+            };
+        };
+        responses: {
+            /** @description CancelSchedulingRequest 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["CancelSchedulingRequestResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    SetSchedulingOutcome: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SetSchedulingOutcomeRequestContent"];
+            };
+        };
+        responses: {
+            /** @description SetSchedulingOutcome 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["SetSchedulingOutcomeResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    OverrideSchedulingSlot: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["OverrideSchedulingSlotRequestContent"];
+            };
+        };
+        responses: {
+            /** @description OverrideSchedulingSlot 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["OverrideSchedulingSlotResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ForceSchedulingSend: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ForceSchedulingSendRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ForceSchedulingSend 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ForceSchedulingSendResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListSchedulingRequests: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListSchedulingRequestsRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListSchedulingRequests 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListSchedulingRequestsResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    ListStakeholders: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: {
+            content: {
+                "application/json": components["schemas"]["ListStakeholdersRequestContent"];
+            };
+        };
+        responses: {
+            /** @description ListStakeholders 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ListStakeholdersResponseContent"];
+                };
+            };
+            /** @description ValidationError 400 response */
+            400: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["ValidationErrorResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
+    GetSchedulingStats: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description GetSchedulingStats 200 response */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["GetSchedulingStatsResponseContent"];
+                };
+            };
+            /** @description AuthenticationError 401 response */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthenticationErrorResponseContent"];
+                };
+            };
+            /** @description InternalServerError 500 response */
+            500: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["InternalServerErrorResponseContent"];
+                };
+            };
+        };
+    };
     UpdateProfile: {
         parameters: {
             query?: never;
@@ -6120,6 +7106,60 @@ export enum RecordType {
     cleanup = "cleanup",
     export = "export",
     system = "system"
+}
+export enum SchedulingAuditActor {
+    ASSISTANT = "ASSISTANT",
+    ADMIN = "ADMIN",
+    SYSTEM = "SYSTEM"
+}
+export enum SchedulingCalendarProvider {
+    GOOGLE = "GOOGLE",
+    MICROSOFT = "MICROSOFT"
+}
+export enum SchedulingIntentType {
+    INTRO_CALL = "INTRO_CALL",
+    NEGOTIATION = "NEGOTIATION",
+    FOLLOW_UP = "FOLLOW_UP",
+    INTERNAL_SYNC = "INTERNAL_SYNC",
+    CONTRACT_REVIEW = "CONTRACT_REVIEW",
+    UNKNOWN = "UNKNOWN"
+}
+export enum SchedulingMessageDirection {
+    INBOUND = "INBOUND",
+    OUTBOUND = "OUTBOUND"
+}
+export enum SchedulingOutcomeType {
+    COMPLETED = "COMPLETED",
+    CANCELLED = "CANCELLED",
+    NO_SHOW = "NO_SHOW",
+    RESCHEDULED = "RESCHEDULED"
+}
+export enum SchedulingParticipantRole {
+    OWNER = "OWNER",
+    INTERNAL_REQUIRED = "INTERNAL_REQUIRED",
+    EXTERNAL = "EXTERNAL"
+}
+export enum SchedulingRequestChannel {
+    EMAIL = "EMAIL",
+    SMS = "SMS",
+    WHATSAPP = "WHATSAPP",
+    SCHEDULING_LINK = "SCHEDULING_LINK"
+}
+export enum SchedulingRequestStatus {
+    NEW = "NEW",
+    PROPOSED = "PROPOSED",
+    AWAITING_CONFIRMATION = "AWAITING_CONFIRMATION",
+    SCHEDULED = "SCHEDULED",
+    FAILED = "FAILED",
+    CANCELLED = "CANCELLED"
+}
+export enum SlotState {
+    PROPOSED = "PROPOSED",
+    SELECTED = "SELECTED",
+    REJECTED = "REJECTED",
+    EXPIRED = "EXPIRED",
+    HELD = "HELD",
+    RELEASED = "RELEASED"
 }
 export enum StatisticGrouping {
     hour = "hour",

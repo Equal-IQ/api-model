@@ -16,6 +16,7 @@ service EqualIQ {
     FileResource
     AuditLogResource
     NylasResource
+    SchedulingResource
   ]
   operations: [
     GetProfile
@@ -30,6 +31,12 @@ service EqualIQ {
     NylasInitiateAuth
     NylasListConnections
     NylasGetThread
+
+    // scheduling.smithy - Cross-cutting scheduling ops (request-bound ops live on SchedulingResource)
+    GetSchedulingConfig
+    UpdateSchedulingConfig
+    GetSchedulingStats
+    ListStakeholders
 
     // Utility operations
     Ping

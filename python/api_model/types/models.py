@@ -51,6 +51,26 @@ class CancelOrgInviteRequestContent(BaseModel):
     inviteId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
 
 
+class CancelSchedulingRequestRequestContent(BaseModel):
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class CancelSchedulingRequestResponseContent(BaseModel):
+    """
+    Fire-and-forget envelope returned by the three admin-signal ops.
+    `success: false` is returned (not thrown) when the request has no
+    active workflow or the Temporal signal fails — admin UIs render the
+    `message` directly.
+    """
+
+    success: bool
+    message: str
+
+
 class ContentDisposition(StrEnum):
     """
     Content disposition for file downloads
@@ -359,6 +379,26 @@ class FilePermission(StrEnum):
     rename_file = 'rename_file'
 
 
+class ForceSchedulingSendRequestContent(BaseModel):
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+
+
+class ForceSchedulingSendResponseContent(BaseModel):
+    """
+    Fire-and-forget envelope returned by the three admin-signal ops.
+    `success: false` is returned (not thrown) when the request has no
+    active workflow or the Temporal signal fails — admin UIs render the
+    `message` directly.
+    """
+
+    success: bool
+    message: str
+
+
 class GenerateDownloadUrlRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     expirationSeconds: float | None = Field(
@@ -439,6 +479,14 @@ class GetProfilePictureResponseContent(BaseModel):
 
 class GetProfileRequestContent(BaseModel):
     userId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+
+
+class GetSchedulingRequestRequestContent(BaseModel):
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
 
 
 class GrantDealAccessRequestContent(BaseModel):
@@ -619,6 +667,13 @@ class ListOrgInvitesRequestContent(BaseModel):
         None, description='Pagination cursor (encoded inviteId)'
     )
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class ListStakeholdersRequestContent(BaseModel):
+    email: str | None = Field(None, description='Case-insensitive email substring')
+    companyName: str | None = Field(
+        None, description='Case-insensitive company-name substring'
+    )
 
 
 class ListUserOrganizationsRequestContent(BaseModel):
@@ -902,6 +957,18 @@ class OrgTheme(BaseModel):
     accentColor: str | None = Field(None, pattern='^#?([0-9a-fA-F]{6}|[0-9a-fA-F]{3})$')
 
 
+class OverrideSchedulingSlotResponseContent(BaseModel):
+    """
+    Fire-and-forget envelope returned by the three admin-signal ops.
+    `success: false` is returned (not thrown) when the request has no
+    active workflow or the Temporal signal fails — admin UIs render the
+    `message` directly.
+    """
+
+    success: bool
+    message: str
+
+
 class PingResponseContent(BaseModel):
     message: str
 
@@ -978,6 +1045,217 @@ class RevokeFileAccessRequestContent(BaseModel):
     fileId: str = Field(..., description='File identifier', pattern='^[A-Za-z0-9-]+$')
     accessId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
     reason: str
+
+
+class SchedulingAuditActor(StrEnum):
+    ASSISTANT = 'ASSISTANT'
+    ADMIN = 'ADMIN'
+    SYSTEM = 'SYSTEM'
+
+
+class SchedulingAuditLogEntry(BaseModel):
+    schedulingAuditLogEntryId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    actor: SchedulingAuditActor
+    actionType: str
+    correlationId: str | None
+    payload: Any | None
+
+
+class SchedulingCalendarProvider(StrEnum):
+    GOOGLE = 'GOOGLE'
+    MICROSOFT = 'MICROSOFT'
+
+
+class SchedulingIntentType(StrEnum):
+    INTRO_CALL = 'INTRO_CALL'
+    NEGOTIATION = 'NEGOTIATION'
+    FOLLOW_UP = 'FOLLOW_UP'
+    INTERNAL_SYNC = 'INTERNAL_SYNC'
+    CONTRACT_REVIEW = 'CONTRACT_REVIEW'
+    UNKNOWN = 'UNKNOWN'
+
+
+class SchedulingMessageDirection(StrEnum):
+    INBOUND = 'INBOUND'
+    OUTBOUND = 'OUTBOUND'
+
+
+class SchedulingOutcomeType(StrEnum):
+    COMPLETED = 'COMPLETED'
+    CANCELLED = 'CANCELLED'
+    NO_SHOW = 'NO_SHOW'
+    RESCHEDULED = 'RESCHEDULED'
+
+
+class SchedulingOwnerConfig(BaseModel):
+    """
+    Working-hours block: weekday → list of HH:MM ranges
+    Stored as Document because the day-of-week → range-list shape is
+    owner-defined and varies; coerced in the handler.
+    """
+
+    schedulingOwnerConfigId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    ownerUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    defaultDurationMinutes: float
+    workingHours: Any
+    timeZone: str
+    followUpDelayHours: float
+    maxFollowUps: float
+    focusTimeBlocks: Any | None = Field(
+        None, description='Owner-defined focus blocks the assistant must avoid'
+    )
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class SchedulingOwnerConfigInput(BaseModel):
+    """
+    Partial-update payload for /scheduling/config/update — every field
+    optional so admins can patch one knob at a time
+    """
+
+    defaultDurationMinutes: float | None
+    workingHours: Any | None
+    timeZone: str | None
+    followUpDelayHours: float | None
+    maxFollowUps: float | None
+    focusTimeBlocks: Any | None
+
+
+class SchedulingParticipantRole(StrEnum):
+    OWNER = 'OWNER'
+    INTERNAL_REQUIRED = 'INTERNAL_REQUIRED'
+    EXTERNAL = 'EXTERNAL'
+
+
+class SchedulingRequestChannel(StrEnum):
+    EMAIL = 'EMAIL'
+    SMS = 'SMS'
+    WHATSAPP = 'WHATSAPP'
+    SCHEDULING_LINK = 'SCHEDULING_LINK'
+
+
+class SchedulingRequestStatus(StrEnum):
+    NEW = 'NEW'
+    PROPOSED = 'PROPOSED'
+    AWAITING_CONFIRMATION = 'AWAITING_CONFIRMATION'
+    SCHEDULED = 'SCHEDULED'
+    FAILED = 'FAILED'
+    CANCELLED = 'CANCELLED'
+
+
+class SchedulingSlotInput(BaseModel):
+    """
+    Slot payload for OverrideSchedulingSlot — admin picks an explicit
+    time outside the AI-proposed set
+    """
+
+    startAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    timeZone: str | None = Field(
+        None, description="Defaults to the request's timeZone if omitted"
+    )
+
+
+class SchedulingStats(BaseModel):
+    """
+    Aggregate counts for the admin overview
+    """
+
+    total: float
+    byStatus: Any = Field(
+        ..., description='Status → count map (keyed by SchedulingRequestStatus values)'
+    )
+
+
+class SetSchedulingOutcomeRequestContent(BaseModel):
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    outcome: SchedulingOutcomeType
+
+
+class SetSchedulingOutcomeResponseContent(BaseModel):
+    """
+    Outcome ack — echoes the outcome the admin set
+    """
+
+    success: bool
+    outcome: SchedulingOutcomeType | None
+    message: str | None = Field(
+        None, description='Present when success: false (e.g. request not found)'
+    )
+
+
+class SlotState(StrEnum):
+    PROPOSED = 'PROPOSED'
+    SELECTED = 'SELECTED'
+    REJECTED = 'REJECTED'
+    EXPIRED = 'EXPIRED'
+    HELD = 'HELD'
+    RELEASED = 'RELEASED'
+
+
+class StakeholderProfile(BaseModel):
+    stakeholderProfileId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    ownerUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    phone: str | None
+    name: str | None
+    organizationRole: str | None
+    companyName: str | None
+    preferences: Any | None = Field(
+        None,
+        description='Owner-curated preferences (preferred channel, contact windows, …)',
+    )
+    relationshipStrength: float | None = Field(
+        None, description='0.0–1.0 score from communication-pattern analysis'
+    )
+    communicationPatterns: Any | None = Field(
+        None,
+        description='Aggregated communication patterns (cadence, response times, …)',
+    )
+    lastEnrichedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
 
 
 class StatisticGrouping(StrEnum):
@@ -1140,6 +1418,15 @@ class UpdateProfileRequestContent(BaseModel):
     accountType: str | None
     bio: str | None
     isOver18: bool | None
+
+
+class UpdateSchedulingConfigRequestContent(BaseModel):
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    config: SchedulingOwnerConfigInput
+
+
+class UpdateSchedulingConfigResponseContent(BaseModel):
+    config: SchedulingOwnerConfig
 
 
 class UploadOrgPictureRequestContent(BaseModel):
@@ -1509,6 +1796,14 @@ class GetProfileResponseContent(BaseModel):
     profile: UserProfile
 
 
+class GetSchedulingConfigResponseContent(BaseModel):
+    config: SchedulingOwnerConfig | None
+
+
+class GetSchedulingStatsResponseContent(BaseModel):
+    stats: SchedulingStats
+
+
 class GrantDealAccessResponseContent(BaseModel):
     access: DealAccess
 
@@ -1571,6 +1866,37 @@ class ListOrgMembersRequestContent(BaseModel):
         None, description='Pagination cursor (encoded userId)'
     )
     limit: float | None = Field(None, description='Page size', ge=1.0, le=100.0)
+
+
+class ListSchedulingRequestsRequestContent(BaseModel):
+    status: list[SchedulingRequestStatus] | None = Field(
+        None, description='Filter by status (any-of)'
+    )
+    channel: list[SchedulingRequestChannel] | None = Field(
+        None, description='Filter by channel (any-of)'
+    )
+    createdAfter: str | None = Field(
+        None,
+        description='Inclusive lower bound on createdAt',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdBefore: str | None = Field(
+        None,
+        description='Inclusive upper bound on createdAt',
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    cursor: str | None = Field(
+        None,
+        description="Cursor: schedulingRequestId from a prior page's last item",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    limit: float | None = Field(
+        None, description='Defaults to 50 when omitted', ge=1.0, le=100.0
+    )
+
+
+class ListStakeholdersResponseContent(BaseModel):
+    stakeholders: list[StakeholderProfile]
 
 
 class ListUserOrganizationsResponseContent(BaseModel):
@@ -1675,8 +2001,192 @@ class OrgMemberMap(RootModel[dict[str, OrgMember]]):
     root: dict[str, OrgMember]
 
 
+class OverrideSchedulingSlotRequestContent(BaseModel):
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    slot: SchedulingSlotInput
+
+
+class ProposedSlot(BaseModel):
+    proposedSlotId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    startAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    timeZone: str
+    state: SlotState
+    holdReference: str | None = Field(
+        None,
+        description='Provider-specific hold reference (e.g. Google freebusy hold token)',
+    )
+    holdExpiresAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
 class ResendOrgInviteResponseContent(BaseModel):
     invite: OrgInvite
+
+
+class SchedulingCalendarEvent(BaseModel):
+    schedulingCalendarEventId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    provider: SchedulingCalendarProvider
+    providerEventId: str
+    providerEventLink: str | None
+    startAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    endAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    attendees: Any = Field(
+        ..., description='Attendee list as recorded by the calendar provider'
+    )
+    conferenceLink: str | None
+    lastSyncedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class SchedulingMessage(BaseModel):
+    schedulingMessageId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    channel: SchedulingRequestChannel
+    direction: SchedulingMessageDirection
+    providerThreadId: str | None = Field(
+        None, description='Inbox/thread identifier from the messaging provider'
+    )
+    senderParticipantId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    recipients: Any = Field(
+        ..., description='Recipients as JSON; shape depends on channel'
+    )
+    timestamp: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    extractedEntities: Any | None = Field(
+        None, description='AI-extracted entities (slots, attendees, etc.)'
+    )
+    body: str | None
+
+
+class SchedulingParticipant(BaseModel):
+    schedulingParticipantId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    requestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    role: SchedulingParticipantRole
+    name: str | None
+    email: str | None = Field(None, pattern='^[\\w-\\.]+@[\\w-\\.]+\\.+[\\w-]{1,63}$')
+    phone: str | None
+    timeZone: str | None
+    availabilitySubmission: Any | None = Field(
+        None,
+        description='Free-form availability submission captured from inbound messages',
+    )
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+
+
+class SchedulingRequest(BaseModel):
+    """
+    Scheduling request — the durable record paired with one Temporal
+    workflow. The workflow id itself is intentionally not exposed on the
+    wire (internal Temporal detail; admin signals are dispatched
+    server-side).
+    """
+
+    schedulingRequestId: str = Field(
+        ...,
+        description="Scheduling subsystem — admin surface over Temporal-backed scheduling\nrequests. Reads/writes go to Postgres; force_send / override_slot /\ncancel fan out as `adminCommand` signals on the request's existing\nTemporal workflow.",
+        pattern='^[A-Za-z0-9-]+$',
+    )
+    ownerUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    orgId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    dealId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    status: SchedulingRequestStatus
+    channel: SchedulingRequestChannel
+    intentType: SchedulingIntentType | None
+    title: str | None
+    desiredDurationMinutes: float
+    timeZone: str
+    constraints: Any | None = Field(
+        None,
+        description='Free-form scheduling constraints (working-hours overrides,\nblackout windows, etc.) captured from the request source',
+    )
+    outcome: SchedulingOutcomeType | None
+    outcomeAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    crossChannelRequestId: str | None = Field(
+        None,
+        description='Correlation id when the same scheduling intent appears across\nmultiple channels (e.g. SMS follow-up to an email thread)',
+    )
+    deletedAt: str | None = Field(
+        None,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    createdByUserId: str = Field(..., pattern='^[A-Za-z0-9-]+$')
+    updatedByUserId: str | None = Field(None, pattern='^[A-Za-z0-9-]+$')
+    createdAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    updatedAt: str = Field(
+        ...,
+        pattern='^\\d{4}-[01]\\d-[0-3]\\dT[0-2]\\d:[0-5]\\d:[0-5]\\d\\.\\d+([+-][0-2]\\d:[0-5]\\d|Z)$',
+    )
+    Participants: list[SchedulingParticipant] | None
+    ProposedSlots: list[ProposedSlot] | None
+    CalendarEvents: list[SchedulingCalendarEvent] | None
+    Messages: list[SchedulingMessage] | None
+    AuditLog: list[SchedulingAuditLogEntry] | None
 
 
 class UpdateDealAccessResponseContent(BaseModel):
@@ -1731,6 +2241,10 @@ class CreateOrgInviteResponseContent(BaseModel):
     failedEmails: list[FailedEmail] | None
 
 
+class GetSchedulingRequestResponseContent(BaseModel):
+    request: SchedulingRequest | None
+
+
 class ListOrgCustomRolesResponseContent(BaseModel):
     roles: OrgCustomRoleMap
     nextToken: str | None = Field(None, description='Token for next page')
@@ -1744,3 +2258,10 @@ class ListOrgInvitesResponseContent(BaseModel):
 class ListOrgMembersResponseContent(BaseModel):
     members: OrgMemberMap
     nextToken: str | None = Field(None, description='Token for next page')
+
+
+class ListSchedulingRequestsResponseContent(BaseModel):
+    items: list[SchedulingRequest]
+    nextCursor: str | None = Field(
+        None, description='Present when more pages remain', pattern='^[A-Za-z0-9-]+$'
+    )

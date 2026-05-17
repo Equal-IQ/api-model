@@ -11,9 +11,6 @@ export type Schemas = components['schemas'];
 export * from './xml-types';
 export * from './xml-utils';
 
-// Export EA Agent types (manually maintained)
-export * from './ea-types';
-
 // Unwrapped enum definitions
 export enum AuditOperation {
   insert = "insert",
@@ -124,6 +121,69 @@ export enum RecordType {
   system = "system"
 }
 
+export enum SchedulingAuditActor {
+  ASSISTANT = "ASSISTANT",
+  ADMIN = "ADMIN",
+  SYSTEM = "SYSTEM"
+}
+
+export enum SchedulingCalendarProvider {
+  GOOGLE = "GOOGLE",
+  MICROSOFT = "MICROSOFT"
+}
+
+export enum SchedulingIntentType {
+  INTRO_CALL = "INTRO_CALL",
+  NEGOTIATION = "NEGOTIATION",
+  FOLLOW_UP = "FOLLOW_UP",
+  INTERNAL_SYNC = "INTERNAL_SYNC",
+  CONTRACT_REVIEW = "CONTRACT_REVIEW",
+  UNKNOWN = "UNKNOWN"
+}
+
+export enum SchedulingMessageDirection {
+  INBOUND = "INBOUND",
+  OUTBOUND = "OUTBOUND"
+}
+
+export enum SchedulingOutcomeType {
+  COMPLETED = "COMPLETED",
+  CANCELLED = "CANCELLED",
+  NO_SHOW = "NO_SHOW",
+  RESCHEDULED = "RESCHEDULED"
+}
+
+export enum SchedulingParticipantRole {
+  OWNER = "OWNER",
+  INTERNAL_REQUIRED = "INTERNAL_REQUIRED",
+  EXTERNAL = "EXTERNAL"
+}
+
+export enum SchedulingRequestChannel {
+  EMAIL = "EMAIL",
+  SMS = "SMS",
+  WHATSAPP = "WHATSAPP",
+  SCHEDULING_LINK = "SCHEDULING_LINK"
+}
+
+export enum SchedulingRequestStatus {
+  NEW = "NEW",
+  PROPOSED = "PROPOSED",
+  AWAITING_CONFIRMATION = "AWAITING_CONFIRMATION",
+  SCHEDULED = "SCHEDULED",
+  FAILED = "FAILED",
+  CANCELLED = "CANCELLED"
+}
+
+export enum SlotState {
+  PROPOSED = "PROPOSED",
+  SELECTED = "SELECTED",
+  REJECTED = "REJECTED",
+  EXPIRED = "EXPIRED",
+  HELD = "HELD",
+  RELEASED = "RELEASED"
+}
+
 export enum StatisticGrouping {
   hour = "hour",
   day = "day",
@@ -171,6 +231,15 @@ export type AuthenticationErrorResponseContent = {
 export type CancelOrgInviteRequestContent = {
   orgId: string;
   inviteId: string;
+};
+
+export type CancelSchedulingRequestRequestContent = {
+  requestId: string;
+};
+
+export type CancelSchedulingRequestResponseContent = {
+  success: boolean;
+  message: string;
 };
 
 export type CreateDealRequestContent = {
@@ -441,6 +510,15 @@ export type FileAccessMap = { [key: string]: FileAccess };
 
 export type FileMap = { [key: string]: File };
 
+export type ForceSchedulingSendRequestContent = {
+  requestId: string;
+};
+
+export type ForceSchedulingSendResponseContent = {
+  success: boolean;
+  message: string;
+};
+
 export type GenerateDownloadUrlRequestContent = {
   fileId: string;
   expirationSeconds?: number;
@@ -557,6 +635,22 @@ export type GetProfileRequestContent = {
 
 export type GetProfileResponseContent = {
   profile: UserProfile;
+};
+
+export type GetSchedulingConfigResponseContent = {
+  config?: SchedulingOwnerConfig;
+};
+
+export type GetSchedulingRequestRequestContent = {
+  requestId: string;
+};
+
+export type GetSchedulingRequestResponseContent = {
+  request?: SchedulingRequest;
+};
+
+export type GetSchedulingStatsResponseContent = {
+  stats: SchedulingStats;
 };
 
 export type GrantDealAccessRequestContent = {
@@ -740,6 +834,29 @@ export type ListOrgMembersRequestContent = {
 export type ListOrgMembersResponseContent = {
   members: OrgMemberMap;
   nextToken?: string;
+};
+
+export type ListSchedulingRequestsRequestContent = {
+  status?: SchedulingRequestStatus[];
+  channel?: SchedulingRequestChannel[];
+  createdAfter?: string;
+  createdBefore?: string;
+  cursor?: string;
+  limit?: number;
+};
+
+export type ListSchedulingRequestsResponseContent = {
+  items: SchedulingRequest[];
+  nextCursor?: string;
+};
+
+export type ListStakeholdersRequestContent = {
+  email?: string;
+  companyName?: string;
+};
+
+export type ListStakeholdersResponseContent = {
+  stakeholders: StakeholderProfile[];
 };
 
 export type ListUserOrganizationsRequestContent = {
@@ -957,6 +1074,16 @@ export type OrgTheme = {
   accentColor?: string;
 };
 
+export type OverrideSchedulingSlotRequestContent = {
+  requestId: string;
+  slot: SchedulingSlotInput;
+};
+
+export type OverrideSchedulingSlotResponseContent = {
+  success: boolean;
+  message: string;
+};
+
 export type PingResponseContent = {
   message: string;
 };
@@ -971,6 +1098,19 @@ export type PresignedUrl = {
   expiresAt: string;
   method?: string;
   headers?: unknown;
+};
+
+export type ProposedSlot = {
+  proposedSlotId: string;
+  requestId: string;
+  startAt: string;
+  endAt: string;
+  timeZone: string;
+  state: SlotState;
+  holdReference?: string;
+  holdExpiresAt?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type RemoveOrgMemberRequestContent = {
@@ -1002,6 +1142,149 @@ export type RevokeFileAccessRequestContent = {
   fileId: string;
   accessId: string;
   reason: string;
+};
+
+export type SchedulingAuditLogEntry = {
+  schedulingAuditLogEntryId: string;
+  requestId: string;
+  timestamp: string;
+  actor: SchedulingAuditActor;
+  actionType: string;
+  correlationId?: string;
+  payload?: unknown;
+};
+
+export type SchedulingCalendarEvent = {
+  schedulingCalendarEventId: string;
+  requestId: string;
+  provider: SchedulingCalendarProvider;
+  providerEventId: string;
+  providerEventLink?: string;
+  startAt: string;
+  endAt: string;
+  attendees: unknown;
+  conferenceLink?: string;
+  lastSyncedAt: string;
+  createdAt: string;
+};
+
+export type SchedulingMessage = {
+  schedulingMessageId: string;
+  requestId: string;
+  channel: SchedulingRequestChannel;
+  direction: SchedulingMessageDirection;
+  providerThreadId?: string;
+  senderParticipantId?: string;
+  recipients: unknown;
+  timestamp: string;
+  extractedEntities?: unknown;
+  body?: string;
+};
+
+export type SchedulingOwnerConfig = {
+  schedulingOwnerConfigId: string;
+  ownerUserId: string;
+  orgId: string;
+  defaultDurationMinutes: number;
+  workingHours: unknown;
+  timeZone: string;
+  followUpDelayHours: number;
+  maxFollowUps: number;
+  focusTimeBlocks?: unknown;
+  createdByUserId: string;
+  updatedByUserId?: string;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SchedulingOwnerConfigInput = {
+  defaultDurationMinutes?: number;
+  workingHours?: unknown;
+  timeZone?: string;
+  followUpDelayHours?: number;
+  maxFollowUps?: number;
+  focusTimeBlocks?: unknown;
+};
+
+export type SchedulingParticipant = {
+  schedulingParticipantId: string;
+  requestId: string;
+  role: SchedulingParticipantRole;
+  name?: string;
+  email?: string;
+  phone?: string;
+  timeZone?: string;
+  availabilitySubmission?: unknown;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type SchedulingRequest = {
+  schedulingRequestId: string;
+  ownerUserId: string;
+  orgId: string;
+  dealId?: string;
+  status: SchedulingRequestStatus;
+  channel: SchedulingRequestChannel;
+  intentType?: SchedulingIntentType;
+  title?: string;
+  desiredDurationMinutes: number;
+  timeZone: string;
+  constraints?: unknown;
+  outcome?: SchedulingOutcomeType;
+  outcomeAt?: string;
+  crossChannelRequestId?: string;
+  deletedAt?: string;
+  createdByUserId: string;
+  updatedByUserId?: string;
+  createdAt: string;
+  updatedAt: string;
+  Participants?: SchedulingParticipant[];
+  ProposedSlots?: ProposedSlot[];
+  CalendarEvents?: SchedulingCalendarEvent[];
+  Messages?: SchedulingMessage[];
+  AuditLog?: SchedulingAuditLogEntry[];
+};
+
+export type SchedulingSlotInput = {
+  startAt: string;
+  endAt: string;
+  timeZone?: string;
+};
+
+export type SchedulingStats = {
+  total: number;
+  byStatus: unknown;
+};
+
+export type SetSchedulingOutcomeRequestContent = {
+  requestId: string;
+  outcome: SchedulingOutcomeType;
+};
+
+export type SetSchedulingOutcomeResponseContent = {
+  success: boolean;
+  outcome?: SchedulingOutcomeType;
+  message?: string;
+};
+
+export type StakeholderProfile = {
+  stakeholderProfileId: string;
+  ownerUserId: string;
+  orgId: string;
+  email?: string;
+  phone?: string;
+  name?: string;
+  organizationRole?: string;
+  companyName?: string;
+  preferences?: unknown;
+  relationshipStrength?: number;
+  communicationPatterns?: unknown;
+  lastEnrichedAt?: string;
+  createdByUserId: string;
+  updatedByUserId?: string;
+  createdAt: string;
+  updatedAt: string;
 };
 
 export type TimeSeriesPoint = {
@@ -1155,6 +1438,15 @@ export type UpdateProfileRequestContent = {
 
 export type UpdateProfileResponseContent = {
   profile: UserProfile;
+};
+
+export type UpdateSchedulingConfigRequestContent = {
+  orgId: string;
+  config: SchedulingOwnerConfigInput;
+};
+
+export type UpdateSchedulingConfigResponseContent = {
+  config: SchedulingOwnerConfig;
 };
 
 export type UploadOrgPictureRequestContent = {
